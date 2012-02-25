@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mechinn.frcscouting"
+    android:versionCode="1"
+    android:versionName="1.0" android:installLocation="auto">
+
+    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="15"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:icon="@drawable/frc" android:label="@string/app_name" android:hasCode="true" android:enabled="true" android:persistent="false" android:debuggable="true" android:allowBackup="true">
+        <activity
+            android:screenOrientation="landscape"
+            android:name="FRCScouting" android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity 
+            android:screenOrientation="landscape"
+            android:name="Scouting" android:label="@string/scouting">
+            <intent-filter>
+                <action android:name="com.mechinn.frcscouting.OpenScouting"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity 
+            android:screenOrientation="landscape"
+            android:name="Teams" android:label="@string/teams">
+            <intent-filter>
+                <action android:name="com.mechinn.frcscouting.OpenTeams"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity 
+            android:screenOrientation="landscape"
+            android:name="Settings" android:label="@string/settings">
+            <intent-filter>
+                <action android:name="com.mechinn.frcscouting.OpenSettings"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
