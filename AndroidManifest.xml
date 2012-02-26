@@ -41,6 +41,12 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        <activity android:screenOrientation="landscape" android:name="Info" android:label="@string/teamInfo">
+            <intent-filter>
+                <action android:name="com.mechinn.frcscouting.OpenTeamInfo"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

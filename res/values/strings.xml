@@ -59,4 +59,5 @@
 		<item >4361</item>
 		<item >4373</item>
 	</string-array>
+    <string name="teamInfo">Team Info</string>
 </resources>
