@@ -8,7 +8,7 @@
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
 		android:orientation="vertical" >
         
         <LinearLayout
@@ -89,9 +89,7 @@
 	            android:layout_height="wrap_content"
 	            android:text="# of Wheels"
 	            android:textAppearance="?android:attr/textAppearanceLarge" />
-	
-	
-	
+	        
 	        <Spinner
 	            android:id="@+id/wheelSpinner"
 	            android:layout_width="wrap_content"
@@ -189,8 +187,6 @@
 	                android:gravity="center_vertical|center_horizontal"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" >
-
-	                <requestFocus />
 	            </EditText>
 	
 	        </TableRow>
@@ -217,8 +213,6 @@
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" >
 
-	                <requestFocus />
-
 	            </EditText>
 	        </TableRow>
 	
@@ -240,12 +234,12 @@
 	    </TableLayout>
 
 	    <TableLayout
-	        android:id="@+id/wheelTypeTable"
+	        android:id="@+id/botAttributeTable"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_margin="1dip" >
 	        <TableRow
-	            android:id="@+id/wheelTypeHeader"
+	            android:id="@+id/attributes1"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
 	        
@@ -278,7 +272,7 @@
 	        
 	    	</TableRow>
 	        <TableRow
-	            android:id="@+id/wheelTypeHeader"
+	            android:id="@+id/attributes2"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
 	        
