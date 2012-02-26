@@ -1,124 +1,354 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="wrap_content" >
 
     <LinearLayout
-        android:id="@+id/teamLayout"
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent"
+		android:orientation="vertical" >
+        
+        <LinearLayout
+	        android:id="@+id/teamLayout"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:id="@+id/teamLabel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Team: "
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	        <TextView
+	            android:id="@+id/teamNumber"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="0"
+	            android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:id="@+id/orientationLayout"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:id="@+id/orientation"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Orientation: "
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
-            android:id="@+id/teamLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Team: "
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        <RadioGroup
+		      android:layout_width="wrap_content"
+		      android:layout_height="wrap_content"
+		      android:orientation="horizontal">
+		        <RadioButton
+		            android:id="@+id/orientationLong"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Long" />
+		
+		
+		        <RadioButton
+		            android:id="@+id/orientationWide"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Wide" />
+		
+		
+		        <RadioButton
+		            android:id="@+id/orientationSquare"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Square" />
+		
+		
+		        <RadioButton
+		            android:id="@+id/orientationOther"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Other" />
+		    </RadioGroup>
+	
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:id="@+id/wheelLayout"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:id="@+id/wheelLabel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="# of Wheels"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	
+	
+	        <Spinner
+	            android:id="@+id/wheelSpinner"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1" />
+	
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:id="@+id/typeLayout"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:id="@+id/typeLabel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Wheel Types: "
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        
+			<RadioGroup
+		      android:layout_width="wrap_content"
+		      android:layout_height="wrap_content"
+		      android:orientation="horizontal">
+		        <RadioButton
+		            android:id="@+id/has1WheelTypes"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="1" />
+		
+		        <RadioButton
+		            android:id="@+id/has2WheelTypes"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="2" />
+		    </RadioGroup>
+	
+	        <CheckBox
+	            android:id="@+id/hasDeadWheel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Dead Wheel" />
+	
+	    </LinearLayout>
+	
+	    <TableLayout
+	        android:id="@+id/wheelTypeTable"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="1dip" >
+	        <TableRow
+	            android:id="@+id/wheelTypeHeader"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	            
+	            <TextView
+	                android:id="@+id/wheelTypeLabel"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:text="Wheel Type"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:textAppearance="?android:attr/textAppearanceMedium" />
+	            <TextView
+	                android:id="@+id/wheelDiameterLabel"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:text="Wheel Diameter (inches)"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:textAppearance="?android:attr/textAppearanceMedium" />
+	            
+	        </TableRow>
+	        
+	        <TableRow
+	            android:id="@+id/wheel1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	
+	            <Spinner
+	                android:id="@+id/wheel1Type"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/teamNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+	            <EditText
+	                android:id="@+id/wheel1Diameter"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:inputType="number"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" >
+
+	                <requestFocus />
+	            </EditText>
+	
+	        </TableRow>
+	
+	        <TableRow
+	            android:id="@+id/wheel2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	            
+	            <Spinner
+	                android:id="@+id/wheel2Type"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+
+	            <EditText
+	                android:id="@+id/wheel2Diameter"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:inputType="number"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" >
+
+	                <requestFocus />
+
+	            </EditText>
+	        </TableRow>
+	
+	        <TableRow
+	            android:id="@+id/deadWheels"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	            
+	            <Spinner
+	                android:id="@+id/deadWheelType"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+	            
+	        </TableRow>
+	
+	    </TableLayout>
+
+	    <TableLayout
+	        android:id="@+id/wheelTypeTable"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="1dip" >
+	        <TableRow
+	            android:id="@+id/wheelTypeHeader"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	        
+		        <CheckBox
+		            android:id="@+id/turretShooter"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Turret Shooter"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+	
+		        <CheckBox
+		            android:id="@+id/autoTracking"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Auto Tracking"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+		        
+		        <CheckBox
+		            android:id="@+id/fenderShooter"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Fender Shooter"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+	        
+	    	</TableRow>
+	        <TableRow
+	            android:id="@+id/wheelTypeHeader"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	        
+		        <CheckBox
+		            android:id="@+id/keyShooter"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Key Shooter"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+		        
+		        <CheckBox
+		            android:id="@+id/crossesBarrier"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="Crosses Barrier"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+		        
+		        <CheckBox
+		            android:id="@+id/climbBridge"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_toRightOf="@id/crossesBarrier"
+		            android:text="Climb Bridge"
+	                android:gravity="center_vertical|center_horizontal"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+	        
+	    	</TableRow>
+	    </TableLayout>
+	    
+	    <TextView
+	        android:id="@+id/notesLabel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Other Notes:"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	    
+	    <EditText
+	        android:id="@+id/notes"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:inputType="textMultiLine" />
+	    
+	    <LinearLayout
+	        android:id="@+id/linearLayout1"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	        
+	        <Button
+		        android:id="@+id/save"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Save"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal" />
+	        
+	        <Button
+		        android:id="@+id/discard"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Discard"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal" />
+	    </LinearLayout>
 
     </LinearLayout>
+</ScrollView>
 
-    <LinearLayout
-        android:id="@+id/orientationLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/orientation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Orientation: "
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-
-        <RadioButton
-            android:id="@+id/orientationLong"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Long" />
-
-
-        <RadioButton
-            android:id="@+id/orientationWide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wide" />
-
-
-        <RadioButton
-            android:id="@+id/orientationSquare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Square" />
-
-
-        <RadioButton
-            android:id="@+id/orientationOther"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Other" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/wheelLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/wheelLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="# of Wheels"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-
-
-        <Spinner
-            android:id="@+id/wheelSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/typeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/typeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wheel Types: "
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <RadioButton
-            android:id="@+id/radioButton1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1" />
-
-        <RadioButton
-            android:id="@+id/radioButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2" />
-
-        <CheckBox
-            android:id="@+id/checkBox1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dead Wheel" />
-
-    </LinearLayout>
-
-</LinearLayout>
+    

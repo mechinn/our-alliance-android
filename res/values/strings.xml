@@ -60,4 +60,24 @@
 		<item >4373</item>
 	</string-array>
     <string name="teamInfo">Team Info</string>
+    <string-array name="wheelTypes">
+        <item >Kit</item>
+        <item >Traction</item>
+        <item >Mechanum</item>
+        <item >Omni</item>
+        <item >Slick</item>
+        <item >Tire</item>
+        <item >Track</item>
+        <item >Other</item>
+    </string-array>
+    <string-array name="deadWheelTypes">
+        <item >Kit</item>
+        <item >Traction</item>
+        <item >Mechanum</item>
+        <item >Omni</item>
+        <item >Slick</item>
+        <item >Tire</item>
+        <item >Caster</item>
+        <item >Other</item>
+    </string-array>
 </resources>
