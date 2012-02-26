@@ -177,109 +177,105 @@ public class Info extends Activity {
         
         wheel1 = (TableRow) findViewById(R.id.wheel1);
         
-        if(wheelTypes > 0) {
-	        wheel1TypeSpinner = (Spinner) findViewById(R.id.wheel1Type);
-	        wheel1TypeSpinner.setAdapter(wheelTypeStrings);
-	        wheel1TypeSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-	            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-	            	String wheel1TypeString = (parent.getItemAtPosition(pos).toString());
-	            	if(wheel1TypeString.equals("Kit")) {
-	            		wheel1Type = 1;
-	            	} else if(wheel1TypeString.equals("Traction")) {
-	            		wheel1Type = 2;
-	            	} else if(wheel1TypeString.equals("Mechanum")) {
-	            		wheel1Type = 3;
-	            	} else if(wheel1TypeString.equals("Omni")) {
-	            		wheel1Type = 4;
-	            	} else if(wheel1TypeString.equals("Slick")) {
-	            		wheel1Type = 5;
-	            	} else if(wheel1TypeString.equals("Tire")) {
-	            		wheel1Type = 6;
-	            	} else if(wheel1TypeString.equals("Track")) {
-	            		wheel1Type = 7;
-	            	} else {
-	            		wheel1Type = 8;
-	            	}
-	            }
-	            public void onNothingSelected(AdapterView parent) {
-	              // Do nothing.
-	            }
-	        });
-	        
-	        wheel1DiameterText = (EditText) findViewById(R.id.wheel1Diameter);
-        } else {
-        	wheel1.setVisibility(View.GONE);
-        }
+        
+        wheel1TypeSpinner = (Spinner) findViewById(R.id.wheel1Type);
+        wheel1TypeSpinner.setAdapter(wheelTypeStrings);
+        wheel1TypeSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+            	String wheel1TypeString = (parent.getItemAtPosition(pos).toString());
+            	if(wheel1TypeString.equals("Kit")) {
+            		wheel1Type = 1;
+            	} else if(wheel1TypeString.equals("Traction")) {
+            		wheel1Type = 2;
+            	} else if(wheel1TypeString.equals("Mechanum")) {
+            		wheel1Type = 3;
+            	} else if(wheel1TypeString.equals("Omni")) {
+            		wheel1Type = 4;
+            	} else if(wheel1TypeString.equals("Slick")) {
+            		wheel1Type = 5;
+            	} else if(wheel1TypeString.equals("Tire")) {
+            		wheel1Type = 6;
+            	} else if(wheel1TypeString.equals("Track")) {
+            		wheel1Type = 7;
+            	} else {
+            		wheel1Type = 8;
+            	}
+            }
+            public void onNothingSelected(AdapterView parent) {
+              // Do nothing.
+            }
+        });
+        
+        wheel1DiameterText = (EditText) findViewById(R.id.wheel1Diameter);
         
         wheel2 = (TableRow) findViewById(R.id.wheel2);
         
-        if(wheelTypes > 1) {
-	        wheel2TypeSpinner = (Spinner) findViewById(R.id.wheel2Type);
-	        wheel2TypeSpinner.setAdapter(wheelTypeStrings);
-	        wheel2TypeSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-	            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-	            	String wheel2TypeString = (parent.getItemAtPosition(pos).toString());
-	            	if(wheel2TypeString.equals("Kit")) {
-	            		wheel2Type = 1;
-	            	} else if(wheel2TypeString.equals("Traction")) {
-	            		wheel2Type = 2;
-	            	} else if(wheel2TypeString.equals("Mechanum")) {
-	            		wheel2Type = 3;
-	            	} else if(wheel2TypeString.equals("Omni")) {
-	            		wheel2Type = 4;
-	            	} else if(wheel2TypeString.equals("Slick")) {
-	            		wheel2Type = 5;
-	            	} else if(wheel2TypeString.equals("Tire")) {
-	            		wheel2Type = 6;
-	            	} else if(wheel2TypeString.equals("Track")) {
-	            		wheel2Type = 7;
-	            	} else {
-	            		wheel2Type = 8;
-	            	}
-	            }
-	            public void onNothingSelected(AdapterView parent) {
-	              // Do nothing.
-	            }
-	        });
-	        
-	        wheel2DiameterText = (EditText) findViewById(R.id.wheel2Diameter);
-	    } else {
+        wheel2TypeSpinner = (Spinner) findViewById(R.id.wheel2Type);
+        wheel2TypeSpinner.setAdapter(wheelTypeStrings);
+        wheel2TypeSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+            	String wheel2TypeString = (parent.getItemAtPosition(pos).toString());
+            	if(wheel2TypeString.equals("Kit")) {
+            		wheel2Type = 1;
+            	} else if(wheel2TypeString.equals("Traction")) {
+            		wheel2Type = 2;
+            	} else if(wheel2TypeString.equals("Mechanum")) {
+            		wheel2Type = 3;
+            	} else if(wheel2TypeString.equals("Omni")) {
+            		wheel2Type = 4;
+            	} else if(wheel2TypeString.equals("Slick")) {
+            		wheel2Type = 5;
+            	} else if(wheel2TypeString.equals("Tire")) {
+            		wheel2Type = 6;
+            	} else if(wheel2TypeString.equals("Track")) {
+            		wheel2Type = 7;
+            	} else {
+            		wheel2Type = 8;
+            	}
+            }
+            public void onNothingSelected(AdapterView parent) {
+              // Do nothing.
+            }
+        });
+        
+        wheel2DiameterText = (EditText) findViewById(R.id.wheel2Diameter);
+        if(wheelTypes < 2) {
 	    	wheel2.setVisibility(View.GONE);
 	    }
         
         deadWheels = (TableRow) findViewById(R.id.deadWheels);
         
-        if(deadWheel) {
-	        deadWheelTypeSpinner = (Spinner) findViewById(R.id.deadWheelType);
-	        ArrayAdapter<CharSequence> deadWheelTypes = ArrayAdapter.createFromResource(this, R.array.deadWheelTypes, android.R.layout.simple_spinner_item);
-	        deadWheelTypes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-	        deadWheelTypeSpinner.setAdapter(deadWheelTypes);
-	        deadWheelTypeSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-	            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-	            	String deadWheelTypeString = (parent.getItemAtPosition(pos).toString());
-	            	if(deadWheelTypeString.equals("Kit")) {
-	            		deadWheelType = 1;
-	            	} else if(deadWheelTypeString.equals("Traction")) {
-	            		deadWheelType = 2;
-	            	} else if(deadWheelTypeString.equals("Mechanum")) {
-	            		deadWheelType = 3;
-	            	} else if(deadWheelTypeString.equals("Omni")) {
-	            		deadWheelType = 4;
-	            	} else if(deadWheelTypeString.equals("Slick")) {
-	            		deadWheelType = 5;
-	            	} else if(deadWheelTypeString.equals("Tire")) {
-	            		deadWheelType = 6;
-	            	} else if(deadWheelTypeString.equals("Caster")) {
-	            		deadWheelType = 7;
-	            	} else {
-	            		deadWheelType = 8;
-	            	}
-	            }
-	            public void onNothingSelected(AdapterView parent) {
-	              // Do nothing.
-	            }
-	        });
-	    } else {
+        deadWheelTypeSpinner = (Spinner) findViewById(R.id.deadWheelType);
+        ArrayAdapter<CharSequence> deadWheelTypes = ArrayAdapter.createFromResource(this, R.array.deadWheelTypes, android.R.layout.simple_spinner_item);
+        deadWheelTypes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        deadWheelTypeSpinner.setAdapter(deadWheelTypes);
+        deadWheelTypeSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+            	String deadWheelTypeString = (parent.getItemAtPosition(pos).toString());
+            	if(deadWheelTypeString.equals("Kit")) {
+            		deadWheelType = 1;
+            	} else if(deadWheelTypeString.equals("Traction")) {
+            		deadWheelType = 2;
+            	} else if(deadWheelTypeString.equals("Mechanum")) {
+            		deadWheelType = 3;
+            	} else if(deadWheelTypeString.equals("Omni")) {
+            		deadWheelType = 4;
+            	} else if(deadWheelTypeString.equals("Slick")) {
+            		deadWheelType = 5;
+            	} else if(deadWheelTypeString.equals("Tire")) {
+            		deadWheelType = 6;
+            	} else if(deadWheelTypeString.equals("Caster")) {
+            		deadWheelType = 7;
+            	} else {
+            		deadWheelType = 8;
+            	}
+            }
+            public void onNothingSelected(AdapterView parent) {
+              // Do nothing.
+            }
+        });
+        
+        if(!deadWheel) {
 	    	deadWheels.setVisibility(View.GONE);
 	    }
         
@@ -346,6 +342,9 @@ public class Info extends Activity {
 	                	wheel1Diameter = 0;
 	                }
 	                Log.d("wheel1Diameter", Integer.toString(wheel1Diameter));
+                } else {
+                	Log.d("wheel1Type", Integer.toString(0));
+                	Log.d("wheel1Diameter", Integer.toString(0));
                 }
                 if(wheelTypes > 1){
 	                Log.d("wheel2Type", Integer.toString(wheel2Type));
@@ -356,8 +355,15 @@ public class Info extends Activity {
 	                	wheel2Diameter = 0;
 	                }
 	                Log.d("wheel2Diameter", Integer.toString(wheel2Diameter));
+                } else {
+                	Log.d("wheel2Type", Integer.toString(0));
+                	Log.d("wheel2Diameter", Integer.toString(0));
                 }
-                Log.d("deadWheelType", Integer.toString(deadWheelType));
+                if(deadWheel){
+                	Log.d("deadWheelType", Integer.toString(deadWheelType));
+                } else {
+                	Log.d("deadWheelType", Integer.toString(0));
+                }
                 Log.d("turret", Boolean.toString(turret));
                 Log.d("tracking", Boolean.toString(tracking));
                 Log.d("fender", Boolean.toString(fender));
