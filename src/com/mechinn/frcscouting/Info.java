@@ -378,8 +378,7 @@ public class Info extends Activity {
         discard = (Button) findViewById(R.id.discard);
         discard.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                // Perform action on clicks
-                Toast.makeText(Info.this, "Discard", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
     }

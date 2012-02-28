@@ -25,7 +25,7 @@ public final class R {
         public static final int attributes2=0x7f060024;
         public static final int autoTracking=0x7f060022;
         public static final int botAttributeTable=0x7f06001f;
-        public static final int button1=0x7f060030;
+        public static final int button1=0x7f060031;
         public static final int climbBridge=0x7f060027;
         public static final int crossesBarrier=0x7f060026;
         public static final int deadWheelType=0x7f06001e;
@@ -46,14 +46,15 @@ public final class R {
         public static final int orientationOther=0x7f06000a;
         public static final int orientationSquare=0x7f060009;
         public static final int orientationWide=0x7f060008;
+        public static final int row=0x7f06002d;
         public static final int save=0x7f06002b;
-        public static final int scouting=0x7f06002d;
+        public static final int scouting=0x7f06002e;
         public static final int scrollView1=0x7f060000;
-        public static final int settings=0x7f06002f;
+        public static final int settings=0x7f060030;
         public static final int teamLabel=0x7f060003;
         public static final int teamLayout=0x7f060002;
         public static final int teamNumber=0x7f060004;
-        public static final int teams=0x7f06002e;
+        public static final int teams=0x7f06002f;
         public static final int turretShooter=0x7f060021;
         public static final int typeLabel=0x7f06000f;
         public static final int typeLayout=0x7f06000e;
@@ -73,10 +74,11 @@ public final class R {
     }
     public static final class layout {
         public static final int info=0x7f030000;
-        public static final int list_item=0x7f030001;
+        public static final int list_row=0x7f030001;
         public static final int main=0x7f030002;
         public static final int scouting=0x7f030003;
         public static final int settings=0x7f030004;
+        public static final int teams=0x7f030005;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
