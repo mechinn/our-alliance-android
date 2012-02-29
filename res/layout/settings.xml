@@ -5,9 +5,15 @@
     android:orientation="vertical" >
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/pullfrc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pullfrc" />
+
+    <Button
+        android:id="@+id/reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset Database" />
 
 </LinearLayout>

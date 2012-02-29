@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -21,9 +22,9 @@ import android.util.Log;
  * of using a collection of inner classes (which is less scalable and not
  * recommended).
  */
-public class TeamInfoDb {
-    
-    public static final String KEY_ROWID = "_id";
+public class TeamInfoDb extends SQLiteOpenHelper {
+
+	public static final String KEY_ROWID = "_id";
     public static final String KEY_LASTMOD = "_lastMod";
     public static final String KEY_TEAM = "team";
     public static final String KEY_ORIENTATION = "orientation";
@@ -44,7 +45,6 @@ public class TeamInfoDb {
     public static final String KEY_NOTES = "notes";
 
     private static final String TAG = "TeamInfoDb";
-    private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
 
     /**
@@ -74,56 +74,36 @@ public class TeamInfoDb {
     private static final String DATABASE_NAME = "frcscoutingdb";
     private static final String DATABASE_TABLE = "teams";
     private static final int DATABASE_VERSION = 1;
+    
+    public TeamInfoDb(Context context, boolean writable) {
+    	super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    	if(writable) {
+    		mDb = getWritableDatabase();
+    	} else {
+    		mDb = getReadableDatabase();
+    	}
+	}
+    
+    public TeamInfoDb(Context context) {
+    	this(context,false);
+	}
 
-    private final Context mCtx;
-
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-
-        DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL(DATABASE_CREATE);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS notes");
-            onCreate(db);
-        }
+    public void onCreate(SQLiteDatabase db) {
+    	db.execSQL(DATABASE_CREATE);
     }
 
-    /**
-     * Constructor - takes the context to allow the database to be
-     * opened/created
-     * 
-     * @param ctx the Context within which to work
-     */
-    public TeamInfoDb(Context ctx) {
-        this.mCtx = ctx;
-    }
-
-    /**
-     * Open the notes database. If it cannot be opened, try to create a new
-     * instance of the database. If it cannot be created, throw an exception to
-     * signal the failure
-     * 
-     * @return this (self reference, allowing this to be chained in an
-     *         initialization call)
-     * @throws SQLException if the database could be neither opened or created
-     */
-    public TeamInfoDb open() throws SQLException {
-        mDbHelper = new DatabaseHelper(mCtx);
-        mDb = mDbHelper.getWritableDatabase();
-        return this;
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    	Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
+    	reset();
     }
 
     public void close() {
-        mDbHelper.close();
+    	mDb.close();
+    }
+    
+    public void reset() {
+    	mDb.execSQL("DROP TABLE IF EXISTS "+DATABASE_TABLE);
+    	onCreate(mDb);
     }
 
 
@@ -195,12 +175,12 @@ public class TeamInfoDb {
      * @return Cursor positioned to matching note, if found
      * @throws SQLException if note could not be found/retrieved
      */
-    public Cursor fetchTeam(long rowId) throws SQLException {
+    public Cursor fetchTeam(int team) throws SQLException {
 
         Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_LASTMOD, KEY_TEAM, 
             		KEY_ORIENTATION, KEY_NUMWHEELS, KEY_WHEELTYPES, KEY_DEADWHEEL, KEY_WHEEL1TYPE, 
             		KEY_WHEEL1DIAMETER, KEY_WHEEL2TYPE, KEY_WHEEL2DIAMETER, KEY_DEADWHEELTYPE, 
-            		KEY_TURRET, KEY_TRACKING, KEY_FENDER, KEY_KEY, KEY_BARRIER, KEY_CLIMB, KEY_NOTES}, KEY_ROWID + "=" + rowId, null,
+            		KEY_TURRET, KEY_TRACKING, KEY_FENDER, KEY_KEY, KEY_BARRIER, KEY_CLIMB, KEY_NOTES}, KEY_TEAM + "=" + team, null,
                     null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -237,13 +217,12 @@ public class TeamInfoDb {
      * @param body value to set note body to
      * @return true if the note was successfully updated, false otherwise
      */
-    public boolean updateTeam(long rowId, int team, int orientation, int numWheels, int wheelTypes, 
+    public boolean updateTeam(int team, int orientation, int numWheels, int wheelTypes, 
     		boolean deadWheel, int wheel1Type, int wheel1Diameter, int wheel2Type, int wheel2Diameter,
 			int deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes) {
         ContentValues args = new ContentValues();
         args.put(KEY_LASTMOD, new Date().getTime());
-        args.put(KEY_TEAM, team);
         args.put(KEY_ORIENTATION, orientation);
         args.put(KEY_NUMWHEELS, numWheels);
         args.put(KEY_WHEELTYPES, wheelTypes);
@@ -261,6 +240,6 @@ public class TeamInfoDb {
         args.put(KEY_CLIMB, climb);
         args.put(KEY_NOTES, notes);
 
-        return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+        return mDb.update(DATABASE_TABLE, args, KEY_TEAM + "=" + team, null) > 0;
     }
 }
