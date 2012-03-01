@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mechinn.frcscouting"
+    package="com.mechinn.android.frcscouting"
     android:versionCode="1"
     android:versionName="1.0" android:installLocation="auto">
 
@@ -21,7 +21,7 @@
             android:screenOrientation="landscape"
             android:name="Scouting" android:label="@string/scouting">
             <intent-filter>
-                <action android:name="com.mechinn.frcscouting.OpenScouting"/>
+                <action android:name="com.mechinn.android.frcscouting.OpenScouting"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
@@ -29,7 +29,7 @@
             android:screenOrientation="landscape"
             android:name="Teams" android:label="@string/teams">
             <intent-filter>
-                <action android:name="com.mechinn.frcscouting.OpenTeams"/>
+                <action android:name="com.mechinn.android.frcscouting.OpenTeams"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
@@ -37,13 +37,13 @@
             android:screenOrientation="landscape"
             android:name="Settings" android:label="@string/settings">
             <intent-filter>
-                <action android:name="com.mechinn.frcscouting.OpenSettings"/>
+                <action android:name="com.mechinn.android.frcscouting.OpenSettings"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity android:screenOrientation="landscape" android:name="Info" android:label="@string/teamInfo">
             <intent-filter>
-                <action android:name="com.mechinn.frcscouting.OpenTeamInfo"/>
+                <action android:name="com.mechinn.android.frcscouting.OpenTeamInfo"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

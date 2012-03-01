@@ -80,4 +80,25 @@
         <item >Caster</item>
         <item >Other</item>
     </string-array>
+    <string-array name="teamsSchema">
+        <item >_id</item>
+        <item >_lastMod</item>
+        <item >team</item>
+        <item >orientation</item>
+        <item >numWheels</item>
+        <item >wheelTypes</item>
+        <item >deadWheel</item>
+        <item >wheel1Type</item>
+        <item >wheel1Diameter</item>
+        <item >wheel2Type</item>
+        <item >wheel2Diameter</item>
+        <item >deadWheelType</item>
+        <item >turret</item>
+        <item >tracking</item>
+        <item >fender</item>
+        <item >key</item>
+        <item >barrier</item>
+        <item >climb</item>
+        <item >notes</item>
+    </string-array>
 </resources>
