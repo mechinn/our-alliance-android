@@ -118,7 +118,7 @@ public class TeamInfoDb extends SQLiteOpenHelper {
 			int deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes) {
         ContentValues initialValues = new ContentValues();
-        initialValues.put(KEY_LASTMOD, new Date().getTime());
+        initialValues.put(KEY_LASTMOD, 0);
         initialValues.put(KEY_TEAM, team);
         initialValues.put(KEY_ORIENTATION, orientation);
         initialValues.put(KEY_NUMWHEELS, numWheels);

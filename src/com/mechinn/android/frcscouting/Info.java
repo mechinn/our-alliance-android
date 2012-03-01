@@ -3,11 +3,14 @@ package com.mechinn.android.frcscouting;
 import com.mechinn.android.frcscouting.R;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -142,6 +145,9 @@ public class Info extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info);
+        
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        
         teamInfoDb = new TeamInfoDb(this, true);
         team = getIntent().getIntExtra("team", 0);
         Cursor teamInfo = teamInfoDb.fetchTeam(team);

@@ -151,7 +151,7 @@
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
 	                android:text="Wheel Type"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:textAppearance="?android:attr/textAppearanceMedium" />
 	            <TextView
@@ -160,7 +160,7 @@
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
 	                android:text="Wheel Diameter (inches)"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:textAppearance="?android:attr/textAppearanceMedium" />
 	            
@@ -175,7 +175,7 @@
 	                android:id="@+id/wheel1Type"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 
@@ -184,10 +184,8 @@
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:inputType="number"
-	                android:gravity="center_vertical|center_horizontal"
 	            	android:layout_margin="1dip"
-	                android:layout_weight="1" >
-	            </EditText>
+	                android:layout_weight="1" />
 	
 	        </TableRow>
 	
@@ -200,7 +198,7 @@
 	                android:id="@+id/wheel2Type"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 
@@ -209,11 +207,8 @@
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:inputType="number"
-	                android:gravity="center_vertical|center_horizontal"
 	            	android:layout_margin="1dip"
-	                android:layout_weight="1" >
-
-	            </EditText>
+	                android:layout_weight="1" />
 	        </TableRow>
 	
 	        <TableRow
@@ -225,7 +220,7 @@
 	                android:id="@+id/deadWheelType"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 	            
@@ -248,7 +243,7 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:text="Turret Shooter"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 	
@@ -257,7 +252,7 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:text="Auto Tracking"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 		        
@@ -266,7 +261,7 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:text="Fender Shooter"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 	        
@@ -281,7 +276,7 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:text="Key Shooter"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 		        
@@ -290,7 +285,7 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:text="Crosses Barrier"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 		        
@@ -300,7 +295,7 @@
 		            android:layout_height="wrap_content"
 		            android:layout_toRightOf="@id/crossesBarrier"
 		            android:text="Climb Bridge"
-	                android:gravity="center_vertical|center_horizontal"
+	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 	        
@@ -331,7 +326,7 @@
 		        android:layout_height="wrap_content"
 		        android:text="Save"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal" />
+                android:gravity="center" />
 	        
 	        <Button
 		        android:id="@+id/discard"
@@ -339,7 +334,7 @@
 		        android:layout_height="wrap_content"
 		        android:text="Discard"
                 android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal" />
+                android:gravity="center" />
 	    </LinearLayout>
 
     </LinearLayout>

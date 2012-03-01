@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -48,12 +49,11 @@ public class Teams extends Activity {
         String[] from = new String[] { TeamInfoDb.KEY_TEAM, TeamInfoDb.KEY_ORIENTATION, TeamInfoDb.KEY_NUMWHEELS, TeamInfoDb.KEY_WHEEL1TYPE, 
         		TeamInfoDb.KEY_WHEEL1DIAMETER, TeamInfoDb.KEY_WHEEL2TYPE, TeamInfoDb.KEY_WHEEL2DIAMETER, TeamInfoDb.KEY_DEADWHEELTYPE, 
         		TeamInfoDb.KEY_TURRET, TeamInfoDb.KEY_TRACKING, TeamInfoDb.KEY_FENDER, TeamInfoDb.KEY_KEY, TeamInfoDb.KEY_BARRIER, TeamInfoDb.KEY_CLIMB };
-        int numStrings = from.length;
         
         TableRow headerRow = new TableRow(this);
         for(int i=0;i<colNames.length;++i) {
         	TextView text = setupText();
-        	String colName = from[i];
+        	String colName = colNames[i];
         	text.setTextSize(26);
         	text.setText(colName);
         	text.setPadding(10, 10, 10, 10);
@@ -64,7 +64,7 @@ public class Teams extends Activity {
         teamInfo.moveToFirst();
         for(int i=0;i<teamInfo.getCount();++i) {
         	TableRow tr = setupRow();
-        	for(int j=0;j<numStrings;++j) {
+        	for(int j=0;j<from.length;++j) {
         		TextView text = setupText();
             	String colName = from[j];
             	int col = teamInfo.getColumnIndex(colName);
@@ -158,7 +158,9 @@ public class Teams extends Activity {
     private TextView setupText() {
 		TextView text = new TextView(this);
 		text.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+		text.setGravity(Gravity.CENTER);
 		text.setTextSize(20);
+    	text.setPadding(0, 10, 0, 10);
 		return text;
     }
 }

@@ -22,7 +22,7 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int ScrollView01=0x7f060033;
+        public static final int ScrollView01=0x7f06003d;
         public static final int attributes1=0x7f060020;
         public static final int attributes2=0x7f060024;
         public static final int autoTracking=0x7f060022;
@@ -32,13 +32,18 @@ public final class R {
         public static final int deadWheelType=0x7f06001e;
         public static final int deadWheels=0x7f06001d;
         public static final int discard=0x7f06002c;
+        public static final int discardDbInfo=0x7f06003a;
         public static final int fenderShooter=0x7f060023;
         public static final int has1WheelTypes=0x7f060010;
         public static final int has2WheelTypes=0x7f060011;
         public static final int hasDeadWheel=0x7f060012;
+        public static final int hostLabel=0x7f060031;
+        public static final int hostText=0x7f060032;
         public static final int keyShooter=0x7f060025;
         public static final int linearLayout1=0x7f06002a;
         public static final int linearLayout2=0x7f060001;
+        public static final int linearLayout3=0x7f060035;
+        public static final int linearLayout4=0x7f060038;
         public static final int notes=0x7f060029;
         public static final int notesLabel=0x7f060028;
         public static final int orientation=0x7f060006;
@@ -47,13 +52,16 @@ public final class R {
         public static final int orientationOther=0x7f06000a;
         public static final int orientationSquare=0x7f060009;
         public static final int orientationWide=0x7f060008;
-        public static final int pullfrc=0x7f060031;
-        public static final int reset=0x7f060032;
+        public static final int passText=0x7f060037;
+        public static final int passwordLabel=0x7f060036;
+        public static final int pullfrc=0x7f06003b;
+        public static final int reset=0x7f06003c;
         public static final int save=0x7f06002b;
+        public static final int saveDbInfo=0x7f060039;
         public static final int scouting=0x7f06002d;
         public static final int scrollView1=0x7f060000;
         public static final int settings=0x7f06002f;
-        public static final int table=0x7f060034;
+        public static final int table=0x7f06003e;
         public static final int teamLabel=0x7f060003;
         public static final int teamLayout=0x7f060002;
         public static final int teamNumber=0x7f060004;
@@ -62,6 +70,8 @@ public final class R {
         public static final int turretShooter=0x7f060021;
         public static final int typeLabel=0x7f06000f;
         public static final int typeLayout=0x7f06000e;
+        public static final int usernameLabel=0x7f060033;
+        public static final int usernameText=0x7f060034;
         public static final int wheel1=0x7f060017;
         public static final int wheel1Diameter=0x7f060019;
         public static final int wheel1Type=0x7f060018;
