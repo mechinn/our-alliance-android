@@ -22,7 +22,7 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int ScrollView01=0x7f060034;
+        public static final int ScrollView01=0x7f060033;
         public static final int attributes1=0x7f060020;
         public static final int attributes2=0x7f060024;
         public static final int autoTracking=0x7f060022;
@@ -32,26 +32,10 @@ public final class R {
         public static final int deadWheelType=0x7f06001e;
         public static final int deadWheels=0x7f06001d;
         public static final int discard=0x7f06002c;
-        public static final int empty=0x7f060045;
         public static final int fenderShooter=0x7f060023;
         public static final int has1WheelTypes=0x7f060010;
         public static final int has2WheelTypes=0x7f060011;
         public static final int hasDeadWheel=0x7f060012;
-        public static final int header=0x7f060036;
-        public static final int headerBarrier=0x7f060043;
-        public static final int headerClimb=0x7f060044;
-        public static final int headerDeadWheelType=0x7f06003e;
-        public static final int headerFender=0x7f060041;
-        public static final int headerKey=0x7f060042;
-        public static final int headerNoWheels=0x7f060039;
-        public static final int headerOrientation=0x7f060038;
-        public static final int headerTeam=0x7f060037;
-        public static final int headerTracking=0x7f060040;
-        public static final int headerTurret=0x7f06003f;
-        public static final int headerWheelDiameter1=0x7f06003b;
-        public static final int headerWheelDiameter2=0x7f06003d;
-        public static final int headerWheelType1=0x7f06003a;
-        public static final int headerWheelType2=0x7f06003c;
         public static final int keyShooter=0x7f060025;
         public static final int linearLayout1=0x7f06002a;
         public static final int linearLayout2=0x7f060001;
@@ -63,19 +47,18 @@ public final class R {
         public static final int orientationOther=0x7f06000a;
         public static final int orientationSquare=0x7f060009;
         public static final int orientationWide=0x7f060008;
-        public static final int pullfrc=0x7f060032;
-        public static final int reset=0x7f060033;
-        public static final int row=0x7f06002d;
+        public static final int pullfrc=0x7f060031;
+        public static final int reset=0x7f060032;
         public static final int save=0x7f06002b;
-        public static final int scouting=0x7f06002e;
+        public static final int scouting=0x7f06002d;
         public static final int scrollView1=0x7f060000;
-        public static final int settings=0x7f060030;
-        public static final int table=0x7f060035;
+        public static final int settings=0x7f06002f;
+        public static final int table=0x7f060034;
         public static final int teamLabel=0x7f060003;
         public static final int teamLayout=0x7f060002;
         public static final int teamNumber=0x7f060004;
-        public static final int teams=0x7f06002f;
-        public static final int textView1=0x7f060031;
+        public static final int teams=0x7f06002e;
+        public static final int textView1=0x7f060030;
         public static final int turretShooter=0x7f060021;
         public static final int typeLabel=0x7f06000f;
         public static final int typeLayout=0x7f06000e;
@@ -95,11 +78,10 @@ public final class R {
     }
     public static final class layout {
         public static final int info=0x7f030000;
-        public static final int list_row=0x7f030001;
-        public static final int main=0x7f030002;
-        public static final int scouting=0x7f030003;
-        public static final int settings=0x7f030004;
-        public static final int teams=0x7f030005;
+        public static final int main=0x7f030001;
+        public static final int scouting=0x7f030002;
+        public static final int settings=0x7f030003;
+        public static final int teams=0x7f030004;
     }
     public static final class string {
         public static final int app_name=0x7f040000;

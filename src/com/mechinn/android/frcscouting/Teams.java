@@ -25,12 +25,12 @@ public class Teams extends Activity {
         
         teamInfoDb = new TeamInfoDb(this);
         table = (TableLayout) this.findViewById(R.id.table);
-
-        fillData();
-        
-        if(table.getChildCount()>1) {
-        	((TextView) this.findViewById(R.id.empty)).setVisibility(View.GONE);
-        }
+	}
+	
+	public void onResume() {
+		table.removeAllViews();
+		fillData();
+		super.onResume();
 	}
 	
 	public void onDestroy() {
@@ -43,10 +43,24 @@ public class Teams extends Activity {
         Cursor teamInfo = teamInfoDb.fetchAllTeams();
         startManagingCursor(teamInfo);
         
+        String[] colNames = new String[] { "Team", "Orientation", "Number of Wheels", "Wheel Type 1", "Wheel Diameter 1", "Wheel Type 2", "Wheel Diameter 2", "Dead Wheel Type", "Turret Shooter", "Auto Tracking", "Key Shooter", "Crosses Barrier", "Climb Bridge" };
+        
         String[] from = new String[] { TeamInfoDb.KEY_TEAM, TeamInfoDb.KEY_ORIENTATION, TeamInfoDb.KEY_NUMWHEELS, TeamInfoDb.KEY_WHEEL1TYPE, 
         		TeamInfoDb.KEY_WHEEL1DIAMETER, TeamInfoDb.KEY_WHEEL2TYPE, TeamInfoDb.KEY_WHEEL2DIAMETER, TeamInfoDb.KEY_DEADWHEELTYPE, 
         		TeamInfoDb.KEY_TURRET, TeamInfoDb.KEY_TRACKING, TeamInfoDb.KEY_FENDER, TeamInfoDb.KEY_KEY, TeamInfoDb.KEY_BARRIER, TeamInfoDb.KEY_CLIMB };
         int numStrings = from.length;
+        
+        TableRow headerRow = new TableRow(this);
+        for(int i=0;i<colNames.length;++i) {
+        	TextView text = setupText();
+        	String colName = from[i];
+        	text.setTextSize(26);
+        	text.setText(colName);
+        	text.setPadding(10, 10, 10, 10);
+        	headerRow.addView(text);
+        }
+        table.addView(headerRow);
+        
         teamInfo.moveToFirst();
         for(int i=0;i<teamInfo.getCount();++i) {
         	TableRow tr = setupRow();
