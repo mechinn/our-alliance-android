@@ -44,11 +44,11 @@ public class Teams extends Activity {
         Cursor teamInfo = teamInfoDb.fetchAllTeams();
         startManagingCursor(teamInfo);
         
-        String[] colNames = new String[] { "Team", "Orientation", "Number of Wheels", "Wheel Type 1", "Wheel Diameter 1", "Wheel Type 2", "Wheel Diameter 2", "Dead Wheel Type", "Turret Shooter", "Auto Tracking", "Key Shooter", "Crosses Barrier", "Climb Bridge" };
+        String[] colNames = new String[] { "Team", "Orientation", "Number of Wheels", "Wheel Type 1", "Wheel Diameter 1", "Wheel Type 2", "Wheel Diameter 2", "Dead Wheel Type", "Turret Shooter", "Auto Tracking", "Key Shooter", "Crosses Barrier", "Climb Bridge", "Autonomous" };
         
         String[] from = new String[] { TeamInfoDb.KEY_TEAM, TeamInfoDb.KEY_ORIENTATION, TeamInfoDb.KEY_NUMWHEELS, TeamInfoDb.KEY_WHEEL1TYPE, 
         		TeamInfoDb.KEY_WHEEL1DIAMETER, TeamInfoDb.KEY_WHEEL2TYPE, TeamInfoDb.KEY_WHEEL2DIAMETER, TeamInfoDb.KEY_DEADWHEELTYPE, 
-        		TeamInfoDb.KEY_TURRET, TeamInfoDb.KEY_TRACKING, TeamInfoDb.KEY_FENDER, TeamInfoDb.KEY_KEY, TeamInfoDb.KEY_BARRIER, TeamInfoDb.KEY_CLIMB };
+        		TeamInfoDb.KEY_TURRET, TeamInfoDb.KEY_TRACKING, TeamInfoDb.KEY_FENDER, TeamInfoDb.KEY_KEY, TeamInfoDb.KEY_BARRIER, TeamInfoDb.KEY_CLIMB, TeamInfoDb.KEY_AUTONOMOUS };
         
         TableRow headerRow = new TableRow(this);
         for(int i=0;i<colNames.length;++i) {

@@ -86,6 +86,12 @@
             android:text="Discard" />
 
     </LinearLayout>
+
+    <Spinner
+        android:id="@+id/competitions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/competitions" />
 
     <Button
         android:id="@+id/pullfrc"

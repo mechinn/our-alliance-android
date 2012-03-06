@@ -49,83 +49,17 @@ public class ResetDB extends ProgressDialog {
 	    public void run() {
 	    	teamInfoDb.reset();
 	        total = 2;
+	        int[] teams = {11, 41, 56, 75, 102, 136, 203, 219, 223, 224, 303, 555, 613, 752, 869, 1089, 1143, 1168, 1228, 1279,
+	        1302, 1367, 1370, 1403, 1626, 1672, 1676, 1811, 1881, 1989, 2016, 2458, 2554, 2577, 3142, 3314,
+	        3340, 3637, 4128, 4281, 4347 };
+	        for(int i=0;i<teams.length;++i) {
+	        	addBlankTeam(teams[i]);
+	        }
+	    }
+	    
+	    private void addBlankTeam(int team) {
 	        incrementTotal();
-	        teamInfoDb.createTeam(87,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-	        incrementTotal();
-			teamInfoDb.createTeam(224,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(225,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(272,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(293,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(341,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(357,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(486,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(708,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(709,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(714,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(834,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(869,1,8,1,false,2,4,0,0,0,false,false,false,false,true,true,"Defender");
-			incrementTotal();
-			teamInfoDb.createTeam(1143,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(1168,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(1218,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(1391,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(1495,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(1640,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(1647,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(1712,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(1791,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(1923,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(2016,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(2229,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(2234,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(2539,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(2590,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(2600,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(2607,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(3123,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(3167,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(3607,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(3637,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(4285,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(4342,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(4361,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
-			teamInfoDb.createTeam(4373,0,0,1,false,0,0,0,0,0,false,false,false,false,false,false,"");
-			incrementTotal();
+	        teamInfoDb.createTeam(team,"None",0,1,false,"None",0,"None",0,"None",false,false,false,false,false,false,"",false);
 	    }
 	}
 }

@@ -101,4 +101,31 @@
         <item >climb</item>
         <item >notes</item>
     </string-array>
+    <string-array name="competitions">
+        <item >Horsham</item>
+        <item >Rutgers</item>
+    </string-array>
+    <string name="teamLabel">Team: </string>
+    <string name="orientation">Orientation: </string>
+    <string name="orientationLong">Long</string>
+    <string name="orientationWide">Wide</string>
+    <string name="orientationSquare">Square</string>
+    <string name="orientationOther">Other</string>
+    <string name="wheelLabel">Number of Wheels: </string>
+    <string name="typeLabel">Wheel Types: </string>
+    <string name="hasDeadWheel">Dead Wheel</string>
+    <string name="wheelTypeLabel">Wheel Type</string>
+    <string name="wheelDiameterLabel">Wheel Diameter (inches)</string>
+    <string name="turretShooter">Turret Shooter</string>
+    <string name="autoTracking">Auto Tracking</string>
+    <string name="fenderShooter">Fender Shooter</string>
+    <string name="keyShooter">Key Shooter</string>
+    <string name="crossesBarrier">Crosses Barrier</string>
+    <string name="climbBridge">Climb Bridge</string>
+    <string name="autonomous">Autonomous</string>
+    <string name="notesLabel">Other Notes:</string>
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
+    <string name="one">1</string>
+    <string name="two">2</string>
 </resources>

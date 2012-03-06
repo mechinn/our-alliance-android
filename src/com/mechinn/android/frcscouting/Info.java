@@ -25,21 +25,22 @@ public class Info extends Activity {
 	private TeamInfoDb teamInfoDb;
 	
 	int team;
-	int orientation;
+	String orientation;
 	int numWheels;
 	int wheelTypes;
 	boolean deadWheel;
-	int wheel1Type;
+	String wheel1Type;
 	int wheel1Diameter;
-	int wheel2Type;
+	String wheel2Type;
 	int wheel2Diameter;
-	int deadWheelType;
+	String deadWheelType;
 	boolean turret;
 	boolean tracking;
 	boolean fender;
 	boolean key;
 	boolean barrier;
 	boolean climb;
+	boolean auto;
 	String notes;
 	
 	private RadioButton orientationLong;
@@ -64,6 +65,7 @@ public class Info extends Activity {
 	private CheckBox keyShooter;
 	private CheckBox crossesBarrier;
 	private CheckBox climbBridge;
+	private CheckBox autonomous;
 	private EditText edittext;
 	private Button save;
 	private Button discard;
@@ -75,15 +77,7 @@ public class Info extends Activity {
         public void onClick(View v) {
             // Perform action on clicks
             RadioButton rb = (RadioButton) v;
-            if(rb.getText().equals("Long")) {
-            	orientation = 1;
-            } else if(rb.getText().equals("Wide")) {
-            	orientation = 2;
-            } else if(rb.getText().equals("Square")) {
-            	orientation = 3;
-            } else {
-            	orientation = 4;
-            }
+        	orientation = rb.getText().toString();
         }
     };
     
@@ -100,45 +94,45 @@ public class Info extends Activity {
         }
     };
     
-    private void wheelTypeToInt(String s, Integer wheelType) {
-    	if(s.equals("Kit")) {
-    		wheelType = 1;
-    	} else if(s.equals("Traction")) {
-    		wheelType = 2;
-    	} else if(s.equals("Mechanum")) {
-    		wheelType = 3;
-    	} else if(s.equals("Omni")) {
-    		wheelType = 4;
-    	} else if(s.equals("Slick")) {
-    		wheelType = 5;
-    	} else if(s.equals("Tire")) {
-    		wheelType = 6;
-    	} else if(s.equals("Track")) {
-    		wheelType = 7;
-    	} else {
-    		wheelType = 8;
-    	}
-    }
-    
-    private void intToWheelType(int wheelType, Spinner spinner) {
-    	if(wheelType==1) {
-    		spinner.setSelection(wheelTypeStrings.getPosition("Kit"));
-        } else if(wheelType==2) {
-        	spinner.setSelection(wheelTypeStrings.getPosition("Traction"));
-        } else if(wheelType==3) {
-        	spinner.setSelection(wheelTypeStrings.getPosition("Mechanum"));
-        } else if(wheelType==4) {
-        	spinner.setSelection(wheelTypeStrings.getPosition("Omni"));
-        } else if(wheelType==5) {
-        	spinner.setSelection(wheelTypeStrings.getPosition("Slick"));
-        } else if(wheelType==6) {
-        	spinner.setSelection(wheelTypeStrings.getPosition("Tire"));
-        } else if(wheelType==7) {
-        	spinner.setSelection(wheelTypeStrings.getPosition("Track"));
-        } else {
-        	spinner.setSelection(wheelTypeStrings.getPosition("Other"));
-    	}
-    }
+//    private void wheelTypeToInt(String s, Integer wheelType) {
+//    	if(s.equals("Kit")) {
+//    		wheelType = 1;
+//    	} else if(s.equals("Traction")) {
+//    		wheelType = 2;
+//    	} else if(s.equals("Mechanum")) {
+//    		wheelType = 3;
+//    	} else if(s.equals("Omni")) {
+//    		wheelType = 4;
+//    	} else if(s.equals("Slick")) {
+//    		wheelType = 5;
+//    	} else if(s.equals("Tire")) {
+//    		wheelType = 6;
+//    	} else if(s.equals("Track")) {
+//    		wheelType = 7;
+//    	} else {
+//    		wheelType = 8;
+//    	}
+//    }
+//    
+//    private void intToWheelType(int wheelType, Spinner spinner) {
+//    	if(wheelType==1) {
+//    		spinner.setSelection(wheelTypeStrings.getPosition("Kit"));
+//        } else if(wheelType==2) {
+//        	spinner.setSelection(wheelTypeStrings.getPosition("Traction"));
+//        } else if(wheelType==3) {
+//        	spinner.setSelection(wheelTypeStrings.getPosition("Mechanum"));
+//        } else if(wheelType==4) {
+//        	spinner.setSelection(wheelTypeStrings.getPosition("Omni"));
+//        } else if(wheelType==5) {
+//        	spinner.setSelection(wheelTypeStrings.getPosition("Slick"));
+//        } else if(wheelType==6) {
+//        	spinner.setSelection(wheelTypeStrings.getPosition("Tire"));
+//        } else if(wheelType==7) {
+//        	spinner.setSelection(wheelTypeStrings.getPosition("Track"));
+//        } else {
+//        	spinner.setSelection(wheelTypeStrings.getPosition("Other"));
+//    	}
+//    }
 	
 	/** Called when the activity is first created. */
     @Override
@@ -157,7 +151,7 @@ public class Info extends Activity {
         	String colName = teamInfo.getColumnName(i);
         	Log.d("column",colName);
         	if(colName.equals(TeamInfoDb.KEY_ORIENTATION)){
-        		orientation = teamInfo.getInt(i);
+        		orientation = teamInfo.getString(i);
         	} else if (colName.equals(TeamInfoDb.KEY_NUMWHEELS)) {
         		numWheels = teamInfo.getInt(i);
         	} else if (colName.equals(TeamInfoDb.KEY_WHEELTYPES)) {
@@ -169,15 +163,15 @@ public class Info extends Activity {
             		deadWheel = true;
             	}
         	} else if (colName.equals(TeamInfoDb.KEY_WHEEL1TYPE)) {
-        		wheel1Type = teamInfo.getInt(i);
+        		wheel1Type = teamInfo.getString(i);
         	} else if (colName.equals(TeamInfoDb.KEY_WHEEL1DIAMETER)) {
         		wheel1Diameter = teamInfo.getInt(i);
         	} else if (colName.equals(TeamInfoDb.KEY_WHEEL2TYPE)) {
-        		wheel2Type = teamInfo.getInt(i);
+        		wheel2Type = teamInfo.getString(i);
         	} else if (colName.equals(TeamInfoDb.KEY_WHEEL2DIAMETER)) {
         		wheel2Diameter = teamInfo.getInt(i);
         	} else if (colName.equals(TeamInfoDb.KEY_DEADWHEELTYPE)) {
-        		deadWheelType = teamInfo.getInt(i);
+        		deadWheelType = teamInfo.getString(i);
         	} else if (colName.equals(TeamInfoDb.KEY_TURRET)) {
         		if(teamInfo.getInt(i)==0) {
             		turret = false;
@@ -234,13 +228,13 @@ public class Info extends Activity {
         orientationOther = (RadioButton) findViewById(R.id.orientationOther);
         orientationOther.setOnClickListener(orientationListener);
         
-        if(orientation == 1){
+        if(orientation.equals(this.getString(R.string.orientationLong))){
         	orientationLong.toggle();
-        } else if(orientation == 2){
+        } else if(orientation.equals(this.getString(R.string.orientationWide))){
         	orientationWide.toggle();
-        } else if(orientation == 3){
+        } else if(orientation.equals(this.getString(R.string.orientationSquare))){
         	orientationSquare.toggle();
-        } else if(orientation == 4){
+        } else if(orientation.equals(this.getString(R.string.orientationOther))){
         	orientationOther.toggle();
         }
         
@@ -303,14 +297,13 @@ public class Info extends Activity {
         wheel1TypeSpinner.setAdapter(wheelTypeStrings);
         wheel1TypeSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            	String wheel1TypeString = (parent.getItemAtPosition(pos).toString());
-            	wheelTypeToInt(wheel1TypeString,wheel1Type);
+            	wheel1Type = (parent.getItemAtPosition(pos).toString());
             }
             public void onNothingSelected(AdapterView parent) {
               // Do nothing.
             }
         });
-        intToWheelType(wheel1Type, wheel1TypeSpinner);
+        wheel1TypeSpinner.setSelection(wheelTypeStrings.getPosition(wheel1Type));
         
         wheel1DiameterText = (EditText) findViewById(R.id.wheel1Diameter);
         wheel1DiameterText.setText(Integer.toString(wheel1Diameter));
@@ -321,15 +314,14 @@ public class Info extends Activity {
         wheel2TypeSpinner.setAdapter(wheelTypeStrings);
         wheel2TypeSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            	String wheel2TypeString = (parent.getItemAtPosition(pos).toString());
-            	wheelTypeToInt(wheel2TypeString,wheel1Type);
+            	wheel2Type = (parent.getItemAtPosition(pos).toString());
             }
             public void onNothingSelected(AdapterView parent) {
               // Do nothing.
             }
         });
         
-        intToWheelType(wheel2Type, wheel2TypeSpinner);
+        wheel2TypeSpinner.setSelection(wheelTypeStrings.getPosition(wheel2Type));
         
         wheel2DiameterText = (EditText) findViewById(R.id.wheel2Diameter);
         wheel2DiameterText.setText(Integer.toString(wheel2Diameter));
@@ -346,47 +338,13 @@ public class Info extends Activity {
         deadWheelTypeSpinner.setAdapter(deadWheelTypes);
         deadWheelTypeSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            	String deadWheelTypeString = (parent.getItemAtPosition(pos).toString());
-            	if(deadWheelTypeString.equals("Kit")) {
-            		deadWheelType = 1;
-            	} else if(deadWheelTypeString.equals("Traction")) {
-            		deadWheelType = 2;
-            	} else if(deadWheelTypeString.equals("Mechanum")) {
-            		deadWheelType = 3;
-            	} else if(deadWheelTypeString.equals("Omni")) {
-            		deadWheelType = 4;
-            	} else if(deadWheelTypeString.equals("Slick")) {
-            		deadWheelType = 5;
-            	} else if(deadWheelTypeString.equals("Tire")) {
-            		deadWheelType = 6;
-            	} else if(deadWheelTypeString.equals("Caster")) {
-            		deadWheelType = 7;
-            	} else {
-            		deadWheelType = 8;
-            	}
+            	deadWheelType = (parent.getItemAtPosition(pos).toString());
             }
             public void onNothingSelected(AdapterView parent) {
               // Do nothing.
             }
         });
-        
-        if(deadWheelType==1) {
-        	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition("Kit"));
-        } else if(deadWheelType==2) {
-        	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition("Traction"));
-        } else if(deadWheelType==3) {
-        	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition("Mechanum"));
-        } else if(deadWheelType==4) {
-        	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition("Omni"));
-        } else if(deadWheelType==5) {
-        	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition("Slick"));
-        } else if(deadWheelType==6) {
-        	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition("Tire"));
-        } else if(deadWheelType==7) {
-        	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition("Caster"));
-        } else {
-        	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition("Other"));
-    	}
+    	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition(deadWheelType));
         
         if(!deadWheel) {
 	    	deadWheels.setVisibility(View.GONE);
@@ -440,6 +398,14 @@ public class Info extends Activity {
         });
         climbBridge.setChecked(climb);
         
+        autonomous = (CheckBox) findViewById(R.id.autonomous);
+        autonomous.setOnClickListener(new CheckBox.OnClickListener() {
+            public void onClick(View v) {
+            	auto = ((CheckBox) v).isChecked();
+            }
+        });
+        autonomous.setChecked(auto);
+        
         edittext = (EditText) findViewById(R.id.notes);
         edittext.setText(notes);
         
@@ -447,7 +413,7 @@ public class Info extends Activity {
         save.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 Log.d("team", Integer.toString(team));
-                Log.d("orientation", Integer.toString(orientation));
+                Log.d("orientation", orientation);
                 Log.d("numWheels", Integer.toString(numWheels));
                 Log.d("wheelTypes", Integer.toString(wheelTypes));
                 Log.d("deadWheel", Boolean.toString(deadWheel));
@@ -459,10 +425,10 @@ public class Info extends Activity {
 	                	wheel1Diameter = 0;
 	                }
                 } else {
-                	wheel1Type = 0;
+                	wheel1Type = "None";
                 	wheel1Diameter = 0;
                 }
-                Log.d("wheel1Type", Integer.toString(wheel1Type));
+                Log.d("wheel1Type", wheel1Type);
             	Log.d("wheel1Diameter", Integer.toString(wheel1Diameter));
                 if(wheelTypes > 1){
 	                String wheel2DiameterTextCheck = wheel2DiameterText.getText().toString();
@@ -472,27 +438,28 @@ public class Info extends Activity {
 	                	wheel2Diameter = 0;
 	                }
                 } else {
-                	wheel2Type = 0;
+                	wheel2Type = "None";
                 	wheel2Diameter = 0;
                 }
-                Log.d("wheel2Type", Integer.toString(wheel1Type));
+                Log.d("wheel2Type", wheel1Type);
             	Log.d("wheel2Diameter", Integer.toString(wheel2Diameter));
                 if(!deadWheel){
-                	deadWheelType = 0;
+                	deadWheelType = "None";
                 }
-                Log.d("deadWheelType", Integer.toString(deadWheelType));
+                Log.d("deadWheelType", deadWheelType);
                 Log.d("turret", Boolean.toString(turret));
                 Log.d("tracking", Boolean.toString(tracking));
                 Log.d("fender", Boolean.toString(fender));
                 Log.d("key", Boolean.toString(key));
                 Log.d("barrier", Boolean.toString(barrier));
                 Log.d("climb", Boolean.toString(climb));
+                Log.d("auto", Boolean.toString(auto));
                 notes = edittext.getText().toString();
                 Log.d("notes", notes);
                 
                 teamInfoDb.updateTeam(team, orientation, numWheels, wheelTypes, 
             			deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter, 
-            			deadWheelType, turret, tracking, fender, key, barrier, climb, notes);
+            			deadWheelType, turret, tracking, fender, key, barrier, climb, notes, auto);
                 finish();
             }
         });

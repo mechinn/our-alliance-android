@@ -20,14 +20,13 @@
 	            android:id="@+id/teamLabel"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Team: "
+	            android:text="@string/teamLabel"
 	            android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 	        <TextView
 	            android:id="@+id/teamNumber"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="0"
 	            android:textAppearance="?android:attr/textAppearanceMedium" />
 	
 	    </LinearLayout>
@@ -41,7 +40,7 @@
 	            android:id="@+id/orientation"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Orientation: "
+	            android:text="@string/orientation"
 	            android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	        <RadioGroup
@@ -52,28 +51,28 @@
 		            android:id="@+id/orientationLong"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="Long" />
+		            android:text="@string/orientationLong" />
 		
 		
 		        <RadioButton
 		            android:id="@+id/orientationWide"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="Wide" />
+		            android:text="@string/orientationWide" />
 		
 		
 		        <RadioButton
 		            android:id="@+id/orientationSquare"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="Square" />
+		            android:text="@string/orientationSquare" />
 		
 		
 		        <RadioButton
 		            android:id="@+id/orientationOther"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="Other" />
+		            android:text="@string/orientationOther" />
 		    </RadioGroup>
 	
 	    </LinearLayout>
@@ -87,12 +86,12 @@
 	            android:id="@+id/wheelLabel"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Number of Wheels: "
+	            android:text="@string/wheelLabel"
 	            android:textAppearance="?android:attr/textAppearanceLarge" />
 	        
 	        <Spinner
 	            android:id="@+id/wheelSpinner"
-	            android:layout_width="wrap_content"
+	            android:layout_width="0dip"
 	            android:layout_height="wrap_content"
 	            android:layout_weight="1" />
 	
@@ -107,7 +106,7 @@
 	            android:id="@+id/typeLabel"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Wheel Types: "
+	            android:text="@string/typeLabel"
 	            android:textAppearance="?android:attr/textAppearanceLarge" />
 	        
 			<RadioGroup
@@ -118,20 +117,20 @@
 		            android:id="@+id/has1WheelTypes"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="1" />
+		            android:text="@string/one" />
 		
 		        <RadioButton
 		            android:id="@+id/has2WheelTypes"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="2" />
+		            android:text="@string/two" />
 		    </RadioGroup>
 	
 	        <CheckBox
 	            android:id="@+id/hasDeadWheel"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Dead Wheel" />
+	            android:text="@string/hasDeadWheel" />
 	
 	    </LinearLayout>
 	
@@ -150,7 +149,7 @@
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
-	                android:text="Wheel Type"
+	                android:text="@string/wheelTypeLabel"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -159,7 +158,7 @@
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
-	                android:text="Wheel Diameter (inches)"
+	                android:text="@string/wheelDiameterLabel"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -242,7 +241,7 @@
 		            android:id="@+id/turretShooter"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="Turret Shooter"
+		            android:text="@string/turretShooter"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
@@ -251,7 +250,7 @@
 		            android:id="@+id/autoTracking"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="Auto Tracking"
+		            android:text="@string/autoTracking"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
@@ -260,7 +259,7 @@
 		            android:id="@+id/fenderShooter"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="Fender Shooter"
+		            android:text="@string/fenderShooter"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
@@ -275,7 +274,7 @@
 		            android:id="@+id/keyShooter"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="Key Shooter"
+		            android:text="@string/keyShooter"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
@@ -284,7 +283,7 @@
 		            android:id="@+id/crossesBarrier"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="Crosses Barrier"
+		            android:text="@string/crossesBarrier"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
@@ -293,20 +292,49 @@
 		            android:id="@+id/climbBridge"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:layout_toRightOf="@id/crossesBarrier"
-		            android:text="Climb Bridge"
+		            android:text="@string/climbBridge"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 	        
 	    	</TableRow>
+	    	
+	        <TableRow
+		        android:id="@+id/tableRow1"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+	
+		        <CheckBox
+		            android:id="@+id/autonomous"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/autonomous"
+	                android:gravity="center"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+	
+		        <TextView
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+	                android:gravity="center"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+		        
+		        <TextView
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+	                android:gravity="center"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
+	
+		    </TableRow>
 	    </TableLayout>
 	    
 	    <TextView
 	        android:id="@+id/notesLabel"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="Other Notes:"
+	        android:text="@string/notesLabel"
 	        android:textAppearance="?android:attr/textAppearanceLarge" />
 	    
 	    <EditText
@@ -324,7 +352,7 @@
 		        android:id="@+id/save"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:text="Save"
+		        android:text="@string/save"
                 android:layout_weight="1"
                 android:gravity="center" />
 	        
@@ -332,7 +360,7 @@
 		        android:id="@+id/discard"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:text="Discard"
+		        android:text="@string/discard"
                 android:layout_weight="1"
                 android:gravity="center" />
 	    </LinearLayout>
