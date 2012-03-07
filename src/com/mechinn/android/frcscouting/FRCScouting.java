@@ -8,6 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -40,9 +43,6 @@ public class FRCScouting extends Activity {
         final Button scouting = (Button)  findViewById(R.id.scouting);
         scouting.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-                // Perform action on click
-//            	Toast.makeText(FRCScouting.this, "clicked", Toast.LENGTH_SHORT).show();
-//        		Log.e("DebugInfo","button pressed"); 
         		String actionName = "com.mechinn.android.frcscouting.OpenScouting";
             	Intent intent = new Intent(actionName);
             	startActivity(intent);
@@ -51,24 +51,25 @@ public class FRCScouting extends Activity {
         final Button teams = (Button)  findViewById(R.id.teams);
         teams.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-                // Perform action on click
-//            	Toast.makeText(FRCScouting.this, "clicked", Toast.LENGTH_SHORT).show();
-//        		Log.e("DebugInfo","button pressed"); 
         		String actionName = "com.mechinn.android.frcscouting.OpenTeams";
             	Intent intent = new Intent(actionName);
             	startActivity(intent);
             }
 		});
-        final Button settings = (Button)  findViewById(R.id.settings);
-        settings.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View v) {
-                // Perform action on click
-//            	Toast.makeText(FRCScouting.this, "clicked", Toast.LENGTH_SHORT).show();
-//        		Log.e("DebugInfo","button pressed"); 
-        		String actionName = "com.mechinn.android.frcscouting.OpenSettings";
-            	Intent intent = new Intent(actionName);
-            	startActivity(intent);
-            }
-		});
     }
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.mainmenu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		String actionName = "com.mechinn.android.frcscouting.OpenSettings";
+    	Intent intent = new Intent(actionName);
+    	startActivity(intent);
+		return true;
+	}
 }
