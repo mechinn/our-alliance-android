@@ -44,7 +44,7 @@ public class Teams extends Activity {
         Cursor teamInfo = teamInfoDb.fetchAllTeams();
         startManagingCursor(teamInfo);
         
-        String[] colNames = new String[] { "Team", "Orientation", "Number of Wheels", "Wheel Type 1", "Wheel Diameter 1", "Wheel Type 2", "Wheel Diameter 2", "Dead Wheel Type", "Turret Shooter", "Auto Tracking", "Key Shooter", "Crosses Barrier", "Climb Bridge", "Autonomous" };
+        String[] colNames = new String[] { "Team", "Orientation", "Number of Wheels", "Wheel Type 1", "Wheel Diameter 1", "Wheel Type 2", "Wheel Diameter 2", "Dead Wheel Type", "Turret Shooter", "Auto Tracking", "Fender Shooter", "Key Shooter", "Crosses Barrier", "Climb Bridge", "Autonomous" };
         
         String[] from = new String[] { TeamInfoDb.KEY_TEAM, TeamInfoDb.KEY_ORIENTATION, TeamInfoDb.KEY_NUMWHEELS, TeamInfoDb.KEY_WHEEL1TYPE, 
         		TeamInfoDb.KEY_WHEEL1DIAMETER, TeamInfoDb.KEY_WHEEL2TYPE, TeamInfoDb.KEY_WHEEL2DIAMETER, TeamInfoDb.KEY_DEADWHEELTYPE, 
@@ -81,48 +81,21 @@ public class Teams extends Activity {
     			    		startActivity(intent);
 						}
             		});
-            	} else if(colName.equals(TeamInfoDb.KEY_ORIENTATION)){
-            		switch(teamInfo.getInt(col)) {
-	        			case 1: text.setText("Long");break;
-	        			case 2: text.setText("Wide");break;
-	        			case 3: text.setText("Square");break;
-	        			default: text.setText("Other");
-	        		}
+            	} else if(colName.equals(TeamInfoDb.KEY_ORIENTATION) || colName.equals(TeamInfoDb.KEY_WHEEL1TYPE) || 
+            			colName.equals(TeamInfoDb.KEY_WHEEL2TYPE) || colName.equals(TeamInfoDb.KEY_DEADWHEELTYPE) || 
+            			colName.equals(TeamInfoDb.KEY_NOTES)){
+            		text.setText(teamInfo.getString(col));
             	} else if (colName.equals(TeamInfoDb.KEY_NUMWHEELS) || colName.equals(TeamInfoDb.KEY_WHEEL1DIAMETER) || 
             			colName.equals(TeamInfoDb.KEY_WHEEL2DIAMETER) || colName.equals(TeamInfoDb.KEY_WHEELTYPES)) {
             		text.setText(Integer.toString(teamInfo.getInt(col)));
             	} else if (colName.equals(TeamInfoDb.KEY_DEADWHEEL) || colName.equals(TeamInfoDb.KEY_TURRET) || 
             			colName.equals(TeamInfoDb.KEY_TRACKING) || colName.equals(TeamInfoDb.KEY_FENDER) || 
             			colName.equals(TeamInfoDb.KEY_KEY) || colName.equals(TeamInfoDb.KEY_BARRIER) || 
-            			colName.equals(TeamInfoDb.KEY_CLIMB)) {
+            			colName.equals(TeamInfoDb.KEY_CLIMB) || colName.equals(TeamInfoDb.KEY_AUTONOMOUS)) {
             		switch(teamInfo.getInt(col)) {
             			case 0:text.setText("no");break;
             			default:text.setText("yes");
             		}
-            	} else if (colName.equals(TeamInfoDb.KEY_WHEEL1TYPE) || colName.equals(TeamInfoDb.KEY_WHEEL2TYPE)) {
-            		switch(teamInfo.getInt(col)) {
-            			case 1: text.setText("Kit");break;
-            			case 2: text.setText("Traction");break;
-            			case 3: text.setText("Mechanum");break;
-            			case 4: text.setText("Omni");break;
-            			case 5: text.setText("Slick");break;
-            			case 6: text.setText("Tire");break;
-            			case 7: text.setText("Track");break;
-            			default: text.setText("Other");
-            		}
-            	} else if (colName.equals(TeamInfoDb.KEY_DEADWHEELTYPE)) {
-            		switch(teamInfo.getInt(col)) {
-	        			case 1: text.setText("Kit");break;
-	        			case 2: text.setText("Traction");break;
-	        			case 3: text.setText("Mechanum");break;
-	        			case 4: text.setText("Omni");break;
-	        			case 5: text.setText("Slick");break;
-	        			case 6: text.setText("Tire");break;
-	        			case 7: text.setText("Caster");break;
-	        			default: text.setText("Other");
-	        		}
-            	} else if (colName.equals(TeamInfoDb.KEY_NOTES)) {
-            		text.setText(teamInfo.getString(col));
             	}
             	tr.addView(text);
             }
