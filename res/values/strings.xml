@@ -128,4 +128,6 @@
     <string name="discard">Discard</string>
     <string name="one">1</string>
     <string name="two">2</string>
+    <string name="teamPic">Team Picture</string>
+    <string name="takePicButton">Take Picture</string>
 </resources>

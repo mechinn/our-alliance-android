@@ -1,12 +1,26 @@
 package com.mechinn.android.frcscouting;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import com.mechinn.android.frcscouting.R;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -16,13 +30,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Info extends Activity {
 	private TeamInfoDb teamInfoDb;
+	private static final int CAMERA_PIC_REQUEST = 869;
+	private Uri mImageUri;
+	private File pic;
+	private File picDir;
 	
 	int team;
 	String orientation;
@@ -40,9 +60,11 @@ public class Info extends Activity {
 	boolean key;
 	boolean barrier;
 	boolean climb;
-	boolean auto;
 	String notes;
+	boolean auto;
+	Bitmap teamPic;
 	
+	private Button takePic;
 	private RadioButton orientationLong;
 	private RadioButton orientationWide;
 	private RadioButton orientationSquare;
@@ -94,45 +116,59 @@ public class Info extends Activity {
         }
     };
     
-//    private void wheelTypeToInt(String s, Integer wheelType) {
-//    	if(s.equals("Kit")) {
-//    		wheelType = 1;
-//    	} else if(s.equals("Traction")) {
-//    		wheelType = 2;
-//    	} else if(s.equals("Mechanum")) {
-//    		wheelType = 3;
-//    	} else if(s.equals("Omni")) {
-//    		wheelType = 4;
-//    	} else if(s.equals("Slick")) {
-//    		wheelType = 5;
-//    	} else if(s.equals("Tire")) {
-//    		wheelType = 6;
-//    	} else if(s.equals("Track")) {
-//    		wheelType = 7;
-//    	} else {
-//    		wheelType = 8;
-//    	}
-//    }
-//    
-//    private void intToWheelType(int wheelType, Spinner spinner) {
-//    	if(wheelType==1) {
-//    		spinner.setSelection(wheelTypeStrings.getPosition("Kit"));
-//        } else if(wheelType==2) {
-//        	spinner.setSelection(wheelTypeStrings.getPosition("Traction"));
-//        } else if(wheelType==3) {
-//        	spinner.setSelection(wheelTypeStrings.getPosition("Mechanum"));
-//        } else if(wheelType==4) {
-//        	spinner.setSelection(wheelTypeStrings.getPosition("Omni"));
-//        } else if(wheelType==5) {
-//        	spinner.setSelection(wheelTypeStrings.getPosition("Slick"));
-//        } else if(wheelType==6) {
-//        	spinner.setSelection(wheelTypeStrings.getPosition("Tire"));
-//        } else if(wheelType==7) {
-//        	spinner.setSelection(wheelTypeStrings.getPosition("Track"));
-//        } else {
-//        	spinner.setSelection(wheelTypeStrings.getPosition("Other"));
-//    	}
-//    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
+        if (requestCode == CAMERA_PIC_REQUEST && resultCode==RESULT_OK) {
+        	ImageView image = (ImageView) findViewById(R.id.teamPic);
+        	this.grabImage(image);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    public void grabImage(ImageView imageView) {
+        this.getContentResolver().notifyChange(mImageUri, null);
+        ContentResolver cr = this.getContentResolver();
+        Bitmap bitmap;
+        try {
+            bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+            
+            int thumbWidth = 300;//Specify image width in px
+            int thumbHeight = 300;//Specify image height in px
+             
+            int imageWidth = bitmap.getWidth();//get image Widht
+            int imageHeight = bitmap.getHeight();//get image Height 
+             
+            double thumbRatio = (double)thumbWidth/(double)thumbHeight;
+            double imageRatio = (double)imageWidth/(double)imageHeight;
+             
+            //This calculation is used to convert the image size according to the pixels mentioned above
+            if(thumbRatio<imageRatio) {
+            	thumbHeight = (int) (thumbWidth/imageRatio);
+            } else {
+            	thumbWidth = (int) (thumbHeight*imageRatio);
+            }
+
+            // create a matrix for the manipulation
+            Matrix matrix = new Matrix();
+
+            // resize the bit map
+            matrix.postScale(thumbWidth, thumbHeight);
+
+            // recreate the new Bitmap
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, thumbWidth, thumbHeight, true);
+            imageView.setImageBitmap(resizedBitmap);
+            imageView.setOnClickListener(new OnClickListener() {
+            	public void onClick(View v) {
+					Intent intent = new Intent();
+		            intent.setAction(android.content.Intent.ACTION_VIEW);
+		            intent.setDataAndType(mImageUri, "image/jpg");
+		            Info.this.startActivity(intent);
+				}
+            });
+            
+        } catch (Exception e) {
+            Log.d("grabimage", "Failed to load", e);
+        }
+    }
 	
 	/** Called when the activity is first created. */
     @Override
@@ -215,6 +251,27 @@ public class Info extends Activity {
         
         TextView teamNumber = (TextView) findViewById(R.id.teamNumber);
         teamNumber.setText(Integer.toString(team));
+        
+        ImageView image = (ImageView) findViewById(R.id.teamPic);
+        picDir = this.getExternalFilesDir(null);
+        picDir=new File(picDir.getAbsolutePath()+"/teamPic/2012/");
+        if(!picDir.exists()) {
+        	picDir.mkdirs();
+        }
+        pic=new File(picDir.getAbsolutePath()+"/"+Integer.toString(team)+".jpg");
+        mImageUri = Uri.fromFile(pic);
+        Log.d("imageUri",mImageUri.getPath());
+		grabImage(image);
+        
+        takePic = (Button) findViewById(R.id.takePicButton);
+        takePic.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        	    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+        	    //start camera intent
+        	    Info.this.startActivityForResult(intent, CAMERA_PIC_REQUEST);
+			}
+        });
         
         orientationLong = (RadioButton) findViewById(R.id.orientationLong);
         orientationLong.setOnClickListener(orientationListener);
