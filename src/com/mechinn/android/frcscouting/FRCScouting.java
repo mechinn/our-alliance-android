@@ -13,33 +13,7 @@ import android.widget.Button;
 
 public class FRCScouting extends Activity {
     private static final int RESETPROG = 1;
-	SharedPreferences prefs;
-	
-	/**
-	 * get if this is the first run
-	 *
-	 * @return returns true, if this is the first run
-	 */
-	public boolean getFirstRun() {
-		return prefs.getBoolean("firstRun", true);
-	}
-	 
-	/**
-	 * store the first run
-	 */
-	public void setRunned() {
-		SharedPreferences.Editor edit = prefs.edit();
-		edit.putBoolean("firstRun", false);
-		edit.commit();
-	}
-	 
-	/**
-	 * setting up preferences storage
-	 */
-	public void getPreferences() {
-		Context mContext = this.getApplicationContext();
-		prefs = mContext.getSharedPreferences("com.mechinn.android.frcscouting", 0); //0 = mode private. only this app can read these preferences
-	}
+	private Prefs prefs;
 	
 	@Override
     protected Dialog onCreateDialog(int id) {
@@ -55,11 +29,12 @@ public class FRCScouting extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        getPreferences();
+        prefs = new Prefs(this);
         
-        if(getFirstRun()) {
+        //first run setup the DB
+        if(prefs.getFirstRun()) {
         	showDialog(RESETPROG);
-        	setRunned();
+        	prefs.setRunned();
         }
         
         final Button scouting = (Button)  findViewById(R.id.scouting);

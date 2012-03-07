@@ -48,13 +48,15 @@ public class ResetDB extends ProgressDialog {
 	   
 	    public void run() {
 	    	teamInfoDb.reset();
-	        total = 2;
+	        total = 1;
 	        int[] teams = {11, 41, 56, 75, 102, 136, 203, 219, 223, 224, 303, 555, 613, 752, 869, 1089, 1143, 1168, 1228, 1279,
 	        1302, 1367, 1370, 1403, 1626, 1672, 1676, 1811, 1881, 1989, 2016, 2458, 2554, 2577, 3142, 3314,
 	        3340, 3637, 4128, 4281, 4347 };
 	        for(int i=0;i<teams.length;++i) {
 	        	addBlankTeam(teams[i]);
 	        }
+	        incrementTotal();
+	        teamInfoDb.updateTeam(869, "Long", 8, 1, false, "Traction", 4, "None", 0, "None", false, false, false, false, true, true, "Our robot", false);
 	    }
 	    
 	    private void addBlankTeam(int team) {

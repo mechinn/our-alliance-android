@@ -130,7 +130,8 @@ public class TeamInfoDb extends SQLiteOpenHelper {
     		String wheel1Type, int wheel1Diameter, String wheel2Type, int wheel2Diameter,
     		String deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous) {
-        ContentValues initialValues = putVals(team, orientation, numWheels, wheelTypes, 
+    	
+        ContentValues initialValues = putVals(true, team, orientation, numWheels, wheelTypes, 
         		deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter,
     			deadWheelType, turret, tracking, fender,
     			key, barrier, climb, notes, autonomous);
@@ -216,7 +217,7 @@ public class TeamInfoDb extends SQLiteOpenHelper {
     		boolean deadWheel, String wheel1Type, int wheel1Diameter, String wheel2Type, int wheel2Diameter,
     		String deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous) {
-    	ContentValues args = putVals(team, orientation, numWheels, wheelTypes, 
+    	ContentValues args = putVals(false, team, orientation, numWheels, wheelTypes, 
     		deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter,
 			deadWheelType, turret, tracking, fender,
 			key, barrier, climb, notes, autonomous);
@@ -224,12 +225,17 @@ public class TeamInfoDb extends SQLiteOpenHelper {
         return mDb.update(DATABASE_TABLE, args, KEY_TEAM + "=" + team, null) > 0;
     }
     
-    private ContentValues putVals(int team, String orientation, int numWheels, int wheelTypes, 
+    private ContentValues putVals(boolean create, int team, String orientation, int numWheels, int wheelTypes, 
     		boolean deadWheel, String wheel1Type, int wheel1Diameter, String wheel2Type, int wheel2Diameter,
     		String deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous) {
     	ContentValues cv = new ContentValues();
-    	cv.put(KEY_LASTMOD, new Date().getTime());
+    	if(create) {
+    		cv.put(KEY_TEAM, team);
+    		cv.put(KEY_LASTMOD, 0);
+    	} else {
+    		cv.put(KEY_LASTMOD, new Date().getTime());
+    	}
     	cv.put(KEY_ORIENTATION, orientation);
     	cv.put(KEY_NUMWHEELS, numWheels);
     	cv.put(KEY_WHEELTYPES, wheelTypes);

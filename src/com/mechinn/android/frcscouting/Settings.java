@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.view.inputmethod.EditorInfo;
@@ -26,8 +27,8 @@ import android.widget.Toast;
 public class Settings extends Activity {
     private static final int RESETMSG = 1;
     private static final int RESETPROG = 2;
-
-	private SharedPreferences prefs;
+    
+    private Prefs prefs;
     
 	private TeamInfoDb teamInfoDb;
 	private EditText host;
@@ -40,23 +41,6 @@ public class Settings extends Activity {
 	private Button reset;
 
 	private AlertDialog resetDialog;
-	 
-	/**
-	 * setting up preferences storage
-	 */
-	public void getPreferences() {
-		Context mContext = this.getApplicationContext();
-		prefs = mContext.getSharedPreferences("com.mechinn.android.frcscouting", 0); //0 = mode private. only this app can read these preferences
-	}
-	 
-	/**
-	 * store the first run
-	 */
-	public void setCompetition(String competition) {
-		SharedPreferences.Editor edit = prefs.edit();
-		edit.putString("competition", competition);
-		edit.commit();
-	}
 	
 	@Override
     protected Dialog onCreateDialog(int id) {
@@ -82,37 +66,56 @@ public class Settings extends Activity {
         return null;
     }
 	
+	private void getVals() {
+		host.setText(prefs.getHost());
+		user.setText(prefs.getUser());
+		pass.setText(prefs.getPass());
+	}
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
+        prefs = new Prefs(this);
         teamInfoDb = new TeamInfoDb(this, true);
         
         host = (EditText) findViewById(R.id.hostText);
-        
         user = (EditText) findViewById(R.id.usernameText);
-        
         pass = (EditText) findViewById(R.id.passText);
         
+        getVals();
+        
         save = (Button) findViewById(R.id.saveDbInfo);
+        save.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		prefs.setHost(host.getText().toString());
+        		prefs.setUser(user.getText().toString());
+        		prefs.setPass(pass.getText().toString());
+			}
+        });
         
         discard = (Button) findViewById(R.id.discardDbInfo);
+        discard.setOnClickListener(new OnClickListener() {
+    		public void onClick(View v) {
+				getVals();
+			}
+        });
         
         competitions = (Spinner) findViewById(R.id.competitions);
         competitions.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            	setCompetition(parent.getItemAtPosition(pos).toString());
+            	prefs.setCompetition(parent.getItemAtPosition(pos).toString());
             }
             public void onNothingSelected(AdapterView parent) {
-              // Do nothing.
+            	// Do nothing.
             }
         });
         
         pullFRC = (Button) findViewById(R.id.pullfrc);
         pullFRC.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                
+                Toast.makeText(Settings.this, "Not yet implemented", Toast.LENGTH_SHORT);
             }
         });
         
