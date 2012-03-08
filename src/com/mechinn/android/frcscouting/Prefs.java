@@ -48,7 +48,7 @@ public class Prefs {
 	 * @return returns true, if this is the first run
 	 */
 	public int getPort() {
-		return prefs.getInt("port", 5432);
+		return prefs.getInt("port", 3306);
 	}
 	 
 	/**

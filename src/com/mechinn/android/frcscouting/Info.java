@@ -457,6 +457,8 @@ public class Info extends Activity {
                 notes = edittext.getText().toString();
                 Log.d("notes", notes);
                 
+                new sendDB().execute();
+                
                 teamInfoDb.updateTeam(team, orientation, numWheels, wheelTypes, 
             			deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter, 
             			deadWheelType, turret, tracking, fender, key, barrier, climb, notes, auto);
@@ -471,6 +473,23 @@ public class Info extends Activity {
                 finish();
             }
         });
+    }
+    
+    private class sendDB extends AsyncTask<Context,Void,Void> {
+    	protected Void doInBackground(Context... contexts) {
+    		try {
+				SyncDB sdb = new SyncDB(Info.this);
+				sdb.query();
+				sdb.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+    	}
     }
     
     private class getInfo extends AsyncTask<Context,Void,Context> {

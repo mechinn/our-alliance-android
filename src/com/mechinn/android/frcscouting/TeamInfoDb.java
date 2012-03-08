@@ -39,8 +39,8 @@ public class TeamInfoDb extends SQLiteOpenHelper {
     public static final String KEY_DEADWHEELTYPE = "deadWheelType";
     public static final String KEY_TURRET = "turret";
     public static final String KEY_TRACKING = "tracking";
-    public static final String KEY_FENDER = "fender";
-    public static final String KEY_KEY = "key";
+    public static final String KEY_FENDER = "fendershooter";
+    public static final String KEY_KEY = "keyshooter";
     public static final String KEY_BARRIER = "barrier";
     public static final String KEY_CLIMB = "climb";
     public static final String KEY_NOTES = "notes";
