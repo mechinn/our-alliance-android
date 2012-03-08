@@ -3,12 +3,16 @@ package com.mechinn.android.frcscouting;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import com.mechinn.android.frcscouting.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -16,6 +20,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -38,8 +43,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Info extends Activity {
+    private static final int CAMERA_PIC_REQUEST = 869;
+
+	private AlertDialog takePicAlert;
+	private AlertDialog delPicAlert;
+	
+	
 	private TeamInfoDb teamInfoDb;
-	private static final int CAMERA_PIC_REQUEST = 869;
+	private SyncDB syncDb;
 	private Uri mImageUri;
 	private File pic;
 	private File picDir;
@@ -64,7 +75,10 @@ public class Info extends Activity {
 	boolean auto;
 	Bitmap teamPic;
 	
+	private TextView teamNumber;
+	private ImageView image;
 	private Button takePic;
+	private Button deletePic;
 	private RadioButton orientationLong;
 	private RadioButton orientationWide;
 	private RadioButton orientationSquare;
@@ -94,6 +108,13 @@ public class Info extends Activity {
 	
 	private ArrayAdapter<CharSequence> wheels;
 	private ArrayAdapter<CharSequence> wheelTypeStrings;
+	
+	private void takePic() {
+		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+	    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+	    //start camera intent
+	    Info.this.startActivityForResult(intent, CAMERA_PIC_REQUEST);
+	}
     
     private OnClickListener orientationListener = new RadioButton.OnClickListener() {
         public void onClick(View v) {
@@ -118,13 +139,12 @@ public class Info extends Activity {
     
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
         if (requestCode == CAMERA_PIC_REQUEST && resultCode==RESULT_OK) {
-        	ImageView image = (ImageView) findViewById(R.id.teamPic);
-        	this.grabImage(image);
+        	this.grabImage();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
     
-    public void grabImage(ImageView imageView) {
+    private void grabImage() {
         this.getContentResolver().notifyChange(mImageUri, null);
         ContentResolver cr = this.getContentResolver();
         Bitmap bitmap;
@@ -155,8 +175,8 @@ public class Info extends Activity {
 
             // recreate the new Bitmap
             Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, thumbWidth, thumbHeight, true);
-            imageView.setImageBitmap(resizedBitmap);
-            imageView.setOnClickListener(new OnClickListener() {
+            image.setImageBitmap(resizedBitmap);
+            image.setOnClickListener(new OnClickListener() {
             	public void onClick(View v) {
 					Intent intent = new Intent();
 		            intent.setAction(android.content.Intent.ACTION_VIEW);
@@ -164,7 +184,7 @@ public class Info extends Activity {
 		            Info.this.startActivity(intent);
 				}
             });
-            
+            deletePic.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             Log.d("grabimage", "Failed to load", e);
         }
@@ -179,80 +199,12 @@ public class Info extends Activity {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         
         teamInfoDb = new TeamInfoDb(this, true);
-        team = getIntent().getIntExtra("team", 0);
-        Cursor teamInfo = teamInfoDb.fetchTeam(team);
         
-      //get variables from DB
-        for(int i=0;i<teamInfo.getColumnCount();++i) {
-        	String colName = teamInfo.getColumnName(i);
-        	Log.d("column",colName);
-        	if(colName.equals(TeamInfoDb.KEY_ORIENTATION)){
-        		orientation = teamInfo.getString(i);
-        	} else if (colName.equals(TeamInfoDb.KEY_NUMWHEELS)) {
-        		numWheels = teamInfo.getInt(i);
-        	} else if (colName.equals(TeamInfoDb.KEY_WHEELTYPES)) {
-        		wheelTypes = teamInfo.getInt(i);
-        	} else if (colName.equals(TeamInfoDb.KEY_DEADWHEEL)) {
-        		if(teamInfo.getInt(i)==0) {
-            		deadWheel = false;
-            	} else {
-            		deadWheel = true;
-            	}
-        	} else if (colName.equals(TeamInfoDb.KEY_WHEEL1TYPE)) {
-        		wheel1Type = teamInfo.getString(i);
-        	} else if (colName.equals(TeamInfoDb.KEY_WHEEL1DIAMETER)) {
-        		wheel1Diameter = teamInfo.getInt(i);
-        	} else if (colName.equals(TeamInfoDb.KEY_WHEEL2TYPE)) {
-        		wheel2Type = teamInfo.getString(i);
-        	} else if (colName.equals(TeamInfoDb.KEY_WHEEL2DIAMETER)) {
-        		wheel2Diameter = teamInfo.getInt(i);
-        	} else if (colName.equals(TeamInfoDb.KEY_DEADWHEELTYPE)) {
-        		deadWheelType = teamInfo.getString(i);
-        	} else if (colName.equals(TeamInfoDb.KEY_TURRET)) {
-        		if(teamInfo.getInt(i)==0) {
-            		turret = false;
-            	} else {
-            		turret = true;
-            	}
-        	} else if (colName.equals(TeamInfoDb.KEY_TRACKING)) {
-        		if(teamInfo.getInt(i)==0) {
-            		tracking = false;
-            	} else {
-            		tracking = true;
-            	}
-        	} else if (colName.equals(TeamInfoDb.KEY_FENDER)) {
-        		if(teamInfo.getInt(i)==0) {
-            		fender = false;
-            	} else {
-            		fender = true;
-            	}
-        	} else if (colName.equals(TeamInfoDb.KEY_KEY)) {
-        		if(teamInfo.getInt(i)==0) {
-            		key = false;
-            	} else {
-            		key = true;
-            	}
-        	} else if (colName.equals(TeamInfoDb.KEY_BARRIER)) {
-        		if(teamInfo.getInt(i)==0) {
-            		barrier = false;
-            	} else {
-            		barrier = true;
-            	}
-        	} else if (colName.equals(TeamInfoDb.KEY_CLIMB)) {
-        		if(teamInfo.getInt(i)==0) {
-            		climb = false;
-            	} else {
-            		climb = true;
-            	}
-        	} else if (colName.equals(TeamInfoDb.KEY_NOTES)) {
-        		notes = teamInfo.getString(i);
-        	}
-        }
+        new getInfo().execute(this);
+
+		teamNumber = (TextView) findViewById(R.id.teamNumber);
         
-        TextView teamNumber = (TextView) findViewById(R.id.teamNumber);
-        teamNumber.setText(Integer.toString(team));
-        
-        ImageView image = (ImageView) findViewById(R.id.teamPic);
+        image = (ImageView) findViewById(R.id.teamPic);
         picDir = this.getExternalFilesDir(null);
         picDir=new File(picDir.getAbsolutePath()+"/teamPic/2012/");
         if(!picDir.exists()) {
@@ -261,17 +213,54 @@ public class Info extends Activity {
         pic=new File(picDir.getAbsolutePath()+"/"+Integer.toString(team)+".jpg");
         mImageUri = Uri.fromFile(pic);
         Log.d("imageUri",mImageUri.getPath());
-		grabImage(image);
         
         takePic = (Button) findViewById(R.id.takePicButton);
         takePic.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
-        		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        	    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-        	    //start camera intent
-        	    Info.this.startActivityForResult(intent, CAMERA_PIC_REQUEST);
+        		if(pic.exists()) {
+        			takePicAlert = new AlertDialog.Builder(Info.this)
+	                .setTitle("Really overwrite the team picture?")
+	                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	                    public void onClick(DialogInterface dialog, int whichButton) {
+	                    	takePic();
+	                    }
+	                })
+	                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	                    public void onClick(DialogInterface dialog, int whichButton) {
+	                    	takePicAlert.dismiss();
+	                    }
+	                }).show();
+        		} else {
+        			takePic();
+        		}
 			}
         });
+        
+        deletePic = (Button) findViewById(R.id.deletePicButton);
+        deletePic.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		if(pic.exists()) {
+        			delPicAlert = new AlertDialog.Builder(Info.this)
+                    .setTitle("Really delete the team picture?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        	pic.delete();
+                    		image.setImageResource(R.drawable.frc);
+                    		deletePic.setVisibility(View.GONE);
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        	delPicAlert.dismiss();
+                        }
+                    }).show();
+        		}
+			}
+        });
+        
+        if(!pic.exists()) {
+			deletePic.setVisibility(View.GONE);
+		}
         
         orientationLong = (RadioButton) findViewById(R.id.orientationLong);
         orientationLong.setOnClickListener(orientationListener);
@@ -284,16 +273,6 @@ public class Info extends Activity {
         
         orientationOther = (RadioButton) findViewById(R.id.orientationOther);
         orientationOther.setOnClickListener(orientationListener);
-        
-        if(orientation.equals(this.getString(R.string.orientationLong))){
-        	orientationLong.toggle();
-        } else if(orientation.equals(this.getString(R.string.orientationWide))){
-        	orientationWide.toggle();
-        } else if(orientation.equals(this.getString(R.string.orientationSquare))){
-        	orientationSquare.toggle();
-        } else if(orientation.equals(this.getString(R.string.orientationOther))){
-        	orientationOther.toggle();
-        }
         
         wheelSpinner = (Spinner) findViewById(R.id.wheelSpinner);
         wheels = ArrayAdapter.createFromResource(this, R.array.wheels, android.R.layout.simple_spinner_item);
@@ -313,23 +292,11 @@ public class Info extends Activity {
             }
         });
         
-        if(numWheels==-1) {
-        	wheelSpinner.setSelection(wheels.getPosition("Treads"));
-        } else {
-        	wheelSpinner.setSelection(wheels.getPosition(Integer.toString(numWheels)));
-        }
-        
         has1WheelTypes = (RadioButton) findViewById(R.id.has1WheelTypes);
         has1WheelTypes.setOnClickListener(wheelTypeListener);
         
         has2WheelTypes = (RadioButton) findViewById(R.id.has2WheelTypes);
         has2WheelTypes.setOnClickListener(wheelTypeListener);
-        
-        if(wheelTypes==2) {
-        	has2WheelTypes.toggle();
-        } else {
-        	has1WheelTypes.toggle();
-        }
         
         hasDeadWheel = (CheckBox) findViewById(R.id.hasDeadWheel);
         hasDeadWheel.setOnClickListener(new CheckBox.OnClickListener() {
@@ -342,8 +309,6 @@ public class Info extends Activity {
                 }
             }
         });
-        
-        hasDeadWheel.setChecked(deadWheel);
 
         wheelTypeStrings = ArrayAdapter.createFromResource(this, R.array.wheelTypes, android.R.layout.simple_spinner_item);
         wheelTypeStrings.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -360,10 +325,8 @@ public class Info extends Activity {
               // Do nothing.
             }
         });
-        wheel1TypeSpinner.setSelection(wheelTypeStrings.getPosition(wheel1Type));
         
         wheel1DiameterText = (EditText) findViewById(R.id.wheel1Diameter);
-        wheel1DiameterText.setText(Integer.toString(wheel1Diameter));
         
         wheel2 = (TableRow) findViewById(R.id.wheel2);
         
@@ -378,14 +341,7 @@ public class Info extends Activity {
             }
         });
         
-        wheel2TypeSpinner.setSelection(wheelTypeStrings.getPosition(wheel2Type));
-        
         wheel2DiameterText = (EditText) findViewById(R.id.wheel2Diameter);
-        wheel2DiameterText.setText(Integer.toString(wheel2Diameter));
-        
-        if(wheelTypes < 2) {
-	    	wheel2.setVisibility(View.GONE);
-	    }
         
         deadWheels = (TableRow) findViewById(R.id.deadWheels);
         
@@ -401,11 +357,6 @@ public class Info extends Activity {
               // Do nothing.
             }
         });
-    	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition(deadWheelType));
-        
-        if(!deadWheel) {
-	    	deadWheels.setVisibility(View.GONE);
-	    }
         
         turretShooter = (CheckBox) findViewById(R.id.turretShooter);
         turretShooter.setOnClickListener(new CheckBox.OnClickListener() {
@@ -413,7 +364,6 @@ public class Info extends Activity {
             	turret = ((CheckBox) v).isChecked();
             }
         });
-        turretShooter.setChecked(turret);
         
         autoTracking = (CheckBox) findViewById(R.id.autoTracking);
         autoTracking.setOnClickListener(new CheckBox.OnClickListener() {
@@ -421,7 +371,6 @@ public class Info extends Activity {
             	tracking = ((CheckBox) v).isChecked();
             }
         });
-        autoTracking.setChecked(tracking);
         
         fenderShooter = (CheckBox) findViewById(R.id.fenderShooter);
         fenderShooter.setOnClickListener(new CheckBox.OnClickListener() {
@@ -429,7 +378,6 @@ public class Info extends Activity {
             	fender = ((CheckBox) v).isChecked();
             }
         });
-        fenderShooter.setChecked(fender);
         
         keyShooter = (CheckBox) findViewById(R.id.keyShooter);
         keyShooter.setOnClickListener(new CheckBox.OnClickListener() {
@@ -437,7 +385,6 @@ public class Info extends Activity {
             	key = ((CheckBox) v).isChecked();
             }
         });
-        keyShooter.setChecked(key);
         
         crossesBarrier = (CheckBox) findViewById(R.id.crossesBarrier);
         crossesBarrier.setOnClickListener(new CheckBox.OnClickListener() {
@@ -445,7 +392,6 @@ public class Info extends Activity {
             	barrier = ((CheckBox) v).isChecked();
             }
         });
-        crossesBarrier.setChecked(barrier);
         
         climbBridge = (CheckBox) findViewById(R.id.climbBridge);
         climbBridge.setOnClickListener(new CheckBox.OnClickListener() {
@@ -453,7 +399,6 @@ public class Info extends Activity {
             	climb = ((CheckBox) v).isChecked();
             }
         });
-        climbBridge.setChecked(climb);
         
         autonomous = (CheckBox) findViewById(R.id.autonomous);
         autonomous.setOnClickListener(new CheckBox.OnClickListener() {
@@ -461,10 +406,8 @@ public class Info extends Activity {
             	auto = ((CheckBox) v).isChecked();
             }
         });
-        autonomous.setChecked(auto);
         
         edittext = (EditText) findViewById(R.id.notes);
-        edittext.setText(notes);
         
         save = (Button) findViewById(R.id.save);
         save.setOnClickListener(new Button.OnClickListener() {
@@ -528,6 +471,126 @@ public class Info extends Activity {
                 finish();
             }
         });
+    }
+    
+    private class getInfo extends AsyncTask<Context,Void,Context> {
+    	
+    	protected void onPostExecute(Context con) {
+            teamNumber.setText(Integer.toString(team));
+    		grabImage();
+            if(orientation.equals(con.getString(R.string.orientationLong))){
+            	orientationLong.toggle();
+            } else if(orientation.equals(con.getString(R.string.orientationWide))){
+            	orientationWide.toggle();
+            } else if(orientation.equals(con.getString(R.string.orientationSquare))){
+            	orientationSquare.toggle();
+            } else if(orientation.equals(con.getString(R.string.orientationOther))){
+            	orientationOther.toggle();
+            }
+            if(numWheels==-1) {
+            	wheelSpinner.setSelection(wheels.getPosition("Treads"));
+            } else {
+            	wheelSpinner.setSelection(wheels.getPosition(Integer.toString(numWheels)));
+            }
+            if(wheelTypes==2) {
+            	has2WheelTypes.toggle();
+            } else {
+            	has1WheelTypes.toggle();
+            }
+            hasDeadWheel.setChecked(deadWheel);
+            wheel1TypeSpinner.setSelection(wheelTypeStrings.getPosition(wheel1Type));
+            wheel1DiameterText.setText(Integer.toString(wheel1Diameter));
+            wheel2TypeSpinner.setSelection(wheelTypeStrings.getPosition(wheel2Type));
+            wheel2DiameterText.setText(Integer.toString(wheel2Diameter));
+            if(wheelTypes < 2) {
+    	    	wheel2.setVisibility(View.GONE);
+    	    }
+        	deadWheelTypeSpinner.setSelection(wheelTypeStrings.getPosition(deadWheelType));
+            if(!deadWheel) {
+    	    	deadWheels.setVisibility(View.GONE);
+    	    }
+            turretShooter.setChecked(turret);
+            autoTracking.setChecked(tracking);
+            fenderShooter.setChecked(fender);
+            keyShooter.setChecked(key);
+            crossesBarrier.setChecked(barrier);
+            climbBridge.setChecked(climb);
+            autonomous.setChecked(auto);
+            edittext.setText(notes);
+    	}
+    	
+		protected Context doInBackground(Context... con) {
+	        team = getIntent().getIntExtra("team", 0);
+	        Cursor teamInfo = teamInfoDb.fetchTeam(team);
+	        
+	        //get variables from DB
+	        for(int i=0;i<teamInfo.getColumnCount();++i) {
+	        	String colName = teamInfo.getColumnName(i);
+	        	Log.d("column",colName);
+	        	if(colName.equals(TeamInfoDb.KEY_ORIENTATION)){
+	        		orientation = teamInfo.getString(i);
+	        	} else if (colName.equals(TeamInfoDb.KEY_NUMWHEELS)) {
+	        		numWheels = teamInfo.getInt(i);
+	        	} else if (colName.equals(TeamInfoDb.KEY_WHEELTYPES)) {
+	        		wheelTypes = teamInfo.getInt(i);
+	        	} else if (colName.equals(TeamInfoDb.KEY_DEADWHEEL)) {
+	        		if(teamInfo.getInt(i)==0) {
+	            		deadWheel = false;
+	            	} else {
+	            		deadWheel = true;
+	            	}
+	        	} else if (colName.equals(TeamInfoDb.KEY_WHEEL1TYPE)) {
+	        		wheel1Type = teamInfo.getString(i);
+	        	} else if (colName.equals(TeamInfoDb.KEY_WHEEL1DIAMETER)) {
+	        		wheel1Diameter = teamInfo.getInt(i);
+	        	} else if (colName.equals(TeamInfoDb.KEY_WHEEL2TYPE)) {
+	        		wheel2Type = teamInfo.getString(i);
+	        	} else if (colName.equals(TeamInfoDb.KEY_WHEEL2DIAMETER)) {
+	        		wheel2Diameter = teamInfo.getInt(i);
+	        	} else if (colName.equals(TeamInfoDb.KEY_DEADWHEELTYPE)) {
+	        		deadWheelType = teamInfo.getString(i);
+	        	} else if (colName.equals(TeamInfoDb.KEY_TURRET)) {
+	        		if(teamInfo.getInt(i)==0) {
+	            		turret = false;
+	            	} else {
+	            		turret = true;
+	            	}
+	        	} else if (colName.equals(TeamInfoDb.KEY_TRACKING)) {
+	        		if(teamInfo.getInt(i)==0) {
+	            		tracking = false;
+	            	} else {
+	            		tracking = true;
+	            	}
+	        	} else if (colName.equals(TeamInfoDb.KEY_FENDER)) {
+	        		if(teamInfo.getInt(i)==0) {
+	            		fender = false;
+	            	} else {
+	            		fender = true;
+	            	}
+	        	} else if (colName.equals(TeamInfoDb.KEY_KEY)) {
+	        		if(teamInfo.getInt(i)==0) {
+	            		key = false;
+	            	} else {
+	            		key = true;
+	            	}
+	        	} else if (colName.equals(TeamInfoDb.KEY_BARRIER)) {
+	        		if(teamInfo.getInt(i)==0) {
+	            		barrier = false;
+	            	} else {
+	            		barrier = true;
+	            	}
+	        	} else if (colName.equals(TeamInfoDb.KEY_CLIMB)) {
+	        		if(teamInfo.getInt(i)==0) {
+	            		climb = false;
+	            	} else {
+	            		climb = true;
+	            	}
+	        	} else if (colName.equals(TeamInfoDb.KEY_NOTES)) {
+	        		notes = teamInfo.getString(i);
+	        	}
+	        }
+	        return con[0];
+		}
     }
     
     public void onDestroy() {

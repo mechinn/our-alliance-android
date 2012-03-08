@@ -46,7 +46,13 @@
 				    android:id="@+id/takePicButton"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
-				    android:text="@string/takePicButton" />
+				    android:text="@string/takePic" />
+
+                <Button
+                    android:id="@+id/deletePicButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/deletePic" />
 
             </LinearLayout>
 
@@ -119,12 +125,13 @@
 	            android:layout_height="wrap_content"
 	            android:text="@string/wheelLabel"
 	            android:textAppearance="?android:attr/textAppearanceLarge" />
-	        
+	        
 	        <Spinner
 	            android:id="@+id/wheelSpinner"
 	            android:layout_width="0dip"
 	            android:layout_height="wrap_content"
-	            android:layout_weight="1" />
+	            android:layout_weight="1"
+	            android:entries="@array/wheels" />
 	
 	    </LinearLayout>
 	
@@ -200,14 +207,15 @@
 	            android:id="@+id/wheel1"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
-	
+	
 	            <Spinner
 	                android:id="@+id/wheel1Type"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:gravity="center"
-	            	android:layout_margin="1dip"
-	                android:layout_weight="1" />
+	                android:layout_margin="1dip"
+	                android:layout_weight="1"
+	                android:entries="@array/wheelTypes"
+	                android:gravity="center" />
 
 	            <EditText
 	                android:id="@+id/wheel1Diameter"
@@ -223,14 +231,15 @@
 	            android:id="@+id/wheel2"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
-	            
+	            
 	            <Spinner
 	                android:id="@+id/wheel2Type"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:gravity="center"
-	            	android:layout_margin="1dip"
-	                android:layout_weight="1" />
+	                android:layout_margin="1dip"
+	                android:layout_weight="1"
+	                android:entries="@array/wheelTypes"
+	                android:gravity="center" />
 
 	            <EditText
 	                android:id="@+id/wheel2Diameter"
@@ -245,14 +254,15 @@
 	            android:id="@+id/deadWheels"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
-	            
+	            
 	            <Spinner
 	                android:id="@+id/deadWheelType"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:gravity="center"
-	            	android:layout_margin="1dip"
-	                android:layout_weight="1" />
+	                android:layout_margin="1dip"
+	                android:layout_weight="1"
+	                android:entries="@array/deadWheelTypes"
+	                android:gravity="center" />
 	            
 	        </TableRow>
 	

@@ -43,9 +43,8 @@ public class TeamInfoDb extends SQLiteOpenHelper {
     public static final String KEY_KEY = "key";
     public static final String KEY_BARRIER = "barrier";
     public static final String KEY_CLIMB = "climb";
-    public static final String KEY_AUTONOMOUS = "autonomous";
     public static final String KEY_NOTES = "notes";
-
+    public static final String KEY_AUTONOMOUS = "autonomous";
     private static final String TAG = "TeamInfoDb";
     private SQLiteDatabase mDb;
 
@@ -54,7 +53,7 @@ public class TeamInfoDb extends SQLiteOpenHelper {
      */
     private static final String DATABASE_CREATE =
         "create table teams ("+KEY_ROWID+" integer primary key autoincrement, "+
-        		KEY_LASTMOD+" datetime not null, "+
+        		KEY_LASTMOD+" int not null, "+
         		KEY_TEAM+" int not null unique, " +
         		KEY_ORIENTATION+" text, " +
         		KEY_NUMWHEELS+" int, " +
@@ -88,6 +87,7 @@ public class TeamInfoDb extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
     	//setup original db and upgrade to latest
+    	Log.d("onCreate",DATABASE_CREATE);
     	db.execSQL(DATABASE_CREATE);
     	onUpgrade(db,1,DATABASE_VERSION);
     }
@@ -98,7 +98,8 @@ public class TeamInfoDb extends SQLiteOpenHelper {
 	    	default: //case 1
 	    		Log.i(TAG, "v1 original team info table");
 	    		db.execSQL("DROP TABLE IF EXISTS "+DATABASE_TABLE);
-				onCreate(db);
+	    		Log.d("onCreate",DATABASE_CREATE);
+	    		db.execSQL(DATABASE_CREATE);
     		case 2:
     			Log.i(TAG, "v2 added autonomous column");
         		db.execSQL("alter table "+DATABASE_TABLE+" add column "+KEY_AUTONOMOUS+" int;");
@@ -112,8 +113,7 @@ public class TeamInfoDb extends SQLiteOpenHelper {
     }
     
     public void reset() {
-    	mDb.execSQL("DROP TABLE IF EXISTS "+DATABASE_TABLE);
-    	onCreate(mDb);
+    	onUpgrade(mDb,0,1);
     }
 
 
@@ -234,7 +234,7 @@ public class TeamInfoDb extends SQLiteOpenHelper {
     		cv.put(KEY_TEAM, team);
     		cv.put(KEY_LASTMOD, 0);
     	} else {
-    		cv.put(KEY_LASTMOD, new Date().getTime());
+    		cv.put(KEY_LASTMOD, System.currentTimeMillis()/1000);
     	}
     	cv.put(KEY_ORIENTATION, orientation);
     	cv.put(KEY_NUMWHEELS, numWheels);

@@ -129,5 +129,7 @@
     <string name="one">1</string>
     <string name="two">2</string>
     <string name="teamPic">Team Picture</string>
-    <string name="takePicButton">Take Picture</string>
+    <string name="takePic">Take Picture</string>
+    <string name="portLabel">Port: </string>
+    <string name="deletePic">Delete Picture</string>
 </resources>

@@ -47,6 +47,24 @@ public class Prefs {
 	 *
 	 * @return returns true, if this is the first run
 	 */
+	public int getPort() {
+		return prefs.getInt("port", 5432);
+	}
+	 
+	/**
+	 * store the first run
+	 */
+	public void setPort(int port) {
+		SharedPreferences.Editor edit = prefs.edit();
+		edit.putInt("port", port);
+		edit.commit();
+	}
+	
+	/**
+	 * get if this is the first run
+	 *
+	 * @return returns true, if this is the first run
+	 */
 	public String getUser() {
 		return prefs.getString("user", "");
 	}

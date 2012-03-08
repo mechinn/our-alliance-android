@@ -25,13 +25,12 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class Settings extends Activity {
-    private static final int RESETMSG = 1;
-    private static final int RESETPROG = 2;
+    private static final int RESETMSG = 8694;
+    private static final int RESETPROG = 8695;
     
     private Prefs prefs;
-    
-	private TeamInfoDb teamInfoDb;
 	private EditText host;
+	private EditText port;
 	private EditText user;
 	private EditText pass;
 	private Button save;
@@ -42,32 +41,9 @@ public class Settings extends Activity {
 
 	private AlertDialog resetDialog;
 	
-	@Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-	        case RESETMSG:
-	        	resetDialog = new AlertDialog.Builder(Settings.this)
-	                .setTitle("Really reset DB?")
-	                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-	                    public void onClick(DialogInterface dialog, int whichButton) {
-	                    	showDialog(RESETPROG);
-	                    }
-	                })
-	                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-	                    public void onClick(DialogInterface dialog, int whichButton) {
-	                    	resetDialog.dismiss();
-	                    }
-	                })
-	                .create();
-	            return resetDialog;
-	        case RESETPROG:
-	        	return new ResetDB(Settings.this);
-        }
-        return null;
-    }
-	
 	private void getVals() {
 		host.setText(prefs.getHost());
+		port.setText(Integer.toString(prefs.getPort()));
 		user.setText(prefs.getUser());
 		pass.setText(prefs.getPass());
 	}
@@ -78,9 +54,9 @@ public class Settings extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
         prefs = new Prefs(this);
-        teamInfoDb = new TeamInfoDb(this, true);
         
         host = (EditText) findViewById(R.id.hostText);
+        port = (EditText) findViewById(R.id.portText);
         user = (EditText) findViewById(R.id.usernameText);
         pass = (EditText) findViewById(R.id.passText);
         
@@ -90,8 +66,10 @@ public class Settings extends Activity {
         save.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		prefs.setHost(host.getText().toString());
+        		prefs.setPort(Integer.parseInt(port.getText().toString()));
         		prefs.setUser(user.getText().toString());
         		prefs.setPass(pass.getText().toString());
+        		Toast.makeText(Settings.this, "Saved", Toast.LENGTH_SHORT).show();
 			}
         });
         
@@ -115,20 +93,26 @@ public class Settings extends Activity {
         pullFRC = (Button) findViewById(R.id.pullfrc);
         pullFRC.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(Settings.this, "Not yet implemented", Toast.LENGTH_SHORT);
+                Toast.makeText(Settings.this, "Not yet implemented", Toast.LENGTH_SHORT).show();
             }
         });
         
         reset = (Button) findViewById(R.id.reset);
         reset.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-            	showDialog(RESETMSG);
+            	resetDialog = new AlertDialog.Builder(Settings.this)
+                .setTitle("Really reset DB?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	new ResetDB(Settings.this).show();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	resetDialog.dismiss();
+                    }
+                }).show();
             }
         });
-    }
-    
-    public void onDestroy() {
-    	teamInfoDb.close();
-    	super.onDestroy();
     }
 }

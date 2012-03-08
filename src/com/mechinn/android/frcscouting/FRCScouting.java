@@ -3,11 +3,14 @@ package com.mechinn.android.frcscouting;
 import com.mechinn.android.frcscouting.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,17 +18,8 @@ import android.view.View;
 import android.widget.Button;
 
 public class FRCScouting extends Activity {
-    private static final int RESETPROG = 1;
+    private static final int RESETPROG = 8690;
 	private Prefs prefs;
-	
-	@Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-	        case RESETPROG:
-	        	return new ResetDB(FRCScouting.this);
-        }
-        return null;
-    }
 	
     /** Called when the activity is first created. */
     @Override
@@ -35,8 +29,9 @@ public class FRCScouting extends Activity {
         prefs = new Prefs(this);
         
         //first run setup the DB
+        Log.d("first run",Boolean.toString(prefs.getFirstRun()));
         if(prefs.getFirstRun()) {
-        	showDialog(RESETPROG);
+        	new ResetDB(FRCScouting.this,true).show();
         	prefs.setRunned();
         }
         

@@ -1,108 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/hostLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="DB Hostname/IP: "
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <EditText
-            android:id="@+id/hostText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
-
-            <requestFocus />
-        </EditText>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+    android:layout_height="match_parent" >
         
-        <TextView
-            android:id="@+id/usernameLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Username: "
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
+	    
+	    <LinearLayout
+	        android:id="@+id/linearLayout1"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:id="@+id/hostLabel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="DB Hostname/IP: "
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	        <EditText
+	            android:id="@+id/hostText"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1" >
+	
+	            <requestFocus />
+	        </EditText>
+	
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:id="@+id/linearLayout5"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	            android:id="@+id/portLabel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/portLabel"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	        <EditText
+	            android:id="@+id/portText"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:inputType="number" />
+	
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:id="@+id/linearLayout2"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	        
+	        <TextView
+	            android:id="@+id/usernameLabel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Username: "
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	        <EditText
+	            android:id="@+id/usernameText"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1" />
+	
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:id="@+id/linearLayout3"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	        
+	        <TextView
+	            android:id="@+id/passwordLabel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Password: "
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	        <EditText
+	            android:id="@+id/passText"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:inputType="textPassword" />
+	
+	    </LinearLayout>
+	
+	    <LinearLayout
+	        android:id="@+id/linearLayout4"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <Button
+	            android:id="@+id/saveDbInfo"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Save" />
+	
+	        <Button
+	            android:id="@+id/discardDbInfo"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Discard" />
+	
+	    </LinearLayout>
+			
+	    <Spinner
+	        android:id="@+id/competitions"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:entries="@array/competitions" />
 
-        <EditText
-            android:id="@+id/usernameText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+	    <LinearLayout
+	        android:id="@+id/linearLayout6"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
 
-    </LinearLayout>
+	        <Button
+	            android:id="@+id/pullfrc"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/pullfrc" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        
-        <TextView
-            android:id="@+id/passwordLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Password: "
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        <Button
+	            android:id="@+id/reset"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Reset Database" />
 
-        <EditText
-            android:id="@+id/passText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="textPassword" />
+	    </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/saveDbInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save" />
-
-        <Button
-            android:id="@+id/discardDbInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Discard" />
-
-    </LinearLayout>
-
-    <Spinner
-        android:id="@+id/competitions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/competitions" />
-
-    <Button
-        android:id="@+id/pullfrc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pullfrc" />
-
-    <Button
-        android:id="@+id/reset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Reset Database" />
-
-</LinearLayout>
+	</LinearLayout>
+</ScrollView>
