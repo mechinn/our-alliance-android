@@ -21,8 +21,8 @@ import android.util.Log;
  * recommended).
  */
 public class TeamInfoDb extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "frcscoutingdb";
-    private static final String DATABASE_TABLE = "teams";
+    public static final String DATABASE_NAME = "frcscoutingdb";
+    public static final String DATABASE_TABLE = "teams";
     private static final int DATABASE_VERSION = 2;
     
 	public static final String KEY_ROWID = "_id";
@@ -131,7 +131,7 @@ public class TeamInfoDb extends SQLiteOpenHelper {
     		String deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous) {
     	
-        ContentValues initialValues = putVals(true, team, orientation, numWheels, wheelTypes, 
+        ContentValues initialValues = putVals(true, team, -1, orientation, numWheels, wheelTypes, 
         		deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter,
     			deadWheelType, turret, tracking, fender,
     			key, barrier, climb, notes, autonomous);
@@ -192,14 +192,10 @@ public class TeamInfoDb extends SQLiteOpenHelper {
      * @return Cursor positioned to matching note, if found
      * @throws SQLException if note could not be found/retrieved
      */
-    public Cursor fetchTeamNums(long rowId) throws SQLException {
+    public Cursor fetchTeamNums() throws SQLException {
 
-        Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_TEAM}, KEY_ROWID + "=" + rowId, null,
+    	return mDb.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_TEAM}, null, null,
                     null, null, null, null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-        return mCursor;
 
     }
 
@@ -217,7 +213,7 @@ public class TeamInfoDb extends SQLiteOpenHelper {
     		boolean deadWheel, String wheel1Type, int wheel1Diameter, String wheel2Type, int wheel2Diameter,
     		String deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous) {
-    	ContentValues args = putVals(false, team, orientation, numWheels, wheelTypes, 
+    	ContentValues args = putVals(false, team, -1, orientation, numWheels, wheelTypes, 
     		deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter,
 			deadWheelType, turret, tracking, fender,
 			key, barrier, climb, notes, autonomous);
@@ -225,16 +221,58 @@ public class TeamInfoDb extends SQLiteOpenHelper {
         return mDb.update(DATABASE_TABLE, args, KEY_TEAM + "=" + team, null) > 0;
     }
     
-    private ContentValues putVals(boolean create, int team, String orientation, int numWheels, int wheelTypes, 
+    /**
+     * Update the note using the details provided. The note to be updated is
+     * specified using the rowId, and it is altered to use the title and body
+     * values passed in
+     * 
+     * @param rowId id of note to update
+     * @param title value to set note title to
+     * @param body value to set note body to
+     * @return true if the note was successfully updated, false otherwise
+     */
+    public boolean updateTeam(int team, int lastMod, String orientation, int numWheels, int wheelTypes, 
+    		int deadWheel, String wheel1Type, int wheel1Diameter, String wheel2Type, int wheel2Diameter,
+    		String deadWheelType, int turret, int tracking, int fender,
+    		int key, int barrier, int climb, String notes, int autonomous) {
+    	ContentValues args = putVals(false, 
+    			team, 
+    			lastMod, 
+    			orientation, 
+    			numWheels, 
+    			wheelTypes, 
+	    		deadWheel==0?false:true, 
+	    		wheel1Type, 
+	    		wheel1Diameter, 
+	    		wheel2Type, 
+	    		wheel2Diameter,
+				deadWheelType, 
+				turret==0?false:true, 
+				tracking==0?false:true, 
+				fender==0?false:true,
+				key==0?false:true, 
+				barrier==0?false:true, 
+				climb==0?false:true, 
+				notes, 
+				autonomous==0?false:true);
+
+        return mDb.update(DATABASE_TABLE, args, KEY_TEAM + "=" + team, null) > 0;
+    }
+    
+    private ContentValues putVals(boolean create, int team, int lastMod, String orientation, int numWheels, int wheelTypes, 
     		boolean deadWheel, String wheel1Type, int wheel1Diameter, String wheel2Type, int wheel2Diameter,
     		String deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous) {
     	ContentValues cv = new ContentValues();
-    	if(create) {
-    		cv.put(KEY_TEAM, team);
-    		cv.put(KEY_LASTMOD, 0);
+    	if(lastMod<0) {
+	    	if(create) {
+	    		cv.put(KEY_TEAM, team);
+	    		cv.put(KEY_LASTMOD, 0);
+	    	} else {
+	    		cv.put(KEY_LASTMOD, System.currentTimeMillis()/1000);
+	    	}
     	} else {
-    		cv.put(KEY_LASTMOD, System.currentTimeMillis()/1000);
+    		cv.put(KEY_LASTMOD, lastMod);
     	}
     	cv.put(KEY_ORIENTATION, orientation);
     	cv.put(KEY_NUMWHEELS, numWheels);

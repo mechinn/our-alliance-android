@@ -4,6 +4,6 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry exported="true" kind="lib" path="D:/users/mechinn/code/mysql-connector-java-5.1.18-bin.jar"/>
+	<classpathentry kind="lib" path="mysql-connector-java-5.1.18-bin.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -63,6 +63,7 @@ public final class R {
         public static final int portLabel=0x7f07003a;
         public static final int portText=0x7f07003b;
         public static final int pullfrc=0x7f070044;
+        public static final int refresh=0x7f070049;
         public static final int reset=0x7f070045;
         public static final int save=0x7f070032;
         public static final int saveDbInfo=0x7f070040;
@@ -106,6 +107,8 @@ public final class R {
     }
     public static final class menu {
         public static final int mainmenu=0x7f060000;
+        public static final int menu=0x7f060001;
+        public static final int teamsmenu=0x7f060002;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
@@ -128,6 +131,7 @@ public final class R {
         public static final int orientationWide=0x7f04000a;
         public static final int portLabel=0x7f040020;
         public static final int pullfrc=0x7f040005;
+        public static final int refresh=0x7f040022;
         public static final int save=0x7f04001a;
         public static final int scouting=0x7f040001;
         public static final int settings=0x7f040003;

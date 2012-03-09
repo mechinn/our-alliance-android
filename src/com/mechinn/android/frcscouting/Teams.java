@@ -1,5 +1,7 @@
 package com.mechinn.android.frcscouting;
 
+import java.sql.SQLException;
+
 import com.mechinn.android.frcscouting.R;
 
 import android.app.Activity;
@@ -11,6 +13,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -122,6 +127,19 @@ public class Teams extends Activity {
     	}
     	
 		protected Void doInBackground(Context... con) {
+			SyncDB sdb = null;
+			try {
+				sdb = new SyncDB(Teams.this);
+				Cursor teamNums = teamInfoDb.fetchTeamNums();
+				while(teamNums.moveToNext()) {
+					sdb.getTeam(teamNums.getInt(teamNums.getColumnIndex(TeamInfoDb.KEY_TEAM)),teamInfoDb);
+				}
+				sdb.close();
+			} catch (SQLException e1) {
+				Log.i("teams list", "mysql error",e1);
+			} catch (ClassNotFoundException e1) {
+				Log.e("teams list","no mysql driver",e1);
+			}
 	        // Get all of the notes from the database and create the item list
 	        Cursor teamInfo = teamInfoDb.fetchAllTeams();
 	        startManagingCursor(teamInfo);
@@ -138,8 +156,7 @@ public class Teams extends Activity {
 	        }
 	        publishProgress(2);
 	        
-	        teamInfo.moveToFirst();
-	        for(int i=0;i<teamInfo.getCount();++i) {
+	        while(teamInfo.moveToNext()) {
 	        	publishProgress(3);
 	        	for(int j=0;j<from.length;++j) {
 	        		publishProgress(4);
@@ -167,10 +184,33 @@ public class Teams extends Activity {
 	            	}
 	            	publishProgress(7);
 	            }
-	        	teamInfo.moveToNext();
 	        	publishProgress(2);
 	        }
 	        return null;
 		}
     }
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.teamsmenu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.settings:
+	        	String actionName = "com.mechinn.android.frcscouting.OpenSettings";
+		    	Intent intent = new Intent(actionName);
+		    	startActivity(intent);
+	            return true;
+	        case R.id.refresh:
+	        	onStart();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
 }

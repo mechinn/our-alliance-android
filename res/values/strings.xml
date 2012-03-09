@@ -132,4 +132,5 @@
     <string name="takePic">Take Picture</string>
     <string name="portLabel">Port: </string>
     <string name="deletePic">Delete Picture</string>
+    <string name="refresh">Refresh</string>
 </resources>

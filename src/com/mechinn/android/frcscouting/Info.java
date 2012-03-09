@@ -26,6 +26,9 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -457,12 +460,12 @@ public class Info extends Activity {
                 notes = edittext.getText().toString();
                 Log.d("notes", notes);
                 
-                new sendDB().execute();
-                
                 teamInfoDb.updateTeam(team, orientation, numWheels, wheelTypes, 
             			deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter, 
             			deadWheelType, turret, tracking, fender, key, barrier, climb, notes, auto);
-                finish();
+                
+                new sendDB().execute();
+                
             }
         });
         
@@ -476,17 +479,19 @@ public class Info extends Activity {
     }
     
     private class sendDB extends AsyncTask<Context,Void,Void> {
+    	protected void onPostExecute(Void no) {
+    		Log.d("sendDB","finishing");
+    		finish();
+    	}
     	protected Void doInBackground(Context... contexts) {
     		try {
 				SyncDB sdb = new SyncDB(Info.this);
-				sdb.query();
+				sdb.update(team, teamInfoDb.fetchTeam(team));
 				sdb.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.i("teams list", "mysql error",e);
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("teams list","no mysql driver",e);
 			}
 			return null;
     	}
@@ -616,4 +621,26 @@ public class Info extends Activity {
     	teamInfoDb.close();
     	super.onDestroy();
     }
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.settings:
+	        	String actionName = "com.mechinn.android.frcscouting.OpenSettings";
+		    	Intent intent = new Intent(actionName);
+		    	startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+			
+	}
 }

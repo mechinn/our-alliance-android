@@ -62,9 +62,15 @@ public class FRCScouting extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		String actionName = "com.mechinn.android.frcscouting.OpenSettings";
-    	Intent intent = new Intent(actionName);
-    	startActivity(intent);
-		return true;
+		// Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.settings:
+	        	String actionName = "com.mechinn.android.frcscouting.OpenSettings";
+		    	Intent intent = new Intent(actionName);
+		    	startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }
