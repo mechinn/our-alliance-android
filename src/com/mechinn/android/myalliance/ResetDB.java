@@ -1,5 +1,9 @@
 package com.mechinn.android.myalliance;
 
+import com.mechinn.android.myalliance.data.TeamInfoInterface;
+import com.mechinn.android.myalliance.providers.TeamInfoProvider;
+
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -10,17 +14,17 @@ import android.util.Log;
 /** Nested class that performs progress calculations (counting) */
 public class ResetDB extends ProgressDialog {
  	private Handler resetHandler;
-    private TeamInfoDB teamInfoDb;
+    private TeamInfoInterface teamInfo;
     boolean initial;
     
-    public ResetDB(Context context) {
-    	this(context,false);
+    public ResetDB(Activity act) {
+    	this(act,false);
     }
 
-	public ResetDB(Context context, boolean init) {
-		super(context);
+	public ResetDB(Activity act, boolean init) {
+		super(act);
         initial = init;
-		teamInfoDb = new TeamInfoDB(context, true);
+        teamInfo = new TeamInfoInterface(act);
 		resetHandler = new Handler() {
 	 		public void handleMessage(Message msg) {
 	 			int total = msg.arg1;
@@ -50,14 +54,14 @@ public class ResetDB extends ProgressDialog {
 	    
 	    private void addBlankTeam(int team) {
 	        incrementTotal();
-	        teamInfoDb.createTeam(team,"None",0,1,false,"None",0,"None",0,"None",false,false,false,false,false,false,"",false);
+	        teamInfo.createTeam(team,"None",0,1,false,"None",0,"None",0,"None",false,false,false,false,false,false,"",false);
 	    }
 
 		@Override
 		protected Void doInBackground(Handler... params) {
 			mHandler = params[0];
 			if(!initial) {
-	    		teamInfoDb.reset();
+				teamInfo.reset();
 	    	}
 	        total = 1;
 	        int[] teams = {11, 41, 56, 75, 102, 136, 203, 219, 223, 224, 303, 555, 613, 752, 869, 1089, 1143, 1168, 1228, 1279,
@@ -69,8 +73,7 @@ public class ResetDB extends ProgressDialog {
 	        }
 	        incrementTotal();
 	        Log.d("reset","updating 869");
-	        teamInfoDb.updateTeam(869, "Long", 8, 1, false, "Traction", 4, "None", 0, "None", false, false, false, false, true, true, "Our robot", false);
-	        teamInfoDb.close();
+	        teamInfo.updateTeam(869, "Long", 8, 1, false, "Traction", 4, "None", 0, "None", false, false, false, false, true, true, "Our robot", false);
 	        return null;
 		}
 	}
