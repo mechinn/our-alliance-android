@@ -23,12 +23,13 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int ScrollView01=0x7f070046;
         public static final int attributes1=0x7f070025;
         public static final int attributes2=0x7f070029;
         public static final int autoTracking=0x7f070027;
         public static final int autonomous=0x7f07002e;
         public static final int botAttributeTable=0x7f070024;
+        public static final int button1=0x7f07004d;
+        public static final int button2=0x7f07004e;
         public static final int climbBridge=0x7f07002c;
         public static final int competitions=0x7f070042;
         public static final int crossesBarrier=0x7f07002b;
@@ -38,6 +39,7 @@ public final class R {
         public static final int discard=0x7f070033;
         public static final int discardDbInfo=0x7f070041;
         public static final int fenderShooter=0x7f070028;
+        public static final int hScroll=0x7f070049;
         public static final int has1WheelTypes=0x7f070015;
         public static final int has2WheelTypes=0x7f070016;
         public static final int hasDeadWheel=0x7f070017;
@@ -63,14 +65,16 @@ public final class R {
         public static final int portLabel=0x7f07003a;
         public static final int portText=0x7f07003b;
         public static final int pullfrc=0x7f070044;
-        public static final int refresh=0x7f070049;
+        public static final int refresh=0x7f070050;
         public static final int reset=0x7f070045;
         public static final int save=0x7f070032;
         public static final int saveDbInfo=0x7f070040;
         public static final int scouting=0x7f070034;
         public static final int scrollView1=0x7f070000;
-        public static final int settings=0x7f070048;
-        public static final int table=0x7f070047;
+        public static final int settings=0x7f07004f;
+        public static final int staticCols=0x7f07004a;
+        public static final int staticTable=0x7f070046;
+        public static final int staticTeams=0x7f070048;
         public static final int tableRow1=0x7f07002d;
         public static final int takePicButton=0x7f070007;
         public static final int teamLabel=0x7f070005;
@@ -78,12 +82,15 @@ public final class R {
         public static final int teamNumber=0x7f070006;
         public static final int teamPic=0x7f070009;
         public static final int teams=0x7f070035;
+        public static final int teamsTable=0x7f07004c;
         public static final int textView1=0x7f070036;
         public static final int turretShooter=0x7f070026;
         public static final int typeLabel=0x7f070014;
         public static final int typeLayout=0x7f070013;
         public static final int usernameLabel=0x7f07003c;
         public static final int usernameText=0x7f07003d;
+        public static final int vScrollTable=0x7f07004b;
+        public static final int vScrollTeams=0x7f070047;
         public static final int wheel1=0x7f07001c;
         public static final int wheel1Diameter=0x7f07001e;
         public static final int wheel1Type=0x7f07001d;
@@ -104,6 +111,7 @@ public final class R {
         public static final int scouting=0x7f030002;
         public static final int settings=0x7f030003;
         public static final int teams=0x7f030004;
+        public static final int test=0x7f030005;
     }
     public static final class menu {
         public static final int mainmenu=0x7f060000;

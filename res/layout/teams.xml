@@ -1,17 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android" >
-	<ScrollView android:id="@+id/ScrollView01"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent" >
-        <HorizontalScrollView 
-        	xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content" >
-		    <TableLayout android:id="@+id/table"
-				android:layout_width="wrap_content"
-				android:layout_height="match_parent">
-				
-			</TableLayout>
-	    </HorizontalScrollView>
-	</ScrollView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+	    <TableLayout android:id="@+id/staticTable"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent">
+			
+		</TableLayout>
+	    <RelativeLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent" >
+		    <com.mechinn.android.myalliance.scroll.VScroll android:id="@+id/vScrollTeams"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content" >
+			    <TableLayout android:id="@+id/staticTeams"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent">
+					
+				</TableLayout>
+		    </com.mechinn.android.myalliance.scroll.VScroll>
+			<com.mechinn.android.myalliance.scroll.HScroll android:id="@+id/hScroll"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content" >
+			    <RelativeLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent" >
+				    <TableLayout android:id="@+id/staticCols"
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent">
+						
+					</TableLayout>
+			        <com.mechinn.android.myalliance.scroll.VScroll android:id="@+id/vScrollTable"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content" >
+					    <TableLayout android:id="@+id/teamsTable"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content">
+							
+						</TableLayout>
+				    </com.mechinn.android.myalliance.scroll.VScroll>
+			    </RelativeLayout>
+			</com.mechinn.android.myalliance.scroll.HScroll>
+		</RelativeLayout>
+	</RelativeLayout>
 </merge>

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public abstract class GeneralDB extends SQLiteOpenHelper {
-    protected static final String DBName = "myAllianceDB";
+    protected static final String DBName = "myAlliance";
     
     protected static final String keyRowID = "_id";
     protected static final String keyLastMod = "_lastMod";
