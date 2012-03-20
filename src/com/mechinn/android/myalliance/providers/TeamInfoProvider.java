@@ -43,13 +43,13 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
     public static final String keyNotes = "notes";
     public static final String keyAutonomous = "autonomous";
 
-    private static final String TAG = "TeamInfoContentProvider";
-    private static final String AUTHORITY = "com.mechinn.android.myalliance.providers.TeamInfoProvider";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/teams");
-    public static final Uri CONTENT_URI_RESET = Uri.parse("content://" + AUTHORITY + "/teamsReset");
-    private static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn.teaminfo";
-    private static final int TEAMINFO = 1;
-    private static final int TEAMINFORESET = 2;
+    private static final String logTag = "TeamInfoContentProvider";
+    private static final String authority = "com.mechinn.android.myalliance.providers.TeamInfoProvider";
+    public static final Uri mUri = Uri.parse("content://" + authority + "/"+DBTable);
+    public static final Uri mUriReset = Uri.parse("content://" + authority + "/"+DBTableReset);
+    private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn.teaminfo";
+    private static final int sig = 1;
+    private static final int resetSig = 2;
     private static final UriMatcher sUriMatcher;
     private static HashMap<String, String> teamInfoProjectionMap;
     
@@ -88,15 +88,15 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        	Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
+        	Log.w(logTag, "Upgrading database from version " + oldVersion + " to " + newVersion);
         	switch(oldVersion+1){
     	    	default: //case 1
-    	    		Log.i(TAG, "v1 original team info table");
+    	    		Log.i(logTag, "v1 original team info table");
     	    		db.execSQL("DROP TABLE IF EXISTS "+DBTable);
     	    		Log.d("onCreate",DATABASE_CREATE);
     	    		db.execSQL(DATABASE_CREATE);
         		case 2:
-        			Log.i(TAG, "v2 added autonomous column");
+        			Log.i(logTag, "v2 added autonomous column");
             		db.execSQL("alter table "+DBTable+" add column "+keyAutonomous+" int;");
         		case 3:
 //        			Log.i(TAG, "v3 ");
@@ -112,10 +112,10 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         int count;
         switch (sUriMatcher.match(uri)) {
-            case TEAMINFO:
+            case sig:
                 count = db.delete(DBTable, where, whereArgs);
                 break;
-            case TEAMINFORESET:
+            case resetSig:
                 qb.setTables(DBTable);
                 qb.setProjectionMap(teamInfoProjectionMap);
                 count = qb.query(db, null, null, null, null, null, null).getCount();
@@ -132,8 +132,8 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
     @Override
     public String getType(Uri uri) {
         switch (sUriMatcher.match(uri)) {
-            case TEAMINFO:
-                return CONTENT_TYPE;
+            case sig:
+                return type;
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -143,7 +143,7 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
     @Override
     public Uri insert(Uri uri, ContentValues initialValues) {
     	switch(sUriMatcher.match(uri)) {
-    		case TEAMINFO: {
+    		case sig: {
     			ContentValues values;
     	        if (initialValues != null) {
     	            values = new ContentValues(initialValues);
@@ -154,7 +154,7 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
     	        SQLiteDatabase db = mDB.getWritableDatabase();
     	        long rowId = db.insert(DBTable, null, values);
     	        if (rowId > 0) {
-    	            Uri teamUri = ContentUris.withAppendedId(CONTENT_URI, rowId);
+    	            Uri teamUri = ContentUris.withAppendedId(mUri, rowId);
     	            getContext().getContentResolver().notifyChange(teamUri, null);
     	            return teamUri;
     	        }
@@ -179,7 +179,7 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         switch (sUriMatcher.match(uri)) {
-            case TEAMINFO:
+            case sig:
                 qb.setTables(DBTable);
                 qb.setProjectionMap(teamInfoProjectionMap);
                 break;
@@ -200,7 +200,7 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
         SQLiteDatabase db = mDB.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
-            case TEAMINFO:
+            case sig:
                 count = db.update(DBTable, values, where, whereArgs);
                 break;
 
@@ -214,8 +214,8 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(AUTHORITY, DBTable, TEAMINFO);
-        sUriMatcher.addURI(AUTHORITY, DBTableReset, TEAMINFORESET);
+        sUriMatcher.addURI(authority, DBTable, sig);
+        sUriMatcher.addURI(authority, DBTableReset, resetSig);
 
         teamInfoProjectionMap = new HashMap<String, String>();
         teamInfoProjectionMap.put(_ID, _ID);

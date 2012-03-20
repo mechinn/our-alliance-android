@@ -19,6 +19,8 @@ import android.util.Log;
  * addition of better error handling and also using returning a Cursor instead
  * of using a collection of inner classes (which is less scalable and not
  * recommended).
+ * 
+ * @deprecated
  */
 public class CompetitionsDb extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "frcscoutingdb";

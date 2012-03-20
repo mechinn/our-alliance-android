@@ -32,7 +32,7 @@ public class TeamInfoInterface {
 	}
 	
 	public void reset() {
-		activity.getContentResolver().delete(TeamInfoProvider.CONTENT_URI_RESET, null, null);
+		activity.getContentResolver().delete(TeamInfoProvider.mUriReset, null, null);
 	}
 
     /**
@@ -54,7 +54,7 @@ public class TeamInfoInterface {
     			deadWheelType, turret, tracking, fender,
     			key, barrier, climb, notes, autonomous);
         
-        return activity.getContentResolver().insert(TeamInfoProvider.CONTENT_URI, initialValues);
+        return activity.getContentResolver().insert(TeamInfoProvider.mUri, initialValues);
     }
 
     /**
@@ -64,7 +64,7 @@ public class TeamInfoInterface {
      */
     public Cursor fetchAllTeams() {
     	
-    	return activity.managedQuery(TeamInfoProvider.CONTENT_URI, new String[] {TeamInfoProvider._ID, TeamInfoProvider.keyLastMod, 
+    	return activity.managedQuery(TeamInfoProvider.mUri, new String[] {TeamInfoProvider._ID, TeamInfoProvider.keyLastMod, 
     			TeamInfoProvider.keyTeam, TeamInfoProvider.keyOrientation, TeamInfoProvider.keyNumWheels, TeamInfoProvider.keyWheelTypes, 
     			TeamInfoProvider.keyDeadWheel, TeamInfoProvider.keyWheel1Type, TeamInfoProvider.keyWheel1Diameter, 
     			TeamInfoProvider.keyWheel2Type, TeamInfoProvider.keyWheel2Diameter, TeamInfoProvider.keyDeadWheelType, 
@@ -82,7 +82,7 @@ public class TeamInfoInterface {
      */
     public Cursor fetchTeam(int team) throws SQLException {
 
-    	Cursor mCursor = activity.managedQuery(TeamInfoProvider.CONTENT_URI, new String[] {TeamInfoProvider._ID, TeamInfoProvider.keyLastMod, 
+    	Cursor mCursor = activity.managedQuery(TeamInfoProvider.mUri, new String[] {TeamInfoProvider._ID, TeamInfoProvider.keyLastMod, 
     			TeamInfoProvider.keyTeam, TeamInfoProvider.keyOrientation, TeamInfoProvider.keyNumWheels, TeamInfoProvider.keyWheelTypes, 
     			TeamInfoProvider.keyDeadWheel, TeamInfoProvider.keyWheel1Type, TeamInfoProvider.keyWheel1Diameter, 
     			TeamInfoProvider.keyWheel2Type, TeamInfoProvider.keyWheel2Diameter, TeamInfoProvider.keyDeadWheelType, 
@@ -104,7 +104,7 @@ public class TeamInfoInterface {
      * @throws SQLException if note could not be found/retrieved
      */
     public Cursor fetchTeamNums() throws SQLException {
-		return activity.managedQuery(TeamInfoProvider.CONTENT_URI, new String[] {TeamInfoProvider._ID, TeamInfoProvider.keyTeam}, null, null, null);
+		return activity.managedQuery(TeamInfoProvider.mUri, new String[] {TeamInfoProvider._ID, TeamInfoProvider.keyTeam}, null, null, null);
     }
 
     /**
@@ -126,7 +126,7 @@ public class TeamInfoInterface {
 			deadWheelType, turret, tracking, fender,
 			key, barrier, climb, notes, autonomous);
         
-        return activity.getContentResolver().update(TeamInfoProvider.CONTENT_URI, args,null,null) > 0;
+        return activity.getContentResolver().update(TeamInfoProvider.mUri, args,null,null) > 0;
     }
     
     /**
@@ -164,7 +164,7 @@ public class TeamInfoInterface {
 				notes, 
 				autonomous==0?false:true);
         
-        return activity.getContentResolver().update(TeamInfoProvider.CONTENT_URI, args,TeamInfoProvider.keyTeam + "=" + team,null) > 0;
+        return activity.getContentResolver().update(TeamInfoProvider.mUri, args,TeamInfoProvider.keyTeam + "=" + team,null) > 0;
     }
     
     private ContentValues putVals(boolean create, int team, int lastMod, String orientation, int numWheels, int wheelTypes, 

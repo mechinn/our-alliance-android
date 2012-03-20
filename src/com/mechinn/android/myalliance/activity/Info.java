@@ -62,7 +62,6 @@ public class Info extends Activity {
 	
 	
 	private TeamInfoInterface teamInfo;
-	private SyncDB syncDb;
 	private Uri mImageUri;
 	private File pic;
 	private File picDir;

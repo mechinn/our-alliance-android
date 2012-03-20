@@ -49,7 +49,6 @@ public class Teams extends Activity {
 	private TableRow staticTeamRow;
 	private TableRow staticColRow;
 	private TableRow row;
-	private Prefs prefs;
 
     private float curX, curY;
     private float mx, my;
@@ -112,17 +111,6 @@ public class Teams extends Activity {
         
         hScroll.bringToFront();
         vScrollTeams.bringToFront();
-
-        //delete before putting myalliance.java back as main
-//        BugSenseHandler.setup(this, "a92dda4a");
-        prefs = new Prefs(this);
-        
-        //first run setup the DB
-        Log.d("first run",Boolean.toString(prefs.getFirstRun()));
-        if(prefs.getFirstRun()) {
-        	new ResetDB(Teams.this,true).show();
-        	prefs.setRunned();
-        }
         
         teamInfo = new TeamInfoInterface(this);
         staticTable = (TableLayout) this.findViewById(R.id.staticTable);

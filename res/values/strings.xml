@@ -133,4 +133,14 @@
     <string name="portLabel">Port: </string>
     <string name="deletePic">Delete Picture</string>
     <string name="refresh">Refresh</string>
+    <string name="topScore">Top Score</string>
+    <string name="midScore">Middle Score</string>
+    <string name="botScore">Bottom Score</string>
+    <string name="noShooting">No Shooting</string>
+    <string name="dunker">Dunker</string>
+    <string name="shooter">Shooter</string>
+    <string name="zero">0</string>
+    <string name="balanced">Balanced</string>
+    <string name="broke">Broke</string>
+    <string name="matchSlotLabel">Slot: </string>
 </resources>

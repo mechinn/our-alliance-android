@@ -6,6 +6,12 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * 
+ * @deprecated
+ * @author mechinn
+ *
+ */
 public abstract class GeneralDB extends SQLiteOpenHelper {
     public static final String DBName = "myAlliance";
     

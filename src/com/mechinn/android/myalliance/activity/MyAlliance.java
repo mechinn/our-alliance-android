@@ -24,7 +24,6 @@ import android.view.View;
 import android.widget.Button;
 
 public class MyAlliance extends Activity {
-    private static final int RESETPROG = 8690;
 	private Prefs prefs;
 	
     /** Called when the activity is first created. */
@@ -32,7 +31,7 @@ public class MyAlliance extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        BugSenseHandler.setup(this, "a92dda4a");
+//        BugSenseHandler.setup(this, "a92dda4a");
         prefs = new Prefs(this);
         
         //first run setup the DB
@@ -45,7 +44,7 @@ public class MyAlliance extends Activity {
         final Button scouting = (Button)  findViewById(R.id.scouting);
         scouting.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		String actionName = "com.mechinn.android.myalliance.OpenScouting";
+        		String actionName = "com.mechinn.android.myalliance.OpenMatches";
             	Intent intent = new Intent(actionName);
             	startActivity(intent);
             }

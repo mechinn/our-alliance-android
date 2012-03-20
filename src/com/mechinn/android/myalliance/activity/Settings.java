@@ -29,9 +29,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class Settings extends Activity {
-    private static final int RESETMSG = 8694;
-    private static final int RESETPROG = 8695;
-    
     private Prefs prefs;
 	private EditText host;
 	private EditText port;

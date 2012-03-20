@@ -15,6 +15,12 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.util.Log;
 
+/**
+ * VERY BAD WORKAROUND FOR SYNC
+ * 
+ * @author mechinn
+ *
+ */
 public class SyncDB {
 	Connection conn;
 	Context context;
