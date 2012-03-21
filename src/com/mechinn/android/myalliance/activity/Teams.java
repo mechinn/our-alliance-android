@@ -2,19 +2,12 @@ package com.mechinn.android.myalliance.activity;
 
 import java.sql.SQLException;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.myalliance.R;
-import com.mechinn.android.myalliance.ResetDB;
-import com.mechinn.android.myalliance.R.id;
-import com.mechinn.android.myalliance.R.layout;
-import com.mechinn.android.myalliance.R.menu;
-import com.mechinn.android.myalliance.data.Prefs;
 import com.mechinn.android.myalliance.data.SyncDB;
-import com.mechinn.android.myalliance.data.TeamInfoInterface;
-import com.mechinn.android.myalliance.providers.TeamInfoProvider;
+import com.mechinn.android.myalliance.data.TeamScoutingInterface;
+import com.mechinn.android.myalliance.providers.TeamScoutingProvider;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -36,7 +29,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 public class Teams extends Activity {
-	private TeamInfoInterface teamInfo;
+	private TeamScoutingInterface teamInfo;
 	private TableLayout staticTable;
 	private TableLayout staticTeams;
 	private TableLayout staticCols;
@@ -112,7 +105,7 @@ public class Teams extends Activity {
         hScroll.bringToFront();
         vScrollTeams.bringToFront();
         
-        teamInfo = new TeamInfoInterface(this);
+        teamInfo = new TeamScoutingInterface(this);
         staticTable = (TableLayout) this.findViewById(R.id.staticTable);
         staticTeams = (TableLayout) this.findViewById(R.id.staticTeams);
         staticCols = (TableLayout) this.findViewById(R.id.staticCols);
@@ -299,7 +292,7 @@ public class Teams extends Activity {
 				sdb = new SyncDB(Teams.this);
 				Cursor teamNums = teamInfo.fetchTeamNums();
 				while(teamNums.moveToNext()) {
-					sdb.getTeam(teamNums.getInt(teamNums.getColumnIndex(TeamInfoProvider.keyTeam)),teamInfo);
+					sdb.getTeam(teamNums.getInt(teamNums.getColumnIndex(TeamScoutingProvider.keyTeam)),teamInfo);
 				}
 				sdb.close();
 			} catch (SQLException e1) {
@@ -307,17 +300,16 @@ public class Teams extends Activity {
 			} catch (ClassNotFoundException e1) {
 				Log.e("teams list","no mysql driver",e1);
 			}
-	        // Get all of the notes from the database and create the item list
 	        Cursor thisTeam = teamInfo.fetchAllTeams();
 	        startManagingCursor(thisTeam);
 	        
 	        String[] colNames = new String[] { "Team", "Orientation", "Number of Wheels", "Wheel Type 1", "Wheel Diameter 1", "Wheel Type 2", "Wheel Diameter 2", "Dead Wheel Type", "Turret Shooter", "Auto Tracking", "Fender Shooter", "Key Shooter", "Crosses Barrier", "Climb Bridge", "Autonomous" };
 	        
-	        String[] from = new String[] {TeamInfoProvider.keyTeam, TeamInfoProvider.keyOrientation, TeamInfoProvider.keyNumWheels, TeamInfoProvider.keyWheelTypes, 
-	    			TeamInfoProvider.keyDeadWheel, TeamInfoProvider.keyWheel1Type, TeamInfoProvider.keyWheel1Diameter, 
-	    			TeamInfoProvider.keyWheel2Type, TeamInfoProvider.keyWheel2Diameter, TeamInfoProvider.keyDeadWheelType, 
-	    			TeamInfoProvider.keyTurret, TeamInfoProvider.keyTracking, TeamInfoProvider.keyFenderShooter, TeamInfoProvider.keyKeyShooter, 
-	    			TeamInfoProvider.keyBarrier, TeamInfoProvider.keyClimb, TeamInfoProvider.keyNotes, TeamInfoProvider.keyAutonomous};
+	        String[] from = new String[] {TeamScoutingProvider.keyTeam, TeamScoutingProvider.keyOrientation, TeamScoutingProvider.keyNumWheels, 
+	        		TeamScoutingProvider.keyWheel1Type, TeamScoutingProvider.keyWheel1Diameter, 
+	    			TeamScoutingProvider.keyWheel2Type, TeamScoutingProvider.keyWheel2Diameter, TeamScoutingProvider.keyDeadWheelType, 
+	    			TeamScoutingProvider.keyTurret, TeamScoutingProvider.keyTracking, TeamScoutingProvider.keyFenderShooter, TeamScoutingProvider.keyKeyShooter, 
+	    			TeamScoutingProvider.keyBarrier, TeamScoutingProvider.keyClimb, TeamScoutingProvider.keyAutonomous};
 
         	publishProgress(NEWROW);
 	        publishProgress(NEWSIMPLEROW);
@@ -336,21 +328,21 @@ public class Teams extends Activity {
 	        		publishProgress(NEWTEXT);
 	            	String colName = from[j];
 	            	int col = thisTeam.getColumnIndex(colName);
-//	            	Log.d("table fill", Integer.toString(col));
-//	            	Log.d("table fill", Integer.toString(thisTeam.getInt(col)));
-	            	if(colName.equals(TeamInfoProvider.keyTeam)) {
+	            	Log.d("table fill", Integer.toString(col));
+	            	Log.d("table colname", colName);
+	            	if(colName.equals(TeamScoutingProvider.keyTeam)) {
 	            		publishProgress(ROWONCLICK,thisTeam.getInt(col));
-	            	} else if(colName.equals(TeamInfoProvider.keyOrientation) || colName.equals(TeamInfoProvider.keyWheel1Type) || 
-	            			colName.equals(TeamInfoProvider.keyWheel2Type) || colName.equals(TeamInfoProvider.keyDeadWheelType) || 
-	            			colName.equals(TeamInfoProvider.keyNotes)){
+	            	} else if(colName.equals(TeamScoutingProvider.keyOrientation) || colName.equals(TeamScoutingProvider.keyWheel1Type) || 
+	            			colName.equals(TeamScoutingProvider.keyWheel2Type) || colName.equals(TeamScoutingProvider.keyDeadWheelType) || 
+	            			colName.equals(TeamScoutingProvider.keyNotes)){
 	            		publishProgress(SETTEXT,thisTeam.getString(col));
-	            	} else if (colName.equals(TeamInfoProvider.keyNumWheels) || colName.equals(TeamInfoProvider.keyWheel1Diameter) || 
-	            			colName.equals(TeamInfoProvider.keyWheel2Diameter) || colName.equals(TeamInfoProvider.keyWheelTypes)) {
+	            	} else if (colName.equals(TeamScoutingProvider.keyNumWheels) || colName.equals(TeamScoutingProvider.keyWheel1Diameter) || 
+	            			colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
 	            		publishProgress(SETTEXT,Integer.toString(thisTeam.getInt(col)));
-	            	} else if (colName.equals(TeamInfoProvider.keyDeadWheel) || colName.equals(TeamInfoProvider.keyTurret) || 
-	            			colName.equals(TeamInfoProvider.keyTracking) || colName.equals(TeamInfoProvider.keyFenderShooter) || 
-	            			colName.equals(TeamInfoProvider.keyKeyShooter) || colName.equals(TeamInfoProvider.keyBarrier) || 
-	            			colName.equals(TeamInfoProvider.keyClimb) || colName.equals(TeamInfoProvider.keyAutonomous)) {
+	            	} else if (colName.equals(TeamScoutingProvider.keyTurret) || 
+	            			colName.equals(TeamScoutingProvider.keyTracking) || colName.equals(TeamScoutingProvider.keyFenderShooter) || 
+	            			colName.equals(TeamScoutingProvider.keyKeyShooter) || colName.equals(TeamScoutingProvider.keyBarrier) || 
+	            			colName.equals(TeamScoutingProvider.keyClimb) || colName.equals(TeamScoutingProvider.keyAutonomous)) {
 	            		switch(thisTeam.getInt(col)) {
 	            			case 0:publishProgress(SETTEXT,"no");break;
 	            			default:publishProgress(SETTEXT,"yes");

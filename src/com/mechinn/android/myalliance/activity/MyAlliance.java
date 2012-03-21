@@ -3,18 +3,10 @@ package com.mechinn.android.myalliance.activity;
 import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.myalliance.R;
 import com.mechinn.android.myalliance.ResetDB;
-import com.mechinn.android.myalliance.R.id;
-import com.mechinn.android.myalliance.R.layout;
-import com.mechinn.android.myalliance.R.menu;
 import com.mechinn.android.myalliance.data.Prefs;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -49,10 +41,20 @@ public class MyAlliance extends Activity {
             	startActivity(intent);
             }
 		});
+        
         final Button teams = (Button)  findViewById(R.id.teams);
         teams.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
         		String actionName = "com.mechinn.android.myalliance.OpenTeams";
+            	Intent intent = new Intent(actionName);
+            	startActivity(intent);
+            }
+		});
+        
+        final Button teamRankings = (Button)  findViewById(R.id.teamRankings);
+        teamRankings.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View v) {
+        		String actionName = "com.mechinn.android.myalliance.OpenTeamRankings";
             	Intent intent = new Intent(actionName);
             	startActivity(intent);
             }

@@ -143,4 +143,7 @@
     <string name="balanced">Balanced</string>
     <string name="broke">Broke</string>
     <string name="matchSlotLabel">Slot: </string>
+    <string name="matchList">Match List</string>
+    <string name="matchScouting">Match Scouting</string>
+    <string name="teamRankings">Team Rankings</string>
 </resources>

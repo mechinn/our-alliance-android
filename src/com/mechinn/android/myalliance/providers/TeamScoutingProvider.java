@@ -13,16 +13,15 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.provider.BaseColumns;
 import android.util.Log;
 
-public class TeamInfoProvider extends ContentProvider implements GeneralSchema  {
-    public static final String DBTable = "teams";
-    public static final String DBTableReset = "teamsReset";
-    private static final int DBVersion = 2;
+public class TeamScoutingProvider extends ContentProvider implements GeneralSchema  {
+    public static final String DBTable = "teamScouting";
+    public static final String DBTableReset = "teamScoutingReset";
     
     public static final String keyTeam = "team";
     public static final String keyOrientation = "orientation";
@@ -42,18 +41,25 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
     public static final String keyClimb = "climb";
     public static final String keyNotes = "notes";
     public static final String keyAutonomous = "autonomous";
+    
+    public static final String[] schemaArray = {_ID, keyLastMod, 
+		keyTeam, keyOrientation, keyNumWheels, keyWheelTypes, 
+		keyDeadWheel, keyWheel1Type, keyWheel1Diameter, 
+		keyWheel2Type, keyWheel2Diameter, keyDeadWheelType, 
+		keyTurret, keyTracking, keyFenderShooter, keyKeyShooter, 
+		keyBarrier, keyClimb, keyNotes, keyAutonomous};
 
-    private static final String logTag = "TeamInfoContentProvider";
-    private static final String authority = "com.mechinn.android.myalliance.providers.TeamInfoProvider";
+    private static final String logTag = "TeamScoutingProvider";
+    private static final String authority = "com.mechinn.android.myalliance.providers."+logTag;
+    private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+DBTable;
     public static final Uri mUri = Uri.parse("content://" + authority + "/"+DBTable);
     public static final Uri mUriReset = Uri.parse("content://" + authority + "/"+DBTableReset);
-    private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn.teaminfo";
     private static final int sig = 1;
     private static final int resetSig = 2;
     private static final UriMatcher sUriMatcher;
     private static HashMap<String, String> teamInfoProjectionMap;
     
-    private static class TeamInfoDB extends SQLiteOpenHelper {
+    private static class TeamScoutingDB extends SQLiteOpenHelper {
     	private static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
     			keyLastMod+" int not null, "+
     			keyTeam+" int not null unique, " +
@@ -74,7 +80,7 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
     			keyClimb+" int, " +
     			keyNotes+" text);";
 
-    	TeamInfoDB(Context context) {
+    	TeamScoutingDB(Context context) {
             super(context, DBName, null, DBVersion);
         }
 
@@ -98,19 +104,17 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
         		case 2:
         			Log.i(logTag, "v2 added autonomous column");
             		db.execSQL("alter table "+DBTable+" add column "+keyAutonomous+" int;");
-        		case 3:
-//        			Log.i(TAG, "v3 ");
         	}
         }
     }
 
-    private TeamInfoDB mDB;
+    private TeamScoutingDB mDB;
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
         SQLiteDatabase db = mDB.getWritableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        int count;
+        int count = 0;
         switch (sUriMatcher.match(uri)) {
             case sig:
                 count = db.delete(DBTable, where, whereArgs);
@@ -118,7 +122,11 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
             case resetSig:
                 qb.setTables(DBTable);
                 qb.setProjectionMap(teamInfoProjectionMap);
-                count = qb.query(db, null, null, null, null, null, null).getCount();
+                try{
+                	count = qb.query(db, null, null, null, null, null, null).getCount();
+                } catch (SQLiteException e) {
+                	Log.d(logTag, "No table/rows", e);
+                }
             	mDB.onUpgrade(db,0,1);
             	break;
             default:
@@ -170,7 +178,7 @@ public class TeamInfoProvider extends ContentProvider implements GeneralSchema  
 
     @Override
     public boolean onCreate() {
-    	mDB = new TeamInfoDB(getContext());
+    	mDB = new TeamScoutingDB(getContext());
         return true;
     }
 

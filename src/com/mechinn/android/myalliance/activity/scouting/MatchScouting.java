@@ -1,10 +1,7 @@
 package com.mechinn.android.myalliance.activity.scouting;
 
 import com.mechinn.android.myalliance.R;
-import com.mechinn.android.myalliance.R.layout;
-import com.mechinn.android.myalliance.R.menu;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -12,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-public class Scouting extends FragmentActivity {
+public class MatchScouting extends FragmentActivity {
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {

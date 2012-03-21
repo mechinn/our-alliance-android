@@ -1,47 +1,33 @@
 package com.mechinn.android.myalliance.activity;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.SQLException;
 
 import com.mechinn.android.myalliance.R;
-import com.mechinn.android.myalliance.R.array;
-import com.mechinn.android.myalliance.R.drawable;
-import com.mechinn.android.myalliance.R.id;
-import com.mechinn.android.myalliance.R.layout;
-import com.mechinn.android.myalliance.R.menu;
-import com.mechinn.android.myalliance.R.string;
 import com.mechinn.android.myalliance.data.SyncDB;
-import com.mechinn.android.myalliance.data.TeamInfoInterface;
-import com.mechinn.android.myalliance.providers.TeamInfoProvider;
+import com.mechinn.android.myalliance.data.TeamScoutingInterface;
+import com.mechinn.android.myalliance.providers.TeamScoutingProvider;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -52,7 +38,6 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class Info extends Activity {
     private static final int CAMERA_PIC_REQUEST = 869;
@@ -61,7 +46,7 @@ public class Info extends Activity {
 	private AlertDialog delPicAlert;
 	
 	
-	private TeamInfoInterface teamInfo;
+	private TeamScoutingInterface teamInfo;
 	private Uri mImageUri;
 	private File pic;
 	private File picDir;
@@ -98,7 +83,7 @@ public class Info extends Activity {
 	private RadioButton has1WheelTypes;
 	private RadioButton has2WheelTypes;
 	private CheckBox hasDeadWheel;
-	private TableRow wheel1;
+//	private TableRow wheel1;
 	private Spinner wheel1TypeSpinner;
 	private EditText wheel1DiameterText;
 	private TableRow wheel2;
@@ -209,7 +194,7 @@ public class Info extends Activity {
         
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         
-        teamInfo = new TeamInfoInterface(this);
+        teamInfo = new TeamScoutingInterface(this);
         
         new getInfo().execute(this);
 
@@ -298,7 +283,7 @@ public class Info extends Activity {
             		numWheels = Integer.parseInt(numWheelsString);
             	}
             }
-            public void onNothingSelected(AdapterView parent) {
+            public void onNothingSelected(AdapterView<?> parent) {
               // Do nothing.
             }
         });
@@ -324,7 +309,7 @@ public class Info extends Activity {
         wheelTypeStrings = ArrayAdapter.createFromResource(this, R.array.wheelTypes, android.R.layout.simple_spinner_item);
         wheelTypeStrings.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         
-        wheel1 = (TableRow) findViewById(R.id.wheel1);
+//        wheel1 = (TableRow) findViewById(R.id.wheel1);
         
         wheel1TypeSpinner = (Spinner) findViewById(R.id.wheel1Type);
         wheel1TypeSpinner.setAdapter(wheelTypeStrings);
@@ -332,7 +317,7 @@ public class Info extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             	wheel1Type = (parent.getItemAtPosition(pos).toString());
             }
-            public void onNothingSelected(AdapterView parent) {
+            public void onNothingSelected(AdapterView<?> parent) {
               // Do nothing.
             }
         });
@@ -347,7 +332,7 @@ public class Info extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             	wheel2Type = (parent.getItemAtPosition(pos).toString());
             }
-            public void onNothingSelected(AdapterView parent) {
+            public void onNothingSelected(AdapterView<?> parent) {
               // Do nothing.
             }
         });
@@ -364,7 +349,7 @@ public class Info extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             	deadWheelType = (parent.getItemAtPosition(pos).toString());
             }
-            public void onNothingSelected(AdapterView parent) {
+            public void onNothingSelected(AdapterView<?> parent) {
               // Do nothing.
             }
         });
@@ -559,71 +544,71 @@ public class Info extends Activity {
 	        for(int i=0;i<thisTeam.getColumnCount();++i) {
 	        	String colName = thisTeam.getColumnName(i);
 	        	Log.d("column",colName);
-	        	if(colName.equals(TeamInfoProvider.keyOrientation)){
+	        	if(colName.equals(TeamScoutingProvider.keyOrientation)){
 	        		orientation = thisTeam.getString(i);
-	        	} else if (colName.equals(TeamInfoProvider.keyNumWheels)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyNumWheels)) {
 	        		numWheels = thisTeam.getInt(i);
-	        	} else if (colName.equals(TeamInfoProvider.keyWheelTypes)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyWheelTypes)) {
 	        		wheelTypes = thisTeam.getInt(i);
-	        	} else if (colName.equals(TeamInfoProvider.keyDeadWheel)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyDeadWheel)) {
 	        		if(thisTeam.getInt(i)==0) {
 	            		deadWheel = false;
 	            	} else {
 	            		deadWheel = true;
 	            	}
-	        	} else if (colName.equals(TeamInfoProvider.keyWheel1Type)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyWheel1Type)) {
 	        		wheel1Type = thisTeam.getString(i);
-	        	} else if (colName.equals(TeamInfoProvider.keyWheel1Diameter)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyWheel1Diameter)) {
 	        		wheel1Diameter = thisTeam.getInt(i);
-	        	} else if (colName.equals(TeamInfoProvider.keyWheel2Type)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyWheel2Type)) {
 	        		wheel2Type = thisTeam.getString(i);
-	        	} else if (colName.equals(TeamInfoProvider.keyWheel2Diameter)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
 	        		wheel2Diameter = thisTeam.getInt(i);
-	        	} else if (colName.equals(TeamInfoProvider.keyDeadWheelType)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyDeadWheelType)) {
 	        		deadWheelType = thisTeam.getString(i);
-	        	} else if (colName.equals(TeamInfoProvider.keyTurret)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyTurret)) {
 	        		if(thisTeam.getInt(i)==0) {
 	            		turret = false;
 	            	} else {
 	            		turret = true;
 	            	}
-	        	} else if (colName.equals(TeamInfoProvider.keyTracking)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyTracking)) {
 	        		if(thisTeam.getInt(i)==0) {
 	            		tracking = false;
 	            	} else {
 	            		tracking = true;
 	            	}
-	        	} else if (colName.equals(TeamInfoProvider.keyFenderShooter)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyFenderShooter)) {
 	        		if(thisTeam.getInt(i)==0) {
 	            		fender = false;
 	            	} else {
 	            		fender = true;
 	            	}
-	        	} else if (colName.equals(TeamInfoProvider.keyKeyShooter)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyKeyShooter)) {
 	        		if(thisTeam.getInt(i)==0) {
 	            		key = false;
 	            	} else {
 	            		key = true;
 	            	}
-	        	} else if (colName.equals(TeamInfoProvider.keyBarrier)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyBarrier)) {
 	        		if(thisTeam.getInt(i)==0) {
 	            		barrier = false;
 	            	} else {
 	            		barrier = true;
 	            	}
-	        	} else if (colName.equals(TeamInfoProvider.keyClimb)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyClimb)) {
 	        		if(thisTeam.getInt(i)==0) {
 	            		climb = false;
 	            	} else {
 	            		climb = true;
 	            	}
-	        	} else if (colName.equals(TeamInfoProvider.keyAutonomous)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyAutonomous)) {
 	        		if(thisTeam.getInt(i)==0) {
 	            		auto = false;
 	            	} else {
 	            		auto = true;
 	            	}
-	        	} else if (colName.equals(TeamInfoProvider.keyNotes)) {
+	        	} else if (colName.equals(TeamScoutingProvider.keyNotes)) {
 	        		notes = thisTeam.getString(i);
 	        	}
 	        }

@@ -11,6 +11,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -19,10 +20,8 @@ import android.util.Log;
 import com.mechinn.android.myalliance.GeneralSchema;
 
 public class MatchListProvider extends ContentProvider implements GeneralSchema {
-
-    public static final String DBTable = "matches";
-    public static final String DBTableReset = "matchesReset";
-    private static final int DBVersion = 1;
+    public static final String DBTable = "matchList";
+    public static final String DBTableReset = "matchListReset";
     
     public static final String keyCompetition = "competition";
     public static final String keyTime = "matchTime";
@@ -33,10 +32,13 @@ public class MatchListProvider extends ContentProvider implements GeneralSchema 
     public static final String keyBlue1 = "blue1";
     public static final String keyBlue2 = "blue2";
     public static final String keyBlue3 = "blue3";
+    
+    public static final String[] schemaArray = {_ID, keyLastMod, keyCompetition, keyTime, keyMatchNum, keyRed1, 
+			keyRed2, keyRed3, keyBlue1, keyBlue2, keyBlue3};
 
     private static final String logTag = "MatchListProvider";
-    private static final String authority = "com.mechinn.android.myalliance.providers.MatchListProvider";
-    private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn.matches";
+    private static final String authority = "com.mechinn.android.myalliance.providers."+logTag;
+    private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+DBTable;
     public static final Uri mUri = Uri.parse("content://" + authority + "/"+DBTable);
     public static final Uri mUriReset = Uri.parse("content://" + authority + "/"+DBTableReset);
     private static final int sig = 1;
@@ -49,13 +51,13 @@ public class MatchListProvider extends ContentProvider implements GeneralSchema 
     			_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
     			keyLastMod+" int not null, "+
     			keyCompetition+" text not null, " +
-    			keyTime+" date, " +
+    			keyTime+" int, " +
     			keyMatchNum+" int, " +
     			keyRed1+" int, " +
     			keyRed2+" int, " +
-    			keyRed3+" text, " +
+    			keyRed3+" int, " +
     			keyBlue1+" int, " +
-    			keyBlue2+" text, " +
+    			keyBlue2+" int, " +
     			keyBlue3+" int);";
 
     	MatchListDB(Context context) {
@@ -80,7 +82,8 @@ public class MatchListProvider extends ContentProvider implements GeneralSchema 
     	    		Log.d("onCreate",DATABASE_CREATE);
     	    		db.execSQL(DATABASE_CREATE);
         		case 2:
-//        			Log.i(logTag, "v2 ");
+        			//upgraded team scouting
+    	    		break;
         	}
         }
     }
@@ -91,7 +94,7 @@ public class MatchListProvider extends ContentProvider implements GeneralSchema 
     public int delete(Uri uri, String where, String[] whereArgs) {
         SQLiteDatabase db = mDB.getWritableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        int count;
+        int count = 0;
         switch (sUriMatcher.match(uri)) {
             case sig:
                 count = db.delete(DBTable, where, whereArgs);
@@ -99,7 +102,11 @@ public class MatchListProvider extends ContentProvider implements GeneralSchema 
             case resetSig:
                 qb.setTables(DBTable);
                 qb.setProjectionMap(matchesProjectionMap);
-                count = qb.query(db, null, null, null, null, null, null).getCount();
+                try{
+                	count = qb.query(db, null, null, null, null, null, null).getCount();
+                } catch (SQLiteException e) {
+                	Log.d(logTag, "No table/rows", e);
+                }
             	mDB.onUpgrade(db,0,1);
             	break;
             default:

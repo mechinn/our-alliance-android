@@ -20,8 +20,8 @@
         </activity>
         <activity 
             android:screenOrientation="landscape"
-            android:name=".activity.scouting.Scouting"
-            android:label="@string/scouting">
+            android:name=".activity.scouting.MatchScouting"
+            android:label="@string/matchScouting">
             <intent-filter>
                 <action android:name="com.mechinn.android.myalliance.OpenScouting"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -54,10 +54,19 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <provider android:name=".providers.TeamInfoProvider" android:authorities="com.mechinn.android.myalliance.providers.TeamInfoProvider" android:exported="true"></provider>
-        <activity android:name=".activity.MatchList">
+        <provider android:name=".providers.TeamScoutingProvider" android:authorities="com.mechinn.android.myalliance.providers.TeamScoutingProvider" android:exported="true"></provider>
+        <activity android:name=".activity.MatchList" android:screenOrientation="landscape" android:label="@string/matchList">
             <intent-filter>
                 <action android:name="com.mechinn.android.myalliance.OpenMatches"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <provider android:name=".providers.MatchScoutingProvider" android:authorities="com.mechinn.android.myalliance.providers.MatchScoutingProvider" android:exported="true"></provider>
+        <provider android:name=".providers.MatchListProvider" android:authorities="com.mechinn.android.myalliance.providers.MatchListProvider" android:exported="true"></provider>
+        <provider android:name=".providers.TeamRankingsProvider" android:authorities="com.mechinn.android.myalliance.providers.TeamRankingsProvider" android:exported="true"></provider>
+        <activity android:screenOrientation="landscape" android:name=".activity.TeamRankings" android:label="@string/teamRankings">
+            <intent-filter>
+                <action android:name="com.mechinn.android.myalliance.OpenTeamRankings"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

@@ -2,30 +2,18 @@ package com.mechinn.android.myalliance.activity;
 
 import com.mechinn.android.myalliance.R;
 import com.mechinn.android.myalliance.ResetDB;
-import com.mechinn.android.myalliance.R.id;
-import com.mechinn.android.myalliance.R.layout;
 import com.mechinn.android.myalliance.data.Prefs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnKeyListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class Settings extends Activity {
@@ -86,9 +74,9 @@ public class Settings extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             	prefs.setCompetition(parent.getItemAtPosition(pos).toString());
             }
-            public void onNothingSelected(AdapterView parent) {
-            	// Do nothing.
-            }
+			public void onNothingSelected(AdapterView<?> parent) {
+				//none
+			}
         });
         
         pullFRC = (Button) findViewById(R.id.pullfrc);

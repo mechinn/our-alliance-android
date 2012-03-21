@@ -1,0 +1,100 @@
+package com.mechinn.android.myalliance.data;
+
+import com.mechinn.android.myalliance.providers.MatchScoutingProvider;
+
+import android.app.Activity;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.net.Uri;
+
+public class MatchScoutingInterface {
+	private Activity activity;
+	
+	public MatchScoutingInterface(Activity act) {
+		activity = act;
+	}
+	
+	public void reset() {
+		activity.getContentResolver().delete(MatchScoutingProvider.mUriReset, null, null);
+	}
+
+    public Uri createMatch(String competition, int matchNum, int team, boolean broke, boolean auto, boolean balanced, 
+    		String shooterType, int top, int mid, int bot, String notes) {
+    	
+        ContentValues initialValues = putVals(true, -1, competition, matchNum, team, broke, auto, balanced,
+    			shooterType, top, mid, bot, notes);
+        
+        return activity.getContentResolver().insert(MatchScoutingProvider.mUri, initialValues);
+    }
+
+    public Cursor fetchAllMatches() {
+    	
+    	return activity.managedQuery(MatchScoutingProvider.mUri, MatchScoutingProvider.schemaArray,
+        		null, null, null);
+    }
+
+    public Cursor fetchMatch(String competition, int matchNum, int team) throws SQLException {
+
+    	Cursor mCursor = activity.managedQuery(MatchScoutingProvider.mUri, MatchScoutingProvider.schemaArray,
+    			MatchScoutingProvider.keyCompetition + " = " + competition + " AND " + MatchScoutingProvider.keyMatchNum + " = " + matchNum + " AND " + MatchScoutingProvider.keyTeam + " = " + team, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+
+    }
+
+    public boolean updateMatch(int lastMod, String competition, int matchNum, int team, boolean broke, boolean auto, boolean balanced, 
+    		String shooterType, int top, int mid, int bot, String notes) {
+    	ContentValues args = putVals(false, -1, competition, matchNum, team, broke, auto, balanced,
+    			shooterType, top, mid, bot, notes);
+        
+        return activity.getContentResolver().update(MatchScoutingProvider.mUri, args,MatchScoutingProvider.keyCompetition + " = " + competition + " AND " + MatchScoutingProvider.keyMatchNum + " = " + matchNum + " AND " + MatchScoutingProvider.keyTeam + " = " + team,null) > 0;
+    }
+
+    public boolean updateMatch(int lastMod, String competition, int matchNum, int team, int broke, int auto, int balanced, 
+    		String shooterType, int top, int mid, int bot, String notes) {
+    	ContentValues args = putVals(false,
+    			lastMod, 
+    			competition, 
+    			matchNum, 
+    			team, 
+	    		broke==0?false:true, 
+	    		auto==0?false:true, 
+	    		balanced==0?false:true, 
+	    		shooterType, 
+	    		top,
+				mid, 
+				bot, 
+				notes);
+        
+        return activity.getContentResolver().update(MatchScoutingProvider.mUri, args,MatchScoutingProvider.keyCompetition + " = " + competition + " AND " + MatchScoutingProvider.keyMatchNum + " = " + matchNum + " AND " + MatchScoutingProvider.keyTeam + " = " + team,null) > 0;
+    }
+    
+    private ContentValues putVals(boolean create, int lastMod, String competition, int matchNum, int team, boolean broke, boolean auto, boolean balanced, 
+    		String shooterType, int top, int mid, int bot, String notes) {
+    	ContentValues cv = new ContentValues();
+    	if(lastMod<0) {
+	    	if(create) {
+	    		cv.put(MatchScoutingProvider.keyCompetition, competition);
+	    		cv.put(MatchScoutingProvider.keyMatchNum, matchNum);
+	    		cv.put(MatchScoutingProvider.keyTeam, team);
+	    		cv.put(MatchScoutingProvider.keyLastMod, 0);
+	    	} else {
+	    		cv.put(MatchScoutingProvider.keyLastMod, System.currentTimeMillis()/1000);
+	    	}
+    	} else {
+    		cv.put(MatchScoutingProvider.keyLastMod, lastMod);
+    	}
+    	cv.put(MatchScoutingProvider.keyBroke, broke);
+    	cv.put(MatchScoutingProvider.keyAuto, auto);
+    	cv.put(MatchScoutingProvider.keyBalance, balanced);
+    	cv.put(MatchScoutingProvider.keyShooter, shooterType);
+    	cv.put(MatchScoutingProvider.keyTop, top);
+    	cv.put(MatchScoutingProvider.keyMid, mid);
+    	cv.put(MatchScoutingProvider.keyBot, bot);
+        cv.put(MatchScoutingProvider.keyNotes, notes);
+        return cv;
+    }
+}

@@ -11,6 +11,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -18,49 +19,55 @@ import android.util.Log;
 
 import com.mechinn.android.myalliance.GeneralSchema;
 
-public class FIRSTrankingsProvider extends ContentProvider implements GeneralSchema  {
-    public static final String DBTable = "FIRSTrankings";
-    public static final String DBTableReset = "FIRSTrankingsReset";
-    private static final int DBVersion = 1;
+public class MatchScoutingProvider extends ContentProvider implements GeneralSchema {
+    public static final String DBTable = "matchScouting";
+    public static final String DBTableReset = "matchScoutingReset";
     
     public static final String keyCompetition = "competition";
-    public static final String keyRank = "rank";
+    public static final String keyMatchNum = "matchNum";
     public static final String keyTeam = "team";
-    public static final String keyQS = "qualifyscore";
-    public static final String keyHybrid = "hybrid";
-    public static final String keyBridge = "bridge";
-    public static final String keyTeleop = "teleop";
-    public static final String keyCoop = "coop";
-    public static final String keyRecord = "record";
-    public static final String keyDQ = "disqualified";
-    public static final String keyPlayed = "played";
+    public static final String keyBroke = "broke";
+    public static final String keyAuto = "autonomous";
+    public static final String keyBalance = "balanced";
+    public static final String keyShooter = "shooter";
+    public static final String keyTop = "top";
+    public static final String keyMid = "mid";
+    public static final String keyBot = "bot";
+    public static final String keyNotes = "notes";
 
-    private static final String logTag = "FIRSTrankingsProvider";
-    private static final String authority = "com.mechinn.android.myalliance.providers.FIRSTrankingsProvider";
-    private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn.teaminfo";
+    public static final String[] schemaArray = {_ID, keyLastMod, 
+		keyCompetition, keyMatchNum, keyTeam, keyBroke, 
+		keyAuto, keyBalance, keyShooter, 
+		keyTop, keyMid, keyBot, 
+		keyNotes};
+
+    private static final String logTag = "MatchScoutingProvider";
+    private static final String authority = "com.mechinn.android.myalliance.providers."+logTag;
+    private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+DBTable;
     public static final Uri mUri = Uri.parse("content://" + authority + "/"+DBTable);
     public static final Uri mUriReset = Uri.parse("content://" + authority + "/"+DBTableReset);
     private static final int sig = 1;
     private static final int resetSig = 2;
     private static final UriMatcher sUriMatcher;
-    private static HashMap<String, String> projectionMap;
+    private static HashMap<String, String> matchesProjectionMap;
     
-    private static class TeamInfoDB extends SQLiteOpenHelper {
-    	private static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+    private static class MatchScoutingDB extends SQLiteOpenHelper {
+    	private static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+
+    			_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
     			keyLastMod+" int not null, "+
     			keyCompetition+" text not null, " +
-    			keyRank+" int, " +
+    			keyMatchNum+" int, " +
     			keyTeam+" int, " +
-    			keyQS+" FLOAT, " +
-    			keyHybrid+" FLOAT, " +
-    			keyBridge+" FLOAT, " +
-    			keyTeleop+" FLOAT, " +
-    			keyCoop+" int, " +
-    			keyRecord+" text, " +
-    			keyDQ+" int, " +
-    			keyPlayed+" int);";
+    			keyBroke+" int, " +
+    			keyAuto+" int, " +
+    			keyBalance+" int, "+
+    			keyShooter+" text, " +
+    			keyTop+" int, " +
+    			keyMid+" int, " +
+    			keyBot+" int, " +
+    			keyNotes+" text);";
 
-    	TeamInfoDB(Context context) {
+    	MatchScoutingDB(Context context) {
             super(context, DBName, null, DBVersion);
         }
 
@@ -77,31 +84,36 @@ public class FIRSTrankingsProvider extends ContentProvider implements GeneralSch
         	Log.w(logTag, "Upgrading database from version " + oldVersion + " to " + newVersion);
         	switch(oldVersion+1){
     	    	default: //case 1
-    	    		Log.i(logTag, "v1 original team info table");
+    	    		Log.i(logTag, "v1 original match info table");
     	    		db.execSQL("DROP TABLE IF EXISTS "+DBTable);
     	    		Log.d("onCreate",DATABASE_CREATE);
     	    		db.execSQL(DATABASE_CREATE);
-        		case 2:
-//        			Log.i(logTag, "v2 ");
+    	    	case 2:
+    	    		//upgraded team scouting
+    	    		break;
         	}
         }
     }
 
-    private TeamInfoDB mDB;
+    private MatchScoutingDB mDB;
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
         SQLiteDatabase db = mDB.getWritableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        int count;
+        int count = 0;
         switch (sUriMatcher.match(uri)) {
             case sig:
                 count = db.delete(DBTable, where, whereArgs);
                 break;
             case resetSig:
                 qb.setTables(DBTable);
-                qb.setProjectionMap(projectionMap);
-                count = qb.query(db, null, null, null, null, null, null).getCount();
+                qb.setProjectionMap(matchesProjectionMap);
+                try{
+                	count = qb.query(db, null, null, null, null, null, null).getCount();
+                } catch (SQLiteException e) {
+                	Log.d(logTag, "No table/rows", e);
+                }
             	mDB.onUpgrade(db,0,1);
             	break;
             default:
@@ -153,7 +165,7 @@ public class FIRSTrankingsProvider extends ContentProvider implements GeneralSch
 
     @Override
     public boolean onCreate() {
-    	mDB = new TeamInfoDB(getContext());
+    	mDB = new MatchScoutingDB(getContext());
         return true;
     }
 
@@ -164,7 +176,7 @@ public class FIRSTrankingsProvider extends ContentProvider implements GeneralSch
         switch (sUriMatcher.match(uri)) {
             case sig:
                 qb.setTables(DBTable);
-                qb.setProjectionMap(projectionMap);
+                qb.setProjectionMap(matchesProjectionMap);
                 break;
 
             default:
@@ -200,20 +212,19 @@ public class FIRSTrankingsProvider extends ContentProvider implements GeneralSch
         sUriMatcher.addURI(authority, DBTable, sig);
         sUriMatcher.addURI(authority, DBTableReset, resetSig);
 
-        projectionMap = new HashMap<String, String>();
-        projectionMap.put(_ID, _ID);
-        projectionMap.put(keyLastMod, keyLastMod);
-        projectionMap.put(keyCompetition, keyCompetition);
-        projectionMap.put(keyRank, keyRank);
-        projectionMap.put(keyTeam, keyTeam);
-        projectionMap.put(keyQS, keyQS);
-        projectionMap.put(keyHybrid, keyHybrid);
-        projectionMap.put(keyBridge, keyBridge);
-        projectionMap.put(keyTeleop, keyTeleop);
-        projectionMap.put(keyCoop, keyCoop);
-        projectionMap.put(keyRecord, keyRecord);
-        projectionMap.put(keyDQ, keyDQ);
-        projectionMap.put(keyPlayed, keyPlayed);
-
+        matchesProjectionMap = new HashMap<String, String>();
+        matchesProjectionMap.put(_ID, _ID);
+        matchesProjectionMap.put(keyLastMod, keyLastMod);
+        matchesProjectionMap.put(keyCompetition, keyCompetition);
+        matchesProjectionMap.put(keyMatchNum, keyMatchNum);
+        matchesProjectionMap.put(keyTeam, keyTeam);
+        matchesProjectionMap.put(keyBroke, keyBroke);
+        matchesProjectionMap.put(keyAuto, keyAuto);
+        matchesProjectionMap.put(keyBalance, keyBalance);
+        matchesProjectionMap.put(keyShooter, keyShooter);
+        matchesProjectionMap.put(keyTop, keyTop);
+        matchesProjectionMap.put(keyMid, keyMid);
+        matchesProjectionMap.put(keyBot, keyBot);
+        matchesProjectionMap.put(keyNotes, keyNotes);
     }
 }
