@@ -24,9 +24,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-    	//setup original db and upgrade to latest
-    	creatTables(db);
-    	onUpgrade(db,1,DBVersion);
+    	onUpgrade(db,0,DBVersion);
     }
 
     @Override
@@ -34,30 +32,38 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     	Log.w(logTag, "Upgrading database from version " + oldVersion + " to " + newVersion);
     	switch(oldVersion+1){
 	    	default: //case 1
-	    		Log.i(logTag, "v1 original match info table");
-	    		db.execSQL("DROP TABLE IF EXISTS "+MatchListProvider.DBTable);
-	    		db.execSQL("DROP TABLE IF EXISTS "+MatchScoutingProvider.DBTable);
-	    		db.execSQL("DROP TABLE IF EXISTS "+TeamRankingsProvider.DBTable);
-	    		db.execSQL("DROP TABLE IF EXISTS "+TeamScoutingProvider.DBTable);
-	    		creatTables(db);
+	    		Log.i(logTag, "v1 original tables.");
+	    		String drop = "DROP TABLE IF EXISTS ";
+	    		
+	    		String matchList = drop+MatchListProvider.DBTable;
+	    		Log.d(logTag,matchList);
+	    		db.execSQL(matchList);
+	    		Log.d(logTag,MatchListProvider.DATABASE_CREATE);
+	    		db.execSQL(MatchListProvider.DATABASE_CREATE);
+
+	    		String matchScouting = drop+MatchScoutingProvider.DBTable;
+	    		Log.d(logTag,matchScouting);
+	    		db.execSQL(matchScouting);
+	    		Log.d(logTag,MatchScoutingProvider.DATABASE_CREATE);
+	    		db.execSQL(MatchScoutingProvider.DATABASE_CREATE);
+	    		
+	    		String teamRankings = drop+TeamRankingsProvider.DBTable;
+	    		Log.d(logTag,teamRankings);
+	    		db.execSQL(teamRankings);
+	    		Log.d(logTag,TeamRankingsProvider.DATABASE_CREATE);
+	    		db.execSQL(TeamRankingsProvider.DATABASE_CREATE);
+
+	    		String teamScouting = drop+TeamScoutingProvider.DBTable;
+	    		Log.d(logTag,teamScouting);
+	    		db.execSQL(teamScouting);
+	    		Log.d(logTag,TeamScoutingProvider.DATABASE_CREATE);
+	    		db.execSQL(TeamScoutingProvider.DATABASE_CREATE);
     		case 2:
-    			Log.i(logTag, "v2 added autonomous column");
-        		db.execSQL("alter table "+TeamScoutingProvider.DBTable+" add column "+TeamScoutingProvider.keyAutonomous+" int;");
+    			Log.i(logTag, "v2 added autonomous column to the "+TeamScoutingProvider.DBTable+" table.");
+    			String query = "ALTER TABLE "+TeamScoutingProvider.DBTable+" ADD COLUMN "+TeamScoutingProvider.keyAutonomous+" INTEGER;";
+    			Log.d(logTag,query);
+        		db.execSQL(query);
     	}
-    }
-    
-    public void creatTables(SQLiteDatabase db) {
-    	Log.d("onCreate",MatchListProvider.DATABASE_CREATE);
-		db.execSQL(MatchListProvider.DATABASE_CREATE);
-		
-		Log.d("onCreate",MatchScoutingProvider.DATABASE_CREATE);
-		db.execSQL(MatchScoutingProvider.DATABASE_CREATE);
-		
-		Log.d("onCreate",TeamRankingsProvider.DATABASE_CREATE);
-		db.execSQL(TeamRankingsProvider.DATABASE_CREATE);
-		
-		Log.d("onCreate",TeamScoutingProvider.DATABASE_CREATE);
-		db.execSQL(TeamScoutingProvider.DATABASE_CREATE);
     }
     
     public void reset() {
