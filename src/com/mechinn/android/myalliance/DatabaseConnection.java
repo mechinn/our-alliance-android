@@ -14,7 +14,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 	public static final String _ID = "_id";
 	public static final String _COUNT = "_count";
 	public static final String keyLastMod = "_lastmod";
-	private static final String DBName = "myAlliance.db";
+	private static final String DBName = "myAlliance.sqlite";
 	private static final int DBVersion = 2;
 	private final String logTag = "DatabaseConnection";
 
