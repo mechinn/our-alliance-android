@@ -27,10 +27,9 @@ public class MyAlliance extends Activity {
         prefs = new Prefs(this);
         
         //first run setup the DB
-        Log.d("first run",Boolean.toString(prefs.getFirstRun()));
-        if(prefs.getFirstRun()) {
+        Log.d("first run",Boolean.toString(prefs.getSetupDB()));
+        if(prefs.getSetupDB()) {
         	new ResetDB(MyAlliance.this,true).show();
-        	prefs.setRunned();
         }
         
         final Button scouting = (Button)  findViewById(R.id.scouting);

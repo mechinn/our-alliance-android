@@ -2,6 +2,7 @@ package com.mechinn.android.myalliance.providers;
 
 import java.util.HashMap;
 
+import com.mechinn.android.myalliance.DatabaseConnection;
 import com.mechinn.android.myalliance.GeneralSchema;
 
 import android.content.ContentProvider;
@@ -21,7 +22,6 @@ import android.util.Log;
 
 public class TeamScoutingProvider extends ContentProvider implements GeneralSchema  {
     public static final String DBTable = "teamScouting";
-    public static final String DBTableReset = "teamScoutingReset";
     
     public static final String keyTeam = "team";
     public static final String keyOrientation = "orientation";
@@ -53,82 +53,40 @@ public class TeamScoutingProvider extends ContentProvider implements GeneralSche
     private static final String authority = "com.mechinn.android.myalliance.providers."+logTag;
     private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+DBTable;
     public static final Uri mUri = Uri.parse("content://" + authority + "/"+DBTable);
-    public static final Uri mUriReset = Uri.parse("content://" + authority + "/"+DBTableReset);
     private static final int sig = 1;
-    private static final int resetSig = 2;
     private static final UriMatcher sUriMatcher;
     private static HashMap<String, String> teamInfoProjectionMap;
     
-    private static class TeamScoutingDB extends SQLiteOpenHelper {
-    	private static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    			keyLastMod+" int not null, "+
-    			keyTeam+" int not null unique, " +
-    			keyOrientation+" text, " +
-    			keyNumWheels+" int, " +
-    			keyWheelTypes+" int, " +
-    			keyDeadWheel+" int, " +
-    			keyWheel1Type+" text, " +
-    			keyWheel1Diameter+" int, " +
-    			keyWheel2Type+" text, " +
-    			keyWheel2Diameter+" int, " +
-    			keyDeadWheelType+" text, " +
-    			keyTurret+" int, " +
-    			keyTracking+" int, " +
-    			keyFenderShooter+" int, " +
-    			keyKeyShooter+" int, " +
-    			keyBarrier+" int, " +
-    			keyClimb+" int, " +
-    			keyNotes+" text);";
+    public static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+			keyLastMod+" int not null, "+
+			keyTeam+" int not null unique, " +
+			keyOrientation+" text, " +
+			keyNumWheels+" int, " +
+			keyWheelTypes+" int, " +
+			keyDeadWheel+" int, " +
+			keyWheel1Type+" text, " +
+			keyWheel1Diameter+" int, " +
+			keyWheel2Type+" text, " +
+			keyWheel2Diameter+" int, " +
+			keyDeadWheelType+" text, " +
+			keyTurret+" int, " +
+			keyTracking+" int, " +
+			keyFenderShooter+" int, " +
+			keyKeyShooter+" int, " +
+			keyBarrier+" int, " +
+			keyClimb+" int, " +
+			keyNotes+" text);";
 
-    	TeamScoutingDB(Context context) {
-            super(context, DBName, null, DBVersion);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-        	//setup original db and upgrade to latest
-        	Log.d("onCreate",DATABASE_CREATE);
-        	db.execSQL(DATABASE_CREATE);
-        	onUpgrade(db,1,DBVersion);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        	Log.w(logTag, "Upgrading database from version " + oldVersion + " to " + newVersion);
-        	switch(oldVersion+1){
-    	    	default: //case 1
-    	    		Log.i(logTag, "v1 original team info table");
-    	    		db.execSQL("DROP TABLE IF EXISTS "+DBTable);
-    	    		Log.d("onCreate",DATABASE_CREATE);
-    	    		db.execSQL(DATABASE_CREATE);
-        		case 2:
-        			Log.i(logTag, "v2 added autonomous column");
-            		db.execSQL("alter table "+DBTable+" add column "+keyAutonomous+" int;");
-        	}
-        }
-    }
-
-    private TeamScoutingDB mDB;
+    private DatabaseConnection mDB;
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
         SQLiteDatabase db = mDB.getWritableDatabase();
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         int count = 0;
         switch (sUriMatcher.match(uri)) {
             case sig:
                 count = db.delete(DBTable, where, whereArgs);
                 break;
-            case resetSig:
-                qb.setTables(DBTable);
-                qb.setProjectionMap(teamInfoProjectionMap);
-                try{
-                	count = qb.query(db, null, null, null, null, null, null).getCount();
-                } catch (SQLiteException e) {
-                	Log.d(logTag, "No table/rows", e);
-                }
-            	mDB.onUpgrade(db,0,1);
-            	break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -178,7 +136,7 @@ public class TeamScoutingProvider extends ContentProvider implements GeneralSche
 
     @Override
     public boolean onCreate() {
-    	mDB = new TeamScoutingDB(getContext());
+    	mDB = new DatabaseConnection(getContext());
         return true;
     }
 
@@ -223,7 +181,6 @@ public class TeamScoutingProvider extends ContentProvider implements GeneralSche
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(authority, DBTable, sig);
-        sUriMatcher.addURI(authority, DBTableReset, resetSig);
 
         teamInfoProjectionMap = new HashMap<String, String>();
         teamInfoProjectionMap.put(_ID, _ID);

@@ -17,11 +17,11 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
 
+import com.mechinn.android.myalliance.DatabaseConnection;
 import com.mechinn.android.myalliance.GeneralSchema;
 
 public class TeamRankingsProvider extends ContentProvider implements GeneralSchema  {
     public static final String DBTable = "teamRankings";
-    public static final String DBTableReset = "teamRankingsReset";
     
     public static final String keyCompetition = "competition";
     public static final String keyRank = "rank";
@@ -42,76 +42,34 @@ public class TeamRankingsProvider extends ContentProvider implements GeneralSche
     private static final String authority = "com.mechinn.android.myalliance.providers."+logTag;
     private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+DBTable;
     public static final Uri mUri = Uri.parse("content://" + authority + "/"+DBTable);
-    public static final Uri mUriReset = Uri.parse("content://" + authority + "/"+DBTableReset);
     private static final int sig = 1;
-    private static final int resetSig = 2;
     private static final UriMatcher sUriMatcher;
     private static HashMap<String, String> projectionMap;
     
-    private static class TeamRankingsDB extends SQLiteOpenHelper {
-    	private static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    			keyLastMod+" int not null, "+
-    			keyCompetition+" text not null, " +
-    			keyRank+" int, " +
-    			keyTeam+" int, " +
-    			keyQS+" FLOAT, " +
-    			keyHybrid+" FLOAT, " +
-    			keyBridge+" FLOAT, " +
-    			keyTeleop+" FLOAT, " +
-    			keyCoop+" int, " +
-    			keyRecord+" text, " +
-    			keyDQ+" int, " +
-    			keyPlayed+" int);";
+    public static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+			keyLastMod+" int not null, "+
+			keyCompetition+" text not null, " +
+			keyRank+" int, " +
+			keyTeam+" int, " +
+			keyQS+" FLOAT, " +
+			keyHybrid+" FLOAT, " +
+			keyBridge+" FLOAT, " +
+			keyTeleop+" FLOAT, " +
+			keyCoop+" int, " +
+			keyRecord+" text, " +
+			keyDQ+" int, " +
+			keyPlayed+" int);";
 
-    	TeamRankingsDB(Context context) {
-            super(context, DBName, null, DBVersion);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-        	//setup original db and upgrade to latest
-        	Log.d("onCreate",DATABASE_CREATE);
-        	db.execSQL(DATABASE_CREATE);
-        	onUpgrade(db,1,DBVersion);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        	Log.w(logTag, "Upgrading database from version " + oldVersion + " to " + newVersion);
-        	switch(oldVersion+1){
-    	    	default: //case 1
-    	    		Log.i(logTag, "v1 original team info table");
-    	    		db.execSQL("DROP TABLE IF EXISTS "+DBTable);
-    	    		Log.d("onCreate",DATABASE_CREATE);
-    	    		db.execSQL(DATABASE_CREATE);
-        		case 2:
-        			//upgraded team scouting
-    	    		break;
-        	}
-        }
-    }
-
-    private TeamRankingsDB mDB;
+    private DatabaseConnection mDB;
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
         SQLiteDatabase db = mDB.getWritableDatabase();
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         int count = 0;
         switch (sUriMatcher.match(uri)) {
             case sig:
                 count = db.delete(DBTable, where, whereArgs);
                 break;
-            case resetSig:
-                qb.setTables(DBTable);
-                qb.setProjectionMap(projectionMap);
-                try{
-                	count = qb.query(db, null, null, null, null, null, null).getCount();
-                } catch (SQLiteException e) {
-                	Log.d(logTag, "No table/rows", e);
-                }
-            	mDB.onUpgrade(db,0,1);
-            	break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -161,7 +119,7 @@ public class TeamRankingsProvider extends ContentProvider implements GeneralSche
 
     @Override
     public boolean onCreate() {
-    	mDB = new TeamRankingsDB(getContext());
+    	mDB = new DatabaseConnection(getContext());
         return true;
     }
 
@@ -206,8 +164,7 @@ public class TeamRankingsProvider extends ContentProvider implements GeneralSche
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(authority, DBTable, sig);
-        sUriMatcher.addURI(authority, DBTableReset, resetSig);
-
+        
         projectionMap = new HashMap<String, String>();
         projectionMap.put(_ID, _ID);
         projectionMap.put(keyLastMod, keyLastMod);

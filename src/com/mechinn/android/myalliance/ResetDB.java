@@ -1,5 +1,6 @@
 package com.mechinn.android.myalliance;
 
+import com.mechinn.android.myalliance.data.Prefs;
 import com.mechinn.android.myalliance.data.TeamRankingsInterface;
 import com.mechinn.android.myalliance.data.MatchListInterface;
 import com.mechinn.android.myalliance.data.MatchScoutingInterface;
@@ -7,10 +8,12 @@ import com.mechinn.android.myalliance.data.TeamScoutingInterface;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 /** Nested class that performs progress calculations (counting) */
 public class ResetDB extends ProgressDialog {
@@ -19,8 +22,12 @@ public class ResetDB extends ProgressDialog {
     private TeamRankingsInterface rankings;
     private MatchListInterface matchList;
     private MatchScoutingInterface matchScore;
+    private String[] competitions;
+    private Prefs prefs;
+    private Activity activity;
+    private DatabaseConnection db;
     boolean initial;
-    private final int total = 279;
+    private final int total = 276;
     
     public ResetDB(Activity act) {
     	this(act,false);
@@ -28,7 +35,11 @@ public class ResetDB extends ProgressDialog {
 
 	public ResetDB(Activity act, boolean init) {
 		super(act);
+		activity = act;
         initial = init;
+        db = new DatabaseConnection(activity);
+        prefs = new Prefs(act);
+        competitions = act.getResources().getStringArray(R.array.competitions);
         teamInfo = new TeamScoutingInterface(act);
         rankings = new TeamRankingsInterface(act);
         matchList = new MatchListInterface(act);
@@ -38,6 +49,7 @@ public class ResetDB extends ProgressDialog {
 	 			int current = msg.arg1;
 	 			ResetDB.this.setProgress(current);
 	 			if (current >= total){
+	 				prefs.setSetupDB(false);
 	 				ResetDB.this.dismiss();
 	 			}
 	 		}
@@ -77,23 +89,23 @@ public class ResetDB extends ProgressDialog {
 	    }
 	    
 	    private void addExMatch(int matchNum) {
-	    	addMatch("CT",matchNum,0,1,2,3,4,5,6);
+	    	addMatch(competitions[0],matchNum,0,1,2,3,4,5,6);
 	    }
 	    
 	    private void addMatch(String comp, int matchNum, int time, int red1, int red2, int red3, int blue1, int blue2, int blue3) {
 	    	matchList.createMatch(comp,matchNum,time,red1,red2,red3,blue1,blue2,blue3);
 	        incrementTotal();
-	    	matchScore.createMatch(comp,matchNum,red1, false, false, false, "None", 0, 0, 0, "");
+	    	matchScore.createMatch(comp,matchNum,red1,"Red 1", false, false, false, 0, 0, 0, 0, "");
 	        incrementTotal();
-	    	matchScore.createMatch(comp,matchNum,red2, false, false, false, "None", 0, 0, 0, "");
+	    	matchScore.createMatch(comp,matchNum,red2,"Red 2", false, false, false, 0, 0, 0, 0, "");
 	        incrementTotal();
-	    	matchScore.createMatch(comp,matchNum,red3, false, false, false, "None", 0, 0, 0, "");
+	    	matchScore.createMatch(comp,matchNum,red3,"Red 3", false, false, false, 0, 0, 0, 0, "");
 	        incrementTotal();
-	    	matchScore.createMatch(comp,matchNum,blue1, false, false, false, "None", 0, 0, 0, "");
+	    	matchScore.createMatch(comp,matchNum,blue1,"Blue 1", false, false, false, 0, 0, 0, 0, "");
 	        incrementTotal();
-	    	matchScore.createMatch(comp,matchNum,blue2, false, false, false, "None", 0, 0, 0, "");
+	    	matchScore.createMatch(comp,matchNum,blue2,"Blue 2", false, false, false, 0, 0, 0, 0, "");
 	        incrementTotal();
-	    	matchScore.createMatch(comp,matchNum,blue3, false, false, false, "None", 0, 0, 0, "");
+	    	matchScore.createMatch(comp,matchNum,blue3,"Blue 3", false, false, false, 0, 0, 0, 0, "");
 	        incrementTotal();
 	    }
 
@@ -101,14 +113,8 @@ public class ResetDB extends ProgressDialog {
 		protected Void doInBackground(Handler... params) {
 			mHandler = params[0];
 			if(!initial) {
-				teamInfo.reset();
+				db.reset();
 				incrementTotal();
-		        rankings.reset();
-		        incrementTotal();
-		        matchList.reset();
-		        incrementTotal();
-		        matchScore.reset();
-		        incrementTotal();
 	    	} else {
 	    		setTotal(4);
 	    	}

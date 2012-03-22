@@ -17,15 +17,16 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
 
+import com.mechinn.android.myalliance.DatabaseConnection;
 import com.mechinn.android.myalliance.GeneralSchema;
 
 public class MatchScoutingProvider extends ContentProvider implements GeneralSchema {
     public static final String DBTable = "matchScouting";
-    public static final String DBTableReset = "matchScoutingReset";
     
     public static final String keyCompetition = "competition";
     public static final String keyMatchNum = "matchNum";
     public static final String keyTeam = "team";
+    public static final String keySlot = "slot";
     public static final String keyBroke = "broke";
     public static final String keyAuto = "autonomous";
     public static final String keyBalance = "balanced";
@@ -36,7 +37,7 @@ public class MatchScoutingProvider extends ContentProvider implements GeneralSch
     public static final String keyNotes = "notes";
 
     public static final String[] schemaArray = {_ID, keyLastMod, 
-		keyCompetition, keyMatchNum, keyTeam, keyBroke, 
+		keyCompetition, keyMatchNum, keyTeam, keySlot, keyBroke, 
 		keyAuto, keyBalance, keyShooter, 
 		keyTop, keyMid, keyBot, 
 		keyNotes};
@@ -45,77 +46,36 @@ public class MatchScoutingProvider extends ContentProvider implements GeneralSch
     private static final String authority = "com.mechinn.android.myalliance.providers."+logTag;
     private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+DBTable;
     public static final Uri mUri = Uri.parse("content://" + authority + "/"+DBTable);
-    public static final Uri mUriReset = Uri.parse("content://" + authority + "/"+DBTableReset);
     private static final int sig = 1;
-    private static final int resetSig = 2;
     private static final UriMatcher sUriMatcher;
     private static HashMap<String, String> matchesProjectionMap;
     
-    private static class MatchScoutingDB extends SQLiteOpenHelper {
-    	private static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+
-    			_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    			keyLastMod+" int not null, "+
-    			keyCompetition+" text not null, " +
-    			keyMatchNum+" int, " +
-    			keyTeam+" int, " +
-    			keyBroke+" int, " +
-    			keyAuto+" int, " +
-    			keyBalance+" int, "+
-    			keyShooter+" text, " +
-    			keyTop+" int, " +
-    			keyMid+" int, " +
-    			keyBot+" int, " +
-    			keyNotes+" text);";
+    public static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+
+			_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+			keyLastMod+" int not null, "+
+			keyCompetition+" text not null, " +
+			keyMatchNum+" int, " +
+			keyTeam+" int, " +
+			keySlot+" text, " +
+			keyBroke+" int, " +
+			keyAuto+" int, " +
+			keyBalance+" int, "+
+			keyShooter+" int, " +
+			keyTop+" int, " +
+			keyMid+" int, " +
+			keyBot+" int, " +
+			keyNotes+" text);";
 
-    	MatchScoutingDB(Context context) {
-            super(context, DBName, null, DBVersion);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-        	//setup original db and upgrade to latest
-        	Log.d("onCreate",DATABASE_CREATE);
-        	db.execSQL(DATABASE_CREATE);
-        	onUpgrade(db,1,DBVersion);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        	Log.w(logTag, "Upgrading database from version " + oldVersion + " to " + newVersion);
-        	switch(oldVersion+1){
-    	    	default: //case 1
-    	    		Log.i(logTag, "v1 original match info table");
-    	    		db.execSQL("DROP TABLE IF EXISTS "+DBTable);
-    	    		Log.d("onCreate",DATABASE_CREATE);
-    	    		db.execSQL(DATABASE_CREATE);
-    	    	case 2:
-    	    		//upgraded team scouting
-    	    		break;
-        	}
-        }
-    }
-
-    private MatchScoutingDB mDB;
+    private DatabaseConnection mDB;
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
         SQLiteDatabase db = mDB.getWritableDatabase();
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         int count = 0;
         switch (sUriMatcher.match(uri)) {
             case sig:
                 count = db.delete(DBTable, where, whereArgs);
                 break;
-            case resetSig:
-                qb.setTables(DBTable);
-                qb.setProjectionMap(matchesProjectionMap);
-                try{
-                	count = qb.query(db, null, null, null, null, null, null).getCount();
-                } catch (SQLiteException e) {
-                	Log.d(logTag, "No table/rows", e);
-                }
-            	mDB.onUpgrade(db,0,1);
-            	break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -165,7 +125,7 @@ public class MatchScoutingProvider extends ContentProvider implements GeneralSch
 
     @Override
     public boolean onCreate() {
-    	mDB = new MatchScoutingDB(getContext());
+    	mDB = new DatabaseConnection(getContext());
         return true;
     }
 
@@ -210,7 +170,6 @@ public class MatchScoutingProvider extends ContentProvider implements GeneralSch
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(authority, DBTable, sig);
-        sUriMatcher.addURI(authority, DBTableReset, resetSig);
 
         matchesProjectionMap = new HashMap<String, String>();
         matchesProjectionMap.put(_ID, _ID);
@@ -218,6 +177,7 @@ public class MatchScoutingProvider extends ContentProvider implements GeneralSch
         matchesProjectionMap.put(keyCompetition, keyCompetition);
         matchesProjectionMap.put(keyMatchNum, keyMatchNum);
         matchesProjectionMap.put(keyTeam, keyTeam);
+        matchesProjectionMap.put(keySlot, keySlot);
         matchesProjectionMap.put(keyBroke, keyBroke);
         matchesProjectionMap.put(keyAuto, keyAuto);
         matchesProjectionMap.put(keyBalance, keyBalance);

@@ -17,11 +17,11 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
 
+import com.mechinn.android.myalliance.DatabaseConnection;
 import com.mechinn.android.myalliance.GeneralSchema;
 
 public class MatchListProvider extends ContentProvider implements GeneralSchema {
     public static final String DBTable = "matchList";
-    public static final String DBTableReset = "matchListReset";
     
     public static final String keyCompetition = "competition";
     public static final String keyTime = "matchTime";
@@ -40,75 +40,33 @@ public class MatchListProvider extends ContentProvider implements GeneralSchema 
     private static final String authority = "com.mechinn.android.myalliance.providers."+logTag;
     private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+DBTable;
     public static final Uri mUri = Uri.parse("content://" + authority + "/"+DBTable);
-    public static final Uri mUriReset = Uri.parse("content://" + authority + "/"+DBTableReset);
     private static final int sig = 1;
-    private static final int resetSig = 2;
     private static final UriMatcher sUriMatcher;
     private static HashMap<String, String> matchesProjectionMap;
     
-    private static class MatchListDB extends SQLiteOpenHelper {
-    	private static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+
-    			_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    			keyLastMod+" int not null, "+
-    			keyCompetition+" text not null, " +
-    			keyTime+" int, " +
-    			keyMatchNum+" int, " +
-    			keyRed1+" int, " +
-    			keyRed2+" int, " +
-    			keyRed3+" int, " +
-    			keyBlue1+" int, " +
-    			keyBlue2+" int, " +
-    			keyBlue3+" int);";
+    public static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+
+			_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+			keyLastMod+" int not null, "+
+			keyCompetition+" text not null, " +
+			keyTime+" int, " +
+			keyMatchNum+" int, " +
+			keyRed1+" int, " +
+			keyRed2+" int, " +
+			keyRed3+" int, " +
+			keyBlue1+" int, " +
+			keyBlue2+" int, " +
+			keyBlue3+" int);";
 
-    	MatchListDB(Context context) {
-            super(context, DBName, null, DBVersion);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-        	//setup original db and upgrade to latest
-        	Log.d("onCreate",DATABASE_CREATE);
-        	db.execSQL(DATABASE_CREATE);
-        	onUpgrade(db,1,DBVersion);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        	Log.w(logTag, "Upgrading database from version " + oldVersion + " to " + newVersion);
-        	switch(oldVersion+1){
-    	    	default: //case 1
-    	    		Log.i(logTag, "v1 original match info table");
-    	    		db.execSQL("DROP TABLE IF EXISTS "+DBTable);
-    	    		Log.d("onCreate",DATABASE_CREATE);
-    	    		db.execSQL(DATABASE_CREATE);
-        		case 2:
-        			//upgraded team scouting
-    	    		break;
-        	}
-        }
-    }
-
-    private MatchListDB mDB;
+    private DatabaseConnection mDB;
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
         SQLiteDatabase db = mDB.getWritableDatabase();
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         int count = 0;
         switch (sUriMatcher.match(uri)) {
             case sig:
                 count = db.delete(DBTable, where, whereArgs);
                 break;
-            case resetSig:
-                qb.setTables(DBTable);
-                qb.setProjectionMap(matchesProjectionMap);
-                try{
-                	count = qb.query(db, null, null, null, null, null, null).getCount();
-                } catch (SQLiteException e) {
-                	Log.d(logTag, "No table/rows", e);
-                }
-            	mDB.onUpgrade(db,0,1);
-            	break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -158,7 +116,7 @@ public class MatchListProvider extends ContentProvider implements GeneralSchema 
 
     @Override
     public boolean onCreate() {
-    	mDB = new MatchListDB(getContext());
+    	mDB = new DatabaseConnection(getContext());
         return true;
     }
 
@@ -203,7 +161,6 @@ public class MatchListProvider extends ContentProvider implements GeneralSchema 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(authority, DBTable, sig);
-        sUriMatcher.addURI(authority, DBTableReset, resetSig);
 
         matchesProjectionMap = new HashMap<String, String>();
         matchesProjectionMap.put(_ID, _ID);

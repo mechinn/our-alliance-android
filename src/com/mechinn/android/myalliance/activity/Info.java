@@ -195,8 +195,6 @@ public class Info extends Activity {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         
         teamInfo = new TeamScoutingInterface(this);
-        
-        new getInfo().execute(this);
 
 		teamNumber = (TextView) findViewById(R.id.teamNumber);
         
@@ -469,6 +467,8 @@ public class Info extends Activity {
                 finish();
             }
         });
+        
+        new getInfo().execute(this);
     }
     
     private class sendDB extends AsyncTask<Context,Void,Void> {

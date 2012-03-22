@@ -15,10 +15,6 @@ public class TeamScoutingInterface {
 	public TeamScoutingInterface(Activity act) {
 		activity = act;
 	}
-	
-	public void reset() {
-		activity.getContentResolver().delete(TeamScoutingProvider.mUriReset, null, null);
-	}
 
     public Uri createTeam(int team, String orientation, int numWheels, int wheelTypes, boolean deadWheel,
     		String wheel1Type, int wheel1Diameter, String wheel2Type, int wheel2Diameter,
@@ -63,7 +59,7 @@ public class TeamScoutingInterface {
 			deadWheelType, turret, tracking, fender,
 			key, barrier, climb, notes, autonomous);
         
-        return activity.getContentResolver().update(TeamScoutingProvider.mUri, args,MatchScoutingProvider.keyTeam + "=" + team,null) > 0;
+        return activity.getContentResolver().update(TeamScoutingProvider.mUri, args,MatchScoutingProvider.keyTeam + " = '" + team + "'",null) > 0;
     }
 
     public boolean updateTeam(int team, int lastMod, String orientation, int numWheels, int wheelTypes, 
@@ -91,7 +87,7 @@ public class TeamScoutingInterface {
 				notes, 
 				autonomous==0?false:true);
         
-        return activity.getContentResolver().update(TeamScoutingProvider.mUri, args,TeamScoutingProvider.keyTeam + "=" + team,null) > 0;
+        return activity.getContentResolver().update(TeamScoutingProvider.mUri, args,TeamScoutingProvider.keyTeam + " = " + team + "'",null) > 0;
     }
     
     private ContentValues putVals(boolean create, int team, int lastMod, String orientation, int numWheels, int wheelTypes, 

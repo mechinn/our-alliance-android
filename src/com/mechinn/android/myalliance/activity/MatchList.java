@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.mechinn.android.myalliance.R;
 import com.mechinn.android.myalliance.data.MatchListInterface;
+import com.mechinn.android.myalliance.data.Prefs;
 import com.mechinn.android.myalliance.providers.MatchListProvider;
 
 import android.app.Activity;
@@ -12,6 +13,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.CursorLoader;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,9 +33,11 @@ public class MatchList extends Activity {
 	private TableRow tableRow;
 	private TextView textView;
 	private ArrayList<Intent> intents;
+	private Prefs prefs;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.matchlist);
+        prefs = new Prefs(this);
         matchTable = (TableLayout) this.findViewById(R.id.matchList);
         matchListData = new MatchListInterface(this);
         intents = new ArrayList<Intent>();
@@ -86,8 +90,9 @@ public class MatchList extends Activity {
     				break;
     			case ADDROW:
     				tableRow.setOnClickListener(new OnClickListener() {
+    					private int index = intents.size()-1;
 						public void onClick(View v) {
-							startActivity(intents.get(intents.size()-1));
+							startActivity(intents.get(index));
 						}
     				});
     				matchTable.addView(tableRow);
@@ -124,10 +129,9 @@ public class MatchList extends Activity {
 					MatchListProvider.keyRed1, MatchListProvider.keyRed2, MatchListProvider.keyRed3,
 					MatchListProvider.keyBlue1, MatchListProvider.keyBlue2, MatchListProvider.keyBlue3};
 			
-			Cursor thisMatch = matchListData.fetchAllMatches();
-	        startManagingCursor(thisMatch);
+			Cursor thisMatch = matchListData.fetchMatches(prefs.getCompetition());
 			
-			while(thisMatch.moveToNext()) {
+			do {
 	        	publishProgress(NEWROW);
 	        	for(int j=0;j<from.length;++j) {
 	            	String colName = from[j];
@@ -146,7 +150,7 @@ public class MatchList extends Activity {
 	            	}
 	            }
 	        	publishProgress(ADDROW);
-	        }
+	        } while(thisMatch.moveToNext());
 			
 	        return null;
 		}

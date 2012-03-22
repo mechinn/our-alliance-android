@@ -11,16 +11,16 @@ public class Prefs {
 	 *
 	 * @return returns true, if this is the first run
 	 */
-	public boolean getFirstRun() {
+	public boolean getSetupDB() {
 		return prefs.getBoolean("firstRun", true);
 	}
 	 
 	/**
 	 * store the first run
 	 */
-	public void setRunned() {
+	public void setSetupDB(boolean run) {
 		SharedPreferences.Editor edit = prefs.edit();
-		edit.putBoolean("firstRun", false);
+		edit.putBoolean("firstRun", run);
 		edit.commit();
 	}
 	
@@ -102,7 +102,7 @@ public class Prefs {
 	 * @return returns true, if this is the first run
 	 */
 	public String getCompetition() {
-		return prefs.getString("competition", "");
+		return prefs.getString("competition", "Connecticut");
 	}
 	 
 	/**

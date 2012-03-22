@@ -14,10 +14,6 @@ public class MatchListInterface {
 	public MatchListInterface(Activity act) {
 		activity = act;
 	}
-	
-	public void reset() {
-		activity.getContentResolver().delete(MatchListProvider.mUriReset, null, null);
-	}
 
     public Uri createMatch(String competition, int matchNum, int time, 
     		int red1, int red2, int red3, int blue1, int blue2, int blue3) {
@@ -32,11 +28,20 @@ public class MatchListInterface {
     	
     	return activity.managedQuery(MatchListProvider.mUri, MatchListProvider.schemaArray, null, null, null);
     }
+    
+    public Cursor fetchMatches(String competition) {
+    	Cursor mCursor = activity.managedQuery(MatchListProvider.mUri, MatchListProvider.schemaArray,
+    			MatchListProvider.keyCompetition + " = '" + competition + "'", null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
 
     public Cursor fetchMatch(String competition, int matchNum) throws SQLException {
 
     	Cursor mCursor = activity.managedQuery(MatchListProvider.mUri, MatchListProvider.schemaArray,
-    			MatchListProvider.keyCompetition + " = " + competition + " AND " + MatchListProvider.keyMatchNum + " = " + matchNum, null, null);
+    			MatchListProvider.keyCompetition + " = '" + competition + "' AND " + MatchListProvider.keyMatchNum + " = '" + matchNum +"'", null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -49,7 +54,7 @@ public class MatchListInterface {
     	ContentValues args = putVals(false, lastMod, competition, matchNum, 
     			time, red1, red2, red3, blue1, blue2, blue3);
         
-        return activity.getContentResolver().update(MatchListProvider.mUri, args,MatchListProvider.keyCompetition + " = " + competition + " AND " + MatchListProvider.keyMatchNum + " = " + matchNum,null) > 0;
+        return activity.getContentResolver().update(MatchListProvider.mUri, args,MatchListProvider.keyCompetition + " = '" + competition + "' AND " + MatchListProvider.keyMatchNum + " = '" + matchNum + "'",null) > 0;
     }
     
     private ContentValues putVals(boolean create, int lastMod, String competition, int matchNum, int time, 

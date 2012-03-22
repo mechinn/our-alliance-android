@@ -14,10 +14,6 @@ public class TeamRankingsInterface {
 	public TeamRankingsInterface(Activity act) {
 		activity = act;
 	}
-	
-	public void reset() {
-		activity.getContentResolver().delete(TeamRankingsProvider.mUriReset, null, null);
-	}
 
     public Uri createTeam(String competition, int team, int rank, float qs, float hybrid,
     		float bridge, float teleop, int coop, String record, int dq, int played) {
@@ -34,7 +30,7 @@ public class TeamRankingsInterface {
 
     public Cursor fetchTeam(String competition, int team) throws SQLException {
     	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.mUri, TeamRankingsProvider.schemaArray, 
-    			TeamRankingsProvider.keyCompetition + " = " + competition + " AND " + TeamRankingsProvider.keyTeam + " = " + team, null, null);
+    			TeamRankingsProvider.keyCompetition + " = '" + competition + "' AND " + TeamRankingsProvider.keyTeam + " = '" + team + "'", null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }

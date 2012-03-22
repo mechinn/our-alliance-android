@@ -112,7 +112,7 @@
 	            android:text="Discard" />
 	
 	    </LinearLayout>
-			
+			
 	    <Spinner
 	        android:id="@+id/competitions"
 	        android:layout_width="match_parent"

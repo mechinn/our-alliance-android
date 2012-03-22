@@ -102,8 +102,7 @@
         <item >notes</item>
     </string-array>
     <string-array name="competitions">
-        <item >Horsham</item>
-        <item >Rutgers</item>
+        <item >Connecticut</item>
     </string-array>
     <string name="teamLabel">Team: </string>
     <string name="orientation">Orientation: </string>
@@ -146,4 +145,5 @@
     <string name="matchList">Match List</string>
     <string name="matchScouting">Match Scouting</string>
     <string name="teamRankings">Team Rankings</string>
+    <string name="matchTeamImg">Team Image</string>
 </resources>

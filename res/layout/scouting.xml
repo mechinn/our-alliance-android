@@ -5,7 +5,8 @@
 	
 	<LinearLayout
 	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content" >
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
             
         <LinearLayout
 	        android:id="@+id/linearLayout4"
@@ -52,13 +53,13 @@
 	            android:textAppearance="?android:attr/textAppearanceMedium" />
 	
 	        <Button
-	            android:id="@+id/button1"
+	            android:id="@+id/matchScoutingSave"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:text="@string/save" />
 	
 	        <Button
-	            android:id="@+id/button2"
+	            android:id="@+id/matchScoutingDiscard"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:text="@string/discard" />
@@ -86,36 +87,31 @@
 			    android:layout_height="wrap_content"
 			    android:text="@string/balanced" />
 	    </LinearLayout>
-	
-	    <LinearLayout
-	        android:id="@+id/linearLayout2"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content" >
 	        
-	        <RadioGroup
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal">
+        <RadioGroup
+	    	android:id="@+id/MatchScoutingShootingType"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<RadioButton
+			    android:id="@+id/MatchScoutingNoShooting"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="@string/noShooting" />
 	
-				<RadioButton
-				    android:id="@+id/radioButton2"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:text="@string/noShooting" />
-		
-		        <RadioButton
-		            android:id="@+id/radioButton1"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="@string/dunker" />
-		
-		        <RadioButton
-		            android:id="@+id/radioButton3"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="@string/shooter" />
-			</RadioGroup>
-	    </LinearLayout>
+	        <RadioButton
+	            android:id="@+id/MatchScoutingDunker"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/dunker" />
+	
+	        <RadioButton
+	            android:id="@+id/MatchScoutingShooter"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/shooter" />
+		</RadioGroup>
 	
 	    <TableLayout
 	        android:layout_width="match_parent"
@@ -145,7 +141,7 @@
 	            android:layout_height="wrap_content" >
 	
 	            <Button
-	                android:id="@+id/midTopScore"
+	                android:id="@+id/addMidScore"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:text="@string/midScore" />
@@ -164,7 +160,7 @@
 	            android:layout_height="wrap_content" >
 	
 	            <Button
-	                android:id="@+id/botTopScore"
+	                android:id="@+id/addBotScore"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:text="@string/botScore" />
@@ -195,6 +191,5 @@
 			        android:inputType="textMultiLine" />
 		     </TableRow>
 	    </TableLayout>
-            
     </LinearLayout>
 </ScrollView>
