@@ -92,7 +92,6 @@ public class MatchList extends Activity {
 			header.addView(headerText);
 		}
         header.setBackgroundColor(getResources().getColor(R.color.black));
-        this.findViewById(R.id.matchListHeader).bringToFront();
         setup();
 	}
 	
@@ -100,37 +99,28 @@ public class MatchList extends Activity {
 		matchTable.removeAllViews();
 		tableRow = new TableRow(MatchList.this);
 		for(String col : white) {
-			addText(col);
+			textView = textSetup();
+			textView.setText(col);
+			textView.setHeight(0);
+			tableRow.addView(textView);
 		}
 		for(String col : red) {
-			addRed(col);
+			textView = textSetup();
+			textView.setText(col);
+			textView.setTextColor(getResources().getColor(R.color.red));
+			textView.setHeight(0);
+			tableRow.addView(textView);
 		}
 		for(String col : blue) {
-			addBlue(col);
+			textView = textSetup();
+			textView.setText(col);
+			textView.setTextColor(getResources().getColor(R.color.blue));
+			textView.setHeight(0);
+			tableRow.addView(textView);
 		}
 		matchTable.addView(tableRow);
 		intents = new ArrayList<Intent>();
         new getMatches().execute();
-	}
-	
-	private void addText(String s) {
-		textView = textSetup();
-		textView.setText(s);
-		tableRow.addView(textView);
-	}
-	
-	private void addRed(String s) {
-		textView = textSetup();
-		textView.setText(s);
-		textView.setTextColor(getResources().getColor(R.color.red));
-		tableRow.addView(textView);
-	}
-	
-	private void addBlue(String s) {
-		textView = textSetup();
-		textView.setText(s);
-		textView.setTextColor(getResources().getColor(R.color.blue));
-		tableRow.addView(textView);
 	}
 	
 	private TextView textSetup() {
@@ -169,7 +159,9 @@ public class MatchList extends Activity {
     				intents.add(intent);
     				break;
     			case ADDTEXT:
-    				addText((String)data[1]);
+    				textView = textSetup();
+    				textView.setText((String)data[1]);
+    				tableRow.addView(textView);
     				break;
     			case SETMATCH:
 					intents.get(intents.size()-1).putExtra("match", (Integer)data[1]);
@@ -184,10 +176,16 @@ public class MatchList extends Activity {
     				matchTable.addView(tableRow);
     				break;
     			case ADDRED:
-    				addRed((String)data[1]);
+    				textView = textSetup();
+    				textView.setText((String)data[1]);
+    				textView.setTextColor(getResources().getColor(R.color.red));
+    				tableRow.addView(textView);
     				break;
     			case ADDBLUE:
-    				addBlue((String)data[1]);
+    				textView = textSetup();
+    				textView.setText((String)data[1]);
+    				textView.setTextColor(getResources().getColor(R.color.blue));
+    				tableRow.addView(textView);
     				break;
     		}
     	}

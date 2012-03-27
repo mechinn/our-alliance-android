@@ -51,8 +51,8 @@ public class Teams extends Activity {
     private float mx, my;
     private boolean startTrack;
 
-    private ScrollView vScrollTeams;
-    private ScrollView vScrollTable;
+    private ScrollView vScroll;
+    private HorizontalScrollView hScrollHeader;
     private HorizontalScrollView hScroll;
     
     private Dialog addTeamDialog;
@@ -89,8 +89,8 @@ public class Teams extends Activity {
             		x = (int) (mx - curX);
                     y = (int) (my - curY);
                     Log.d("scroll", Integer.toString(x)+", "+Integer.toString(y));
-                    vScrollTeams.scrollBy(x,y);
-                    vScrollTable.scrollBy(x,y);
+                    vScroll.scrollBy(x,y);
+                    hScrollHeader.scrollBy(x,y);
                     hScroll.scrollBy(x,y);
                     mx = curX;
                     my = curY;
@@ -111,22 +111,21 @@ public class Teams extends Activity {
         prefs = new Prefs(this);
         orderBy = TeamScoutingProvider.keyTeam;
         desc = false;
-        vScrollTeams = (ScrollView) findViewById(R.id.vScrollTeams);
-        vScrollTable = (ScrollView) findViewById(R.id.vScrollTable);
+        vScroll = (ScrollView) findViewById(R.id.vScroll);
+        hScrollHeader = (HorizontalScrollView) findViewById(R.id.hScrollHeader);
         hScroll = (HorizontalScrollView) findViewById(R.id.hScroll);
-        
-        hScroll.bringToFront();
-        vScrollTeams.bringToFront();
         
         teamInfo = new TeamScoutingInterface(this);
         staticTable = (TableLayout) this.findViewById(R.id.staticTable);
         staticTeams = (TableLayout) this.findViewById(R.id.staticTeams);
         staticCols = (TableLayout) this.findViewById(R.id.staticCols);
-        teamsTable = (TableLayout) this.findViewById(R.id.teamsTable);
+        teamsTable = (TableLayout) this.findViewById(R.id.table);
         teamsTable.setBackgroundColor(Color.BLACK);
         
-        staticCols.bringToFront();
-    	staticTable.bringToFront();
+//        hScroll.bringToFront();
+//        staticTeams.bringToFront();
+//        findViewById(R.id.header).bringToFront();
+//        staticTable.bringToFront();
 	}
 	
 	public void onStart() {
@@ -180,11 +179,8 @@ public class Teams extends Activity {
     	protected void onProgressUpdate(Object... data) {
     		switch((Integer)data[0]) {
     			case ADDTEAM:
-    				text = addText((String)data[1]);
-    	        	row.addView(text);
-    				staticColText = addText((String)data[1]);
-    	        	staticColRow.addView(staticColText);
     				staticTeamText = addText((String)data[1]);
+    				staticTeamText.setHeight(0);
     	        	staticTeamRow.addView(staticTeamText);
     				staticTableText = addText((String)data[1]);
     				staticTableText.setFocusable(true);
@@ -253,16 +249,9 @@ public class Teams extends Activity {
     						}
     					}
     		    	});
-    				for(int i = 0; i< colNames.length;++i) {
-    					if(((String)data[1]).equals(colNames[i])) {
-    						if(orderBy.equals(from[i])) {
-    							staticColText.requestFocus();
-    						}
-    						break;
-    					}
-    				}
     	        	staticColRow.addView(staticColText);
     				text = addText((String)data[1]);
+    				text.setHeight(0);
     	        	row.addView(text);
     	        	break;
     			case ADDTEXT:
@@ -321,7 +310,8 @@ public class Teams extends Activity {
     			case ROWONCLICK:
     				Log.d(logTag, "Adding team "+(Integer)data[1]);
     				final String teamString = Integer.toString((Integer)data[1]);
-        			text.setText(teamString);
+//        			text.setText("");
+//    				text.getLayoutParams().width=0;
         			OnClickListener clickRow = new OnClickListener() {
             			public void onClick(View v) {
                 			String actionName = "com.mechinn.android.ouralliance.OpenTeamInfo";
@@ -350,8 +340,7 @@ public class Teams extends Activity {
 	        	TextView tv = setupText();
 	        	tv.setText("No Teams");
 	        	tr.addView(tv);
-	        	staticCols.removeAllViews();
-	        	staticCols.addView(tr);
+	        	teamsTable.addView(tr);
 	        }
     	}
     	
@@ -376,30 +365,34 @@ public class Teams extends Activity {
 	        do {
 	        	publishProgress(NEWROW);
 	        	for(int j=0;j<from.length;++j) {
-	        		publishProgress(NEWTEXT);
+	        		
 	            	String colName = from[j];
 	            	int col = thisTeam.getColumnIndex(colName);
 //	            	Log.d("table fill", Integer.toString(col));
 //	            	Log.d("table colname", colName);
 	            	if(colName.equals(TeamScoutingProvider.keyTeam)) {
 	            		publishProgress(ROWONCLICK,thisTeam.getInt(col));
-	            	} else if(colName.equals(TeamScoutingProvider.keyOrientation) || colName.equals(TeamScoutingProvider.keyWheel1Type) || 
-	            			colName.equals(TeamScoutingProvider.keyWheel2Type) || colName.equals(TeamScoutingProvider.keyDeadWheelType) || 
-	            			colName.equals(TeamScoutingProvider.keyNotes)){
-	            		publishProgress(SETTEXT,thisTeam.getString(col));
-	            	} else if (colName.equals(TeamScoutingProvider.keyNumWheels) || colName.equals(TeamScoutingProvider.keyWheel1Diameter) || 
-	            			colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
-	            		publishProgress(SETTEXT,Integer.toString(thisTeam.getInt(col)));
-	            	} else if (colName.equals(TeamScoutingProvider.keyTurret) || 
-	            			colName.equals(TeamScoutingProvider.keyTracking) || colName.equals(TeamScoutingProvider.keyFenderShooter) || 
-	            			colName.equals(TeamScoutingProvider.keyKeyShooter) || colName.equals(TeamScoutingProvider.keyBarrier) || 
-	            			colName.equals(TeamScoutingProvider.keyClimb) || colName.equals(TeamScoutingProvider.keyAutonomous)) {
-	            		switch(thisTeam.getInt(col)) {
-	            			case 0:publishProgress(SETTEXT,"no");break;
-	            			default:publishProgress(SETTEXT,"yes");
-	            		}
+	            	} else {
+	            		publishProgress(NEWTEXT);
+	            		if(colName.equals(TeamScoutingProvider.keyOrientation) || colName.equals(TeamScoutingProvider.keyWheel1Type) || 
+	            				colName.equals(TeamScoutingProvider.keyWheel2Type) || colName.equals(TeamScoutingProvider.keyDeadWheelType) || 
+		            			colName.equals(TeamScoutingProvider.keyNotes)){
+		            		publishProgress(SETTEXT,thisTeam.getString(col));
+		            	} else if (colName.equals(TeamScoutingProvider.keyNumWheels) || colName.equals(TeamScoutingProvider.keyWheel1Diameter) || 
+		            			colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
+		            		publishProgress(SETTEXT,Integer.toString(thisTeam.getInt(col)));
+		            	} else if (colName.equals(TeamScoutingProvider.keyTurret) || 
+		            			colName.equals(TeamScoutingProvider.keyTracking) || colName.equals(TeamScoutingProvider.keyFenderShooter) || 
+		            			colName.equals(TeamScoutingProvider.keyKeyShooter) || colName.equals(TeamScoutingProvider.keyBarrier) || 
+		            			colName.equals(TeamScoutingProvider.keyClimb) || colName.equals(TeamScoutingProvider.keyAutonomous)) {
+		            		switch(thisTeam.getInt(col)) {
+		            			case 0:publishProgress(SETTEXT,"no");break;
+		            			default:publishProgress(SETTEXT,"yes");
+		            		}
+		            	}
+		            	publishProgress(ADDTEXT);
 	            	}
-	            	publishProgress(ADDTEXT);
+	            			
 	            }
 	        	publishProgress(ADDSTATICTEAM);
 	        } while(thisTeam.moveToNext());
