@@ -166,7 +166,6 @@ public class MatchList extends Activity {
     					}
     		    	});
     				Intent intent = new Intent("com.mechinn.android.ouralliance.OpenScouting");
-    				intent.putExtra("competition", "CT");
     				intents.add(intent);
     				break;
     			case ADDTEXT:

@@ -64,6 +64,13 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     			query = "ALTER TABLE "+TeamScoutingProvider.DBTable+" ADD COLUMN "+TeamScoutingProvider.keyAutonomous+" INTEGER;";
     			Log.d(logTag,query);
         		db.execSQL(query);
+    		case 3:
+    			Log.i(logTag, "v3 added competition columns to the "+TeamScoutingProvider.DBTable+" table.");
+    			for(String comp : TeamScoutingProvider.competitions) {
+	    			query = "ALTER TABLE "+TeamScoutingProvider.DBTable+" ADD COLUMN "+comp+" INTEGER;";
+	    			Log.d(logTag,query);
+	        		db.execSQL(query);
+    			}
     	}
     }
     

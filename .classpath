@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="bugsense-trace-1-1-2.jar"/>
-	<classpathentry kind="lib" path="D:/android/extras/android/support/v4/android-support-v4.jar" sourcepath="D:/android/extras/android/support/v4/src"/>
+	<classpathentry exported="true" kind="lib" path="D:/android/extras/android/support/v4/android-support-v4.jar" sourcepath="D:/android/extras/android/support/v4/src"/>
+	<classpathentry exported="true" kind="lib" path="bugsense-trace-1-1-2.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

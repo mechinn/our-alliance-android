@@ -29,80 +29,8 @@ public class Prefs {
 	 *
 	 * @return returns true, if this is the first run
 	 */
-	public String getHost() {
-		return prefs.getString("host", "");
-	}
-	 
-	/**
-	 * store the first run
-	 */
-	public void setHost(String host) {
-		SharedPreferences.Editor edit = prefs.edit();
-		edit.putString("host", host);
-		edit.commit();
-	}
-	
-	/**
-	 * get if this is the first run
-	 *
-	 * @return returns true, if this is the first run
-	 */
-	public int getPort() {
-		return prefs.getInt("port", 3306);
-	}
-	 
-	/**
-	 * store the first run
-	 */
-	public void setPort(int port) {
-		SharedPreferences.Editor edit = prefs.edit();
-		edit.putInt("port", port);
-		edit.commit();
-	}
-	
-	/**
-	 * get if this is the first run
-	 *
-	 * @return returns true, if this is the first run
-	 */
-	public String getUser() {
-		return prefs.getString("user", "");
-	}
-	 
-	/**
-	 * store the first run
-	 */
-	public void setUser(String user) {
-		SharedPreferences.Editor edit = prefs.edit();
-		edit.putString("user", user);
-		edit.commit();
-	}
-	
-	/**
-	 * get if this is the first run
-	 *
-	 * @return returns true, if this is the first run
-	 */
-	public String getPass() {
-		return prefs.getString("pass", "");
-	}
-	 
-	/**
-	 * store the first run
-	 */
-	public void setPass(String pass) {
-		SharedPreferences.Editor edit = prefs.edit();
-		edit.putString("pass", pass);
-		edit.commit();
-	}
-	
-	/**
-	 * get if this is the first run
-	 *
-	 * @return returns true, if this is the first run
-	 */
 	public String getCompetition() {
-		return prefs.getString("competition", "Connecticut");
+		return prefs.getString("competition", "CT");
 	}
 	 
 	/**
@@ -111,6 +39,28 @@ public class Prefs {
 	public void setCompetition(String competition) {
 		SharedPreferences.Editor edit = prefs.edit();
 		edit.putString("competition", competition);
+		edit.commit();
+	}
+	
+	/**
+	 * get if this is the first run
+	 *
+	 * @return returns true, if this is the first run
+	 */
+	public boolean getAllTeams() {
+		return prefs.getBoolean("allTeams", false);
+	}
+	
+	public void setAllTeams() {
+		setAllTeams(!getAllTeams());
+	}
+	 
+	/**
+	 * store the first run
+	 */
+	public void setAllTeams(Boolean allTeams) {
+		SharedPreferences.Editor edit = prefs.edit();
+		edit.putBoolean("allTeams", allTeams);
 		edit.commit();
 	}
 	

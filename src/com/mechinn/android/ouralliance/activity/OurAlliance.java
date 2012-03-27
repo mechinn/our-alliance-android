@@ -50,14 +50,22 @@ public class OurAlliance extends Activity {
             }
 		});
         
-        final Button teamRankings = (Button)  findViewById(R.id.teamRankings);
-        teamRankings.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View v) {
-        		String actionName = "com.mechinn.android.ouralliance.OpenTeamRankings";
-            	Intent intent = new Intent(actionName);
-            	startActivity(intent);
-            }
-		});
+//        <Button
+//	        android:id="@+id/teamRankings"
+//	        android:layout_width="match_parent"
+//	        android:layout_height="match_parent"
+//	        android:layout_weight="1"
+//	        android:text="@string/teamRankings"
+//	    	android:textSize="30dp" />
+        
+//        final Button teamRankings = (Button)  findViewById(R.id.teamRankings);
+//        teamRankings.setOnClickListener(new View.OnClickListener() {
+//        	public void onClick(View v) {
+//        		String actionName = "com.mechinn.android.ouralliance.OpenTeamRankings";
+//            	Intent intent = new Intent(actionName);
+//            	startActivity(intent);
+//            }
+//		});
     }
 
 	@Override

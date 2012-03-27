@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.data;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
+import com.mechinn.android.ouralliance.providers.MatchScoutingProvider;
 import com.mechinn.android.ouralliance.providers.TeamRankingsProvider;
 
 import android.app.Activity;
@@ -26,12 +27,16 @@ public class TeamRankingsInterface {
     }
 
     public Cursor fetchAllTeams() {
-    	return activity.managedQuery(TeamRankingsProvider.mUri, TeamRankingsProvider.schemaArray, null, null, null);
+    	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.mUri, TeamRankingsProvider.schemaArray, null, null, TeamRankingsProvider.keyRank);
+    	if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
     }
 
     public Cursor fetchTeam(String competition, int team) throws SQLException {
     	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.mUri, TeamRankingsProvider.schemaArray, 
-    			TeamRankingsProvider.keyCompetition + " = '" + competition + "' AND " + TeamRankingsProvider.keyTeam + " = '" + team + "'", null, null);
+    			TeamRankingsProvider.keyCompetition + " = '" + competition + "' AND " + TeamRankingsProvider.keyTeam + " = '" + team + "'", null, TeamRankingsProvider.keyRank);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }

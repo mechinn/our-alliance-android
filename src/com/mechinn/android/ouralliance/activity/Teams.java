@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Teams extends Activity {
+	private final String logTag = "Teams";
 	private final int ADDTEAM = 0;
 	private TeamScoutingInterface teamInfo;
 	private TableLayout staticTable;
@@ -57,6 +58,9 @@ public class Teams extends Activity {
     private Dialog addTeamDialog;
     private EditText addTeamNum;
     private Prefs prefs;
+    
+    private String orderBy;
+    private boolean desc;
     
     public boolean onInterceptTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
@@ -105,6 +109,8 @@ public class Teams extends Activity {
         setContentView(R.layout.teams);
         startTrack = true;
         prefs = new Prefs(this);
+        orderBy = TeamScoutingProvider.keyTeam;
+        desc = false;
         vScrollTeams = (ScrollView) findViewById(R.id.vScrollTeams);
         vScrollTable = (ScrollView) findViewById(R.id.vScrollTable);
         hScroll = (HorizontalScrollView) findViewById(R.id.hScroll);
@@ -155,45 +161,108 @@ public class Teams extends Activity {
     	private final int ADDSTATICTEAM = 10;
     	private final int ADDSTATICTABLE = 11;
     	
+    	private final String[] colNames = new String[] { "Team", "Orientation", "Number of Wheels", "Wheel Type 1", "Wheel Diameter 1", "Wheel Type 2", "Wheel Diameter 2", "Dead Wheel Type", "Turret Shooter", "Auto Tracking", "Fender Shooter", "Key Shooter", "Crosses Barrier", "Climb Bridge", "Autonomous" };
+        
+    	private final String[] from = new String[] {TeamScoutingProvider.keyTeam, TeamScoutingProvider.keyOrientation, TeamScoutingProvider.keyNumWheels, 
+        		TeamScoutingProvider.keyWheel1Type, TeamScoutingProvider.keyWheel1Diameter, 
+    			TeamScoutingProvider.keyWheel2Type, TeamScoutingProvider.keyWheel2Diameter, TeamScoutingProvider.keyDeadWheelType, 
+    			TeamScoutingProvider.keyTurret, TeamScoutingProvider.keyTracking, TeamScoutingProvider.keyFenderShooter, TeamScoutingProvider.keyKeyShooter, 
+    			TeamScoutingProvider.keyBarrier, TeamScoutingProvider.keyClimb, TeamScoutingProvider.keyAutonomous};
+    	
+    	private TextView addText(String s) {
+    		TextView v = setupText();
+        	v.setTextSize(26);
+        	v.setText(s);
+        	v.setPadding(10, 10, 10, 10);
+        	return v;
+    	}
+    	
     	protected void onProgressUpdate(Object... data) {
     		switch((Integer)data[0]) {
-    			case NEWSIMPLEROW:
-    				staticTableRow = new TableRow(Teams.this);
-    				staticColRow = new TableRow(Teams.this);
-    				break;
     			case ADDTEAM:
-    				text = setupText();
-    	        	text.setTextSize(26);
-    	        	text.setText((String)data[1]);
-    	        	text.setPadding(10, 10, 10, 10);
+    				text = addText((String)data[1]);
     	        	row.addView(text);
-    				staticColText = setupText();
-    				staticColText.setTextSize(26);
-    				staticColText.setText((String)data[1]);
-    				staticColText.setPadding(10, 10, 10, 10);
+    				staticColText = addText((String)data[1]);
     	        	staticColRow.addView(staticColText);
-    				staticTeamText = setupText();
-    				staticTeamText.setTextSize(26);
-    				staticTeamText.setText((String)data[1]);
-    				staticTeamText.setPadding(10, 10, 10, 10);
+    				staticTeamText = addText((String)data[1]);
     	        	staticTeamRow.addView(staticTeamText);
-    				staticTableText = setupText();
-    				staticTableText.setTextSize(26);
-    				staticTableText.setText((String)data[1]);
-    				staticTableText.setPadding(10, 10, 10, 10);
+    				staticTableText = addText((String)data[1]);
+    				staticTableText.setFocusable(true);
+    				staticTableText.setFocusableInTouchMode(true);
     				staticTableText.setBackgroundColor(Color.BLACK);
+    				staticTableText.setOnClickListener(new OnClickListener() {
+            			public void onClick(View v) {
+            				for(int i = 0; i< colNames.length;++i) {
+            					if(((TextView)v).getText().toString().equals(colNames[i])) {
+            						if(orderBy.equals(from[i])) {
+            							desc = !desc;
+            						} else {
+            							orderBy = from[i];
+            							desc = false;
+            						}
+            						break;
+            					}
+            				}
+                        	onStart();
+        				}
+            		});
+    				staticTableText.setOnFocusChangeListener(new OnFocusChangeListener() {
+    					public void onFocusChange(View v, boolean hasFocus) {
+    						if(hasFocus) {
+    							v.setBackgroundColor(Color.GRAY);
+    							staticTeamRow.setBackgroundColor(Color.GRAY);
+    						} else {
+    							v.setBackgroundColor(Color.BLACK);
+    							staticTeamRow.setBackgroundColor(Color.BLACK);
+    						}
+    					}
+    		    	});
+    				if(orderBy.equals((String)data[1])) {
+    					staticTableRow.requestFocus();
+    				}
     				staticTableRow.addView(staticTableText);
     	        	break;
     			case STATICCOL:
-    				staticColText = setupText();
-    				staticColText.setTextSize(26);
-    				staticColText.setText((String)data[1]);
-    				staticColText.setPadding(10, 10, 10, 10);
+    				staticColText = addText((String)data[1]);
+    				staticColText.setFocusable(true);
+    				staticColText.setFocusableInTouchMode(true);
+    				staticColText.setOnClickListener(new OnClickListener() {
+            			public void onClick(View v) {
+            				for(int i = 0; i< colNames.length;++i) {
+            					if(((TextView)v).getText().toString().equals(colNames[i])) {
+            						if(orderBy.equals(from[i])) {
+            							desc = !desc;
+            						} else {
+            							orderBy = from[i];
+            							desc = false;
+            						}
+            						break;
+            					}
+            				}
+                        	onStart();
+        				}
+            		});
+    				staticColText.setOnFocusChangeListener(new OnFocusChangeListener() {
+    					public void onFocusChange(View v, boolean hasFocus) {
+    						if(hasFocus) {
+    							v.setBackgroundColor(Color.GRAY);
+    							staticTeamRow.setBackgroundColor(Color.GRAY);
+    						} else {
+    							v.setBackgroundColor(Color.BLACK);
+    							staticTeamRow.setBackgroundColor(Color.BLACK);
+    						}
+    					}
+    		    	});
+    				for(int i = 0; i< colNames.length;++i) {
+    					if(((String)data[1]).equals(colNames[i])) {
+    						if(orderBy.equals(from[i])) {
+    							staticColText.requestFocus();
+    						}
+    						break;
+    					}
+    				}
     	        	staticColRow.addView(staticColText);
-    				text = setupText();
-    	        	text.setTextSize(26);
-    	        	text.setText((String)data[1]);
-    	        	text.setPadding(10, 10, 10, 10);
+    				text = addText((String)data[1]);
     	        	row.addView(text);
     	        	break;
     			case ADDTEXT:
@@ -217,32 +286,31 @@ public class Teams extends Activity {
     			case ADDROW:
     				teamsTable.addView(row);
     				break;
+    			case NEWSIMPLEROW:
+    				staticTableRow = new TableRow(Teams.this);
+    				staticColRow = new TableRow(Teams.this);
     			case NEWROW:
     				row = new TableRow(Teams.this);
     				row.setFocusable(true);
     				row.setFocusableInTouchMode(true);
-    				staticTeamRow = new TableRow(Teams.this);
-    				staticTeamRow.setFocusable(true);
-    				staticTeamRow.setFocusableInTouchMode(true);
     				row.setOnFocusChangeListener(new OnFocusChangeListener() {
     					public void onFocusChange(View v, boolean hasFocus) {
     						if(hasFocus) {
     							v.setBackgroundColor(Color.GRAY);
-    							staticTeamRow.setBackgroundColor(Color.GRAY);
     						} else {
     							v.setBackgroundColor(Color.BLACK);
-    							staticTeamRow.setBackgroundColor(Color.BLACK);
     						}
     					}
     		    	});
+    				staticTeamRow = new TableRow(Teams.this);
+    				staticTeamRow.setFocusable(true);
+    				staticTeamRow.setFocusableInTouchMode(true);
     				staticTeamRow.setOnFocusChangeListener(new OnFocusChangeListener() {
     					public void onFocusChange(View v, boolean hasFocus) {
     						if(hasFocus) {
     							v.setBackgroundColor(Color.GRAY);
-    							row.setBackgroundColor(Color.GRAY);
     						} else {
     							v.setBackgroundColor(Color.BLACK);
-    							row.setBackgroundColor(Color.BLACK);
     						}
     					}
     		    	});
@@ -251,25 +319,19 @@ public class Teams extends Activity {
     				text = setupText();
     				break;
     			case ROWONCLICK:
-    				final int team = (Integer)data[1];
-    				final String teamString = Integer.toString(team);
+    				Log.d(logTag, "Adding team "+(Integer)data[1]);
+    				final String teamString = Integer.toString((Integer)data[1]);
         			text.setText(teamString);
-        			staticTeamRow.setOnClickListener(new OnClickListener() {
+        			OnClickListener clickRow = new OnClickListener() {
             			public void onClick(View v) {
                 			String actionName = "com.mechinn.android.ouralliance.OpenTeamInfo";
             				Intent intent = new Intent(actionName);
-        					intent.putExtra("team", team);
+        					intent.putExtra("team", Integer.parseInt(((TextView)((TableRow)v).getChildAt(0)).getText().toString()));
         		    		startActivity(intent);
         				}
-            		});
-            		row.setOnClickListener(new OnClickListener() {
-            			public void onClick(View v) {
-                			String actionName = "com.mechinn.android.ouralliance.OpenTeamInfo";
-            				Intent intent = new Intent(actionName);
-        					intent.putExtra("team", team);
-        		    		startActivity(intent);
-        				}
-            		});
+            		};
+        			staticTeamRow.setOnClickListener(clickRow);
+            		row.setOnClickListener(clickRow);
             		staticTeamText = setupText();
             		staticTeamText.setText(teamString);
             		staticTeamText.setBackgroundColor(Color.BLACK);
@@ -294,18 +356,13 @@ public class Teams extends Activity {
     	}
     	
 		protected Void doInBackground(Void... no) {
-	        Cursor thisTeam = teamInfo.fetchAllTeams();
-	        startManagingCursor(thisTeam);
-	        
-	        String[] colNames = new String[] { "Team", "Orientation", "Number of Wheels", "Wheel Type 1", "Wheel Diameter 1", "Wheel Type 2", "Wheel Diameter 2", "Dead Wheel Type", "Turret Shooter", "Auto Tracking", "Fender Shooter", "Key Shooter", "Crosses Barrier", "Climb Bridge", "Autonomous" };
-	        
-	        String[] from = new String[] {TeamScoutingProvider.keyTeam, TeamScoutingProvider.keyOrientation, TeamScoutingProvider.keyNumWheels, 
-	        		TeamScoutingProvider.keyWheel1Type, TeamScoutingProvider.keyWheel1Diameter, 
-	    			TeamScoutingProvider.keyWheel2Type, TeamScoutingProvider.keyWheel2Diameter, TeamScoutingProvider.keyDeadWheelType, 
-	    			TeamScoutingProvider.keyTurret, TeamScoutingProvider.keyTracking, TeamScoutingProvider.keyFenderShooter, TeamScoutingProvider.keyKeyShooter, 
-	    			TeamScoutingProvider.keyBarrier, TeamScoutingProvider.keyClimb, TeamScoutingProvider.keyAutonomous};
+			Cursor thisTeam;
+			if(prefs.getAllTeams()) {
+				thisTeam = teamInfo.fetchAllTeams(orderBy, desc);
+			} else {
+				thisTeam = teamInfo.fetchCompetitionTeams(prefs.getCompetition(), orderBy, desc);
+			}
 
-        	publishProgress(NEWROW);
 	        publishProgress(NEWSIMPLEROW);
 	        for(int i=0;i<colNames.length;++i) {
 	        	if(i==0) {
@@ -316,14 +373,14 @@ public class Teams extends Activity {
 	        }
 	        publishProgress(ADDSTATICTABLE);
 	        
-	        while(thisTeam.moveToNext()) {
+	        do {
 	        	publishProgress(NEWROW);
 	        	for(int j=0;j<from.length;++j) {
 	        		publishProgress(NEWTEXT);
 	            	String colName = from[j];
 	            	int col = thisTeam.getColumnIndex(colName);
-	            	Log.d("table fill", Integer.toString(col));
-	            	Log.d("table colname", colName);
+//	            	Log.d("table fill", Integer.toString(col));
+//	            	Log.d("table colname", colName);
 	            	if(colName.equals(TeamScoutingProvider.keyTeam)) {
 	            		publishProgress(ROWONCLICK,thisTeam.getInt(col));
 	            	} else if(colName.equals(TeamScoutingProvider.keyOrientation) || colName.equals(TeamScoutingProvider.keyWheel1Type) || 
@@ -345,15 +402,17 @@ public class Teams extends Activity {
 	            	publishProgress(ADDTEXT);
 	            }
 	        	publishProgress(ADDSTATICTEAM);
-	        }
+	        } while(thisTeam.moveToNext());
 	        return null;
 		}
     }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.teamsmenu, menu);
+	    menu.findItem(R.id.allTeams).setChecked(prefs.getAllTeams());
 		return true;
 	}
 
@@ -372,6 +431,11 @@ public class Teams extends Activity {
 	        case R.id.addTeam:
 	        	showDialog(ADDTEAM);
 	            return true;
+            case R.id.allTeams:
+            	prefs.setAllTeams();
+            	item.setChecked(prefs.getAllTeams());
+            	onStart();
+	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -383,7 +447,7 @@ public class Teams extends Activity {
 		    case ADDTEAM:
 		    	addTeamDialog = new Dialog(Teams.this);
 		        addTeamDialog.setContentView(R.layout.addteam);
-		        addTeamDialog.setTitle("Add a Match");
+		        addTeamDialog.setTitle("Add a Team Number");
 		        addTeamNum = (EditText) addTeamDialog.findViewById(R.id.addTeamNum);
 		    	Button add = (Button) addTeamDialog.findViewById(R.id.add);
 		    	add.setOnClickListener(new OnClickListener() {

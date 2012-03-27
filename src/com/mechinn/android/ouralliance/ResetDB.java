@@ -7,6 +7,7 @@ import com.mechinn.android.ouralliance.data.MatchScoutingInterface;
 import com.mechinn.android.ouralliance.data.Prefs;
 import com.mechinn.android.ouralliance.data.TeamRankingsInterface;
 import com.mechinn.android.ouralliance.data.TeamScoutingInterface;
+import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -19,17 +20,17 @@ import android.widget.Toast;
 
 /** Nested class that performs progress calculations (counting) */
 public class ResetDB extends ProgressDialog {
+	private final String logTag = "ResetDB";
  	private Handler resetHandler;
     private TeamScoutingInterface teamInfo;
     private TeamRankingsInterface rankings;
     private MatchListInterface matchList;
     private MatchScoutingInterface matchScore;
-    private String[] competitions;
     private Prefs prefs;
     private Activity activity;
     private DatabaseConnection db;
     boolean initial;
-    private final int total = 276;
+    private final int total = 66;
     
     public ResetDB(Activity act) {
     	this(act,false);
@@ -41,7 +42,6 @@ public class ResetDB extends ProgressDialog {
         initial = init;
         db = new DatabaseConnection(activity);
         prefs = new Prefs(act);
-        competitions = act.getResources().getStringArray(R.array.competitions);
         teamInfo = new TeamScoutingInterface(act);
         rankings = new TeamRankingsInterface(act);
         matchList = new MatchListInterface(act);
@@ -87,13 +87,15 @@ public class ResetDB extends ProgressDialog {
 	    
 	    private void addBlankTeam(int team) {
 	    	HashSet<String> comps = new HashSet<String>();
-	    	comps.add("CT");
+	    	for(String comp : TeamScoutingProvider.competitions) {
+	    		comps.add(comp);
+	    	}
 	        teamInfo.createTeam(comps,team);
 	        incrementTotal();
 	    }
 	    
 	    private void addExMatch(int matchNum) {
-	    	matchList.addMatch(activity, competitions[0],matchNum,0,9999,9999,9999,9999,9999,9999);
+	    	matchList.addMatch(activity, TeamScoutingProvider.competitions[0],matchNum,0,9999,9999,9999,9999,9999,9999);
 	    }
 
 		@Override
@@ -111,16 +113,22 @@ public class ResetDB extends ProgressDialog {
 	        		1784, 1880, 1922, 1991, 2067, 2168, 2170, 2785, 2791, 2836, 3017, 3104, 3146, 3182, 3461, 3464, 3467, 
 	        		3525, 3555, 3634, 3654, 3718, 3719, 4055, 4122, 4134};
 	        Log.d("reset","adding blank teams");
-	        for(int i=0;i<teams.length;++i) {
-	        	addBlankTeam(teams[i]);
+	        for(int team : teams) {
+	        	Log.d(logTag,"Adding team "+team);
+	        	addBlankTeam(team);
 	        }
 	        incrementTotal();
 	        Log.d("reset","updating 869");
 	    	HashSet<String> comps = new HashSet<String>();
-	    	comps.add("CT");
+	    	for(String comp : TeamScoutingProvider.competitions) {
+	        	Log.d(logTag,"Adding comp "+comp);
+	    		comps.add(comp);
+	    	}
+        	Log.d(logTag,"Updating 869");
 	        teamInfo.updateTeam(869, "Long", 8, 1, false, "Traction", 4, "None", 0, "None", false, false, false, false, true, true, "Our robot", false, comps);
 	        
 	        for(int i=1;i<31;++i) {
+	        	Log.d(logTag,"Adding match "+i);
 	        	addExMatch(i);
 	        }
 	        

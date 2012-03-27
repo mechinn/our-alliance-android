@@ -60,14 +60,6 @@
         <item >climb</item>
         <item >notes</item>
     </string-array>
-    <string-array name="competitions">
-        <item >Alamo Regional</item>
-        <item >BAE Systems Granite State Regional</item>
-        <item >Greater Kansas City Regional</item>
-        <item >Hatboro-Horsham FIRST Robotics District Competition</item>
-        <item >Kettering University FIRST Robotics District Competition</item>
-        <item >Gull Lake FIRST Robotics District Competition</item>
-    </string-array>
     <string name="teamLabel">Team: </string>
     <string name="orientation">Orientation: </string>
     <string name="orientationLong">Long</string>
@@ -125,4 +117,5 @@
     <string name="previousMatch">Previous</string>
     <string name="addTeam">Add Team</string>
     <string name="pickComp">Choose Competitions</string>
+    <string name="allTeams">Show All Teams</string>
 </resources>

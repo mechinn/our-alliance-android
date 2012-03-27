@@ -109,7 +109,6 @@ public class Info extends Activity {
 	
 	private AlertDialog pickCompetitionsDialog;
 	private AlertDialog.Builder pickCompetitionsDialogBuilder;
-	private final String[] competitions = {"CT"};
 	private final boolean[] compsSelected = {false};
 	private HashSet<String> competitionsSelected;
 	
@@ -205,15 +204,15 @@ public class Info extends Activity {
         competitionsSelected = new HashSet<String>();
         pickCompetitionsDialogBuilder = new AlertDialog.Builder(this);
         pickCompetitionsDialogBuilder.setTitle("Pick competitions this team is at.");
-        pickCompetitionsDialogBuilder.setMultiChoiceItems(competitions, compsSelected, new OnMultiChoiceClickListener() {
+        pickCompetitionsDialogBuilder.setMultiChoiceItems(TeamScoutingProvider.competitions, compsSelected, new OnMultiChoiceClickListener() {
         	public void onClick(DialogInterface dialog, int which, boolean isChecked) {
         		if(isChecked) {
-        			if(!competitionsSelected.contains(competitions[which])) {
-            			competitionsSelected.add(competitions[which]);
+        			if(!competitionsSelected.contains(TeamScoutingProvider.competitions[which])) {
+            			competitionsSelected.add(TeamScoutingProvider.competitions[which]);
             		}
         		} else {
-        			if(competitionsSelected.contains(competitions[which])) {
-        				competitionsSelected.remove(competitions[which]);
+        			if(competitionsSelected.contains(TeamScoutingProvider.competitions[which])) {
+        				competitionsSelected.remove(TeamScoutingProvider.competitions[which]);
             		}
         		}
 			}
@@ -431,7 +430,7 @@ public class Info extends Activity {
         edittext = (EditText) findViewById(R.id.notes);
         
         pickComp = (Button) findViewById(R.id.pickComp);
-        save.setOnClickListener(new Button.OnClickListener() {
+        pickComp.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
             	pickCompetitionsDialog = pickCompetitionsDialogBuilder.create();
             }

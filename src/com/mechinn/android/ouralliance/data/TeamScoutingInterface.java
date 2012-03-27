@@ -46,10 +46,14 @@ public class TeamScoutingInterface {
         
         return activity.getContentResolver().insert(TeamScoutingProvider.mUri, initialValues);
     }
-
+    
     public Cursor fetchAllTeams() {
+        return fetchAllTeams(TeamScoutingProvider.keyTeam, false);
+    }
+
+    public Cursor fetchAllTeams(String orderBy, boolean desc) {
     	Cursor mCursor = activity.managedQuery(TeamScoutingProvider.mUri, TeamScoutingProvider.schemaArray,
-        		null, null, null);
+        		null, null, orderBy+(desc?" DESC":""));
     	if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -57,8 +61,12 @@ public class TeamScoutingInterface {
     }
     
     public Cursor fetchCompetitionTeams(String competition) {
+        return fetchCompetitionTeams(competition, TeamScoutingProvider.keyTeam, false);
+    }
+    
+    public Cursor fetchCompetitionTeams(String competition, String orderBy, boolean desc) {
     	Cursor mCursor = activity.managedQuery(TeamScoutingProvider.mUri, TeamScoutingProvider.schemaArray,
-    			competition + " = 1", null, null);
+    			competition + " = 1", null, orderBy+(desc?" DESC":""));
     	if (mCursor != null) {
             mCursor.moveToFirst();
         }

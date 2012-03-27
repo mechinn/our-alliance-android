@@ -37,13 +37,16 @@ public class MatchListInterface {
     }
 
     public Cursor fetchAllMatches() {
-    	
-    	return activity.managedQuery(MatchListProvider.mUri, MatchListProvider.schemaArray, null, null, null);
+    	Cursor mCursor = activity.managedQuery(MatchListProvider.mUri, MatchListProvider.schemaArray, null, null, MatchListProvider.keyMatchNum);
+    	if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
     }
     
     public Cursor fetchMatches(String competition) {
     	Cursor mCursor = activity.managedQuery(MatchListProvider.mUri, MatchListProvider.schemaArray,
-    			MatchListProvider.keyCompetition + " = '" + competition + "'", null, null);
+    			MatchListProvider.keyCompetition + " = '" + competition + "'", null, MatchListProvider.keyMatchNum);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -53,7 +56,7 @@ public class MatchListInterface {
     public Cursor fetchMatch(String competition, int matchNum) throws SQLException {
 
     	Cursor mCursor = activity.managedQuery(MatchListProvider.mUri, MatchListProvider.schemaArray,
-    			MatchListProvider.keyCompetition + " = '" + competition + "' AND " + MatchListProvider.keyMatchNum + " = '" + matchNum +"'", null, null);
+    			MatchListProvider.keyCompetition + " = '" + competition + "' AND " + MatchListProvider.keyMatchNum + " = '" + matchNum +"'", null, MatchListProvider.keyMatchNum);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
