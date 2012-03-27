@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My Alliance</string>
+    <string name="app_name">Our Alliance</string>
     <string name="scouting">Scouting</string>
     <string name="teams">Teams</string>
     <string name="settings">Settings</string>
-    <string name="blank"></string>
     <string name="pullfrc">Pull FRC Data</string>
     <string-array name="wheels">
         <item >1</item>
@@ -19,46 +18,6 @@
         <item >10</item>
         <item >Treads</item>
     </string-array>
-    <string-array name="teams">
-		<item >87</item>
-		<item >224</item>
-		<item >225</item>
-		<item >272</item>
-		<item >293</item>
-		<item >341</item>
-		<item >357</item>
-		<item >486</item>
-		<item >708</item>
-		<item >709</item>
-		<item >714</item>
-		<item >834</item>
-		<item >869</item>
-		<item >1143</item>
-		<item >1168</item>
-		<item >1218</item>
-		<item >1391</item>
-		<item >1495</item>
-		<item >1640</item>
-		<item >1647</item>
-		<item >1712</item>
-		<item >1791</item>
-		<item >1923</item>
-		<item >2016</item>
-		<item >2229</item>
-		<item >2234</item>
-		<item >2539</item>
-		<item >2590</item>
-		<item >2600</item>
-		<item >2607</item>
-		<item >3123</item>
-		<item >3167</item>
-		<item >3607</item>
-		<item >3637</item>
-		<item >4285</item>
-		<item >4342</item>
-		<item >4361</item>
-		<item >4373</item>
-	</string-array>
     <string name="teamInfo">Team Info</string>
     <string-array name="wheelTypes">
         <item >Kit</item>
@@ -102,7 +61,12 @@
         <item >notes</item>
     </string-array>
     <string-array name="competitions">
-        <item >Connecticut</item>
+        <item >Alamo Regional</item>
+        <item >BAE Systems Granite State Regional</item>
+        <item >Greater Kansas City Regional</item>
+        <item >Hatboro-Horsham FIRST Robotics District Competition</item>
+        <item >Kettering University FIRST Robotics District Competition</item>
+        <item >Gull Lake FIRST Robotics District Competition</item>
     </string-array>
     <string name="teamLabel">Team: </string>
     <string name="orientation">Orientation: </string>
@@ -146,4 +110,19 @@
     <string name="matchScouting">Match Scouting</string>
     <string name="teamRankings">Team Rankings</string>
     <string name="matchTeamImg">Team Image</string>
+    <string name="addMatch">Add Match</string>
+    <string name="red1Label">Red 1: </string>
+    <string name="red2Label">Red 2: </string>
+    <string name="red3Label">Red 3: </string>
+    <string name="blue1Label">Blue 1: </string>
+    <string name="blue2Label">Blue 2: </string>
+    <string name="blue3Label">Blue 3: </string>
+    <string name="matchNumLabel">Match #: </string>
+    <string name="timeLabel">Time: </string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="nextMatch">Next</string>
+    <string name="previousMatch">Previous</string>
+    <string name="addTeam">Add Team</string>
+    <string name="pickComp">Choose Competitions</string>
 </resources>

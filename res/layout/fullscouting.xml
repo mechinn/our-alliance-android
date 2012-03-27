@@ -5,14 +5,14 @@
 
     <fragment
         android:id="@+id/matchTeams"
-        class="com.mechinn.android.myalliance.activity.scouting.MatchTeams"
+        class="com.mechinn.android.ouralliance.activity.scouting.MatchTeams"
         android:layout_weight="1"
         android:layout_width="0px"
         android:layout_height="match_parent" />
 
     <FrameLayout 
         android:id="@+id/matchTeamInfo" 
-        android:layout_weight="1"
+        android:layout_weight="2"
 		android:layout_width="0px"
 		android:layout_height="match_parent" />
 

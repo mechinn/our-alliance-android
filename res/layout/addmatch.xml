@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+        
+	<TableLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" >
+	    
+	    <TableRow
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" >
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_weight="0"
+	            android:text="@string/matchNumLabel"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+			<EditText
+			    android:id="@+id/addMatchNum"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:inputType="number"
+			    android:nextFocusDown="@+id/addMatchTime" />
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_weight="0"
+	            android:text="@string/timeLabel"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+			<EditText
+			    android:id="@+id/addMatchTime"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:inputType="time"
+			    android:nextFocusDown="@+id/addMatchRed1" />
+	
+	    </TableRow>
+	    
+	    <TableRow
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" >
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_weight="0"
+	            android:text="@string/red1Label"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        
+	        <EditText
+	            android:id="@+id/addMatchRed1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:inputType="number"
+			    android:nextFocusDown="@+id/addMatchRed2" />
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_weight="0"
+	            android:text="@string/blue1Label"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        
+	        <EditText
+	            android:id="@+id/addMatchBlue1"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:inputType="number"
+			    android:nextFocusDown="@+id/addMatchBlue2" />
+	    </TableRow>
+	    
+	    <TableRow
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" >
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_weight="0"
+	            android:text="@string/red2Label"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        
+	        <EditText
+	            android:id="@+id/addMatchRed2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:inputType="number"
+			    android:nextFocusDown="@+id/addMatchRed3" />
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_weight="0"
+	            android:text="@string/blue2Label"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        
+	        <EditText
+	            android:id="@+id/addMatchBlue2"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:inputType="number"
+			    android:nextFocusDown="@+id/addMatchBlue3" />
+	    </TableRow>
+	    
+	    <TableRow
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" >
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_weight="0"
+	            android:text="@string/red3Label"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        
+	        <EditText
+	            android:id="@+id/addMatchRed3"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:inputType="number"
+			    android:nextFocusDown="@+id/addMatchBlue1" />
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:layout_weight="0"
+	            android:text="@string/blue3Label"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        
+	        <EditText
+	            android:id="@+id/addMatchBlue3"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:inputType="number" />
+	    </TableRow>
+	    <TableRow
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" >
+
+	        <Button
+	            android:id="@+id/add"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:text="@string/add" />
+
+	        <Button
+	            android:id="@+id/cancel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:text="@string/cancel" />
+	        
+	    </TableRow>
+	</TableLayout>
+</ScrollView>

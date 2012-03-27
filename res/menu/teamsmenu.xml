@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/settings" android:title="@string/settings"></item>
-    <item android:id="@+id/refresh" android:title="@string/refresh"></item>
+    <item android:id="@+id/settings" android:title="@string/settings" android:orderInCategory="3"></item>
+    <item android:id="@+id/refresh" android:title="@string/refresh" android:orderInCategory="1"></item>
+    <item android:id="@+id/addTeam" android:title="@string/addTeam" android:orderInCategory="2"></item>
 
 </menu>

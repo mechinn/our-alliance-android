@@ -361,11 +361,12 @@
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 		        
-		        <TextView
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
+		        <Button
+			        android:id="@+id/pickComp"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="@string/pickComp"
 	                android:gravity="center"
-	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 	
 		    </TableRow>

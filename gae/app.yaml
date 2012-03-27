@@ -1,0 +1,40 @@
+application: ourfrcalliance
+version: 1-0-test
+runtime: python27
+api_version: 1
+threadsafe: true
+
+builtins:
+- remote_api: on
+
+inbound_services:
+- warmup
+
+libraries:
+- name: django
+  version: latest
+
+handlers:
+
+#
+# Define a handler for our static files (css, images, etc)
+#
+- url: /static
+  static_dir: static
+
+#
+# Route all "web services" requests to the main.py file
+#
+- url: /auth
+  script: web_services.app
+  secure: always
+
+- url: /sync
+  script: web_services.app
+  secure: always
+
+- url: /reset_database
+  script: web_services.app
+
+- url: /.*
+  script: asklogin.app
