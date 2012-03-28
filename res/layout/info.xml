@@ -63,7 +63,7 @@
 			    android:adjustViewBounds="true"
 			    android:contentDescription="@string/teamPic"
 			    android:scaleType="centerInside"
-			    android:src="@drawable/frc"
+			    android:src="@drawable/ouralliance"
 	        	android:layout_margin="1dip" />
 	
 	    </LinearLayout>

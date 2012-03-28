@@ -451,7 +451,7 @@ public class Info extends Activity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                             	pic.delete();
-                        		image.setImageResource(R.drawable.frc);
+                        		image.setImageResource(R.drawable.ouralliance);
                         		deletePic.setVisibility(View.GONE);
                             }
                         })
