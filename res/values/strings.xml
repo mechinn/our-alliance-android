@@ -123,4 +123,5 @@
     <string name="avgBalance">Avg Matches Balanced: </string>
     <string name="deleteMatch">Delete Match</string>
     <string name="deleteTeam">Delete Team</string>
+    <string name="resetDB">Reset Database</string>
 </resources>

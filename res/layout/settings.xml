@@ -3,6 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
+	
+	<TextView
+        android:id="@+id/credits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 	<Spinner
         android:id="@+id/competitions"
         android:layout_width="match_parent"
@@ -12,5 +18,5 @@
         android:id="@+id/reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reset Database" />
+        android:text="@string/resetDB" />
 </LinearLayout>

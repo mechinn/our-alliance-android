@@ -9,11 +9,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class Settings extends Activity {
     private Prefs prefs;
@@ -67,6 +70,16 @@ public class Settings extends Activity {
 //				getVals();
 //			}
 //        });
+        
+        TextView credits = (TextView) findViewById(R.id.credits);
+        credits.setMovementMethod(LinkMovementMethod.getInstance());
+        credits.setText(Html.fromHtml("<h2>Credits</h2><br>" +
+        		"<p>" +
+	        		"Copyright 2012 <a href='http://mechinn.com/android'>Michael Chinn</a>.<br>" +
+	        		"<br>" +
+	        		"You choose to run this software with the full knowledge that it is in a pre-release form and any damage or loss of data while using this software I cannot be held responsible for." +
+        		"</p>"
+    		));
         
         competitions = (Spinner) findViewById(R.id.competitions);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.matchteamrow);
