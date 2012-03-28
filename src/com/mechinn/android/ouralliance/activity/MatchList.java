@@ -1,5 +1,11 @@
 package com.mechinn.android.ouralliance.activity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchListInterface;
 import com.mechinn.android.ouralliance.data.Prefs;
@@ -29,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MatchList extends Activity {
+	private final String logTag = "MatchList";
 	private static final int ADDMATCH = 0;
 	private final String[] white = new String[] {
 		"Match #", "Time",	
@@ -48,7 +55,7 @@ public class MatchList extends Activity {
 	private TextView textView;
 	private Prefs prefs;
 	private int matchCount;
-	private int lastMatchTime;
+	private long lastMatchTime;
 	private boolean loading;
 	
 	private Dialog addMatchDialog;
@@ -60,13 +67,15 @@ public class MatchList extends Activity {
 	private EditText addMatchBlue1;
 	private EditText addMatchBlue2;
 	private EditText addMatchBlue3;
+	private SimpleDateFormat timeFormatter;
 	
 	private int match;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.matchlist);
-        
+        timeFormatter = new SimpleDateFormat("hh:mma");
+        timeFormatter.setTimeZone(TimeZone.getDefault());
         loading = true;
         prefs = new Prefs(this);
         matchTable = (TableLayout) this.findViewById(R.id.matchList);
@@ -218,8 +227,8 @@ public class MatchList extends Activity {
 		            		publishProgress(SETMATCH,thisMatch.getInt(col));
 		            		publishProgress(ADDTEXT,Integer.toString(thisMatch.getInt(col)));
 		            	} else if(colName.equals(MatchListProvider.keyTime)) {
-		            		lastMatchTime = thisMatch.getInt(col);
-		            		publishProgress(ADDTEXT,Integer.toString(lastMatchTime));
+							lastMatchTime = thisMatch.getLong(col);
+		            		publishProgress(ADDTEXT,timeFormatter.format(new Date(lastMatchTime)));
 		            	} else if(colName.equals(MatchListProvider.keyRed1) || colName.equals(MatchListProvider.keyRed2) || 
 		            			colName.equals(MatchListProvider.keyRed3)){
 		            		publishProgress(ADDRED,Integer.toString(thisMatch.getInt(col)));
@@ -287,7 +296,7 @@ public class MatchList extends Activity {
 		        addMatchNum = (EditText) addMatchDialog.findViewById(R.id.addMatchNum);
 		        addMatchNum.setText(Integer.toString(matchCount+1));
 		        addMatchTime = (EditText) addMatchDialog.findViewById(R.id.addMatchTime);
-		        addMatchTime.setText(Integer.toString(lastMatchTime+(8*60)));
+		        addMatchTime.setText(timeFormatter.format(new Date(lastMatchTime+(8*60000))));
 		        addMatchRed1 = (EditText) addMatchDialog.findViewById(R.id.addMatchRed1);
 		        addMatchRed2 = (EditText) addMatchDialog.findViewById(R.id.addMatchRed2);
 		        addMatchRed3 = (EditText) addMatchDialog.findViewById(R.id.addMatchRed3);
@@ -328,10 +337,25 @@ public class MatchList extends Activity {
 		    								if(teamScoutingData.fetchTeam(blue1).getCount()==1) {
 		    									if(teamScoutingData.fetchTeam(blue2).getCount()==1) {
 		    										if(teamScoutingData.fetchTeam(blue3).getCount()==1) {
-		    											matchListData.addMatch(comp, matchVal, Integer.parseInt(matchTime),
-		    						    						 red1, red2, red3, blue1, blue2, blue3);
+		    											try {
+		    												long newTime = timeFormatter.parse(matchTime).getTime();
+															matchListData.addMatch(comp, matchVal, newTime,
+																	 red1, red2, red3, blue1, blue2, blue3);
+															lastMatchTime = newTime; //save the new time
+															++matchCount;
+														} catch (ParseException e) {
+															BugSenseHandler.log(logTag, e);
+														}
 		    					    					setup();
 		    					    					addMatchDialog.dismiss();
+		    					    			        addMatchNum.setText(Integer.toString(matchCount+1));
+		    					    			        addMatchTime.setText(timeFormatter.format(new Date(lastMatchTime+(8*60000))));
+		    					    			        addMatchRed1.setText("");
+		    					    			        addMatchRed2.setText("");
+		    					    			        addMatchRed3.setText("");
+		    					    			        addMatchBlue1.setText("");
+		    					    			        addMatchBlue2.setText("");
+		    					    			        addMatchBlue3.setText("");
 		    										} else {
 		    											Toast.makeText(MatchList.this, "Blue 3 is not a valid team.", Toast.LENGTH_SHORT).show();
 		    										}
@@ -362,6 +386,7 @@ public class MatchList extends Activity {
 		    			addMatchDialog.cancel();
 					}
 		    	});
+		    	
 		        break;
 		    default:
 		        return super.onCreateDialog(id);

@@ -231,64 +231,13 @@ public class Info extends Activity {
         teamInfo = new TeamScoutingInterface(this);
 
 		teamNumber = (TextView) findViewById(R.id.teamNumber);
-        
+
         image = (ImageView) findViewById(R.id.teamPic);
-        picDir = this.getExternalFilesDir(null);
-        picDir=new File(picDir.getAbsolutePath()+"/teamPic/2012/");
-        if(!picDir.exists()) {
-        	picDir.mkdirs();
-        }
-        pic=new File(picDir.getAbsolutePath()+"/"+Integer.toString(team)+".jpg");
-        mImageUri = Uri.fromFile(pic);
-        Log.d("imageUri",mImageUri.getPath());
         
         takePic = (Button) findViewById(R.id.takePicButton);
-        takePic.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		if(pic.exists()) {
-        			takePicAlert = new AlertDialog.Builder(Info.this)
-	                .setTitle("Really overwrite the team picture?")
-	                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-	                    public void onClick(DialogInterface dialog, int whichButton) {
-	                    	takePic();
-	                    }
-	                })
-	                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-	                    public void onClick(DialogInterface dialog, int whichButton) {
-	                    	takePicAlert.dismiss();
-	                    }
-	                }).show();
-        		} else {
-        			takePic();
-        		}
-			}
-        });
         
         deletePic = (Button) findViewById(R.id.deletePicButton);
-        deletePic.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		if(pic.exists()) {
-        			delPicAlert = new AlertDialog.Builder(Info.this)
-                    .setTitle("Really delete the team picture?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                        	pic.delete();
-                    		image.setImageResource(R.drawable.frc);
-                    		deletePic.setVisibility(View.GONE);
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                        	delPicAlert.dismiss();
-                        }
-                    }).show();
-        		}
-			}
-        });
-        
-        if(!pic.exists()) {
-			deletePic.setVisibility(View.GONE);
-		}
+        deletePic.setVisibility(View.GONE);
         
         orientationLong = (RadioButton) findViewById(R.id.orientationLong);
         orientationLong.setOnClickListener(orientationListener);
@@ -439,10 +388,12 @@ public class Info extends Activity {
         avgBalance = (TextView) findViewById(R.id.avgBalance);
         avgBroke = (TextView) findViewById(R.id.avgBroke);
         
+        pickCompetitionsDialog = pickCompetitionsDialogBuilder.create();
+        
         pickComp = (Button) findViewById(R.id.pickComp);
         pickComp.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-            	pickCompetitionsDialog = pickCompetitionsDialogBuilder.create();
+            	pickCompetitionsDialog.show();
             }
         });
         
@@ -471,7 +422,51 @@ public class Info extends Activity {
     			return;
     		}
             teamNumber.setText(Integer.toString(team));
+            takePic.setOnClickListener(new OnClickListener() {
+            	public void onClick(View v) {
+            		if(pic.exists()) {
+            			takePicAlert = new AlertDialog.Builder(Info.this)
+    	                .setTitle("Really overwrite the team picture?")
+    	                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+    	                    public void onClick(DialogInterface dialog, int whichButton) {
+    	                    	takePic();
+    	                    }
+    	                })
+    	                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+    	                    public void onClick(DialogInterface dialog, int whichButton) {
+    	                    	takePicAlert.dismiss();
+    	                    }
+    	                }).show();
+            		} else {
+            			takePic();
+            		}
+    			}
+            });
     		grabImage();
+    		deletePic.setOnClickListener(new OnClickListener() {
+            	public void onClick(View v) {
+            		if(pic.exists()) {
+            			delPicAlert = new AlertDialog.Builder(Info.this)
+                        .setTitle("Really delete the team picture?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            	pic.delete();
+                        		image.setImageResource(R.drawable.frc);
+                        		deletePic.setVisibility(View.GONE);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            	delPicAlert.dismiss();
+                            }
+                        }).show();
+            		}
+    			}
+            });
+            
+            if(pic.exists()) {
+    			deletePic.setVisibility(View.VISIBLE);
+    		}
             if(orientation.equals(con.getString(R.string.orientationLong))){
             	orientationLong.toggle();
             } else if(orientation.equals(con.getString(R.string.orientationWide))){
@@ -571,7 +566,15 @@ public class Info extends Activity {
     	}
     	
 		protected Context doInBackground(Context... con) {
-	        team = getIntent().getIntExtra("team", 0);
+			team = getIntent().getIntExtra("team", 0);
+	        picDir = Info.this.getExternalFilesDir(null);
+	        picDir=new File(picDir.getAbsolutePath()+"/teamPic/2012/");
+	        if(!picDir.exists()) {
+	        	picDir.mkdirs();
+	        }
+	        pic=new File(picDir.getAbsolutePath()+"/"+Integer.toString(team)+".jpg");
+	        mImageUri = Uri.fromFile(pic);
+	        Log.d("imageUri",mImageUri.getPath());
 	        Cursor thisTeam = teamInfo.fetchTeam(team);
 	        if(thisTeam!=null && thisTeam.getCount()>0){
 		        //get variables from DB

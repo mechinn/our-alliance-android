@@ -59,7 +59,7 @@ public class TeamRankingsInterface {
 	    		cv.put(TeamRankingsProvider.keyTeam, team);
 	    		cv.put(DatabaseConnection._LASTMOD, 0);
 	    	} else {
-	    		cv.put(DatabaseConnection._LASTMOD, System.currentTimeMillis()/1000);
+	    		cv.put(DatabaseConnection._LASTMOD, System.currentTimeMillis());
 	    	}
     	} else {
     		cv.put(DatabaseConnection._LASTMOD, lastMod);

@@ -44,7 +44,7 @@ public class MatchListProvider extends ContentProvider {
     		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
 			keyCompetition+" TEXT NOT NULL, " +
 			keyMatchNum+" INTEGER, " +
-			keyTime+" INTEGER, " +
+			keyTime+" REAL, " +
 			keyRed1+" INTEGER, " +
 			keyRed2+" INTEGER, " +
 			keyRed3+" INTEGER, " +

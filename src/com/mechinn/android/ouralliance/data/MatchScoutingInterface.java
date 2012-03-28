@@ -100,7 +100,7 @@ public class MatchScoutingInterface {
 	    		cv.put(MatchScoutingProvider.keySlot, slot);
 	    		cv.put(DatabaseConnection._LASTMOD, 0);
 	    	} else {
-	    		cv.put(DatabaseConnection._LASTMOD, System.currentTimeMillis()/1000);
+	    		cv.put(DatabaseConnection._LASTMOD, System.currentTimeMillis());
 	    	}
     	} else {
     		cv.put(DatabaseConnection._LASTMOD, lastMod);

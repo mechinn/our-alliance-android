@@ -24,7 +24,7 @@ public class MatchListInterface {
 		return total;
 	}
 	
-	public void addMatch(String comp, int matchNum, int time, int red1, int red2, int red3, int blue1, int blue2, int blue3) {
+	public void addMatch(String comp, int matchNum, long time, int red1, int red2, int red3, int blue1, int blue2, int blue3) {
 		MatchScoutingInterface matchScore = new MatchScoutingInterface(activity);
     	createMatch(comp,matchNum,time,red1,red2,red3,blue1,blue2,blue3);
     	matchScore.createMatch(comp,matchNum,red1,"Red 1", false, false, false, 0, 0, 0, 0, "");
@@ -39,7 +39,7 @@ public class MatchListInterface {
 		return activity.getContentResolver().delete(MatchListProvider.mUri, MatchListProvider.keyCompetition+" = '"+comp+"' AND "+MatchListProvider.keyMatchNum+" = '"+matchNum+"'", null);
 	}
 
-    public Uri createMatch(String competition, int matchNum, int time, 
+    public Uri createMatch(String competition, int matchNum, long time, 
     		int red1, int red2, int red3, int blue1, int blue2, int blue3) {
     	
         ContentValues initialValues = putVals(true, -1, competition, matchNum, 
@@ -76,7 +76,7 @@ public class MatchListInterface {
 
     }
 
-    public boolean updateMatch(int lastMod, String competition, int matchNum, int time, 
+    public boolean updateMatch(int lastMod, String competition, int matchNum, long time, 
     		int red1, int red2, int red3, int blue1, int blue2, int blue3) {
     	ContentValues args = putVals(false, lastMod, competition, matchNum, 
     			time, red1, red2, red3, blue1, blue2, blue3);
@@ -84,7 +84,7 @@ public class MatchListInterface {
         return activity.getContentResolver().update(MatchListProvider.mUri, args,MatchListProvider.keyCompetition + " = '" + competition + "' AND " + MatchListProvider.keyMatchNum + " = '" + matchNum + "'",null) > 0;
     }
     
-    private ContentValues putVals(boolean create, int lastMod, String competition, int matchNum, int time, 
+    private ContentValues putVals(boolean create, int lastMod, String competition, int matchNum, long time, 
     		int red1, int red2, int red3, int blue1, int blue2, int blue3) {
     	ContentValues cv = new ContentValues();
     	if(lastMod<0) {
@@ -93,7 +93,7 @@ public class MatchListInterface {
 	        	cv.put(MatchListProvider.keyMatchNum, matchNum);
 	    		cv.put(DatabaseConnection._LASTMOD, 0);
 	    	} else {
-	    		cv.put(DatabaseConnection._LASTMOD, System.currentTimeMillis()/1000);
+	    		cv.put(DatabaseConnection._LASTMOD, System.currentTimeMillis());
 	    	}
     	} else {
     		cv.put(DatabaseConnection._LASTMOD, lastMod);

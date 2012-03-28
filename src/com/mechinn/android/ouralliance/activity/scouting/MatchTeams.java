@@ -1,6 +1,9 @@
 package com.mechinn.android.ouralliance.activity.scouting;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import com.bugsense.trace.BugSenseHandler;
@@ -36,7 +39,7 @@ public class MatchTeams extends ListFragment {
 	private Prefs prefs;
 	private MatchListInterface matchList;
 	private ListView list;
-	private int time;
+	private long time;
 	private int red1Val;
 	private int red2Val;
 	private int red3Val;
@@ -47,10 +50,13 @@ public class MatchTeams extends ListFragment {
 	private Vector<RowData> data;
 	private int curIndex = 0;
 	private boolean breakNicely;
+	private SimpleDateFormat timeFormatter;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        timeFormatter = new SimpleDateFormat("hh:mma");
+        timeFormatter.setTimeZone(TimeZone.getDefault());
         breakNicely = false;
         activity = this.getActivity();
         prefs = new Prefs(activity);
@@ -132,7 +138,7 @@ public class MatchTeams extends ListFragment {
 				activity.finish();
     			return;
     		}
-	        activity.setTitle("Match: "+Integer.toString(matchNum)+" | Time: "+Integer.toString(time));
+	        activity.setTitle("Match: "+Integer.toString(matchNum)+" | Time: "+timeFormatter.format(new Date(time)));
 	        
 	        mInflater = (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 	        data = new Vector<RowData>();
@@ -175,7 +181,7 @@ public class MatchTeams extends ListFragment {
 		            	Log.d("matchTeams",rowName);
 		            	Log.d("matchTeams",Integer.toString(col));
 		            	if(rowName.equals(MatchListProvider.keyTime)) {
-		            		time = match.getInt(col);
+		            		time = match.getLong(col);
 		            	} else if(rowName.equals(MatchListProvider.keyRed1)) {
 		            		red1Val = match.getInt(col);
 		            	} else if(rowName.equals(MatchListProvider.keyRed2)) {
