@@ -201,8 +201,8 @@ public class MatchList extends Activity {
     		Log.d("table rows",Integer.toString(matchTable.getChildCount()-1));
 	        if(matchTable.getChildCount()<2) {
 	        	TableRow tr = new TableRow(MatchList.this);
-	        	TextView tv = new TextView(MatchList.this);
-	        	tv.setText("No Teams");
+	        	TextView tv = textSetup();
+	        	tv.setText("No Matches");
 	        	tr.addView(tv);
 	        	matchTable.removeAllViews();
 	        	matchTable.addView(tr);
