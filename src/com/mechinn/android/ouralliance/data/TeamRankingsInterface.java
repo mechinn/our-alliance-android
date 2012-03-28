@@ -17,8 +17,8 @@ public class TeamRankingsInterface {
 		activity = act;
 	}
 
-    public Uri createTeam(String competition, int team, int rank, float qs, float hybrid,
-    		float bridge, float teleop, int coop, String record, int dq, int played) {
+    public Uri createTeam(String competition, int team, int rank, double qs, double hybrid,
+    		double bridge, double teleop, int coop, String record, int dq, int played) {
     	
         ContentValues initialValues = putVals(true, -1, competition, team, rank, 
     			qs, hybrid, bridge, teleop, coop, record, dq, dq);
@@ -43,16 +43,16 @@ public class TeamRankingsInterface {
         return mCursor;
     }
     
-    public boolean updateTeam(String competition, int team, int rank, float qs, float hybrid,
-    		float bridge, float teleop, int coop, String record, int dq, int played) {
+    public boolean updateTeam(String competition, int team, int rank, double qs, double hybrid,
+    		double bridge, double teleop, int coop, String record, int dq, int played) {
     	ContentValues args = putVals(false, -1, competition, team, rank, 
     			qs, hybrid, bridge, teleop, coop, record, dq, dq);
         
         return activity.getContentResolver().update(TeamRankingsProvider.mUri, args,null,null) > 0;
     }
     
-    private ContentValues putVals(boolean create, int lastMod, String competition, int team, int rank, float qs, float hybrid,
-    		float bridge, float teleop, int coop, String record, int dq, int played) {
+    private ContentValues putVals(boolean create, int lastMod, String competition, int team, int rank, double qs, double hybrid,
+    		double bridge, double teleop, int coop, String record, int dq, int played) {
     	ContentValues cv = new ContentValues();
     	if(lastMod<0) {
 	    	if(create) {

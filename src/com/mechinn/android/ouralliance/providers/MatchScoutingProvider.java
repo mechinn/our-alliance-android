@@ -51,19 +51,19 @@ public class MatchScoutingProvider extends ContentProvider {
     
     public static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+
     		DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    		DatabaseConnection._LASTMOD+" int not null, "+
-			keyCompetition+" text not null, " +
-			keyMatchNum+" int, " +
-			keyTeam+" int, " +
-			keySlot+" text, " +
-			keyBroke+" int, " +
-			keyAuto+" int, " +
-			keyBalance+" int, "+
-			keyShooter+" int, " +
-			keyTop+" int, " +
-			keyMid+" int, " +
-			keyBot+" int, " +
-			keyNotes+" text);";
+    		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
+			keyCompetition+" TEXT NOT NULL, " +
+			keyMatchNum+" INTEGER, " +
+			keyTeam+" INTEGER, " +
+			keySlot+" TEXT, " +
+			keyBroke+" INTEGER, " +
+			keyAuto+" INTEGER, " +
+			keyBalance+" INTEGER, "+
+			keyShooter+" INTEGER, " +
+			keyTop+" INTEGER, " +
+			keyMid+" INTEGER, " +
+			keyBot+" INTEGER, " +
+			keyNotes+" TEXT);";
 
     private DatabaseConnection mDB;
 

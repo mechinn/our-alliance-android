@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/addMatch" android:title="@string/addMatch" android:orderInCategory="1"></item>
-    <item android:id="@+id/settings" android:title="@string/settings" android:orderInCategory="2"></item>
+    <item android:id="@+id/settings" android:title="@string/settings" android:orderInCategory="3"></item>
+    <item android:id="@+id/deleteMatch" android:orderInCategory="2" android:title="@string/deleteMatch"></item>
 </menu>

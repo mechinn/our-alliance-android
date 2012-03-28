@@ -40,15 +40,20 @@ public class TeamScoutingProvider extends ContentProvider {
     public static final String keyClimb = "climb";
     public static final String keyNotes = "notes";
     public static final String keyAutonomous = "autonomous";
+    public static final String keyAvgHoops = "avghoops";
+    public static final String keyAvgBalance = "avgbalance";
+    public static final String keyAvgBroke = "avgbroke";
     
     public static final String[] competitions = new String[] {"CT"};
     
-    public static final String[] schemaArray = {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
+    public static final String[] mostSchema = {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
 		keyTeam, keyOrientation, keyNumWheels, keyWheelTypes, 
 		keyDeadWheel, keyWheel1Type, keyWheel1Diameter, 
 		keyWheel2Type, keyWheel2Diameter, keyDeadWheelType, 
 		keyTurret, keyTracking, keyFenderShooter, keyKeyShooter, 
-		keyBarrier, keyClimb, keyNotes, keyAutonomous};
+		keyBarrier, keyClimb, keyNotes, keyAutonomous, keyAvgHoops, keyAvgBalance, keyAvgBroke};
+    
+    public static String[] schemaArray;
 
     private static final String logTag = "TeamScoutingProvider";
     private static final String authority = "com.mechinn.android.ouralliance.providers."+logTag;
@@ -58,25 +63,39 @@ public class TeamScoutingProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher;
     private static HashMap<String, String> teamInfoProjectionMap;
     
+    static {
+    	schemaArray = new String[competitions.length+mostSchema.length];
+		System.arraycopy(competitions, 0, schemaArray, 0, competitions.length);
+		System.arraycopy(mostSchema, 0, schemaArray, competitions.length, mostSchema.length);
+    	
+        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        sUriMatcher.addURI(authority, DBTable, sig);
+
+        teamInfoProjectionMap = new HashMap<String, String>();
+        for(String schema : schemaArray) {
+        	teamInfoProjectionMap.put(schema, schema);
+        }
+    }
+    
     public static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    		DatabaseConnection._LASTMOD+" int not null, "+
-			keyTeam+" int not null unique, " +
-			keyOrientation+" text, " +
-			keyNumWheels+" int, " +
-			keyWheelTypes+" int, " +
-			keyDeadWheel+" int, " +
-			keyWheel1Type+" text, " +
-			keyWheel1Diameter+" int, " +
-			keyWheel2Type+" text, " +
-			keyWheel2Diameter+" int, " +
-			keyDeadWheelType+" text, " +
-			keyTurret+" int, " +
-			keyTracking+" int, " +
-			keyFenderShooter+" int, " +
-			keyKeyShooter+" int, " +
-			keyBarrier+" int, " +
-			keyClimb+" int, " +
-			keyNotes+" text);";
+    		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
+			keyTeam+" INTEGER NOT NULL UNIQUE, " +
+			keyOrientation+" TEXT, " +
+			keyNumWheels+" INTEGER, " +
+			keyWheelTypes+" INTEGER, " +
+			keyDeadWheel+" INTEGER, " +
+			keyWheel1Type+" TEXT, " +
+			keyWheel1Diameter+" INTEGER, " +
+			keyWheel2Type+" TEXT, " +
+			keyWheel2Diameter+" INTEGER, " +
+			keyDeadWheelType+" TEXT, " +
+			keyTurret+" INTEGER, " +
+			keyTracking+" INTEGER, " +
+			keyFenderShooter+" INTEGER, " +
+			keyKeyShooter+" INTEGER, " +
+			keyBarrier+" INTEGER, " +
+			keyClimb+" INTEGER, " +
+			keyNotes+" TEXT);";
 
     private DatabaseConnection mDB;
 
@@ -177,33 +196,5 @@ public class TeamScoutingProvider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
-    }
-
-    static {
-        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(authority, DBTable, sig);
-
-        teamInfoProjectionMap = new HashMap<String, String>();
-        teamInfoProjectionMap.put(DatabaseConnection._ID, DatabaseConnection._ID);
-        teamInfoProjectionMap.put(DatabaseConnection._LASTMOD, DatabaseConnection._LASTMOD);
-        teamInfoProjectionMap.put(keyTeam, keyTeam);
-        teamInfoProjectionMap.put(keyOrientation, keyOrientation);
-        teamInfoProjectionMap.put(keyNumWheels, keyNumWheels);
-        teamInfoProjectionMap.put(keyWheelTypes, keyWheelTypes);
-        teamInfoProjectionMap.put(keyDeadWheel, keyDeadWheel);
-        teamInfoProjectionMap.put(keyWheel1Type, keyWheel1Type);
-        teamInfoProjectionMap.put(keyWheel1Diameter, keyWheel1Diameter);
-        teamInfoProjectionMap.put(keyWheel2Type, keyWheel2Type);
-        teamInfoProjectionMap.put(keyWheel2Diameter, keyWheel2Diameter);
-        teamInfoProjectionMap.put(keyDeadWheelType, keyDeadWheelType);
-        teamInfoProjectionMap.put(keyTurret, keyTurret);
-        teamInfoProjectionMap.put(keyTracking, keyTracking);
-        teamInfoProjectionMap.put(keyFenderShooter, keyFenderShooter);
-        teamInfoProjectionMap.put(keyKeyShooter, keyKeyShooter);
-        teamInfoProjectionMap.put(keyBarrier, keyBarrier);
-        teamInfoProjectionMap.put(keyClimb, keyClimb);
-        teamInfoProjectionMap.put(keyNotes, keyNotes);
-        teamInfoProjectionMap.put(keyAutonomous, keyAutonomous);
-
     }
 }

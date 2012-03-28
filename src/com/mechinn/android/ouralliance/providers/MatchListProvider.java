@@ -45,16 +45,16 @@ public class MatchListProvider extends ContentProvider {
     
     public static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+
     		DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    		DatabaseConnection._LASTMOD+" int not null, "+
-			keyCompetition+" text not null, " +
-			keyTime+" int, " +
-			keyMatchNum+" int, " +
-			keyRed1+" int, " +
-			keyRed2+" int, " +
-			keyRed3+" int, " +
-			keyBlue1+" int, " +
-			keyBlue2+" int, " +
-			keyBlue3+" int);";
+    		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
+			keyCompetition+" TEXT NOT NULL, " +
+			keyTime+" INTEGER, " +
+			keyMatchNum+" INTEGER, " +
+			keyRed1+" INTEGER, " +
+			keyRed2+" INTEGER, " +
+			keyRed3+" INTEGER, " +
+			keyBlue1+" INTEGER, " +
+			keyBlue2+" INTEGER, " +
+			keyBlue3+" INTEGER);";
 
     private DatabaseConnection mDB;
 

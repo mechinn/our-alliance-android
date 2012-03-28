@@ -269,12 +269,10 @@
 	    </TableLayout>
 
 	    <TableLayout
-	        android:id="@+id/botAttributeTable"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_margin="1dip" >
 	        <TableRow
-	            android:id="@+id/attributes1"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
 	        
@@ -307,7 +305,6 @@
 	        
 	    	</TableRow>
 	        <TableRow
-	            android:id="@+id/attributes2"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
 	        
@@ -341,7 +338,6 @@
 	    	</TableRow>
 	    	
 	        <TableRow
-		        android:id="@+id/tableRow1"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content" >
 	
@@ -353,13 +349,15 @@
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
-	
+
 		        <TextView
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
-	                android:layout_weight="1" />
+	                android:layout_weight="1" >
+
+		        </TextView>
 		        
 		        <Button
 			        android:id="@+id/pickComp"
@@ -367,11 +365,59 @@
 			        android:layout_height="wrap_content"
 			        android:text="@string/pickComp"
 	                android:gravity="center"
-	                android:layout_weight="1" />
+	                android:layout_weight="1"
+	            	android:layout_margin="1dip" />
 	
 		    </TableRow>
 	    </TableLayout>
-	    
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="1dip" >
+	
+		        <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                	android:gravity="center"
+	                android:layout_weight="1"
+	                android:text="@string/avgHoops" />
+	            
+	            <TextView
+	                android:id="@+id/avgHoops"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                	android:gravity="center"
+	                android:layout_weight="1" />
+	            
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                	android:gravity="center"
+	                android:layout_weight="1"
+	                android:text="@string/avgBalance" />
+	            
+	            <TextView
+	                android:id="@+id/avgBalance"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                	android:gravity="center"
+	                android:layout_weight="1" />
+	            
+	            <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                	android:gravity="center"
+	                android:layout_weight="1"
+	                android:text="@string/avgBroke" />
+	            
+	            <TextView
+	                android:id="@+id/avgBroke"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                	android:gravity="center"
+	                android:layout_weight="1" />
+	
+	    </LinearLayout>
 	    <TextView
 	        android:id="@+id/notesLabel"
 	        android:layout_width="wrap_content"

@@ -3,8 +3,10 @@ package com.mechinn.android.ouralliance.activity.scouting;
 import java.util.List;
 import java.util.Vector;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.FragActivity;
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.activity.Info;
 import com.mechinn.android.ouralliance.activity.MatchList;
 import com.mechinn.android.ouralliance.data.MatchListInterface;
 import com.mechinn.android.ouralliance.data.Prefs;
@@ -28,8 +30,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MatchTeams extends ListFragment {
+	private final String logTag = "MatchTeams";
 	private FragmentActivity activity;
 	private boolean mDualPane;
 	private int matchNum;
@@ -45,12 +49,13 @@ public class MatchTeams extends ListFragment {
 	private int blue3Val;
 	private LayoutInflater mInflater;
 	private Vector<RowData> data;
-	private int curIndex = 1;
+	private int curIndex = 0;
+	private boolean breakNicely;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        
+        breakNicely = false;
         activity = this.getActivity();
         prefs = new Prefs(activity);
         matchNum = activity.getIntent().getExtras().getInt("match",0);
@@ -66,7 +71,7 @@ public class MatchTeams extends ListFragment {
 
         if (savedInstanceState != null) {
             // Restore last state for checked position.
-            curIndex = savedInstanceState.getInt("index", 1);
+            curIndex = savedInstanceState.getInt("index", 0);
         }
     }
 
@@ -125,6 +130,12 @@ public class MatchTeams extends ListFragment {
     
     private class getMatches extends AsyncTask<Void,Void,Void> {    	
     	protected void onPostExecute(Void no) {
+    		if(breakNicely){
+	        	BugSenseHandler.log(logTag, new Exception("no team"));
+				Toast.makeText(activity, "Something went wrong loading data, we notified the developer", Toast.LENGTH_SHORT).show();
+				activity.finish();
+    			return;
+    		}
 	        activity.setTitle("Match: "+Integer.toString(matchNum)+" | Time: "+Integer.toString(time));
 	        
 	        mInflater = (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -160,30 +171,33 @@ public class MatchTeams extends ListFragment {
 					MatchListProvider.keyBlue1, MatchListProvider.keyBlue2, MatchListProvider.keyBlue3};
 			
 			Cursor match = matchList.fetchMatch(prefs.getCompetition(), matchNum);
-			
-			do {
-	        	for(int j=0;j<from.length;++j) {
-	            	String rowName = from[j];
-	            	int col = match.getColumnIndex(rowName);
-	            	Log.d("matchTeams",rowName);
-	            	Log.d("matchTeams",Integer.toString(col));
-	            	if(rowName.equals(MatchListProvider.keyTime)) {
-	            		time = match.getInt(col);
-	            	} else if(rowName.equals(MatchListProvider.keyRed1)) {
-	            		red1Val = match.getInt(col);
-	            	} else if(rowName.equals(MatchListProvider.keyRed2)) {
-	            		red2Val = match.getInt(col);
-	            	} else if(rowName.equals(MatchListProvider.keyRed3)) {
-	            		red3Val = match.getInt(col);
-	            	} else if(rowName.equals(MatchListProvider.keyBlue1)) {
-	            		blue1Val = match.getInt(col);
-	            	} else if(rowName.equals(MatchListProvider.keyBlue2)) {
-	            		blue2Val = match.getInt(col);
-	            	} else if(rowName.equals(MatchListProvider.keyBlue3)) {
-	            		blue3Val = match.getInt(col);
-	            	}
-	            }
-	        } while(match.moveToNext());
+			if(match!=null && match.getCount()>0){
+				do {
+		        	for(int j=0;j<from.length;++j) {
+		            	String rowName = from[j];
+		            	int col = match.getColumnIndex(rowName);
+		            	Log.d("matchTeams",rowName);
+		            	Log.d("matchTeams",Integer.toString(col));
+		            	if(rowName.equals(MatchListProvider.keyTime)) {
+		            		time = match.getInt(col);
+		            	} else if(rowName.equals(MatchListProvider.keyRed1)) {
+		            		red1Val = match.getInt(col);
+		            	} else if(rowName.equals(MatchListProvider.keyRed2)) {
+		            		red2Val = match.getInt(col);
+		            	} else if(rowName.equals(MatchListProvider.keyRed3)) {
+		            		red3Val = match.getInt(col);
+		            	} else if(rowName.equals(MatchListProvider.keyBlue1)) {
+		            		blue1Val = match.getInt(col);
+		            	} else if(rowName.equals(MatchListProvider.keyBlue2)) {
+		            		blue2Val = match.getInt(col);
+		            	} else if(rowName.equals(MatchListProvider.keyBlue3)) {
+		            		blue3Val = match.getInt(col);
+		            	}
+		            }
+		        } while(match.moveToNext());
+			} else {
+				breakNicely = true;
+			}
 	        return null;
 		}
     }

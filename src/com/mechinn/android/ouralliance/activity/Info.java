@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.TeamScoutingInterface;
 import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
@@ -45,6 +46,7 @@ import android.widget.Toast;
 
 public class Info extends Activity {
     private static final int CAMERA_PIC_REQUEST = 869;
+    private final String logTag = "Info";
 
 	private AlertDialog takePicAlert;
 	private AlertDialog delPicAlert;
@@ -73,6 +75,9 @@ public class Info extends Activity {
 	boolean climb;
 	String notes;
 	boolean auto;
+	double hoops;
+	double balance;
+	double broke;
 	Bitmap teamPic;
 	
 	private TextView teamNumber;
@@ -102,8 +107,11 @@ public class Info extends Activity {
 	private CheckBox crossesBarrier;
 	private CheckBox climbBridge;
 	private CheckBox autonomous;
-	private EditText edittext;
 	private Button pickComp;
+	private TextView avgHoops;
+	private TextView avgBalance;
+	private TextView avgBroke;
+	private EditText edittext;
 	private Button save;
 	private Button discard;
 	
@@ -114,6 +122,8 @@ public class Info extends Activity {
 	
 	private ArrayAdapter<CharSequence> wheels;
 	private ArrayAdapter<CharSequence> wheelTypeStrings;
+	
+	private boolean breakNicely;
 	
 	private void takePic() {
 		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
@@ -201,6 +211,7 @@ public class Info extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info);
+        breakNicely = false;
         competitionsSelected = new HashSet<String>();
         pickCompetitionsDialogBuilder = new AlertDialog.Builder(this);
         pickCompetitionsDialogBuilder.setTitle("Pick competitions this team is at.");
@@ -427,7 +438,9 @@ public class Info extends Activity {
             }
         });
         
-        edittext = (EditText) findViewById(R.id.notes);
+        avgHoops = (TextView) findViewById(R.id.avgHoops);
+        avgBalance = (TextView) findViewById(R.id.avgBalance);
+        avgBroke = (TextView) findViewById(R.id.avgBroke);
         
         pickComp = (Button) findViewById(R.id.pickComp);
         pickComp.setOnClickListener(new Button.OnClickListener() {
@@ -436,59 +449,9 @@ public class Info extends Activity {
             }
         });
         
+        edittext = (EditText) findViewById(R.id.notes);
+        
         save = (Button) findViewById(R.id.save);
-        save.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                Log.d("team", Integer.toString(team));
-                Log.d("orientation", orientation);
-                Log.d("numWheels", Integer.toString(numWheels));
-                Log.d("wheelTypes", Integer.toString(wheelTypes));
-                Log.d("deadWheel", Boolean.toString(deadWheel));
-                if(wheelTypes > 0){
-	                String wheel1DiameterTextCheck = wheel1DiameterText.getText().toString();
-	                if(!wheel1DiameterTextCheck.equals("")) {
-	                	wheel1Diameter = Integer.parseInt(wheel1DiameterTextCheck);
-	                } else {
-	                	wheel1Diameter = 0;
-	                }
-                } else {
-                	wheel1Type = "None";
-                	wheel1Diameter = 0;
-                }
-                Log.d("wheel1Type", wheel1Type);
-            	Log.d("wheel1Diameter", Integer.toString(wheel1Diameter));
-                if(wheelTypes > 1){
-	                String wheel2DiameterTextCheck = wheel2DiameterText.getText().toString();
-	                if(!wheel2DiameterTextCheck.equals("")) {
-	                	wheel2Diameter = Integer.parseInt(wheel2DiameterTextCheck);
-	                } else {
-	                	wheel2Diameter = 0;
-	                }
-                } else {
-                	wheel2Type = "None";
-                	wheel2Diameter = 0;
-                }
-                Log.d("wheel2Type", wheel1Type);
-            	Log.d("wheel2Diameter", Integer.toString(wheel2Diameter));
-                if(!deadWheel){
-                	deadWheelType = "None";
-                }
-                Log.d("deadWheelType", deadWheelType);
-                Log.d("turret", Boolean.toString(turret));
-                Log.d("tracking", Boolean.toString(tracking));
-                Log.d("fender", Boolean.toString(fender));
-                Log.d("key", Boolean.toString(key));
-                Log.d("barrier", Boolean.toString(barrier));
-                Log.d("climb", Boolean.toString(climb));
-                Log.d("auto", Boolean.toString(auto));
-                notes = edittext.getText().toString();
-                Log.d("notes", notes);
-                
-                teamInfo.updateTeam(team, orientation, numWheels, wheelTypes, 
-            			deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter, 
-            			deadWheelType, turret, tracking, fender, key, barrier, climb, notes, auto, competitionsSelected);
-            }
-        });
         
         discard = (Button) findViewById(R.id.discard);
         discard.setOnClickListener(new Button.OnClickListener() {
@@ -504,6 +467,12 @@ public class Info extends Activity {
     private class getInfo extends AsyncTask<Context,Void,Context> {
     	
     	protected void onPostExecute(Context con) {
+    		if(breakNicely){
+	        	BugSenseHandler.log(logTag, new Exception("no team"));
+				Toast.makeText(Info.this, "Something went wrong loading data, we notified the developer", Toast.LENGTH_SHORT).show();
+				Info.this.finish();
+    			return;
+    		}
             teamNumber.setText(Integer.toString(team));
     		grabImage();
             if(orientation.equals(con.getString(R.string.orientationLong))){
@@ -544,84 +513,150 @@ public class Info extends Activity {
             crossesBarrier.setChecked(barrier);
             climbBridge.setChecked(climb);
             autonomous.setChecked(auto);
+            avgHoops.setText(Double.toString(hoops));
+            avgBalance.setText(Double.toString(balance));
+            avgBroke.setText(Double.toString(broke));
             edittext.setText(notes);
+            
+            save.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    Log.d("team", Integer.toString(team));
+                    Log.d("orientation", orientation);
+                    Log.d("numWheels", Integer.toString(numWheels));
+                    Log.d("wheelTypes", Integer.toString(wheelTypes));
+                    Log.d("deadWheel", Boolean.toString(deadWheel));
+                    if(wheelTypes > 0){
+    	                String wheel1DiameterTextCheck = wheel1DiameterText.getText().toString();
+    	                if(!wheel1DiameterTextCheck.equals("")) {
+    	                	wheel1Diameter = Integer.parseInt(wheel1DiameterTextCheck);
+    	                } else {
+    	                	wheel1Diameter = 0;
+    	                }
+                    } else {
+                    	wheel1Type = "None";
+                    	wheel1Diameter = 0;
+                    }
+                    Log.d("wheel1Type", wheel1Type);
+                	Log.d("wheel1Diameter", Integer.toString(wheel1Diameter));
+                    if(wheelTypes > 1){
+    	                String wheel2DiameterTextCheck = wheel2DiameterText.getText().toString();
+    	                if(!wheel2DiameterTextCheck.equals("")) {
+    	                	wheel2Diameter = Integer.parseInt(wheel2DiameterTextCheck);
+    	                } else {
+    	                	wheel2Diameter = 0;
+    	                }
+                    } else {
+                    	wheel2Type = "None";
+                    	wheel2Diameter = 0;
+                    }
+                    Log.d("wheel2Type", wheel1Type);
+                	Log.d("wheel2Diameter", Integer.toString(wheel2Diameter));
+                    if(!deadWheel){
+                    	deadWheelType = "None";
+                    }
+                    Log.d("deadWheelType", deadWheelType);
+                    Log.d("turret", Boolean.toString(turret));
+                    Log.d("tracking", Boolean.toString(tracking));
+                    Log.d("fender", Boolean.toString(fender));
+                    Log.d("key", Boolean.toString(key));
+                    Log.d("barrier", Boolean.toString(barrier));
+                    Log.d("climb", Boolean.toString(climb));
+                    Log.d("auto", Boolean.toString(auto));
+                    notes = edittext.getText().toString();
+                    Log.d("notes", notes);
+                    
+                    teamInfo.updateTeam(team, orientation, numWheels, wheelTypes, 
+                			deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter, 
+                			deadWheelType, turret, tracking, fender, key, barrier, climb, notes, 
+                			auto, competitionsSelected, hoops, balance, broke);
+                }
+            });
     	}
     	
 		protected Context doInBackground(Context... con) {
 	        team = getIntent().getIntExtra("team", 0);
 	        Cursor thisTeam = teamInfo.fetchTeam(team);
-	        
-	        //get variables from DB
-	        for(int i=0;i<thisTeam.getColumnCount();++i) {
-	        	String colName = thisTeam.getColumnName(i);
-	        	Log.d("column",colName);
-	        	if(colName.equals(TeamScoutingProvider.keyOrientation)){
-	        		orientation = thisTeam.getString(i);
-	        	} else if (colName.equals(TeamScoutingProvider.keyNumWheels)) {
-	        		numWheels = thisTeam.getInt(i);
-	        	} else if (colName.equals(TeamScoutingProvider.keyWheelTypes)) {
-	        		wheelTypes = thisTeam.getInt(i);
-	        	} else if (colName.equals(TeamScoutingProvider.keyDeadWheel)) {
-	        		if(thisTeam.getInt(i)==0) {
-	            		deadWheel = false;
-	            	} else {
-	            		deadWheel = true;
-	            	}
-	        	} else if (colName.equals(TeamScoutingProvider.keyWheel1Type)) {
-	        		wheel1Type = thisTeam.getString(i);
-	        	} else if (colName.equals(TeamScoutingProvider.keyWheel1Diameter)) {
-	        		wheel1Diameter = thisTeam.getInt(i);
-	        	} else if (colName.equals(TeamScoutingProvider.keyWheel2Type)) {
-	        		wheel2Type = thisTeam.getString(i);
-	        	} else if (colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
-	        		wheel2Diameter = thisTeam.getInt(i);
-	        	} else if (colName.equals(TeamScoutingProvider.keyDeadWheelType)) {
-	        		deadWheelType = thisTeam.getString(i);
-	        	} else if (colName.equals(TeamScoutingProvider.keyTurret)) {
-	        		if(thisTeam.getInt(i)==0) {
-	            		turret = false;
-	            	} else {
-	            		turret = true;
-	            	}
-	        	} else if (colName.equals(TeamScoutingProvider.keyTracking)) {
-	        		if(thisTeam.getInt(i)==0) {
-	            		tracking = false;
-	            	} else {
-	            		tracking = true;
-	            	}
-	        	} else if (colName.equals(TeamScoutingProvider.keyFenderShooter)) {
-	        		if(thisTeam.getInt(i)==0) {
-	            		fender = false;
-	            	} else {
-	            		fender = true;
-	            	}
-	        	} else if (colName.equals(TeamScoutingProvider.keyKeyShooter)) {
-	        		if(thisTeam.getInt(i)==0) {
-	            		key = false;
-	            	} else {
-	            		key = true;
-	            	}
-	        	} else if (colName.equals(TeamScoutingProvider.keyBarrier)) {
-	        		if(thisTeam.getInt(i)==0) {
-	            		barrier = false;
-	            	} else {
-	            		barrier = true;
-	            	}
-	        	} else if (colName.equals(TeamScoutingProvider.keyClimb)) {
-	        		if(thisTeam.getInt(i)==0) {
-	            		climb = false;
-	            	} else {
-	            		climb = true;
-	            	}
-	        	} else if (colName.equals(TeamScoutingProvider.keyAutonomous)) {
-	        		if(thisTeam.getInt(i)==0) {
-	            		auto = false;
-	            	} else {
-	            		auto = true;
-	            	}
-	        	} else if (colName.equals(TeamScoutingProvider.keyNotes)) {
-	        		notes = thisTeam.getString(i);
-	        	}
+	        if(thisTeam!=null && thisTeam.getCount()>0){
+		        //get variables from DB
+		        for(int i=0;i<thisTeam.getColumnCount();++i) {
+		        	String colName = thisTeam.getColumnName(i);
+		        	Log.d("column",colName);
+		        	if(colName.equals(TeamScoutingProvider.keyOrientation)){
+		        		orientation = thisTeam.getString(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyNumWheels)) {
+		        		numWheels = thisTeam.getInt(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyWheelTypes)) {
+		        		wheelTypes = thisTeam.getInt(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyDeadWheel)) {
+		        		if(thisTeam.getInt(i)==0) {
+		            		deadWheel = false;
+		            	} else {
+		            		deadWheel = true;
+		            	}
+		        	} else if (colName.equals(TeamScoutingProvider.keyWheel1Type)) {
+		        		wheel1Type = thisTeam.getString(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyWheel1Diameter)) {
+		        		wheel1Diameter = thisTeam.getInt(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyWheel2Type)) {
+		        		wheel2Type = thisTeam.getString(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
+		        		wheel2Diameter = thisTeam.getInt(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyDeadWheelType)) {
+		        		deadWheelType = thisTeam.getString(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyTurret)) {
+		        		if(thisTeam.getInt(i)==0) {
+		            		turret = false;
+		            	} else {
+		            		turret = true;
+		            	}
+		        	} else if (colName.equals(TeamScoutingProvider.keyTracking)) {
+		        		if(thisTeam.getInt(i)==0) {
+		            		tracking = false;
+		            	} else {
+		            		tracking = true;
+		            	}
+		        	} else if (colName.equals(TeamScoutingProvider.keyFenderShooter)) {
+		        		if(thisTeam.getInt(i)==0) {
+		            		fender = false;
+		            	} else {
+		            		fender = true;
+		            	}
+		        	} else if (colName.equals(TeamScoutingProvider.keyKeyShooter)) {
+		        		if(thisTeam.getInt(i)==0) {
+		            		key = false;
+		            	} else {
+		            		key = true;
+		            	}
+		        	} else if (colName.equals(TeamScoutingProvider.keyBarrier)) {
+		        		if(thisTeam.getInt(i)==0) {
+		            		barrier = false;
+		            	} else {
+		            		barrier = true;
+		            	}
+		        	} else if (colName.equals(TeamScoutingProvider.keyClimb)) {
+		        		if(thisTeam.getInt(i)==0) {
+		            		climb = false;
+		            	} else {
+		            		climb = true;
+		            	}
+		        	} else if (colName.equals(TeamScoutingProvider.keyAutonomous)) {
+		        		if(thisTeam.getInt(i)==0) {
+		            		auto = false;
+		            	} else {
+		            		auto = true;
+		            	}
+		        	} else if (colName.equals(TeamScoutingProvider.keyAvgHoops)) {
+		        		hoops = thisTeam.getDouble(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyAvgBalance)) {
+		        		balance = thisTeam.getDouble(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyAvgBroke)) {
+		        		broke = thisTeam.getDouble(i);
+		        	} else if (colName.equals(TeamScoutingProvider.keyNotes)) {
+		        		notes = thisTeam.getString(i);
+		        	}
+		        }
+	        } else {
+	        	breakNicely = true;
 	        }
 	        return con[0];
 		}

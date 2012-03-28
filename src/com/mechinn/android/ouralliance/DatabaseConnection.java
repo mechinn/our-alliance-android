@@ -15,7 +15,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 	public static final String _COUNT = "_count";
 	public static final String _LASTMOD = "_lastmod";
 	private static final String DBName = "ourAlliance.sqlite";
-	private static final int DBVersion = 2;
+	private static final int DBVersion = 4;
 	private final String logTag = "DatabaseConnection";
 
 	public DatabaseConnection(Context context) {
@@ -60,7 +60,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 	    		Log.d(logTag,TeamScoutingProvider.DATABASE_CREATE);
 	    		db.execSQL(TeamScoutingProvider.DATABASE_CREATE);
     		case 2:
-    			Log.i(logTag, "v2 added autonomous column to the "+TeamScoutingProvider.DBTable+" table.");
+    			Log.i(logTag, "v2 added "+TeamScoutingProvider.keyAutonomous+" column to the "+TeamScoutingProvider.DBTable+" table.");
     			query = "ALTER TABLE "+TeamScoutingProvider.DBTable+" ADD COLUMN "+TeamScoutingProvider.keyAutonomous+" INTEGER;";
     			Log.d(logTag,query);
         		db.execSQL(query);
@@ -71,6 +71,17 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 	    			Log.d(logTag,query);
 	        		db.execSQL(query);
     			}
+    		case 4:
+    			Log.i(logTag, "v4 added "+TeamScoutingProvider.keyAvgHoops+", "+TeamScoutingProvider.keyAvgBalance+", "+TeamScoutingProvider.keyAvgBroke+" column to the "+TeamScoutingProvider.DBTable+" table.");
+    			query = "ALTER TABLE "+TeamScoutingProvider.DBTable+" ADD COLUMN "+TeamScoutingProvider.keyAvgHoops+" REAL;";
+    			Log.d(logTag,query);
+        		db.execSQL(query);
+    			query = "ALTER TABLE "+TeamScoutingProvider.DBTable+" ADD COLUMN "+TeamScoutingProvider.keyAvgBalance+" REAL;";
+    			Log.d(logTag,query);
+        		db.execSQL(query);
+    			query = "ALTER TABLE "+TeamScoutingProvider.DBTable+" ADD COLUMN "+TeamScoutingProvider.keyAvgBroke+" REAL;";
+    			Log.d(logTag,query);
+        		db.execSQL(query);
     	}
     }
     
@@ -78,5 +89,12 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     	SQLiteDatabase db = this.getWritableDatabase();
     	onUpgrade(db,0,1);
     	db.close();
+    }
+    
+    public int getVersion() {
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	int version = db.getVersion();
+    	db.close();
+    	return version;
     }
 }

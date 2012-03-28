@@ -1,9 +1,15 @@
 package com.mechinn.android.ouralliance.activity.scouting;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchScoutingInterface;
 import com.mechinn.android.ouralliance.data.Prefs;
+import com.mechinn.android.ouralliance.data.TeamScoutingInterface;
 import com.mechinn.android.ouralliance.providers.MatchScoutingProvider;
+import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,6 +28,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MatchTeamInfo extends Fragment {
 	private Activity activity;
@@ -43,6 +50,7 @@ public class MatchTeamInfo extends Fragment {
 	private TextView botScoreTotal;
 	private TextView notes;
 	private MatchScoutingInterface matchScouting;
+	private TeamScoutingInterface teamScouting;
 	private Prefs prefs;
 	private String comp;
 	private static final String logTag = "MatchTeamInfo";
@@ -78,6 +86,7 @@ public class MatchTeamInfo extends Fragment {
         view = inflater.inflate(R.layout.scouting, container, false);
         activity = this.getActivity();
         args = this.getArguments();
+		teamScouting = new TeamScoutingInterface(activity);
 		matchScouting = new MatchScoutingInterface(activity);
 		prefs = new Prefs(activity);
 		comp = prefs.getCompetition();
@@ -135,11 +144,55 @@ public class MatchTeamInfo extends Fragment {
 		Button save = (Button)view.findViewById(R.id.matchScoutingSave);
 		save.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				int type = shootingType.indexOfChild(view.findViewById(shootingType.getCheckedRadioButtonId()));
 				matchScouting.updateMatch(comp, matchNum, team, matchSlot.getText().toString(),
 						broke.isChecked(), autonomousWorked.isChecked(), balanced.isChecked(), 
-						shootingType.indexOfChild(view.findViewById(shootingType.getCheckedRadioButtonId())),
-						Integer.parseInt(topScoreTotal.getText().toString()), Integer.parseInt(midScoreTotal.getText().toString()), 
+						type, Integer.parseInt(topScoreTotal.getText().toString()), 
+						Integer.parseInt(midScoreTotal.getText().toString()), 
 						Integer.parseInt(botScoreTotal.getText().toString()), notes.getText().toString());
+				Cursor thisTeam = matchScouting.fetchTeam(team);
+				if(thisTeam!=null && thisTeam.getCount()>0){
+					double avgHoops = 0;
+					double avgBalance = 0;
+					double avgBroke = 0;
+					do {
+						int top = thisTeam.getColumnIndex(MatchScoutingProvider.keyTop);
+						int mid = thisTeam.getColumnIndex(MatchScoutingProvider.keyMid);
+						int bot = thisTeam.getColumnIndex(MatchScoutingProvider.keyBot);
+						top = thisTeam.getInt(top);
+						mid = thisTeam.getInt(mid);
+						bot = thisTeam.getInt(bot);
+						avgHoops+=(top*3+mid*2+bot);
+						avgBalance+=thisTeam.getInt(thisTeam.getColumnIndex(MatchScoutingProvider.keyBalance));
+						avgBroke+=thisTeam.getInt(thisTeam.getColumnIndex(MatchScoutingProvider.keyBroke));
+					} while(thisTeam.moveToNext());
+					avgHoops/=thisTeam.getCount();
+					avgBalance/=thisTeam.getCount();
+					avgBroke/=thisTeam.getCount();
+			        boolean fender;
+			        boolean key;
+			        switch(type) {
+		    			default:
+		    				fender = false;
+		    				key = false;
+		    				break;
+		    			case 1:
+		    				fender = true;
+		    				key = false;
+		    				break;
+		    			case 2:
+		    				fender = false;
+		    				key = true;
+		    				break;
+		    		}
+					int updatedRows = teamScouting.updateTeam(team, fender, key, autonomousWorked.isChecked(), avgHoops, avgBalance, avgBroke);
+					Log.d("saveMatchTeamInfo", "Updated "+updatedRows+" rows.");
+					Toast.makeText(activity, "Finished Saving", Toast.LENGTH_SHORT).show();
+				} else {
+				    BugSenseHandler.log(logTag, new Exception("no team"));
+					Toast.makeText(activity, "Something went wrong loading data, we notified the developer", Toast.LENGTH_SHORT).show();
+					activity.finish();
+				}
 			}
 		});
 		
@@ -154,47 +207,33 @@ public class MatchTeamInfo extends Fragment {
     }
     
     public void getInfo() {
-    	String[] from = new String[] {MatchScoutingProvider.keySlot, MatchScoutingProvider.keyBroke, 
-    			MatchScoutingProvider.keyAuto, MatchScoutingProvider.keyBalance, MatchScoutingProvider.keyShooter, 
-    			MatchScoutingProvider.keyTop, MatchScoutingProvider.keyMid, MatchScoutingProvider.keyBot, MatchScoutingProvider.keyNotes};
 		Cursor match = matchScouting.fetchMatch(comp, matchNum, team);
-		match.moveToFirst();
-		
-    	for(int j=0;j<from.length;++j) {
-        	String rowName = from[j];
-        	int col = match.getColumnIndex(rowName);
-        	Log.d("matchTeams",rowName);
-        	Log.d("matchTeams",Integer.toString(col));
-        	if(rowName.equals(MatchScoutingProvider.keySlot)) {
-        		matchSlot.setText(match.getString(col));
-        	} else if(rowName.equals(MatchScoutingProvider.keyBroke)) {
-        		broke.setChecked(match.getInt(col)==0?false:true);
-        	} else if(rowName.equals(MatchScoutingProvider.keyAuto)) {
-        		autonomousWorked.setChecked(match.getInt(col)==0?false:true);
-        	} else if(rowName.equals(MatchScoutingProvider.keyBalance)) {
-        		balanced.setChecked(match.getInt(col)==0?false:true);
-        	} else if(rowName.equals(MatchScoutingProvider.keyShooter)) {
-        		Log.d("match team info",Integer.toString(match.getInt(col)));
-        		switch(match.getInt(col)) {
-        			default:
-        				noShooting.toggle();
-        				break;
-        			case 1:
-        				dunker.toggle();
-        				break;
-        			case 2:
-        				shooter.toggle();
-        				break;
-        		}
-        	} else if(rowName.equals(MatchScoutingProvider.keyTop)) {
-        		topScoreTotal.setText(Integer.toString(match.getInt(col)));
-        	} else if(rowName.equals(MatchScoutingProvider.keyMid)) {
-        		midScoreTotal.setText(Integer.toString(match.getInt(col)));
-        	} else if(rowName.equals(MatchScoutingProvider.keyBot)) {
-        		botScoreTotal.setText(Integer.toString(match.getInt(col)));
-        	} else if(rowName.equals(MatchScoutingProvider.keyNotes)) {
-        		notes.setText(match.getString(col));
-        	}
-        }
+		if(match!=null && match.getCount()>0) {
+			int col = match.getColumnIndex(MatchScoutingProvider.keySlot);
+			Log.d("getinfo","col index = "+col);
+			matchSlot.setText(match.getString(col));
+			broke.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBroke))==0?false:true);
+			autonomousWorked.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyAuto))==0?false:true);
+			balanced.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBalance))==0?false:true);
+			switch(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyShooter))) {
+				default:
+					noShooting.toggle();
+					break;
+				case 1:
+					dunker.toggle();
+					break;
+				case 2:
+					shooter.toggle();
+					break;
+			}
+			topScoreTotal.setText(Integer.toString(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyTop))));
+			midScoreTotal.setText(Integer.toString(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMid))));
+			botScoreTotal.setText(Integer.toString(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBot))));
+			notes.setText(match.getString(match.getColumnIndex(MatchScoutingProvider.keyNotes)));
+		} else {
+			BugSenseHandler.log(logTag, new Exception("no match"));
+			Toast.makeText(activity, "Something went wrong loading data, we notified the developer", Toast.LENGTH_SHORT).show();
+			activity.finish();
+		}
     }
 }

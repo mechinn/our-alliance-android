@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchListInterface;
 import com.mechinn.android.ouralliance.data.Prefs;
+import com.mechinn.android.ouralliance.data.TeamScoutingInterface;
 import com.mechinn.android.ouralliance.providers.MatchListProvider;
+import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -22,9 +27,12 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -45,12 +53,12 @@ public class MatchList extends Activity {
 		"Blue 1", "Blue 2", "Blue 3"
 	};
 	private MatchListInterface matchListData;
+	private TeamScoutingInterface teamScoutingData;
 	private TableLayout matchTable;
 	private TableRow header;
 	private TableRow tableRow;
 	private TextView headerText;
 	private TextView textView;
-	private ArrayList<Intent> intents;
 	private Prefs prefs;
 	private int matchCount;
 	private int lastMatchTime;
@@ -66,14 +74,18 @@ public class MatchList extends Activity {
 	private EditText addMatchBlue2;
 	private EditText addMatchBlue3;
 	
+	private int match;
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.matchlist);
+        
         loading = true;
         prefs = new Prefs(this);
         matchTable = (TableLayout) this.findViewById(R.id.matchList);
         header = (TableRow) this.findViewById(R.id.header);
         matchListData = new MatchListInterface(this);
+        teamScoutingData = new TeamScoutingInterface(this);
         for(String col : white) {
 			headerText = textSetup();
 			headerText.setText(col);
@@ -119,7 +131,6 @@ public class MatchList extends Activity {
 			tableRow.addView(textView);
 		}
 		matchTable.addView(tableRow);
-		intents = new ArrayList<Intent>();
         new getMatches().execute();
 	}
 	
@@ -150,13 +161,12 @@ public class MatchList extends Activity {
     					public void onFocusChange(View v, boolean hasFocus) {
     						if(hasFocus) {
     							v.setBackgroundColor(Color.GRAY);
+    							match = (Integer) v.getTag();
     						} else {
     							v.setBackgroundColor(Color.TRANSPARENT);
     						}
     					}
     		    	});
-    				Intent intent = new Intent("com.mechinn.android.ouralliance.OpenScouting");
-    				intents.add(intent);
     				break;
     			case ADDTEXT:
     				textView = textSetup();
@@ -164,13 +174,14 @@ public class MatchList extends Activity {
     				tableRow.addView(textView);
     				break;
     			case SETMATCH:
-					intents.get(intents.size()-1).putExtra("match", (Integer)data[1]);
+    				tableRow.setTag((Integer)data[1]);
     				break;
     			case ADDROW:
     				tableRow.setOnClickListener(new OnClickListener() {
-    					private int index = intents.size()-1;
 						public void onClick(View v) {
-							startActivity(intents.get(index));
+							Intent intent = new Intent("com.mechinn.android.ouralliance.OpenScouting");
+							intent.putExtra("match", (Integer)v.getTag());
+							startActivity(intent);
 						}
     				});
     				matchTable.addView(tableRow);
@@ -209,30 +220,31 @@ public class MatchList extends Activity {
 					MatchListProvider.keyBlue1, MatchListProvider.keyBlue2, MatchListProvider.keyBlue3};
 			
 			Cursor thisMatch = matchListData.fetchMatches(prefs.getCompetition());
-			matchCount = 0;
-			do {
-	        	publishProgress(NEWROW);
-	        	for(int j=0;j<from.length;++j) {
-	            	String colName = from[j];
-	            	int col = thisMatch.getColumnIndex(colName);
-	            	if(colName.equals(MatchListProvider.keyMatchNum)) {
-	            		publishProgress(SETMATCH,thisMatch.getInt(col));
-	            		publishProgress(ADDTEXT,Integer.toString(thisMatch.getInt(col)));
-	            	} else if(colName.equals(MatchListProvider.keyTime)) {
-	            		lastMatchTime = thisMatch.getInt(col);
-	            		publishProgress(ADDTEXT,Integer.toString(lastMatchTime));
-	            	} else if(colName.equals(MatchListProvider.keyRed1) || colName.equals(MatchListProvider.keyRed2) || 
-	            			colName.equals(MatchListProvider.keyRed3)){
-	            		publishProgress(ADDRED,Integer.toString(thisMatch.getInt(col)));
-	            	} else if (colName.equals(MatchListProvider.keyBlue1) || colName.equals(MatchListProvider.keyBlue2) || 
-	            			colName.equals(MatchListProvider.keyBlue3)) {
-	            		publishProgress(ADDBLUE,Integer.toString(thisMatch.getInt(col)));
-	            	}
-	            }
-	        	++matchCount;
-	        	publishProgress(ADDROW);
-	        } while(thisMatch.moveToNext());
-			
+			if(thisMatch!=null && thisMatch.getCount()>0){
+				matchCount = 0;
+				do {
+		        	publishProgress(NEWROW);
+		        	for(int j=0;j<from.length;++j) {
+		            	String colName = from[j];
+		            	int col = thisMatch.getColumnIndex(colName);
+		            	if(colName.equals(MatchListProvider.keyMatchNum)) {
+		            		publishProgress(SETMATCH,thisMatch.getInt(col));
+		            		publishProgress(ADDTEXT,Integer.toString(thisMatch.getInt(col)));
+		            	} else if(colName.equals(MatchListProvider.keyTime)) {
+		            		lastMatchTime = thisMatch.getInt(col);
+		            		publishProgress(ADDTEXT,Integer.toString(lastMatchTime));
+		            	} else if(colName.equals(MatchListProvider.keyRed1) || colName.equals(MatchListProvider.keyRed2) || 
+		            			colName.equals(MatchListProvider.keyRed3)){
+		            		publishProgress(ADDRED,Integer.toString(thisMatch.getInt(col)));
+		            	} else if (colName.equals(MatchListProvider.keyBlue1) || colName.equals(MatchListProvider.keyBlue2) || 
+		            			colName.equals(MatchListProvider.keyBlue3)) {
+		            		publishProgress(ADDBLUE,Integer.toString(thisMatch.getInt(col)));
+		            	}
+		            }
+		        	++matchCount;
+		        	publishProgress(ADDROW);
+		        } while(thisMatch.moveToNext());
+			}
 	        return null;
 		}
     }
@@ -252,6 +264,19 @@ public class MatchList extends Activity {
 		    case R.id.addMatch:
 		    	if(!loading) {
 		    		showDialog(ADDMATCH);
+		    	} else {
+		    		Toast.makeText(MatchList.this, "Please wait till table finished loading and try again.", Toast.LENGTH_SHORT).show();
+		    	}
+	            return true;
+		    case R.id.deleteMatch:
+		    	if(!loading) {
+		    		if(matchListData.deleteMatch(prefs.getCompetition(), match)==7) {
+		        		Toast.makeText(MatchList.this, "Match "+match+" deleted successfully.", Toast.LENGTH_SHORT).show();
+		        	} else {
+
+		        		Toast.makeText(MatchList.this, "Match "+match+" deleteion failed.", Toast.LENGTH_SHORT).show();
+		        	}
+		    		setup();
 		    	} else {
 		    		Toast.makeText(MatchList.this, "Please wait till table finished loading and try again.", Toast.LENGTH_SHORT).show();
 		    	}
@@ -298,17 +323,46 @@ public class MatchList extends Activity {
 		    					matchBlue1.equals("") || matchBlue2.equals("") || matchBlue3.equals("")) {
 		    				Toast.makeText(MatchList.this, "Must have a value in each field", Toast.LENGTH_SHORT).show();
 		    			} else {
+		    				int red1 = Integer.parseInt(matchRed1);
+		    				int red2 = Integer.parseInt(matchRed2);
+		    				int red3 = Integer.parseInt(matchRed3);
+		    				int blue1 = Integer.parseInt(matchBlue1);
+		    				int blue2 = Integer.parseInt(matchBlue2);
+		    				int blue3 = Integer.parseInt(matchBlue3);
 		    				String comp = prefs.getCompetition();
 		    				int matchVal = Integer.parseInt(matchNum);
 		    				Cursor match = matchListData.fetchMatch(comp, matchVal);
 		    				if(matchVal<=0) {
 		    					Toast.makeText(MatchList.this, "Must have a match number >= 1", Toast.LENGTH_SHORT).show();
 		    				} else if(match.getCount()==0){
-		    					matchListData.createMatch(comp, matchVal, Integer.parseInt(matchTime),
-			    						 Integer.parseInt(matchRed1), Integer.parseInt(matchRed2), Integer.parseInt(matchRed3),
-										 Integer.parseInt(matchBlue1), Integer.parseInt(matchBlue2), Integer.parseInt(matchBlue3));
-		    					setup();
-		    					addMatchDialog.dismiss();
+		    					if(teamScoutingData.fetchTeam(red1).getCount()==1) {
+		    						if(teamScoutingData.fetchTeam(red2).getCount()==1) {
+		    							if(teamScoutingData.fetchTeam(red3).getCount()==1){
+		    								if(teamScoutingData.fetchTeam(blue1).getCount()==1) {
+		    									if(teamScoutingData.fetchTeam(blue2).getCount()==1) {
+		    										if(teamScoutingData.fetchTeam(blue3).getCount()==1) {
+		    											matchListData.addMatch(comp, matchVal, Integer.parseInt(matchTime),
+		    						    						 red1, red2, red3, blue1, blue2, blue3);
+		    					    					setup();
+		    					    					addMatchDialog.dismiss();
+		    										} else {
+		    											Toast.makeText(MatchList.this, "Blue 3 is not a valid team.", Toast.LENGTH_SHORT).show();
+		    										}
+		    									} else {
+	    											Toast.makeText(MatchList.this, "Blue 2 is not a valid team.", Toast.LENGTH_SHORT).show();
+		    									}
+		    								} else {
+    											Toast.makeText(MatchList.this, "Blue 1 is not a valid team.", Toast.LENGTH_SHORT).show();
+		    								}
+		    							} else {
+											Toast.makeText(MatchList.this, "Red 3 is not a valid team.", Toast.LENGTH_SHORT).show();
+		    							}
+		    						} else {
+										Toast.makeText(MatchList.this, "Red 2 is not a valid team.", Toast.LENGTH_SHORT).show();
+		    						}
+		    					} else {
+									Toast.makeText(MatchList.this, "Red 1 is not a valid team.", Toast.LENGTH_SHORT).show();
+		    					}
 		    				} else {
 		    					Toast.makeText(MatchList.this, "Match number already exists", Toast.LENGTH_SHORT).show();
 		    				}

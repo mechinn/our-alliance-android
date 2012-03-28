@@ -118,4 +118,9 @@
     <string name="addTeam">Add Team</string>
     <string name="pickComp">Choose Competitions</string>
     <string name="allTeams">Show All Teams</string>
+    <string name="avgHoops">Avg Hoop Pts: </string>
+    <string name="avgBroke">Avg Matches Broke: </string>
+    <string name="avgBalance">Avg Matches Balanced: </string>
+    <string name="deleteMatch">Delete Match</string>
+    <string name="deleteTeam">Delete Team</string>
 </resources>

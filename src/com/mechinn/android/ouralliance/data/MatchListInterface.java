@@ -16,8 +16,16 @@ public class MatchListInterface {
 		activity = act;
 	}
 	
-	public void addMatch(Activity act, String comp, int matchNum, int time, int red1, int red2, int red3, int blue1, int blue2, int blue3) {
-		MatchScoutingInterface matchScore = new MatchScoutingInterface(act);
+	public int deleteMatch(String comp, int matchNum) {
+		int total = 0;
+		MatchScoutingInterface matchScore = new MatchScoutingInterface(activity);
+		total+=matchScore.deleteMatch(comp, matchNum);
+		total+=delete(comp,matchNum);
+		return total;
+	}
+	
+	public void addMatch(String comp, int matchNum, int time, int red1, int red2, int red3, int blue1, int blue2, int blue3) {
+		MatchScoutingInterface matchScore = new MatchScoutingInterface(activity);
     	createMatch(comp,matchNum,time,red1,red2,red3,blue1,blue2,blue3);
     	matchScore.createMatch(comp,matchNum,red1,"Red 1", false, false, false, 0, 0, 0, 0, "");
     	matchScore.createMatch(comp,matchNum,red2,"Red 2", false, false, false, 0, 0, 0, 0, "");
@@ -26,6 +34,10 @@ public class MatchListInterface {
     	matchScore.createMatch(comp,matchNum,blue2,"Blue 2", false, false, false, 0, 0, 0, 0, "");
     	matchScore.createMatch(comp,matchNum,blue3,"Blue 3", false, false, false, 0, 0, 0, 0, "");
     }
+	
+	public int delete(String comp, int matchNum) {
+		return activity.getContentResolver().delete(MatchListProvider.mUri, MatchListProvider.keyCompetition+" = '"+comp+"' AND "+MatchListProvider.keyMatchNum+" = '"+matchNum+"'", null);
+	}
 
     public Uri createMatch(String competition, int matchNum, int time, 
     		int red1, int red2, int red3, int blue1, int blue2, int blue3) {

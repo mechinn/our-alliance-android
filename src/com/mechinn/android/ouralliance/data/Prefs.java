@@ -11,16 +11,16 @@ public class Prefs {
 	 *
 	 * @return returns true, if this is the first run
 	 */
-	public boolean getSetupDB() {
-		return prefs.getBoolean("firstRun", true);
+	public int getDBVersion() {
+		return prefs.getInt("DBVersion", 0);
 	}
 	 
 	/**
 	 * store the first run
 	 */
-	public void setSetupDB(boolean run) {
+	public void setDBVersion(int version) {
 		SharedPreferences.Editor edit = prefs.edit();
-		edit.putBoolean("firstRun", run);
+		edit.putInt("DBVersion", version);
 		edit.commit();
 	}
 	

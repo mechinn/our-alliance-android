@@ -46,18 +46,18 @@ public class TeamRankingsProvider extends ContentProvider {
     private static HashMap<String, String> projectionMap;
     
     public static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    		DatabaseConnection._LASTMOD+" int not null, "+
-			keyCompetition+" text not null, " +
-			keyRank+" int, " +
-			keyTeam+" int, " +
-			keyQS+" FLOAT, " +
-			keyHybrid+" FLOAT, " +
-			keyBridge+" FLOAT, " +
-			keyTeleop+" FLOAT, " +
-			keyCoop+" int, " +
-			keyRecord+" text, " +
-			keyDQ+" int, " +
-			keyPlayed+" int);";
+    		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
+			keyCompetition+" TEXT NOT NULL, " +
+			keyRank+" INTEGER, " +
+			keyTeam+" INTEGER, " +
+			keyQS+" REAL, " +
+			keyHybrid+" REAL, " +
+			keyBridge+" REAL, " +
+			keyTeleop+" REAL, " +
+			keyCoop+" INTEGER, " +
+			keyRecord+" TEXT, " +
+			keyDQ+" INTEGER, " +
+			keyPlayed+" INTEGER);";
 
     private DatabaseConnection mDB;
 

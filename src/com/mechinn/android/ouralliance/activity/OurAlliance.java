@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.activity;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.mechinn.android.ouralliance.DatabaseConnection;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.ResetDB;
 import com.mechinn.android.ouralliance.data.Prefs;
@@ -8,7 +9,6 @@ import com.mechinn.android.ouralliance.data.Prefs;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,13 +23,14 @@ public class OurAlliance extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-//        BugSenseHandler.setup(this, "a92dda4a");
+        BugSenseHandler.setup(this, "a92dda4a");
         prefs = new Prefs(this);
         
         //first run setup the DB
-        Log.d("first run",Boolean.toString(prefs.getSetupDB()));
-        if(prefs.getSetupDB()) {
+        if(prefs.getDBVersion()==0) {
         	new ResetDB(OurAlliance.this,true).show();
+        } else {
+        	new DatabaseConnection(this).getVersion();
         }
         
         final Button scouting = (Button)  findViewById(R.id.scouting);
