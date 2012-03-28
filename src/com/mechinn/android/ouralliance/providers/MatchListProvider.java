@@ -6,16 +6,12 @@ import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
 
@@ -23,8 +19,8 @@ public class MatchListProvider extends ContentProvider {
     public static final String DBTable = "matchList";
     
     public static final String keyCompetition = "competition";
-    public static final String keyTime = "matchTime";
     public static final String keyMatchNum = "matchNum";
+    public static final String keyTime = "matchTime";
     public static final String keyRed1 = "red1";
     public static final String keyRed2 = "red2";
     public static final String keyRed3 = "red3";
@@ -32,7 +28,7 @@ public class MatchListProvider extends ContentProvider {
     public static final String keyBlue2 = "blue2";
     public static final String keyBlue3 = "blue3";
     
-    public static final String[] schemaArray = {DatabaseConnection._ID, DatabaseConnection._LASTMOD, keyCompetition, keyTime, keyMatchNum, keyRed1, 
+    public static final String[] schemaArray = {DatabaseConnection._ID, DatabaseConnection._LASTMOD, keyCompetition, keyMatchNum, keyTime, keyRed1, 
 			keyRed2, keyRed3, keyBlue1, keyBlue2, keyBlue3};
 
     private static final String logTag = "MatchListProvider";
@@ -47,8 +43,8 @@ public class MatchListProvider extends ContentProvider {
     		DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
     		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
 			keyCompetition+" TEXT NOT NULL, " +
-			keyTime+" INTEGER, " +
 			keyMatchNum+" INTEGER, " +
+			keyTime+" INTEGER, " +
 			keyRed1+" INTEGER, " +
 			keyRed2+" INTEGER, " +
 			keyRed3+" INTEGER, " +
@@ -57,6 +53,24 @@ public class MatchListProvider extends ContentProvider {
 			keyBlue3+" INTEGER);";
 
     private DatabaseConnection mDB;
+
+    static {
+        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        sUriMatcher.addURI(authority, DBTable, sig);
+
+        matchesProjectionMap = new HashMap<String, String>();
+        matchesProjectionMap.put(DatabaseConnection._ID, DatabaseConnection._ID);
+        matchesProjectionMap.put(DatabaseConnection._LASTMOD, DatabaseConnection._LASTMOD);
+        matchesProjectionMap.put(keyCompetition, keyCompetition);
+        matchesProjectionMap.put(keyTime, keyTime);
+        matchesProjectionMap.put(keyMatchNum, keyMatchNum);
+        matchesProjectionMap.put(keyRed1, keyRed1);
+        matchesProjectionMap.put(keyRed2, keyRed2);
+        matchesProjectionMap.put(keyRed3, keyRed3);
+        matchesProjectionMap.put(keyBlue1, keyBlue1);
+        matchesProjectionMap.put(keyBlue2, keyBlue2);
+        matchesProjectionMap.put(keyBlue3, keyBlue3);
+    }
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
@@ -155,23 +169,5 @@ public class MatchListProvider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
-    }
-
-    static {
-        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(authority, DBTable, sig);
-
-        matchesProjectionMap = new HashMap<String, String>();
-        matchesProjectionMap.put(DatabaseConnection._ID, DatabaseConnection._ID);
-        matchesProjectionMap.put(DatabaseConnection._LASTMOD, DatabaseConnection._LASTMOD);
-        matchesProjectionMap.put(keyCompetition, keyCompetition);
-        matchesProjectionMap.put(keyTime, keyTime);
-        matchesProjectionMap.put(keyMatchNum, keyMatchNum);
-        matchesProjectionMap.put(keyRed1, keyRed1);
-        matchesProjectionMap.put(keyRed2, keyRed2);
-        matchesProjectionMap.put(keyRed3, keyRed3);
-        matchesProjectionMap.put(keyBlue1, keyBlue1);
-        matchesProjectionMap.put(keyBlue2, keyBlue2);
-        matchesProjectionMap.put(keyBlue3, keyBlue3);
     }
 }

@@ -1,41 +1,28 @@
 package com.mechinn.android.ouralliance.activity;
 
-import java.util.ArrayList;
-
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchListInterface;
 import com.mechinn.android.ouralliance.data.Prefs;
 import com.mechinn.android.ouralliance.data.TeamScoutingInterface;
 import com.mechinn.android.ouralliance.providers.MatchListProvider;
-import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;

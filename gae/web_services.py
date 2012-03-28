@@ -48,9 +48,9 @@ class BaseWebServiceHandler(webapp.RequestHandler):
     accept 'user', 'user75', 'userbuddy', etc, all as legal account
     usernames.
     """
-    ACCT_USER_NAME  = 'user'
-    ACCT_PASSWORD   = 'test'
-    ACCT_AUTH_TOKEN = 'xyzzy'
+    ACCT_USER_NAME  = 'mechinn'
+    ACCT_PASSWORD   = '869'
+    ACCT_AUTH_TOKEN = 'p6RVnLI0qWbry5Z5WcQS'
 
     DATE_TIME_FORMAT = '%Y/%m/%d %H:%M'
 
@@ -69,9 +69,7 @@ class BaseWebServiceHandler(webapp.RequestHandler):
 
         logging.info('Authenticatng username: ' + self.username)
 
-        if ((self.username != None) and
-                (self.username.startswith(BaseWebServiceHandler.ACCT_USER_NAME)) and
-                (self.password == BaseWebServiceHandler.ACCT_PASSWORD)):
+        if ((self.username == BaseWebServiceHandler.ACCT_USER_NAME) and (self.password == BaseWebServiceHandler.ACCT_PASSWORD)):
             # Authentication was successful - return our hard-coded
             # auth-token as the only response.
             self.response.set_status(200, 'OK')
@@ -97,9 +95,7 @@ class BaseWebServiceHandler(webapp.RequestHandler):
 
         logging.info('Validating username: ' + self.username)
 
-        if ((self.username != None) and
-                (self.username.startswith(BaseWebServiceHandler.ACCT_USER_NAME)) and
-                (self.authtoken == BaseWebServiceHandler.ACCT_AUTH_TOKEN)):
+        if ((self.username == BaseWebServiceHandler.ACCT_USER_NAME) and (self.authtoken == BaseWebServiceHandler.ACCT_AUTH_TOKEN)):
             return True
         else:
             self.response.set_status(401, 'Invalid Credentials')
@@ -123,7 +119,7 @@ class Authenticate(BaseWebServiceHandler):
         self.post()
 
 
-class SyncContacts(BaseWebServiceHandler):
+class SyncTeams(BaseWebServiceHandler):
     """Handles requests for fetching user's contacts.
 
     UpdateHandler only accepts post events. It expects each
@@ -136,7 +132,7 @@ class SyncContacts(BaseWebServiceHandler):
         self.post()
 
     def post(self):
-        logging.info('*** Starting contact sync ***')
+        logging.info('*** Starting team sync ***')
         if (not self.validate()):
             return
 
@@ -366,11 +362,11 @@ class UpdatedContactData(object):
         contact = {}
         for obj_name, json_name in self.__FIELD_MAP.items():
             if hasattr(obj, obj_name):
-              v = getattr(obj, obj_name)
-              if (v != None):
-                  contact[json_name] = str(v)
-              else:
-                  contact[json_name] = None
+                v = getattr(obj, obj_name)
+            if (v != None):
+                contact[json_name] = str(v)
+            else:
+                contact[json_name] = None
         contact['i'] = str(obj.key().id())
         contact['a'] = host_url + "/avatar?id=" + str(obj.key().id())
         contact['x'] = high_water_mark

@@ -1,7 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
-import com.mechinn.android.ouralliance.providers.MatchScoutingProvider;
 import com.mechinn.android.ouralliance.providers.TeamRankingsProvider;
 
 import android.app.Activity;

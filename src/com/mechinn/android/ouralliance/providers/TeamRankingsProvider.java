@@ -6,16 +6,12 @@ import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
 
@@ -60,6 +56,27 @@ public class TeamRankingsProvider extends ContentProvider {
 			keyPlayed+" INTEGER);";
 
     private DatabaseConnection mDB;
+
+    static {
+        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        sUriMatcher.addURI(authority, DBTable, sig);
+        
+        projectionMap = new HashMap<String, String>();
+        projectionMap.put(DatabaseConnection._ID, DatabaseConnection._ID);
+        projectionMap.put(DatabaseConnection._LASTMOD, DatabaseConnection._LASTMOD);
+        projectionMap.put(keyCompetition, keyCompetition);
+        projectionMap.put(keyRank, keyRank);
+        projectionMap.put(keyTeam, keyTeam);
+        projectionMap.put(keyQS, keyQS);
+        projectionMap.put(keyHybrid, keyHybrid);
+        projectionMap.put(keyBridge, keyBridge);
+        projectionMap.put(keyTeleop, keyTeleop);
+        projectionMap.put(keyCoop, keyCoop);
+        projectionMap.put(keyRecord, keyRecord);
+        projectionMap.put(keyDQ, keyDQ);
+        projectionMap.put(keyPlayed, keyPlayed);
+
+    }
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
@@ -158,26 +175,5 @@ public class TeamRankingsProvider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
-    }
-
-    static {
-        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(authority, DBTable, sig);
-        
-        projectionMap = new HashMap<String, String>();
-        projectionMap.put(DatabaseConnection._ID, DatabaseConnection._ID);
-        projectionMap.put(DatabaseConnection._LASTMOD, DatabaseConnection._LASTMOD);
-        projectionMap.put(keyCompetition, keyCompetition);
-        projectionMap.put(keyRank, keyRank);
-        projectionMap.put(keyTeam, keyTeam);
-        projectionMap.put(keyQS, keyQS);
-        projectionMap.put(keyHybrid, keyHybrid);
-        projectionMap.put(keyBridge, keyBridge);
-        projectionMap.put(keyTeleop, keyTeleop);
-        projectionMap.put(keyCoop, keyCoop);
-        projectionMap.put(keyRecord, keyRecord);
-        projectionMap.put(keyDQ, keyDQ);
-        projectionMap.put(keyPlayed, keyPlayed);
-
     }
 }

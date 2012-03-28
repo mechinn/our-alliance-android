@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.activity;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Prefs;
 import com.mechinn.android.ouralliance.data.TeamScoutingInterface;
@@ -13,7 +12,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -64,7 +62,6 @@ public class Teams extends Activity {
     private String orderBy;
     private boolean desc;
     private int selectedTeam;
-    private boolean breakNicely;
     
     public boolean onInterceptTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
@@ -111,7 +108,6 @@ public class Teams extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.teams);
-        breakNicely = false;
         selectedTeam = 0;
         startTrack = true;
         prefs = new Prefs(this);

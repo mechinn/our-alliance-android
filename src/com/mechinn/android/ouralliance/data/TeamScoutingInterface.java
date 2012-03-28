@@ -1,7 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
 import java.util.HashSet;
-import java.util.List;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
 import com.mechinn.android.ouralliance.providers.MatchScoutingProvider;
@@ -12,7 +11,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
-import android.util.Log;
 
 public class TeamScoutingInterface {
 	private Activity activity;

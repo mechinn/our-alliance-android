@@ -1,7 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
-import com.mechinn.android.ouralliance.providers.MatchListProvider;
 import com.mechinn.android.ouralliance.providers.MatchScoutingProvider;
 
 import android.app.Activity;

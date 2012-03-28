@@ -1,9 +1,7 @@
 package com.mechinn.android.ouralliance.activity;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.List;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.R;
@@ -12,7 +10,6 @@ import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;

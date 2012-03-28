@@ -2,30 +2,22 @@ package com.mechinn.android.ouralliance;
 
 import java.util.HashSet;
 
-import com.mechinn.android.ouralliance.data.MatchListInterface;
-import com.mechinn.android.ouralliance.data.MatchScoutingInterface;
 import com.mechinn.android.ouralliance.data.Prefs;
-import com.mechinn.android.ouralliance.data.TeamRankingsInterface;
 import com.mechinn.android.ouralliance.data.TeamScoutingInterface;
 import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 /** Nested class that performs progress calculations (counting) */
 public class ResetDB extends ProgressDialog {
 	private final String logTag = "ResetDB";
  	private Handler resetHandler;
     private TeamScoutingInterface teamInfo;
-    private TeamRankingsInterface rankings;
-    private MatchListInterface matchList;
-    private MatchScoutingInterface matchScore;
     private Prefs prefs;
     private Activity activity;
     private DatabaseConnection db;
@@ -34,7 +26,7 @@ public class ResetDB extends ProgressDialog {
     		571, 663, 694, 743, 839, 869, 999, 1027, 1071, 1073, 1099, 1124, 1493, 1511, 1559, 1665, 1699, 1740, 
     		1784, 1880, 1922, 1991, 2067, 2168, 2170, 2785, 2791, 2836, 3017, 3104, 3146, 3182, 3461, 3464, 3467, 
     		3525, 3555, 3634, 3654, 3718, 3719, 4055, 4122, 4134};
-    private final int total = teams.length+1;
+    private final int total = teams.length+2;
     
     public ResetDB(Activity act) {
     	this(act,false);
@@ -47,9 +39,6 @@ public class ResetDB extends ProgressDialog {
         db = new DatabaseConnection(activity);
         prefs = new Prefs(act);
         teamInfo = new TeamScoutingInterface(act);
-        rankings = new TeamRankingsInterface(act);
-        matchList = new MatchListInterface(act);
-        matchScore = new MatchScoutingInterface(act);
 		resetHandler = new Handler() {
 	 		public void handleMessage(Message msg) {
 	 			int current = msg.arg1;

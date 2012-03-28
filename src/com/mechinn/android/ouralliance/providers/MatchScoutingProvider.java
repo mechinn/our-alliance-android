@@ -6,16 +6,12 @@ import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
 
@@ -66,6 +62,27 @@ public class MatchScoutingProvider extends ContentProvider {
 			keyNotes+" TEXT);";
 
     private DatabaseConnection mDB;
+
+    static {
+        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        sUriMatcher.addURI(authority, DBTable, sig);
+
+        matchesProjectionMap = new HashMap<String, String>();
+        matchesProjectionMap.put(DatabaseConnection._ID, DatabaseConnection._ID);
+        matchesProjectionMap.put(DatabaseConnection._LASTMOD, DatabaseConnection._LASTMOD);
+        matchesProjectionMap.put(keyCompetition, keyCompetition);
+        matchesProjectionMap.put(keyMatchNum, keyMatchNum);
+        matchesProjectionMap.put(keyTeam, keyTeam);
+        matchesProjectionMap.put(keySlot, keySlot);
+        matchesProjectionMap.put(keyBroke, keyBroke);
+        matchesProjectionMap.put(keyAuto, keyAuto);
+        matchesProjectionMap.put(keyBalance, keyBalance);
+        matchesProjectionMap.put(keyShooter, keyShooter);
+        matchesProjectionMap.put(keyTop, keyTop);
+        matchesProjectionMap.put(keyMid, keyMid);
+        matchesProjectionMap.put(keyBot, keyBot);
+        matchesProjectionMap.put(keyNotes, keyNotes);
+    }
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
@@ -164,26 +181,5 @@ public class MatchScoutingProvider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
-    }
-
-    static {
-        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(authority, DBTable, sig);
-
-        matchesProjectionMap = new HashMap<String, String>();
-        matchesProjectionMap.put(DatabaseConnection._ID, DatabaseConnection._ID);
-        matchesProjectionMap.put(DatabaseConnection._LASTMOD, DatabaseConnection._LASTMOD);
-        matchesProjectionMap.put(keyCompetition, keyCompetition);
-        matchesProjectionMap.put(keyMatchNum, keyMatchNum);
-        matchesProjectionMap.put(keyTeam, keyTeam);
-        matchesProjectionMap.put(keySlot, keySlot);
-        matchesProjectionMap.put(keyBroke, keyBroke);
-        matchesProjectionMap.put(keyAuto, keyAuto);
-        matchesProjectionMap.put(keyBalance, keyBalance);
-        matchesProjectionMap.put(keyShooter, keyShooter);
-        matchesProjectionMap.put(keyTop, keyTop);
-        matchesProjectionMap.put(keyMid, keyMid);
-        matchesProjectionMap.put(keyBot, keyBot);
-        matchesProjectionMap.put(keyNotes, keyNotes);
     }
 }

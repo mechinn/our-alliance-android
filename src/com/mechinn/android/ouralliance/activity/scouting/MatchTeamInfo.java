@@ -1,23 +1,17 @@
 package com.mechinn.android.ouralliance.activity.scouting;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchScoutingInterface;
 import com.mechinn.android.ouralliance.data.Prefs;
 import com.mechinn.android.ouralliance.data.TeamScoutingInterface;
 import com.mechinn.android.ouralliance.providers.MatchScoutingProvider;
-import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,7 +20,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
