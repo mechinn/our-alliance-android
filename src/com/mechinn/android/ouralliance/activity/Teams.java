@@ -382,8 +382,7 @@ public class Teams extends Activity {
 		            				colName.equals(TeamScoutingProvider.keyWheel2Type) || colName.equals(TeamScoutingProvider.keyDeadWheelType) || 
 			            			colName.equals(TeamScoutingProvider.keyNotes)){
 			            		publishProgress(SETTEXT,thisTeam.getString(col));
-			            	} else if (colName.equals(TeamScoutingProvider.keyNumWheels) || colName.equals(TeamScoutingProvider.keyWheel1Diameter) || 
-			            			colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
+			            	} else if (colName.equals(TeamScoutingProvider.keyNumWheels)) {
 			            		publishProgress(SETTEXT,Integer.toString(thisTeam.getInt(col)));
 			            	} else if (colName.equals(TeamScoutingProvider.keyTurret) || 
 			            			colName.equals(TeamScoutingProvider.keyTracking) || colName.equals(TeamScoutingProvider.keyFenderShooter) || 
@@ -394,7 +393,8 @@ public class Teams extends Activity {
 			            			default:publishProgress(SETTEXT,"yes");
 			            		}
 			            	} else if (colName.equals(TeamScoutingProvider.keyAvgHoops) || colName.equals(TeamScoutingProvider.keyAvgBalance) || 
-			            			colName.equals(TeamScoutingProvider.keyAvgBroke)) {
+			            			colName.equals(TeamScoutingProvider.keyAvgBroke) || colName.equals(TeamScoutingProvider.keyWheel1Diameter) || 
+			            			colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
 			            		publishProgress(SETTEXT,Double.toString(thisTeam.getDouble(col)));
 			            	} 
 			            	publishProgress(ADDTEXT);

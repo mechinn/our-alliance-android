@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mechinn.android.ouralliance"
-    android:versionCode="2"
-    android:versionName="0.2" android:installLocation="auto">
+    android:versionCode="3"
+    android:versionName="0.3" android:installLocation="auto">
 
     <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="15"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -10,43 +10,43 @@
     <uses-feature android:name="android.hardware.camera"/>
 
     <application android:icon="@drawable/ouralliance" android:label="@string/app_name" >
-        <activity android:screenOrientation="landscape" android:name=".activity.OurAlliance" android:label="@string/app_name">
+        <activity android:screenOrientation="landscape" android:name="com.mechinn.android.ouralliance.activity.OurAlliance" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:screenOrientation="landscape" android:name=".activity.Teams" android:label="@string/teams">
+        <activity android:screenOrientation="landscape" android:name="com.mechinn.android.ouralliance.activity.Teams" android:label="@string/teams">
             <intent-filter>
                 <action android:name="com.mechinn.android.ouralliance.OpenTeams"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:screenOrientation="landscape" android:name=".activity.Settings" android:label="@string/settings">
+        <activity android:screenOrientation="landscape" android:name="com.mechinn.android.ouralliance.activity.Settings" android:label="@string/settings">
             <intent-filter>
                 <action android:name="com.mechinn.android.ouralliance.OpenSettings"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:screenOrientation="landscape" android:name=".activity.Info" android:label="@string/teamInfo">
+        <activity android:screenOrientation="landscape" android:name="com.mechinn.android.ouralliance.activity.Info" android:label="@string/teamInfo">
             <intent-filter>
                 <action android:name="com.mechinn.android.ouralliance.OpenTeamInfo"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MatchList" android:screenOrientation="landscape" android:label="@string/matchList">
+        <activity android:name="com.mechinn.android.ouralliance.activity.MatchList" android:screenOrientation="landscape" android:label="@string/matchList">
             <intent-filter>
                 <action android:name="com.mechinn.android.ouralliance.OpenMatches"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:screenOrientation="landscape" android:name=".activity.TeamRankings" android:label="@string/teamRankings">
+        <activity android:screenOrientation="landscape" android:name="com.mechinn.android.ouralliance.activity.TeamRankings" android:label="@string/teamRankings">
             <intent-filter>
                 <action android:name="com.mechinn.android.ouralliance.OpenTeamRankings"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.scouting.MatchScouting" android:screenOrientation="landscape" android:label="@string/matchScouting">
+        <activity android:name="com.mechinn.android.ouralliance.activity.scouting.MatchScouting" android:screenOrientation="landscape" android:label="@string/matchScouting">
             <intent-filter>
                 <action android:name="com.mechinn.android.ouralliance.OpenScouting"/>
                 <category android:name="android.intent.category.DEFAULT"/>

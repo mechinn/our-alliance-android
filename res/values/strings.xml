@@ -124,4 +124,11 @@
     <string name="deleteMatch">Delete Match</string>
     <string name="deleteTeam">Delete Team</string>
     <string name="resetDB">Reset Database</string>
+    <string name="exportCSV">Export Database to CSV on SDCard</string>
+    <string name="host">Host: </string>
+    <string name="username">Username: </string>
+    <string name="password">Password: </string>
+    <string name="port">Port: </string>
+    <string name="exportCSVSend">Export CSV and send to FTP server</string>
+    <string name="scouter">Scouter: </string>
 </resources>

@@ -60,9 +60,9 @@ public class Info extends Activity {
 	int wheelTypes;
 	boolean deadWheel;
 	String wheel1Type;
-	int wheel1Diameter;
+	double wheel1Diameter;
 	String wheel2Type;
-	int wheel2Diameter;
+	double wheel2Diameter;
 	String deadWheelType;
 	boolean turret;
 	boolean tracking;
@@ -488,9 +488,9 @@ public class Info extends Activity {
             }
             hasDeadWheel.setChecked(deadWheel);
             wheel1TypeSpinner.setSelection(wheelTypeStrings.getPosition(wheel1Type));
-            wheel1DiameterText.setText(Integer.toString(wheel1Diameter));
+            wheel1DiameterText.setText(Double.toString(wheel1Diameter));
             wheel2TypeSpinner.setSelection(wheelTypeStrings.getPosition(wheel2Type));
-            wheel2DiameterText.setText(Integer.toString(wheel2Diameter));
+            wheel2DiameterText.setText(Double.toString(wheel2Diameter));
             if(wheelTypes < 2) {
     	    	wheel2.setVisibility(View.GONE);
     	    }
@@ -520,7 +520,7 @@ public class Info extends Activity {
                     if(wheelTypes > 0){
     	                String wheel1DiameterTextCheck = wheel1DiameterText.getText().toString();
     	                if(!wheel1DiameterTextCheck.equals("")) {
-    	                	wheel1Diameter = Integer.parseInt(wheel1DiameterTextCheck);
+    	                	wheel1Diameter = Double.parseDouble(wheel1DiameterTextCheck);
     	                } else {
     	                	wheel1Diameter = 0;
     	                }
@@ -529,11 +529,11 @@ public class Info extends Activity {
                     	wheel1Diameter = 0;
                     }
                     Log.d("wheel1Type", wheel1Type);
-                	Log.d("wheel1Diameter", Integer.toString(wheel1Diameter));
+                	Log.d("wheel1Diameter", Double.toString(wheel1Diameter));
                     if(wheelTypes > 1){
     	                String wheel2DiameterTextCheck = wheel2DiameterText.getText().toString();
     	                if(!wheel2DiameterTextCheck.equals("")) {
-    	                	wheel2Diameter = Integer.parseInt(wheel2DiameterTextCheck);
+    	                	wheel2Diameter = Double.parseDouble(wheel2DiameterTextCheck);
     	                } else {
     	                	wheel2Diameter = 0;
     	                }
@@ -542,7 +542,7 @@ public class Info extends Activity {
                     	wheel2Diameter = 0;
                     }
                     Log.d("wheel2Type", wheel1Type);
-                	Log.d("wheel2Diameter", Integer.toString(wheel2Diameter));
+                	Log.d("wheel2Diameter", Double.toString(wheel2Diameter));
                     if(!deadWheel){
                     	deadWheelType = "None";
                     }

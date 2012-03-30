@@ -38,7 +38,7 @@ public class TeamScoutingInterface {
 	}
 
     public Uri createTeam(int team, String orientation, int numWheels, int wheelTypes, boolean deadWheel,
-    		String wheel1Type, int wheel1Diameter, String wheel2Type, int wheel2Diameter,
+    		String wheel1Type, double wheel1Diameter, String wheel2Type, double wheel2Diameter,
     		String deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous, HashSet<String> competitions, double avgHoops, double avgBalance, double avgBroke) {
     	
@@ -129,7 +129,7 @@ public class TeamScoutingInterface {
     }
     
     public int updateTeam(int team, String orientation, int numWheels, int wheelTypes, 
-    		boolean deadWheel, String wheel1Type, int wheel1Diameter, String wheel2Type, int wheel2Diameter,
+    		boolean deadWheel, String wheel1Type, double wheel1Diameter, String wheel2Type, double wheel2Diameter,
     		String deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous, HashSet<String> competitions, double avgHoops, double avgBalance, double avgBroke) {
     	ContentValues args = putVals(false, team, -1, orientation, numWheels, wheelTypes, 
@@ -173,7 +173,7 @@ public class TeamScoutingInterface {
     }
     
     private ContentValues putVals(boolean create, int team, int lastMod, String orientation, int numWheels, int wheelTypes, 
-    		boolean deadWheel, String wheel1Type, int wheel1Diameter, String wheel2Type, int wheel2Diameter,
+    		boolean deadWheel, String wheel1Type, double wheel1Diameter, String wheel2Type, double wheel2Diameter,
     		String deadWheelType, boolean turret, boolean tracking, boolean fender,
 			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous, HashSet<String> competitions, double avgHoops, double avgBalance, double avgBroke) {
     	ContentValues cv = new ContentValues();

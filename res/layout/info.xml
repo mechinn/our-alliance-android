@@ -221,7 +221,7 @@
 	                android:id="@+id/wheel1Diameter"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:inputType="number"
+                    android:inputType="numberDecimal"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 	
@@ -245,7 +245,7 @@
 	                android:id="@+id/wheel2Diameter"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:inputType="number"
+                    android:inputType="numberDecimal"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
 	        </TableRow>

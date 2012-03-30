@@ -1,43 +1,72 @@
 package com.mechinn.android.ouralliance.activity;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+
+import com.bugsense.trace.BugSenseHandler;
+import com.mechinn.android.ouralliance.FTPConnection;
+import com.mechinn.android.ouralliance.Filename;
+import com.mechinn.android.ouralliance.OurAllianceCSVWriter;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.ResetDB;
 import com.mechinn.android.ouralliance.data.Prefs;
 import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Settings extends Activity {
+	private final String logTag = "settings";
     private Prefs prefs;
-//	private EditText host;
-//	private EditText port;
-//	private EditText user;
-//	private EditText pass;
-//	private Button save;
-//	private Button discard;
+	private EditText scouter;
+	private EditText host;
+	private EditText port;
+	private EditText user;
+	private EditText pass;
+	private Button save;
+	private Button discard;
 	private Spinner competitions;
-//	private Button pullFRC;
+	private Button export;
+	private Button exportSend;
 	private Button reset;
 
+	private OurAllianceCSVWriter csvTool;
 	private AlertDialog resetDialog;
+	private FTPConnection ftp;
 	
-//	private void getVals() {
-//		host.setText(prefs.getHost());
-//		port.setText(Integer.toString(prefs.getPort()));
-//		user.setText(prefs.getUser());
-//		pass.setText(prefs.getPass());
-//	}
+	public void loadInfo() {
+		scouter.setText(prefs.getScouter());
+		host.setText(prefs.getHost());
+        port.setText(Integer.toString(prefs.getPort()));
+        user.setText(prefs.getUser());
+        pass.setText(prefs.getPass());
+	}
 	
 	/** Called when the activity is first created. */
     @Override
@@ -46,31 +75,6 @@ public class Settings extends Activity {
         setContentView(R.layout.settings);
         prefs = new Prefs(this);
         
-//        host = (EditText) findViewById(R.id.hostText);
-//        port = (EditText) findViewById(R.id.portText);
-//        user = (EditText) findViewById(R.id.usernameText);
-//        pass = (EditText) findViewById(R.id.passText);
-//        
-//        getVals();
-//        
-//        save = (Button) findViewById(R.id.saveDbInfo);
-//        save.setOnClickListener(new OnClickListener() {
-//        	public void onClick(View v) {
-//        		prefs.setHost(host.getText().toString());
-//        		prefs.setPort(Integer.parseInt(port.getText().toString()));
-//        		prefs.setUser(user.getText().toString());
-//        		prefs.setPass(pass.getText().toString());
-//        		Toast.makeText(Settings.this, "Saved", Toast.LENGTH_SHORT).show();
-//			}
-//        });
-//        
-//        discard = (Button) findViewById(R.id.discardDbInfo);
-//        discard.setOnClickListener(new OnClickListener() {
-//    		public void onClick(View v) {
-//				getVals();
-//			}
-//        });
-        
         TextView credits = (TextView) findViewById(R.id.credits);
         credits.setMovementMethod(LinkMovementMethod.getInstance());
         credits.setText(Html.fromHtml("<h2>Credits</h2><br>" +
@@ -78,8 +82,36 @@ public class Settings extends Activity {
 	        		"Copyright 2012 <a href='http://mechinn.com/android'>Michael Chinn</a>.<br>" +
 	        		"<br>" +
 	        		"You choose to run this software with the full knowledge that it is in a pre-release form and any damage or loss of data while using this software I cannot be held responsible for." +
+	        		"This app uses the The Apache Software Foundation's <a href='http://www.apache.org/licenses/LICENSE-2.0.txt'>Apache License 2.0</a>." +
         		"</p>"
     		));
+
+        scouter = (EditText) findViewById(R.id.scouterText);
+        host = (EditText) findViewById(R.id.hostText);
+        port = (EditText) findViewById(R.id.portNumber);
+        user = (EditText) findViewById(R.id.userText);
+        pass = (EditText) findViewById(R.id.passText);
+        
+        loadInfo();
+        
+        save = (Button) findViewById(R.id.save);
+        save.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		prefs.setScouter(scouter.getText().toString());
+        		prefs.setHost(host.getText().toString());
+        		prefs.setPort(Integer.parseInt(port.getText().toString()));
+        		prefs.setUser(user.getText().toString());
+        		prefs.setPass(pass.getText().toString());
+        		Toast.makeText(Settings.this, "Saved", Toast.LENGTH_SHORT).show();
+			}
+        });
+        
+        discard = (Button) findViewById(R.id.discard);
+        discard.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		loadInfo();
+			}
+        });
         
         competitions = (Spinner) findViewById(R.id.competitions);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.matchteamrow);
@@ -93,6 +125,40 @@ public class Settings extends Activity {
             }
 			public void onNothingSelected(AdapterView<?> parent) {
 				//none
+			}
+        });
+        
+        export = (Button) findViewById(R.id.exportCSV);
+        export.setOnClickListener(new Button.OnClickListener() {
+    		public void onClick(View v) {
+    			csvTool = new OurAllianceCSVWriter(Settings.this);
+    			Log.i(logTag,"Finished building database to CSVs");
+    			try {
+					csvTool.writeMatchList();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    			try {
+					csvTool.writeMatchScouting();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+//    			csvTool.writeTeamRankings();
+    			try {
+					csvTool.writeTeamScouting();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    			Log.i(logTag,"Finished writing database to CSVs");
+			}
+        });
+        
+        exportSend = (Button) findViewById(R.id.exportCSVSend);
+        exportSend.setOnClickListener(new Button.OnClickListener() {
+    		public void onClick(View v) {
+    			csvTool = new OurAllianceCSVWriter(Settings.this);
+    			Log.i(logTag,"Finished building database to CSVs");
+    			new SendCSVFTP().execute();
 			}
         });
         
@@ -113,5 +179,51 @@ public class Settings extends Activity {
                 }).show();
             }
         });
+    }
+    
+    private class SendCSVFTP extends AsyncTask<Void,Void,List<String>> {
+	
+		protected void onPostExecute(List<String> filenames) {
+			for(String file : filenames) {
+				if(file.equals("")) {
+					Toast.makeText(Settings.this, "Unable to write table to CSV.", Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(Settings.this, "Wrote match list to "+file, Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+    	
+		protected List<String> doInBackground(Void... no) {
+			
+			String dir = "/"+prefs.getScouter();
+			ftp = new FTPConnection(Settings.this);
+	        ftp.connect();
+	        if(!ftp.changeDirectory(dir)) {
+	        	ftp.makeDirectory(dir);
+	        }
+	        List<String> filenames = new ArrayList<String>();
+	        try {
+				filenames.add(csvTool.writeMatchList());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	        try {
+				filenames.add(csvTool.writeMatchScouting());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	        try {
+				filenames.add(csvTool.writeTeamScouting());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	        //csvTool.writeTeamRankings()
+			for(String file : filenames) {
+				Filename filename = new Filename(file,"/",".csv");
+    			ftp.upload(file, filename.filename()+".csv", dir);
+			}
+			Log.i(logTag,"Finished writing database to CSVs");
+	        return filenames;
+		}
     }
 }

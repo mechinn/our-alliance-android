@@ -68,20 +68,9 @@ public class MatchScoutingProvider extends ContentProvider {
         sUriMatcher.addURI(authority, DBTable, sig);
 
         matchesProjectionMap = new HashMap<String, String>();
-        matchesProjectionMap.put(DatabaseConnection._ID, DatabaseConnection._ID);
-        matchesProjectionMap.put(DatabaseConnection._LASTMOD, DatabaseConnection._LASTMOD);
-        matchesProjectionMap.put(keyCompetition, keyCompetition);
-        matchesProjectionMap.put(keyMatchNum, keyMatchNum);
-        matchesProjectionMap.put(keyTeam, keyTeam);
-        matchesProjectionMap.put(keySlot, keySlot);
-        matchesProjectionMap.put(keyBroke, keyBroke);
-        matchesProjectionMap.put(keyAuto, keyAuto);
-        matchesProjectionMap.put(keyBalance, keyBalance);
-        matchesProjectionMap.put(keyShooter, keyShooter);
-        matchesProjectionMap.put(keyTop, keyTop);
-        matchesProjectionMap.put(keyMid, keyMid);
-        matchesProjectionMap.put(keyBot, keyBot);
-        matchesProjectionMap.put(keyNotes, keyNotes);
+        for(String schema : schemaArray) {
+            matchesProjectionMap.put(schema, schema);
+        }
     }
 
     @Override
