@@ -1,15 +1,9 @@
 package com.mechinn.android.ouralliance.activity;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
-
-import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.FTPConnection;
 import com.mechinn.android.ouralliance.Filename;
 import com.mechinn.android.ouralliance.OurAllianceCSVWriter;
@@ -18,14 +12,9 @@ import com.mechinn.android.ouralliance.ResetDB;
 import com.mechinn.android.ouralliance.data.Prefs;
 import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;

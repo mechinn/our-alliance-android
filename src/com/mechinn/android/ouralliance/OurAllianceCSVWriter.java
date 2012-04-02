@@ -1,7 +1,6 @@
 package com.mechinn.android.ouralliance;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,13 +10,8 @@ import java.util.TimeZone;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.bugsense.trace.BugSenseHandler;
-import com.mechinn.android.ouralliance.activity.Info;
-import com.mechinn.android.ouralliance.activity.Settings;
 import com.mechinn.android.ouralliance.data.MatchListInterface;
 import com.mechinn.android.ouralliance.data.MatchScoutingInterface;
 import com.mechinn.android.ouralliance.data.TeamRankingsInterface;
@@ -115,7 +109,7 @@ public class OurAllianceCSVWriter {
 	            			colName.equals(DatabaseConnection._ID)){
 	            		holder[i] = Integer.toString(cursor.getInt(i));
 	            	} else if(colName.equals(MatchScoutingProvider.keySlot) || colName.equals(MatchScoutingProvider.keyNotes)) {
-	            		holder[i] = cursor.getString(i);
+	            		holder[i] = '"'+cursor.getString(i)+'"';
 	            	} else if(colName.equals(MatchScoutingProvider.keyBroke) || colName.equals(MatchScoutingProvider.keyAuto) ||
 	            			colName.equals(MatchScoutingProvider.keyBalance)) {
 	            		holder[i] = Boolean.toString(cursor.getInt(i)==0?false:true);
@@ -151,7 +145,7 @@ public class OurAllianceCSVWriter {
             		if(colName.equals(TeamScoutingProvider.keyOrientation) || colName.equals(TeamScoutingProvider.keyWheel1Type) || 
             				colName.equals(TeamScoutingProvider.keyWheel2Type) || colName.equals(TeamScoutingProvider.keyDeadWheelType) || 
 	            			colName.equals(TeamScoutingProvider.keyNotes)){
-	            		holder[i] = cursor.getString(i);
+	            		holder[i] = '"'+cursor.getString(i)+'"';
 	            	} else if (colName.equals(TeamScoutingProvider.keyNumWheels)|| colName.equals(TeamScoutingProvider.keyTeam) || colName.equals(DatabaseConnection._LASTMOD) ||
 	            			colName.equals(DatabaseConnection._ID)) {
 	            		holder[i] = Integer.toString(cursor.getInt(i));

@@ -561,6 +561,7 @@ public class Info extends Activity {
                 			deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter, 
                 			deadWheelType, turret, tracking, fender, key, barrier, climb, notes, 
                 			auto, competitionsSelected, hoops, balance, broke);
+                    Toast.makeText(Info.this, "Saved "+Integer.toString(team), Toast.LENGTH_SHORT).show();
                 }
             });
     	}
