@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class Prefs {
+	private final String logTag = "Prefs";
 	private SharedPreferences prefs;
 	
 	/**

@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
+import com.mechinn.android.ouralliance.SchemaArray;
 
 public class MatchListProvider extends ContentProvider {
     public static final String DBTable = "matchList";
@@ -28,8 +29,8 @@ public class MatchListProvider extends ContentProvider {
     public static final String keyBlue2 = "blue2";
     public static final String keyBlue3 = "blue3";
     
-    public static final String[] schemaArray = {DatabaseConnection._ID, DatabaseConnection._LASTMOD, keyCompetition, keyMatchNum, keyTime, keyRed1, 
-			keyRed2, keyRed3, keyBlue1, keyBlue2, keyBlue3};
+    public static final SchemaArray schemaArray = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, keyCompetition, keyMatchNum, keyTime, keyRed1, 
+			keyRed2, keyRed3, keyBlue1, keyBlue2, keyBlue3});
 
     private static final String logTag = "MatchListProvider";
     private static final String authority = "com.mechinn.android.ouralliance.providers."+logTag;

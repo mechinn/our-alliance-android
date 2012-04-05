@@ -1,34 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView1"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
 		android:orientation="vertical" >
         
         <LinearLayout
-	        android:id="@+id/teamLayout"
-	        android:layout_width="match_parent"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content" >
 
             <LinearLayout
-                android:id="@+id/linearLayout3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
                 <LinearLayout
-                    android:id="@+id/linearLayout4"
-                    android:layout_width="match_parent"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content" >
                     
                     <TextView
-	                    android:id="@+id/teamLabel"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:text="@string/teamLabel"
@@ -48,33 +42,56 @@
 				    android:layout_height="wrap_content"
 				    android:text="@string/takePic" />
 
-                <Button
-                    android:id="@+id/deletePicButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/deletePic" />
-
             </LinearLayout>
 
-	        <ImageView
-			    android:id="@+id/teamPic"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:adjustViewBounds="true"
-			    android:contentDescription="@string/teamPic"
-			    android:scaleType="centerInside"
-			    android:src="@drawable/ouralliance"
-	        	android:layout_margin="1dip" />
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+				    android:id="@+id/teamPics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
 	
 	    </LinearLayout>
+
+		<LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content" >
+            
+		    <Button
+		        android:id="@+id/pickComp"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/pickComp"
+                android:gravity="center"
+            	android:layout_margin="1dip" />
+		       
+		    <TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:layout_margin="1dip"
+				android:text="@string/rank"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+		    
+		    <Spinner
+		    	android:id="@+id/rank"
+		        android:layout_width="0dip"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:gravity="center"
+		        android:layout_margin="1dip" />
+		 
+		</LinearLayout>
 	
 	    <LinearLayout
-	        android:id="@+id/orientationLayout"
-	        android:layout_width="match_parent"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content" >
 	
 	        <TextView
-	            android:id="@+id/orientation"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:text="@string/orientation"
@@ -115,33 +132,85 @@
 	    </LinearLayout>
 	
 	    <LinearLayout
-	        android:id="@+id/wheelLayout"
-	        android:layout_width="match_parent"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content" >
 	
 	        <TextView
-	            android:id="@+id/wheelLabel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/frameWidth"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        
+	        <EditText
+                android:id="@+id/width"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+            	android:layout_margin="1dip"
+                android:layout_weight="1" />
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/frameHeight"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        
+	        <EditText
+                android:id="@+id/height"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+            	android:layout_margin="1dip"
+                android:layout_weight="1" />
+	
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:text="@string/wheelLabel"
 	            android:textAppearance="?android:attr/textAppearanceLarge" />
-	        
-	        <Spinner
-	            android:id="@+id/wheelSpinner"
-	            android:layout_width="0dip"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="1"
-	            android:entries="@array/wheels" />
+	        
+	        <EditText
+                android:id="@+id/wheelNums"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+            	android:layout_margin="1dip"
+                android:layout_weight="1" />
 	
 	    </LinearLayout>
 	
 	    <LinearLayout
-	        android:id="@+id/typeLayout"
-	        android:layout_width="match_parent"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content" >
 	
 	        <TextView
-	            android:id="@+id/typeLabel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/driveTrainLabel"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        
+			<Spinner
+                android:id="@+id/driveTrain"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dip"
+                android:layout_weight="1"
+                android:entries="@array/driveTrainTypes"
+                android:gravity="center" />
+	
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:text="@string/typeLabel"
@@ -173,17 +242,14 @@
 	    </LinearLayout>
 	
 	    <TableLayout
-	        android:id="@+id/wheelTypeTable"
-	        android:layout_width="match_parent"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_margin="1dip" >
 	        <TableRow
-	            android:id="@+id/wheelTypeHeader"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
 	            
 	            <TextView
-	                android:id="@+id/wheelTypeLabel"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
@@ -192,7 +258,6 @@
 	            	android:layout_margin="1dip"
 	                android:textAppearance="?android:attr/textAppearanceMedium" />
 	            <TextView
-	                android:id="@+id/wheelDiameterLabel"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_weight="1"
@@ -204,10 +269,9 @@
 	        </TableRow>
 	        
 	        <TableRow
-	            android:id="@+id/wheel1"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
-	
+	            
 	            <Spinner
 	                android:id="@+id/wheel1Type"
 	                android:layout_width="wrap_content"
@@ -231,7 +295,7 @@
 	            android:id="@+id/wheel2"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
-	            
+	            
 	            <Spinner
 	                android:id="@+id/wheel2Type"
 	                android:layout_width="wrap_content"
@@ -254,7 +318,7 @@
 	            android:id="@+id/deadWheels"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" >
-	            
+	            
 	            <Spinner
 	                android:id="@+id/deadWheelType"
 	                android:layout_width="wrap_content"
@@ -269,21 +333,12 @@
 	    </TableLayout>
 
 	    <TableLayout
-	        android:layout_width="match_parent"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_margin="1dip" >
 	        <TableRow
-	            android:layout_width="wrap_content"
+	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content" >
-	        
-		        <CheckBox
-		            android:id="@+id/turretShooter"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="@string/turretShooter"
-	                android:gravity="center"
-	            	android:layout_margin="1dip"
-	                android:layout_weight="1" />
 	
 		        <CheckBox
 		            android:id="@+id/autoTracking"
@@ -302,12 +357,7 @@
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
-	        
-	    	</TableRow>
-	        <TableRow
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content" >
-	        
+		        
 		        <CheckBox
 		            android:id="@+id/keyShooter"
 		            android:layout_width="wrap_content"
@@ -316,6 +366,11 @@
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
+	        
+	    	</TableRow>
+	        <TableRow
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content" >
 		        
 		        <CheckBox
 		            android:id="@+id/crossesBarrier"
@@ -334,92 +389,149 @@
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
+		        
+		        <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                	android:gravity="center"
+	                android:layout_weight="1" />
 	        
 	    	</TableRow>
 	    	
 	        <TableRow
-		        android:layout_width="match_parent"
+		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content" >
 	
 		        <CheckBox
-		            android:id="@+id/autonomous"
+		            android:id="@+id/autoBridge"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:text="@string/autonomous"
+		            android:text="@string/autoBridge"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
-
-		        <TextView
-		            android:layout_width="match_parent"
-		            android:layout_height="match_parent"
+		        
+		        <CheckBox
+		            android:id="@+id/autoShooter"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/autoShooter"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
-	                android:layout_weight="1" >
-
-		        </TextView>
+	                android:layout_weight="1" />
 		        
-		        <Button
-			        android:id="@+id/pickComp"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:text="@string/pickComp"
-	                android:gravity="center"
-	                android:layout_weight="1"
-	            	android:layout_margin="1dip" />
+		        <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+                	android:gravity="center"
+	                android:layout_weight="1" />
 	
 		    </TableRow>
 	    </TableLayout>
+	    <LinearLayout 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="1dip"
+	        android:orientation="horizontal">
+
+	        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+               	android:gravity="center"
+                android:text="@string/shootingLabel"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        <RatingBar
+	            android:id="@+id/shootingRating"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" />
+	        
+	    </LinearLayout>
+	    <LinearLayout 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="1dip"
+	        android:orientation="horizontal">
+	        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+               	android:gravity="center"
+                android:text="@string/balacingLabel"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+	        <RatingBar
+	            android:id="@+id/balancingRating"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" />
+	        
+	    </LinearLayout>
 	    <LinearLayout
-	        android:layout_width="match_parent"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_margin="1dip" >
-	
-		        <TextView
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-                	android:gravity="center"
-	                android:layout_weight="1"
-	                android:text="@string/avgHoops" />
-	            
-	            <TextView
-	                android:id="@+id/avgHoops"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-                	android:gravity="center"
-	                android:layout_weight="1" />
-	            
-	            <TextView
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-                	android:gravity="center"
-	                android:layout_weight="1"
-	                android:text="@string/avgBalance" />
-	            
-	            <TextView
-	                android:id="@+id/avgBalance"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-                	android:gravity="center"
-	                android:layout_weight="1" />
-	            
-	            <TextView
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-                	android:gravity="center"
-	                android:layout_weight="1"
-	                android:text="@string/avgBroke" />
-	            
-	            <TextView
-	                android:id="@+id/avgBroke"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-                	android:gravity="center"
-	                android:layout_weight="1" />
+	        
+        	<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:gravity="center"
+                android:layout_weight="1"
+                android:text="@string/avgAuto" />
+            
+            <TextView
+                android:id="@+id/avgAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:gravity="center"
+                android:layout_weight="1" />
+
+	        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:gravity="center"
+                android:layout_weight="1"
+                android:text="@string/avgHoops" />
+            
+            <TextView
+                android:id="@+id/avgHoops"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:gravity="center"
+                android:layout_weight="1" />
 	
 	    </LinearLayout>
+	    
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="1dip" >
+	        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:gravity="center"
+                android:layout_weight="1"
+                android:text="@string/avgBalance" />
+            
+            <TextView
+                android:id="@+id/avgBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:gravity="center"
+                android:layout_weight="1" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:gravity="center"
+                android:layout_weight="1"
+                android:text="@string/avgBroke" />
+            
+            <TextView
+                android:id="@+id/avgBroke"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:gravity="center"
+                android:layout_weight="1" />
+	    </LinearLayout>
+	    
 	    <TextView
-	        android:id="@+id/notesLabel"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:text="@string/notesLabel"
@@ -427,13 +539,12 @@
 	    
 	    <EditText
 	        android:id="@+id/notes"
-	        android:layout_width="match_parent"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:inputType="textMultiLine" />
 	    
 	    <LinearLayout
-	        android:id="@+id/linearLayout1"
-	        android:layout_width="match_parent"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content" >
 	        
 	        <Button

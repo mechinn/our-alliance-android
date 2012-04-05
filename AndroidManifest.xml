@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mechinn.android.ouralliance"
-    android:versionCode="4"
-    android:versionName="0.3.1" android:installLocation="auto">
+    android:versionCode="5"
+    android:versionName="0.4">
 
-    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="15"/>
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="15"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-feature android:name="android.hardware.camera"/>
@@ -49,6 +49,12 @@
         <activity android:name="com.mechinn.android.ouralliance.activity.scouting.MatchScouting" android:screenOrientation="landscape" android:label="@string/matchScouting">
             <intent-filter>
                 <action android:name="com.mechinn.android.ouralliance.OpenScouting"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.mechinn.android.ouralliance.activity.ChangeLog" android:screenOrientation="landscape" android:label="@string/matchScouting">
+            <intent-filter>
+                <action android:name="com.mechinn.android.ouralliance.OpenChangeLog"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

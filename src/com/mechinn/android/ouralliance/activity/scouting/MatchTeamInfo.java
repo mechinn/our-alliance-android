@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.activity.scouting;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchScoutingInterface;
 import com.mechinn.android.ouralliance.data.Prefs;
@@ -20,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,21 +32,34 @@ public class MatchTeamInfo extends Fragment {
 	private TextView teamNumber;
 	private TextView matchSlot;
 	private CheckBox broke;
-	private CheckBox autonomousWorked;
+	private CheckBox autoBridge;
+	private CheckBox autoShooter;
 	private CheckBox balanced;
 	private RadioGroup shootingType;
 	private RadioButton noShooting;
 	private RadioButton dunker;
 	private RadioButton shooter;
+	private RadioGroup mode;
+	private RadioButton autonomous;
+	private RadioButton teleoperated;
 	private TextView topScoreTotal;
 	private TextView midScoreTotal;
 	private TextView botScoreTotal;
+	private TextView missTotal;
 	private TextView notes;
 	private MatchScoutingInterface matchScouting;
 	private TeamScoutingInterface teamScouting;
 	private Prefs prefs;
 	private String comp;
 	private static final String logTag = "MatchTeamInfo";
+	private int topAuto;
+	private int midAuto;
+	private int botAuto;
+	private int missAuto;
+	private int top;
+	private int mid;
+	private int bot;
+	private int miss;
 	
     public static MatchTeamInfo newInstance(int matchNum, int thisTeam) {
     	MatchTeamInfo f = new MatchTeamInfo();
@@ -95,66 +108,270 @@ public class MatchTeamInfo extends Fragment {
     	teamNumber = (TextView)view.findViewById(R.id.teamNumber);
     	matchSlot = (TextView)view.findViewById(R.id.matchSlot);
     	broke = (CheckBox)view.findViewById(R.id.broke);
-    	autonomousWorked = (CheckBox)view.findViewById(R.id.autonomousWorked);
+    	autoBridge = (CheckBox)view.findViewById(R.id.autoBridge);
+    	autoShooter = (CheckBox)view.findViewById(R.id.autoShooter);
     	balanced = (CheckBox)view.findViewById(R.id.balanced);
     	shootingType = (RadioGroup)view.findViewById(R.id.MatchScoutingShootingType);
     	noShooting = (RadioButton)view.findViewById(R.id.MatchScoutingNoShooting);
     	dunker = (RadioButton)view.findViewById(R.id.MatchScoutingDunker);
     	shooter = (RadioButton)view.findViewById(R.id.MatchScoutingShooter);
+    	mode = (RadioGroup)view.findViewById(R.id.mode);
+    	mode.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+    		public void onCheckedChanged(RadioGroup group, int checkedId) {
+				if(checkedId==0) {
+					topScoreTotal.setText(Integer.toString(topAuto));
+					topScoreTotal.setText(Integer.toString(midAuto));
+					topScoreTotal.setText(Integer.toString(botAuto));
+					topScoreTotal.setText(Integer.toString(missAuto));
+				} else {
+					topScoreTotal.setText(Integer.toString(top));
+					topScoreTotal.setText(Integer.toString(mid));
+					topScoreTotal.setText(Integer.toString(bot));
+					topScoreTotal.setText(Integer.toString(miss));
+				}
+			}
+    	});
+    	autonomous = (RadioButton)view.findViewById(R.id.autonomous);
     	topScoreTotal = (TextView)view.findViewById(R.id.topScoreTotal);
 		midScoreTotal = (TextView)view.findViewById(R.id.midScoreTotal);
 		botScoreTotal = (TextView)view.findViewById(R.id.botScoreTotal);
+		missTotal = (TextView)view.findViewById(R.id.missTotal);
 		notes = (TextView)view.findViewById(R.id.notes);
     	
     	teamNumber.setText(Integer.toString(team));
     	
     	getInfo();
-    	
-    	Button top = (Button)view.findViewById(R.id.addTopScore);
-    	top.setOnClickListener(new OnClickListener() {
+    	Button button;
+    	button = (Button)view.findViewById(R.id.subTopScore);
+    	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				int score = Integer.parseInt(topScoreTotal.getText().toString())+1;
-				topScoreTotal.setText(Integer.toString(score));
+				if(mode.getCheckedRadioButtonId()==0){
+					try{
+						topAuto = Integer.parseInt(topScoreTotal.getText().toString())-1;
+						if(topAuto<0) {
+							topAuto = 0;
+						}
+					} catch(NumberFormatException e) {
+						topAuto = 0;
+					}
+					topScoreTotal.setText(Integer.toString(topAuto));
+				} else {
+					try{
+						top = Integer.parseInt(topScoreTotal.getText().toString())-1;
+						if(top<0) {
+							top = 0;
+						}
+					} catch(NumberFormatException e) {
+						top = 0;
+					}
+					topScoreTotal.setText(Integer.toString(top));
+				}
+			}
+		});
+    	button = (Button)view.findViewById(R.id.addTopScore);
+    	button.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if(mode.getCheckedRadioButtonId()==0){
+					try{
+						topAuto = Integer.parseInt(topScoreTotal.getText().toString())+1;
+						if(topAuto<0) {
+							topAuto = 0;
+						}
+					} catch(NumberFormatException e) {
+						topAuto = 0;
+					}
+					topScoreTotal.setText(Integer.toString(topAuto));
+				} else {
+					try{
+						top = Integer.parseInt(topScoreTotal.getText().toString())+1;
+						if(top<0) {
+							top = 0;
+						}
+					} catch(NumberFormatException e) {
+						top = 0;
+					}
+					topScoreTotal.setText(Integer.toString(top));
+				}
 			}
 		});
     	
-    	Button mid = (Button)view.findViewById(R.id.addMidScore);
-    	mid.setOnClickListener(new OnClickListener() {
+    	button = (Button)view.findViewById(R.id.subMidScore);
+    	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				int score = Integer.parseInt(midScoreTotal.getText().toString())+1;
-				midScoreTotal.setText(Integer.toString(score));
+				if(mode.getCheckedRadioButtonId()==0){
+					try{
+						midAuto = Integer.parseInt(midScoreTotal.getText().toString())-1;
+						if(midAuto<0) {
+							midAuto = 0;
+						}
+					} catch(NumberFormatException e) {
+						midAuto = 0;
+					}
+					midScoreTotal.setText(Integer.toString(midAuto));
+				} else {
+					try{
+						mid = Integer.parseInt(midScoreTotal.getText().toString())-1;
+						if(mid<0) {
+							mid = 0;
+						}
+					} catch(NumberFormatException e) {
+						mid = 0;
+					}
+					midScoreTotal.setText(Integer.toString(mid));
+				}
 			}
 		});
     	
-    	Button bot = (Button)view.findViewById(R.id.addBotScore);
-    	bot.setOnClickListener(new OnClickListener() {
+    	button = (Button)view.findViewById(R.id.addMidScore);
+    	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				int score = Integer.parseInt(botScoreTotal.getText().toString())+1;
-				botScoreTotal.setText(Integer.toString(score));
+				if(mode.getCheckedRadioButtonId()==0){
+					try{
+						midAuto = Integer.parseInt(midScoreTotal.getText().toString())+1;
+						if(midAuto<0) {
+							midAuto = 0;
+						}
+					} catch(NumberFormatException e) {
+						midAuto = 0;
+					}
+					midScoreTotal.setText(Integer.toString(midAuto));
+				} else {
+					try{
+						mid = Integer.parseInt(midScoreTotal.getText().toString())+1;
+						if(mid<0) {
+							mid = 0;
+						}
+					} catch(NumberFormatException e) {
+						mid = 0;
+					}
+					midScoreTotal.setText(Integer.toString(mid));
+				}
 			}
 		});
     	
-		Button save = (Button)view.findViewById(R.id.matchScoutingSave);
-		save.setOnClickListener(new OnClickListener() {
+    	button = (Button)view.findViewById(R.id.subBotScore);
+    	button.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if(mode.getCheckedRadioButtonId()==0){
+					try{
+						botAuto = Integer.parseInt(botScoreTotal.getText().toString())-1;
+						if(botAuto<0) {
+							botAuto = 0;
+						}
+					} catch(NumberFormatException e) {
+						botAuto = 0;
+					}
+					botScoreTotal.setText(Integer.toString(botAuto));
+				} else {
+					try{
+						bot = Integer.parseInt(botScoreTotal.getText().toString())-1;
+						if(bot<0) {
+							bot = 0;
+						}
+					} catch(NumberFormatException e) {
+						bot = 0;
+					}
+					botScoreTotal.setText(Integer.toString(bot));
+				}
+			}
+		});
+    	
+    	button = (Button)view.findViewById(R.id.addBotScore);
+    	button.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if(mode.getCheckedRadioButtonId()==0){
+					try{
+						botAuto = Integer.parseInt(botScoreTotal.getText().toString())+1;
+						if(botAuto<0) {
+							botAuto = 0;
+						}
+					} catch(NumberFormatException e) {
+						botAuto = 0;
+					}
+					botScoreTotal.setText(Integer.toString(botAuto));
+				} else {
+					try{
+						bot = Integer.parseInt(botScoreTotal.getText().toString())+1;
+						if(bot<0) {
+							bot = 0;
+						}
+					} catch(NumberFormatException e) {
+						bot = 0;
+					}
+					botScoreTotal.setText(Integer.toString(bot));
+				}
+			}
+		});
+    	
+    	button = (Button)view.findViewById(R.id.subMiss);
+    	button.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if(mode.getCheckedRadioButtonId()==0){
+					try{
+						missAuto = Integer.parseInt(missTotal.getText().toString())-1;
+						if(missAuto<0) {
+							missAuto = 0;
+						}
+					} catch(NumberFormatException e) {
+						missAuto = 0;
+					}
+					missTotal.setText(Integer.toString(missAuto));
+				} else {
+					try{
+						miss = Integer.parseInt(missTotal.getText().toString())-1;
+						if(miss<0) {
+							miss = 0;
+						}
+					} catch(NumberFormatException e) {
+						miss = 0;
+					}
+					missTotal.setText(Integer.toString(miss));
+				}
+			}
+		});
+    	
+    	button = (Button)view.findViewById(R.id.addMiss);
+    	button.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if(mode.getCheckedRadioButtonId()==0){
+					try{
+						missAuto = Integer.parseInt(missTotal.getText().toString())+1;
+						if(missAuto<0) {
+							missAuto = 0;
+						}
+					} catch(NumberFormatException e) {
+						missAuto = 0;
+					}
+					missTotal.setText(Integer.toString(missAuto));
+				} else {
+					try{
+						miss = Integer.parseInt(missTotal.getText().toString())+1;
+						if(miss<0) {
+							miss = 0;
+						}
+					} catch(NumberFormatException e) {
+						miss = 0;
+					}
+					missTotal.setText(Integer.toString(miss));
+				}
+			}
+		});
+    	
+    	button = (Button)view.findViewById(R.id.matchScoutingSave);
+    	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				int type = shootingType.indexOfChild(view.findViewById(shootingType.getCheckedRadioButtonId()));
 				matchScouting.updateMatch(comp, matchNum, team, matchSlot.getText().toString(),
-						broke.isChecked(), autonomousWorked.isChecked(), balanced.isChecked(), 
-						type, Integer.parseInt(topScoreTotal.getText().toString()), 
-						Integer.parseInt(midScoreTotal.getText().toString()), 
-						Integer.parseInt(botScoreTotal.getText().toString()), notes.getText().toString());
+						broke.isChecked(), autoBridge.isChecked(), autoShooter.isChecked(), balanced.isChecked(), 
+						type, top, mid, bot, miss, topAuto, midAuto, botAuto, missAuto, notes.getText().toString());
 				Cursor thisTeam = matchScouting.fetchTeam(team);
-				if(thisTeam!=null && thisTeam.getCount()>0){
+				if(thisTeam!=null && !thisTeam.isClosed() && thisTeam.getCount()>0){
+					double avgAuto = 0;
 					double avgHoops = 0;
 					double avgBalance = 0;
 					double avgBroke = 0;
 					do {
-						int top = thisTeam.getColumnIndex(MatchScoutingProvider.keyTop);
-						int mid = thisTeam.getColumnIndex(MatchScoutingProvider.keyMid);
-						int bot = thisTeam.getColumnIndex(MatchScoutingProvider.keyBot);
-						top = thisTeam.getInt(top);
-						mid = thisTeam.getInt(mid);
-						bot = thisTeam.getInt(bot);
+						avgAuto+=(topAuto*6+midAuto*4+botAuto*2);
 						avgHoops+=(top*3+mid*2+bot);
 						avgBalance+=thisTeam.getInt(thisTeam.getColumnIndex(MatchScoutingProvider.keyBalance));
 						avgBroke+=thisTeam.getInt(thisTeam.getColumnIndex(MatchScoutingProvider.keyBroke));
@@ -178,19 +395,18 @@ public class MatchTeamInfo extends Fragment {
 		    				key = true;
 		    				break;
 		    		}
-					int updatedRows = teamScouting.updateTeam(team, fender, key, autonomousWorked.isChecked(), avgHoops, avgBalance, avgBroke);
+					int updatedRows = teamScouting.updateTeam(team, fender, key, autoBridge.isChecked(), autoShooter.isChecked(), avgAuto, avgHoops, avgBalance, avgBroke);
 					Log.d("saveMatchTeamInfo", "Updated "+updatedRows+" rows.");
 					Toast.makeText(activity, "Finished Saving", Toast.LENGTH_SHORT).show();
 				} else {
-				    BugSenseHandler.log(logTag, new Exception("no team"));
-					Toast.makeText(activity, "Something went wrong loading data, we notified the developer", Toast.LENGTH_SHORT).show();
+					Toast.makeText(activity, "Something went wrong loading data", Toast.LENGTH_SHORT).show();
 					activity.finish();
 				}
 			}
 		});
 		
-		Button discard = (Button)view.findViewById(R.id.matchScoutingDiscard);
-		discard.setOnClickListener(new OnClickListener() {
+    	button = (Button)view.findViewById(R.id.matchScoutingDiscard);
+    	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				getInfo();
 			}
@@ -201,12 +417,13 @@ public class MatchTeamInfo extends Fragment {
     
     public void getInfo() {
 		Cursor match = matchScouting.fetchMatch(comp, matchNum, team);
-		if(match!=null && match.getCount()>0) {
+		if(match!=null && !match.isClosed() && match.getCount()>0) {
 			int col = match.getColumnIndex(MatchScoutingProvider.keySlot);
 			Log.d("getinfo","col index = "+col);
 			matchSlot.setText(match.getString(col));
 			broke.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBroke))==0?false:true);
-			autonomousWorked.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyAuto))==0?false:true);
+			autoBridge.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyAutoBridge))==0?false:true);
+			autoShooter.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyAutoShooter))==0?false:true);
 			balanced.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBalance))==0?false:true);
 			switch(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyShooter))) {
 				default:
@@ -219,13 +436,21 @@ public class MatchTeamInfo extends Fragment {
 					shooter.toggle();
 					break;
 			}
-			topScoreTotal.setText(Integer.toString(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyTop))));
-			midScoreTotal.setText(Integer.toString(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMid))));
-			botScoreTotal.setText(Integer.toString(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBot))));
+			top = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyTop));
+			mid = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMid));
+			bot = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBot));
+			miss = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMiss));
+			topAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyTopAuto));
+			midAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMidAuto));
+			botAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBotAuto));
+			missAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMissAuto));
+			topScoreTotal.setText(Integer.toString(top));
+			midScoreTotal.setText(Integer.toString(mid));
+			botScoreTotal.setText(Integer.toString(bot));
+			missTotal.setText(Integer.toString(miss));
 			notes.setText(match.getString(match.getColumnIndex(MatchScoutingProvider.keyNotes)));
 		} else {
-			BugSenseHandler.log(logTag, new Exception("no match"));
-			Toast.makeText(activity, "Something went wrong loading data, we notified the developer", Toast.LENGTH_SHORT).show();
+			Toast.makeText(activity, "Something went wrong loading data", Toast.LENGTH_SHORT).show();
 			activity.finish();
 		}
     }

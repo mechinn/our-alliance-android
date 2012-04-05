@@ -11,8 +11,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
+import android.util.Log;
 
 public class TeamScoutingInterface {
+	private final String logTag = "TeamScoutingInterface";
 	private Activity activity;
 	
 	public TeamScoutingInterface(Activity act) {
@@ -26,26 +28,25 @@ public class TeamScoutingInterface {
 	public Uri createTeam(String competition, int team) {
 		HashSet<String> competitions = new HashSet<String>();
 		competitions.add(competition);
-		ContentValues initialValues = putVals(true, team, -1,"None",0,1,false,"None",0,"None",0,"None",false,false,false,false,false,false,"",false, competitions, 0, 0, 0);
-        
-        return activity.getContentResolver().insert(TeamScoutingProvider.mUri, initialValues);
+		return createTeam(competitions,team);
 	}
 	
 	public Uri createTeam(HashSet<String> competitions, int team) {
-		ContentValues initialValues = putVals(true, team, -1,"None",0,1,false,"None",0,"None",0,"None",false,false,false,false,false,false,"",false, competitions, 0, 0, 0);
+		ContentValues initialValues = putVals(true,-1,team,competitions,0,"None",0,0,0,1,false,"None",0,"None",0,"None",false,false,false,false,false,false,false,0,0,0,0,0,0,"");
         
         return activity.getContentResolver().insert(TeamScoutingProvider.mUri, initialValues);
 	}
 
-    public Uri createTeam(int team, String orientation, int numWheels, int wheelTypes, boolean deadWheel,
-    		String wheel1Type, double wheel1Diameter, String wheel2Type, double wheel2Diameter,
-    		String deadWheelType, boolean turret, boolean tracking, boolean fender,
-			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous, HashSet<String> competitions, double avgHoops, double avgBalance, double avgBroke) {
+    public Uri createTeam(int team, HashSet<String> competitions, int rank, String orientation, double width, double height, int numWheels, int wheelTypes, 
+    		boolean deadWheel, String wheel1Type, double wheel1Diameter, String wheel2Type, double wheel2Diameter,
+    		String deadWheelType, boolean tracking, boolean fender, boolean key, boolean barrier, boolean climb,
+    		boolean autoBridge, boolean autoShooter, float shooting, float balancing, double avgAuto,
+    		double avgHoops, double avgBalance, double avgBroke, String notes) {
     	
-        ContentValues initialValues = putVals(true, team, -1, orientation, numWheels, wheelTypes, 
+        ContentValues initialValues = putVals(true, -1, team, competitions, rank, orientation, width, height, numWheels, wheelTypes, 
         		deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter,
-    			deadWheelType, turret, tracking, fender,
-    			key, barrier, climb, notes, autonomous, competitions, avgHoops, avgBalance, avgBroke);
+    			deadWheelType, tracking, fender, key, barrier, climb, autoBridge, autoShooter, shooting, balancing,
+    			avgAuto, avgHoops, avgBalance, avgBroke, notes);
         
         return activity.getContentResolver().insert(TeamScoutingProvider.mUri, initialValues);
     }
@@ -55,7 +56,7 @@ public class TeamScoutingInterface {
     }
 
     public Cursor fetchAllTeams(String orderBy, boolean desc) {
-    	return fetchAllTeams(TeamScoutingProvider.schemaArray,orderBy,desc);
+    	return fetchAllTeams(TeamScoutingProvider.schemaArray.toArray(),orderBy,desc);
     }
     
     public Cursor fetchAllTeams(String[] from,String orderBy, boolean desc) {
@@ -72,7 +73,7 @@ public class TeamScoutingInterface {
     }
     
     public Cursor fetchCompetitionTeams(String competition, String orderBy, boolean desc) {
-        return fetchCompetitionTeams(competition, TeamScoutingProvider.schemaArray, orderBy, desc);
+        return fetchCompetitionTeams(competition, TeamScoutingProvider.schemaArray.toArray(), orderBy, desc);
     }
     
     public Cursor fetchCompetitionTeams(String competition, String[] from, String orderBy, boolean desc) {
@@ -85,8 +86,11 @@ public class TeamScoutingInterface {
     }
 
     public Cursor fetchTeam(int team) throws SQLException {
-    	Cursor mCursor = activity.managedQuery(TeamScoutingProvider.mUri, TeamScoutingProvider.schemaArray,
-    			TeamScoutingProvider.keyTeam + " = '"+ team +"'", null, null);
+    	for(String s : TeamScoutingProvider.schemaArray.toArray()) {
+    		Log.d(logTag,s);
+    	}
+    	Cursor mCursor = activity.managedQuery(TeamScoutingProvider.mUri, TeamScoutingProvider.schemaArray.toArray(),
+    			TeamScoutingProvider.keyTeam + " = "+ team, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -94,8 +98,8 @@ public class TeamScoutingInterface {
     }
     
     public Cursor fetchTeam(String competition, int team) throws SQLException {
-    	Cursor mCursor = activity.managedQuery(TeamScoutingProvider.mUri, TeamScoutingProvider.schemaArray,
-    			TeamScoutingProvider.keyTeam + " = '"+ team +"' AND " + competition + " = 1", null, null);
+    	Cursor mCursor = activity.managedQuery(TeamScoutingProvider.mUri, TeamScoutingProvider.schemaArray.toArray(),
+    			TeamScoutingProvider.keyTeam + " = "+ team +" AND " + competition + " = 1", null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -104,7 +108,7 @@ public class TeamScoutingInterface {
     
     public Cursor fetchTeamNotes(int team) throws SQLException {
     	Cursor mCursor = activity.managedQuery(TeamScoutingProvider.mUri, new String[] {TeamScoutingProvider.keyNotes},
-    			TeamScoutingProvider.keyTeam + " = '"+ team +"'", null, null);
+    			TeamScoutingProvider.keyTeam + " = "+ team, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -128,54 +132,39 @@ public class TeamScoutingInterface {
         return mCursor;
     }
     
-    public int updateTeam(int team, String orientation, int numWheels, int wheelTypes, 
+    public int updateTeam(int team, HashSet<String> competitions, int rank, String orientation, double width, double height, int numWheels, int wheelTypes, 
     		boolean deadWheel, String wheel1Type, double wheel1Diameter, String wheel2Type, double wheel2Diameter,
-    		String deadWheelType, boolean turret, boolean tracking, boolean fender,
-			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous, HashSet<String> competitions, double avgHoops, double avgBalance, double avgBroke) {
-    	ContentValues args = putVals(false, team, -1, orientation, numWheels, wheelTypes, 
+    		String deadWheelType, boolean tracking, boolean fender, boolean key, boolean barrier, boolean climb,
+    		boolean autoBridge, boolean autoShooter, float shooting, float balancing, double avgAuto,
+    		double avgHoops, double avgBalance, double avgBroke, String notes) {
+    	ContentValues args = putVals(false, -1, team, competitions, rank, orientation, width, height, numWheels, wheelTypes, 
     		deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter,
-			deadWheelType, turret, tracking, fender,
-			key, barrier, climb, notes, autonomous, competitions, avgHoops, avgBalance, avgBroke);
+			deadWheelType, tracking, fender,
+			key, barrier, climb, autoBridge, autoShooter, shooting, balancing,
+			avgAuto, avgHoops, avgBalance, avgBroke, notes);
         
-        return activity.getContentResolver().update(TeamScoutingProvider.mUri, args,MatchScoutingProvider.keyTeam + " = '" + team + "'",null);
+        return activity.getContentResolver().update(TeamScoutingProvider.mUri, args,MatchScoutingProvider.keyTeam + " = " + team,null);
     }
 
-    public int updateTeam(int team, boolean fender,
-			boolean key, boolean autonomous, double avgHoops, double avgBalance, double avgBroke) {
-    	Cursor teamInfo = fetchTeam(team);
-    	HashSet<String> comps = new HashSet<String>();
-    	for(String comp : TeamScoutingProvider.competitions) {
-    		if(teamInfo.getInt(teamInfo.getColumnIndex(comp))!=0) {
-        		comps.add(comp);
-    		}
-    	}
-    	ContentValues args = putVals(false, team, -1, 
-    			teamInfo.getString(teamInfo.getColumnIndex(TeamScoutingProvider.keyOrientation)), 
-    			teamInfo.getInt(teamInfo.getColumnIndex(TeamScoutingProvider.keyNumWheels)),
-        		teamInfo.getInt(teamInfo.getColumnIndex(TeamScoutingProvider.keyWheelTypes)), 
-        		teamInfo.getInt(teamInfo.getColumnIndex(TeamScoutingProvider.keyDeadWheel))==0?false:true, 
-        		teamInfo.getString(teamInfo.getColumnIndex(TeamScoutingProvider.keyWheel1Type)), 
-        		teamInfo.getInt(teamInfo.getColumnIndex(TeamScoutingProvider.keyWheel1Diameter)), 
-        		teamInfo.getString(teamInfo.getColumnIndex(TeamScoutingProvider.keyWheel2Type)),
-    			teamInfo.getInt(teamInfo.getColumnIndex(TeamScoutingProvider.keyWheel2Diameter)), 
-    			teamInfo.getString(teamInfo.getColumnIndex(TeamScoutingProvider.keyDeadWheelType)), 
-    			teamInfo.getInt(teamInfo.getColumnIndex(TeamScoutingProvider.keyTurret))==0?false:true, 
-    			teamInfo.getInt(teamInfo.getColumnIndex(TeamScoutingProvider.keyTracking))==0?false:true, 
-    			fender,
-    			key, 
-    			teamInfo.getInt(teamInfo.getColumnIndex(TeamScoutingProvider.keyBarrier))==0?false:true, 
-    			teamInfo.getInt(teamInfo.getColumnIndex(TeamScoutingProvider.keyClimb))==0?false:true, 
-    			teamInfo.getString(teamInfo.getColumnIndex(TeamScoutingProvider.keyNotes)), 
-    			autonomous, 
-    			comps, 
-    			avgHoops, avgBalance, avgBroke);
-        return activity.getContentResolver().update(TeamScoutingProvider.mUri, args,MatchScoutingProvider.keyTeam + " = '" + team + "'",null);
+    public int updateTeam(int team, boolean fender, boolean key, boolean autoBridge, boolean autoShooter, double avgAuto, double avgHoops, double avgBalance, double avgBroke) {
+    	ContentValues args = new ContentValues();
+    	args.put(DatabaseConnection._LASTMOD, System.currentTimeMillis());
+    	args.put(TeamScoutingProvider.keyFenderShooter, fender);
+    	args.put(TeamScoutingProvider.keyKeyShooter, key);
+    	args.put(TeamScoutingProvider.keyAutoBridge, autoBridge);
+    	args.put(TeamScoutingProvider.keyAutoShooter, autoShooter);
+    	args.put(TeamScoutingProvider.keyAvgAuto, avgAuto);
+    	args.put(TeamScoutingProvider.keyAvgHoops, avgHoops);
+    	args.put(TeamScoutingProvider.keyAvgBalance, avgBalance);
+    	args.put(TeamScoutingProvider.keyAvgBroke, avgBroke);
+        return activity.getContentResolver().update(TeamScoutingProvider.mUri, args, MatchScoutingProvider.keyTeam + " = " + team,null);
     }
     
-    private ContentValues putVals(boolean create, int team, int lastMod, String orientation, int numWheels, int wheelTypes, 
-    		boolean deadWheel, String wheel1Type, double wheel1Diameter, String wheel2Type, double wheel2Diameter,
-    		String deadWheelType, boolean turret, boolean tracking, boolean fender,
-			boolean key, boolean barrier, boolean climb, String notes, boolean autonomous, HashSet<String> competitions, double avgHoops, double avgBalance, double avgBroke) {
+    private ContentValues putVals(boolean create, int lastMod, int team, HashSet<String> competitions, int rank, String orientation,
+    		double width, double height, int numWheels, int wheelTypes, boolean deadWheel, String wheel1Type, double wheel1Diameter,
+    		String wheel2Type, double wheel2Diameter, String deadWheelType, boolean tracking, boolean fender, boolean key,
+    		boolean barrier, boolean climb, boolean autoBridge, boolean autoShooter, float shooting, float balancing, double avgAuto,
+    		double avgHoops, double avgBalance, double avgBroke, String notes) {
     	ContentValues cv = new ContentValues();
     	if(lastMod<0) {
 	    	if(create) {
@@ -187,7 +176,10 @@ public class TeamScoutingInterface {
     	} else {
     		cv.put(DatabaseConnection._LASTMOD, lastMod);
     	}
+    	cv.put(TeamScoutingProvider.keyRank, rank);
     	cv.put(TeamScoutingProvider.keyOrientation, orientation);
+    	cv.put(TeamScoutingProvider.keyWidth, width);
+    	cv.put(TeamScoutingProvider.keyHeight, height);
     	cv.put(TeamScoutingProvider.keyNumWheels, numWheels);
     	cv.put(TeamScoutingProvider.keyWheelTypes, wheelTypes);
     	cv.put(TeamScoutingProvider.keyDeadWheel, deadWheel);
@@ -196,14 +188,21 @@ public class TeamScoutingInterface {
     	cv.put(TeamScoutingProvider.keyWheel2Type, wheel2Type);
     	cv.put(TeamScoutingProvider.keyWheel2Diameter, wheel2Diameter);
         cv.put(TeamScoutingProvider.keyDeadWheelType, deadWheelType);
-        cv.put(TeamScoutingProvider.keyTurret, turret);
         cv.put(TeamScoutingProvider.keyTracking, tracking);
         cv.put(TeamScoutingProvider.keyFenderShooter, fender);
         cv.put(TeamScoutingProvider.keyKeyShooter, key);
         cv.put(TeamScoutingProvider.keyBarrier, barrier);
         cv.put(TeamScoutingProvider.keyClimb, climb);
+        cv.put(TeamScoutingProvider.keyAutoBridge, autoBridge);
+        cv.put(TeamScoutingProvider.keyAutoShooter, autoShooter);
+        cv.put(TeamScoutingProvider.keyShootingRating, shooting);
+        cv.put(TeamScoutingProvider.keyBalancingRating, balancing);
+        cv.put(TeamScoutingProvider.keyAvgAuto, avgAuto);
+        cv.put(TeamScoutingProvider.keyAvgHoops, avgHoops);
+        cv.put(TeamScoutingProvider.keyAvgBalance, avgBalance);
+        cv.put(TeamScoutingProvider.keyAvgBroke, avgBroke);
         cv.put(TeamScoutingProvider.keyNotes, notes);
-        cv.put(TeamScoutingProvider.keyAutonomous, autonomous);
+        
         for(String allCompetitions : TeamScoutingProvider.competitions) {
         	if(competitions.contains("All")){
         		cv.put(allCompetitions, 1);
@@ -217,9 +216,6 @@ public class TeamScoutingInterface {
             	}
         	}
         }
-        cv.put(TeamScoutingProvider.keyAvgHoops, avgHoops);
-        cv.put(TeamScoutingProvider.keyAvgBalance, avgBalance);
-        cv.put(TeamScoutingProvider.keyAvgBroke, avgBroke);
         
         return cv;
     }

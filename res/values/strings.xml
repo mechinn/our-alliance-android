@@ -5,20 +5,13 @@
     <string name="teams">Teams</string>
     <string name="settings">Settings</string>
     <string name="pullfrc">Pull FRC Data</string>
-    <string-array name="wheels">
-        <item >1</item>
-        <item >2</item>
-        <item >3</item>
-        <item >4</item>
-        <item >5</item>
-        <item >6</item>
-        <item >7</item>
-        <item >8</item>
-        <item >9</item>
-        <item >10</item>
-        <item >Treads</item>
-    </string-array>
     <string name="teamInfo">Team Info</string>
+    <string-array name="driveTrainTypes">
+        <item >CIM-U-LATOR</item>
+        <item >ToughBox</item>
+        <item >Bainbots</item>
+        <item >Other</item>
+    </string-array>
     <string-array name="wheelTypes">
         <item >Kit</item>
         <item >Traction</item>
@@ -61,7 +54,7 @@
         <item >notes</item>
     </string-array>
     <string name="teamLabel">Team: </string>
-    <string name="orientation">Orientation: </string>
+    <string name="orientation">Frame Orientation: </string>
     <string name="orientationLong">Long</string>
     <string name="orientationWide">Wide</string>
     <string name="orientationSquare">Square</string>
@@ -88,9 +81,16 @@
     <string name="portLabel">Port: </string>
     <string name="deletePic">Delete Picture</string>
     <string name="refresh">Refresh</string>
-    <string name="topScore">Top Score</string>
-    <string name="midScore">Middle Score</string>
-    <string name="botScore">Bottom Score</string>
+    <string name="subAutoScore">- Autonomous</string>
+    <string name="addAutoScore">+ Autonomous</string>
+    <string name="subTopScore">- Top</string>
+    <string name="addTopScore">+ Top</string>
+    <string name="subMidScore">- Middle</string>
+    <string name="addMidScore">+ Middle</string>
+    <string name="subBotScore">- Bottom</string>
+    <string name="addBotScore">+ Bottom</string>
+    <string name="subMiss">- Miss</string>
+    <string name="addMiss">+ Miss</string>
     <string name="noShooting">No Shooting</string>
     <string name="dunker">Dunker</string>
     <string name="shooter">Shooter</string>
@@ -131,4 +131,17 @@
     <string name="port">Port: </string>
     <string name="exportCSVSend">Export CSV and send to FTP server</string>
     <string name="scouter">Scouter: </string>
+    <string name="frameWidth">Frame Width: </string>
+    <string name="frameHeight">Frame Depth: </string>
+    <string name="rank">Rank: </string>
+    <string name="driveTrainLabel">Drive Train Type: </string>
+    <string name="autoBridge">Autonomous Bridge</string>
+    <string name="autoShooter">Autonomous Shooter</string>
+    <string name="teleoperated">Teleoperated</string>
+    <string name="mode">Mode: </string>
+    <string name="avgAuto">Average Autonomous: </string>
+    <string name="shootingLabel">Shooting: </string>
+    <string name="balacingLabel">Balancing: </string>
+    <string name="back">Back</string>
+    <string name="changelog">ChangeLog</string>
 </resources>

@@ -15,6 +15,7 @@ import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
@@ -66,14 +67,24 @@ public class Settings extends Activity {
         
         TextView credits = (TextView) findViewById(R.id.credits);
         credits.setMovementMethod(LinkMovementMethod.getInstance());
-        credits.setText(Html.fromHtml("<h2>Credits</h2><br>" +
+        credits.setText(Html.fromHtml(
+        		"<h1>Credits</h1>" +
+        		"<b>Copyright 2012 <a href='http://mechinn.com/android'>Michael Chinn</a>.</b>" +
         		"<p>" +
-	        		"Copyright 2012 <a href='http://mechinn.com/android'>Michael Chinn</a>.<br>" +
-	        		"<br>" +
-	        		"You choose to run this software with the full knowledge that it is in a pre-release form and any damage or loss of data while using this software I cannot be held responsible for." +
-	        		"This app uses the The Apache Software Foundation's <a href='http://www.apache.org/licenses/LICENSE-2.0.txt'>Apache License 2.0</a>." +
+	        		"You choose to run this software with the full knowledge that it is in a pre-release form and any damage or loss of data while using this software I cannot be held responsible for.<br />" +
+	        		"<br />" +
+	        		"This app uses software that is under the The Apache Software Foundation's <a href='http://www.apache.org/licenses/LICENSE-2.0.txt'>Apache License 2.0</a>." +
         		"</p>"
     		));
+        
+        Button changelog = (Button) findViewById(R.id.changelog);
+        changelog.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		String actionName = "com.mechinn.android.ouralliance.OpenChangeLog";
+            	Intent intent = new Intent(actionName);
+            	startActivity(intent);
+			}
+        });
 
         scouter = (EditText) findViewById(R.id.scouterText);
         host = (EditText) findViewById(R.id.hostText);
@@ -147,6 +158,7 @@ public class Settings extends Activity {
     		public void onClick(View v) {
     			csvTool = new OurAllianceCSVWriter(Settings.this);
     			Log.i(logTag,"Finished building database to CSVs");
+    			Toast.makeText(Settings.this, "Working...", Toast.LENGTH_LONG).show();
     			new SendCSVFTP().execute();
 			}
         });

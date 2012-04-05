@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.Vector;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.FragActivity;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchListInterface;
@@ -133,8 +132,7 @@ public class MatchTeams extends ListFragment {
     private class getMatches extends AsyncTask<Void,Void,Void> {    	
     	protected void onPostExecute(Void no) {
     		if(breakNicely){
-	        	BugSenseHandler.log(logTag, new Exception("no team"));
-				Toast.makeText(activity, "Something went wrong loading data, we notified the developer", Toast.LENGTH_SHORT).show();
+				Toast.makeText(activity, "Something went wrong loading data", Toast.LENGTH_SHORT).show();
 				activity.finish();
     			return;
     		}
@@ -173,7 +171,7 @@ public class MatchTeams extends ListFragment {
 					MatchListProvider.keyBlue1, MatchListProvider.keyBlue2, MatchListProvider.keyBlue3};
 			
 			Cursor match = matchList.fetchMatch(prefs.getCompetition(), matchNum);
-			if(match!=null && match.getCount()>0){
+			if(match!=null && !match.isClosed() && match.getCount()>0){
 				do {
 		        	for(int j=0;j<from.length;++j) {
 		            	String rowName = from[j];

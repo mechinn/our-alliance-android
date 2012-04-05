@@ -10,6 +10,7 @@ import android.database.SQLException;
 import android.net.Uri;
 
 public class TeamRankingsInterface {
+	private final String logTag = "TeamRankingsInterface";
 	Activity activity;
 	
 	public TeamRankingsInterface(Activity act) {
@@ -26,7 +27,7 @@ public class TeamRankingsInterface {
     }
 
     public Cursor fetchAllTeams() {
-    	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.mUri, TeamRankingsProvider.schemaArray, null, null, TeamRankingsProvider.keyRank);
+    	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.mUri, TeamRankingsProvider.schemaArray.toArray(), null, null, TeamRankingsProvider.keyRank);
     	if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -34,8 +35,8 @@ public class TeamRankingsInterface {
     }
 
     public Cursor fetchTeam(String competition, int team) throws SQLException {
-    	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.mUri, TeamRankingsProvider.schemaArray, 
-    			TeamRankingsProvider.keyCompetition + " = '" + competition + "' AND " + TeamRankingsProvider.keyTeam + " = '" + team + "'", null, TeamRankingsProvider.keyRank);
+    	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.mUri, TeamRankingsProvider.schemaArray.toArray(), 
+    			TeamRankingsProvider.keyCompetition + " = '" + competition + "' AND " + TeamRankingsProvider.keyTeam + " = " + team, null, TeamRankingsProvider.keyRank);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }

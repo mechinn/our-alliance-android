@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
+import com.mechinn.android.ouralliance.SchemaArray;
 
 public class TeamRankingsProvider extends ContentProvider {
     public static final String DBTable = "teamRankings";
@@ -30,8 +31,8 @@ public class TeamRankingsProvider extends ContentProvider {
     public static final String keyDQ = "disqualified";
     public static final String keyPlayed = "played";
     
-    public static final String[] schemaArray = {DatabaseConnection._ID, DatabaseConnection._LASTMOD, keyCompetition, keyRank, keyTeam, keyQS, 
-    	keyHybrid, keyBridge, keyTeleop, keyCoop, keyRecord, keyDQ, keyPlayed};
+    public static final SchemaArray schemaArray = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, keyCompetition, keyRank, keyTeam, keyQS, 
+    	keyHybrid, keyBridge, keyTeleop, keyCoop, keyRecord, keyDQ, keyPlayed});
 
     private static final String logTag = "TeamRankingsProvider";
     private static final String authority = "com.mechinn.android.ouralliance.providers."+logTag;

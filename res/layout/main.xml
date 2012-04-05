@@ -6,16 +6,16 @@
 
     <Button
         android:id="@+id/scouting"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_weight="1"
         android:text="@string/matchList"
     	android:textSize="30dp" />
 
     <Button
         android:id="@+id/teams"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_weight="1"
         android:text="@string/teams"
     	android:textSize="30dp" />

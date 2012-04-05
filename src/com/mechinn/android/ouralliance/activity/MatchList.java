@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchListInterface;
 import com.mechinn.android.ouralliance.data.Prefs;
@@ -216,7 +215,7 @@ public class MatchList extends Activity {
 					MatchListProvider.keyBlue1, MatchListProvider.keyBlue2, MatchListProvider.keyBlue3};
 			
 			Cursor thisMatch = matchListData.fetchMatches(prefs.getCompetition());
-			if(thisMatch!=null && thisMatch.getCount()>0){
+			if(thisMatch!=null && !thisMatch.isClosed() && thisMatch.getCount()>0){
 				matchCount = 0;
 				do {
 		        	publishProgress(NEWROW);
@@ -330,7 +329,7 @@ public class MatchList extends Activity {
 		    				Cursor match = matchListData.fetchMatch(comp, matchVal);
 		    				if(matchVal<=0) {
 		    					Toast.makeText(MatchList.this, "Must have a match number >= 1", Toast.LENGTH_SHORT).show();
-		    				} else if(match.getCount()==0){
+		    				} else if(match !=null && !match.isClosed() && match.getCount()==0){
 		    					if(teamScoutingData.fetchTeam(red1).getCount()==1) {
 		    						if(teamScoutingData.fetchTeam(red2).getCount()==1) {
 		    							if(teamScoutingData.fetchTeam(red3).getCount()==1){
@@ -343,19 +342,19 @@ public class MatchList extends Activity {
 																	 red1, red2, red3, blue1, blue2, blue3);
 															lastMatchTime = newTime; //save the new time
 															++matchCount;
+															setup();
+			    					    					addMatchDialog.dismiss();
+			    					    			        addMatchNum.setText(Integer.toString(matchCount+1));
+			    					    			        addMatchTime.setText(timeFormatter.format(new Date(lastMatchTime+(8*60000))));
+			    					    			        addMatchRed1.setText("");
+			    					    			        addMatchRed2.setText("");
+			    					    			        addMatchRed3.setText("");
+			    					    			        addMatchBlue1.setText("");
+			    					    			        addMatchBlue2.setText("");
+			    					    			        addMatchBlue3.setText("");
 														} catch (ParseException e) {
-															BugSenseHandler.log(logTag, e);
+															Toast.makeText(MatchList.this, "Illegal time given. (ex: 12:59pm)", Toast.LENGTH_SHORT).show();
 														}
-		    					    					setup();
-		    					    					addMatchDialog.dismiss();
-		    					    			        addMatchNum.setText(Integer.toString(matchCount+1));
-		    					    			        addMatchTime.setText(timeFormatter.format(new Date(lastMatchTime+(8*60000))));
-		    					    			        addMatchRed1.setText("");
-		    					    			        addMatchRed2.setText("");
-		    					    			        addMatchRed3.setText("");
-		    					    			        addMatchBlue1.setText("");
-		    					    			        addMatchBlue2.setText("");
-		    					    			        addMatchBlue3.setText("");
 		    										} else {
 		    											Toast.makeText(MatchList.this, "Blue 3 is not a valid team.", Toast.LENGTH_SHORT).show();
 		    										}

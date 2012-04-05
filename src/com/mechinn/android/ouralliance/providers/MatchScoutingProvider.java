@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
+import com.mechinn.android.ouralliance.SchemaArray;
 
 public class MatchScoutingProvider extends ContentProvider {
     public static final String DBTable = "matchScouting";
@@ -29,13 +30,24 @@ public class MatchScoutingProvider extends ContentProvider {
     public static final String keyTop = "top";
     public static final String keyMid = "mid";
     public static final String keyBot = "bot";
+    public static final String keyMiss = "miss";
     public static final String keyNotes = "notes";
+    
+    public static final String keyAutoBridge = "autoBridge";
+    public static final String keyAutoShooter = "autoShooter";
+    public static final String keyTopAuto = "topAuto";
+    public static final String keyMidAuto = "midAuto";
+    public static final String keyBotAuto = "botAuto";
+    public static final String keyMissAuto = "missAuto";
+    
+    public static final SchemaArray v5schemaArray = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
+		keyCompetition, keyMatchNum, keyTeam, keySlot, keyBroke, keyBalance, keyShooter, 
+		keyTop, keyMid, keyBot, keyNotes});
 
-    public static final String[] schemaArray = {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
-		keyCompetition, keyMatchNum, keyTeam, keySlot, keyBroke, 
-		keyAuto, keyBalance, keyShooter, 
-		keyTop, keyMid, keyBot, 
-		keyNotes};
+    public static final SchemaArray schemaArray = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
+		keyCompetition, keyMatchNum, keyTeam, keySlot, keyBroke, keyBalance, keyShooter, 
+		keyTop, keyMid, keyBot, keyNotes, keyAutoBridge, keyAutoShooter, keyMiss, 
+		keyTopAuto, keyMidAuto, keyBotAuto, keyMissAuto});
 
     private static final String logTag = "MatchScoutingProvider";
     private static final String authority = "com.mechinn.android.ouralliance.providers."+logTag;

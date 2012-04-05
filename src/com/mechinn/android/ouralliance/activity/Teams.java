@@ -162,13 +162,17 @@ public class Teams extends Activity {
     	private final int ADDSTATICTEAM = 10;
     	private final int ADDSTATICTABLE = 11;
     	
-    	private final String[] colNames = new String[] { "Team", "Orientation", "Number of Wheels", "Wheel Type 1", "Wheel Diameter 1", "Wheel Type 2", "Wheel Diameter 2", "Dead Wheel Type", "Turret Shooter", "Auto Tracking", "Fender Shooter", "Key Shooter", "Crosses Barrier", "Climb Bridge", "Autonomous", "Average Hoop Points", "Average Matches Balanced", "Average Matches Broke" };
+    	private final String[] colNames = new String[] { "Team", "Rank", "Orientation", "Wheel Type 1", "Wheel Type 2", "Auto Tracking", "Fender Shooter",
+    			"Key Shooter", "Crosses Barrier", "Climb Bridge", "Auto Bridge", "Auto Shooter", "Shooting Rating",
+    			"Balancing Rating", "Avg Auto Points", "Avg Teleop Points", "Avg Matches Balanced", "Avg Matches Broke" };
         
-    	private final String[] from = new String[] {TeamScoutingProvider.keyTeam, TeamScoutingProvider.keyOrientation, TeamScoutingProvider.keyNumWheels, 
-        		TeamScoutingProvider.keyWheel1Type, TeamScoutingProvider.keyWheel1Diameter, 
-    			TeamScoutingProvider.keyWheel2Type, TeamScoutingProvider.keyWheel2Diameter, TeamScoutingProvider.keyDeadWheelType, 
-    			TeamScoutingProvider.keyTurret, TeamScoutingProvider.keyTracking, TeamScoutingProvider.keyFenderShooter, TeamScoutingProvider.keyKeyShooter, 
-    			TeamScoutingProvider.keyBarrier, TeamScoutingProvider.keyClimb, TeamScoutingProvider.keyAutonomous, TeamScoutingProvider.keyAvgHoops, TeamScoutingProvider.keyAvgBalance, TeamScoutingProvider.keyAvgBroke};
+    	private final String[] from = new String[] {TeamScoutingProvider.keyTeam, TeamScoutingProvider.keyRank,
+    			TeamScoutingProvider.keyOrientation, TeamScoutingProvider.keyWheel1Type, TeamScoutingProvider.keyWheel2Type, 
+    			TeamScoutingProvider.keyTracking, TeamScoutingProvider.keyFenderShooter,
+    			TeamScoutingProvider.keyKeyShooter, TeamScoutingProvider.keyBarrier, TeamScoutingProvider.keyClimb,
+    			TeamScoutingProvider.keyAutoBridge, TeamScoutingProvider.keyAutoShooter, TeamScoutingProvider.keyShootingRating,
+    			TeamScoutingProvider.keyBalancingRating, TeamScoutingProvider.keyAvgAuto, TeamScoutingProvider.keyAvgHoops,
+    			TeamScoutingProvider.keyAvgBalance, TeamScoutingProvider.keyAvgBroke};
     	
     	private TextView addText(String s) {
     		TextView v = setupText();
@@ -355,7 +359,7 @@ public class Teams extends Activity {
 			} else {
 				thisTeam = teamInfo.fetchCompetitionTeams(prefs.getCompetition(), from, orderBy, desc);
 			}
-			if(thisTeam!=null && thisTeam.getCount()>0) {
+			if(thisTeam!=null && !thisTeam.isClosed() && thisTeam.getCount()>0) {
 				publishProgress(NEWSIMPLEROW);
 		        for(int i=0;i<colNames.length;++i) {
 		        	if(i==0) {
@@ -379,23 +383,23 @@ public class Teams extends Activity {
 		            	} else {
 		            		publishProgress(NEWTEXT);
 		            		if(colName.equals(TeamScoutingProvider.keyOrientation) || colName.equals(TeamScoutingProvider.keyWheel1Type) || 
-		            				colName.equals(TeamScoutingProvider.keyWheel2Type) || colName.equals(TeamScoutingProvider.keyDeadWheelType) || 
-			            			colName.equals(TeamScoutingProvider.keyNotes)){
+		            				colName.equals(TeamScoutingProvider.keyWheel2Type)){
 			            		publishProgress(SETTEXT,thisTeam.getString(col));
-			            	} else if (colName.equals(TeamScoutingProvider.keyNumWheels)) {
+			            	} else if (colName.equals(TeamScoutingProvider.keyRank)) {
 			            		publishProgress(SETTEXT,Integer.toString(thisTeam.getInt(col)));
-			            	} else if (colName.equals(TeamScoutingProvider.keyTurret) || 
-			            			colName.equals(TeamScoutingProvider.keyTracking) || colName.equals(TeamScoutingProvider.keyFenderShooter) || 
+			            	} else if (colName.equals(TeamScoutingProvider.keyTracking) || colName.equals(TeamScoutingProvider.keyFenderShooter) || 
 			            			colName.equals(TeamScoutingProvider.keyKeyShooter) || colName.equals(TeamScoutingProvider.keyBarrier) || 
-			            			colName.equals(TeamScoutingProvider.keyClimb) || colName.equals(TeamScoutingProvider.keyAutonomous)) {
+			            			colName.equals(TeamScoutingProvider.keyClimb) || colName.equals(TeamScoutingProvider.keyAutoBridge) ||
+			            			colName.equals(TeamScoutingProvider.keyAutoShooter)) {
 			            		switch(thisTeam.getInt(col)) {
 			            			case 0:publishProgress(SETTEXT,"no");break;
 			            			default:publishProgress(SETTEXT,"yes");
 			            		}
 			            	} else if (colName.equals(TeamScoutingProvider.keyAvgHoops) || colName.equals(TeamScoutingProvider.keyAvgBalance) || 
-			            			colName.equals(TeamScoutingProvider.keyAvgBroke) || colName.equals(TeamScoutingProvider.keyWheel1Diameter) || 
-			            			colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
+			            			colName.equals(TeamScoutingProvider.keyAvgBroke) || colName.equals(TeamScoutingProvider.keyAvgAuto)) {
 			            		publishProgress(SETTEXT,Double.toString(thisTeam.getDouble(col)));
+			            	} else if (colName.equals(TeamScoutingProvider.keyShootingRating) || colName.equals(TeamScoutingProvider.keyBalancingRating)) {
+			            		publishProgress(SETTEXT,Float.toString(thisTeam.getFloat(col)));
 			            	} 
 			            	publishProgress(ADDTEXT);
 		            	}

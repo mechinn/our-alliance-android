@@ -106,7 +106,7 @@ public class ResetDB extends ProgressDialog {
 	        	Log.d(logTag,"Adding comp "+comp);
 	    		comps.add(comp);
 	    	}
-	        teamInfo.updateTeam(869, "Long", 8, 1, false, "Traction", 4, "None", 0, "None", false, false, false, false, true, true, "Our robot", false, comps, 0, 0, 0);
+	        teamInfo.updateTeam(869, comps, 0, "Long", 27, 34.5, 8, 1, false, "Traction", 4, "None", 0, "None", false, false, false, false, true, true, false, 0, 0, 0, 0, 0, 0, "Defender");
 	        incrementTotal();
 	        return null;
 		}

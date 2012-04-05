@@ -1,39 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content" >
-	
-	<LinearLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:orientation="vertical" >
-            
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
         <LinearLayout
-	        android:id="@+id/linearLayout4"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content" >
-	
-			<TextView
-	            android:id="@+id/teamLabel"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_gravity="center"
-	            android:paddingLeft="5dip"
-	            android:paddingRight="5dip"
-	            android:text="@string/teamLabel"
-	            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingLeft="5dip"
+                android:paddingRight="5dip"
+                android:text="@string/teamLabel"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/teamNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|left"
+                android:paddingLeft="5dip"
+                android:paddingRight="5dip"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 	        
 	        <TextView
-	            android:id="@+id/teamNumber"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:paddingLeft="5dip"
-	            android:paddingRight="5dip"
-	            android:layout_gravity="center_vertical|left"
-	            android:textAppearance="?android:attr/textAppearanceMedium" />
-	        
-	        <TextView
-	            android:id="@+id/matchSlotLabel"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:paddingLeft="5dip"
@@ -67,8 +64,7 @@
 	    </LinearLayout>
 	
 	    <LinearLayout
-	        android:id="@+id/linearLayout1"
-	        android:layout_width="match_parent"
+	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content" >
 	
 	        <CheckBox
@@ -77,17 +73,26 @@
 	            android:layout_height="wrap_content"
 	            android:text="@string/broke" />
 	        <CheckBox
-			    android:id="@+id/autonomousWorked"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:text="@string/autonomous" />
-	        <CheckBox
 			    android:id="@+id/balanced"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
 			    android:text="@string/balanced" />
 	    </LinearLayout>
-	        
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content" >
+	        <CheckBox
+			    android:id="@+id/autoBridge"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="@string/autoBridge" />
+	        <CheckBox
+			    android:id="@+id/autoShooter"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="@string/autoShooter" />
+	    </LinearLayout>
+	    
         <RadioGroup
 	    	android:id="@+id/MatchScoutingShootingType"
 			android:layout_width="wrap_content"
@@ -112,84 +117,160 @@
 	            android:layout_height="wrap_content"
 	            android:text="@string/shooter" />
 		</RadioGroup>
-	
-	    <TableLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content" >
-	
-	        <TableRow
+        <LinearLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <TextView
 	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content" >
+	            android:layout_height="wrap_content"
+	            android:paddingLeft="5dip"
+	            android:paddingRight="5dip"
+	            android:layout_gravity="center_vertical|left"
+	            android:text="@string/mode"
+	            android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+            <RadioGroup
+		    	android:id="@+id/mode"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal" >
 	
-	            <Button
-	                android:id="@+id/addTopScore"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:text="@string/topScore" />
-	
-	            <EditText
-	                android:id="@+id/topScoreTotal"
-	                android:layout_width="0dip"
-	                android:layout_height="wrap_content"
-	                android:layout_weight="1"
-	                android:inputType="number"
-	                android:text="@string/zero" />
-	        </TableRow>
-	
-	        <TableRow
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content" >
-	
-	            <Button
-	                android:id="@+id/addMidScore"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:text="@string/midScore" />
-	            <EditText
-	                android:id="@+id/midScoreTotal"
-	                android:layout_width="0dip"
-	                android:layout_height="wrap_content"
-	                android:layout_weight="1"
-	                android:inputType="number"
-	                android:text="@string/zero" />
-	
-	        </TableRow>
-	
-	        <TableRow
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content" >
-	
-	            <Button
-	                android:id="@+id/addBotScore"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:text="@string/botScore" />
-	
-	            <EditText
-	                android:id="@+id/botScoreTotal"
-	                android:layout_width="0dip"
-	                android:layout_height="wrap_content"
-	                android:layout_weight="1"
-	                android:inputType="number"
-	                android:text="@string/zero" />
-	        </TableRow>
-	        <TableRow
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content" >
-		        <TextView
-			        android:id="@+id/notesLabel"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:text="@string/notesLabel"
-			        android:textAppearance="?android:attr/textAppearanceLarge" />
-			    
-			    <EditText
-			        android:id="@+id/notes"
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-	                android:layout_weight="1"
-			        android:inputType="textMultiLine" />
-		     </TableRow>
-	    </TableLayout>
+				<RadioButton
+				    android:id="@+id/autonomous"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:text="@string/autonomous"
+				    android:checked="true" />
+		
+		        <RadioButton
+		            android:id="@+id/teleoperated"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/teleoperated" />
+			</RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/subTopScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/subTopScore" />
+            
+            <Button
+                android:id="@+id/addTopScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/addTopScore" />
+
+            <EditText
+                android:id="@+id/topScoreTotal"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:text="@string/zero" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/subMidScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/subMidScore" />
+            
+            <Button
+                android:id="@+id/addMidScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/addMidScore" />
+            
+            <EditText
+                android:id="@+id/midScoreTotal"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:text="@string/zero" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/subBotScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/subBotScore" />
+            
+            <Button
+                android:id="@+id/addBotScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/addBotScore" />
+
+            <EditText
+                android:id="@+id/botScoreTotal"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:text="@string/zero" />
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/subMiss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/subMiss" />
+            
+            <Button
+                android:id="@+id/addMiss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/addMiss" />
+
+            <EditText
+                android:id="@+id/missTotal"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:text="@string/zero" />
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+	        <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/notesLabel"
+		        android:textAppearance="?android:attr/textAppearanceLarge" />
+		    
+		    <EditText
+		        android:id="@+id/notes"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:inputType="textMultiLine" />
+	     </LinearLayout>
     </LinearLayout>
 </ScrollView>

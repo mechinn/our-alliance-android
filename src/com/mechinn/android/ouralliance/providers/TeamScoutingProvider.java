@@ -3,6 +3,7 @@ package com.mechinn.android.ouralliance.providers;
 import java.util.HashMap;
 
 import com.mechinn.android.ouralliance.DatabaseConnection;
+import com.mechinn.android.ouralliance.SchemaArray;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -39,17 +40,28 @@ public class TeamScoutingProvider extends ContentProvider {
     public static final String keyAvgHoops = "avghoops";
     public static final String keyAvgBalance = "avgbalance";
     public static final String keyAvgBroke = "avgbroke";
+    public static final String keyRank = "rank";
+    public static final String keyWidth = "width";
+    public static final String keyHeight = "height";
+    public static final String keyAutoBridge = "autoBridge";
+    public static final String keyAutoShooter = "autoShooter";
+    public static final String keyShootingRating = "shooting";
+    public static final String keyBalancingRating = "balancing";
+    public static final String keyAvgAuto = "avgAuto";
     
     public static final String[] competitions = new String[] {"CT"};
     
-    public static final String[] mostSchema = {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
+    public static final SchemaArray v5schemaArray = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
 		keyTeam, keyOrientation, keyNumWheels, keyWheelTypes, 
 		keyDeadWheel, keyWheel1Type, keyWheel1Diameter, 
-		keyWheel2Type, keyWheel2Diameter, keyDeadWheelType, 
-		keyTurret, keyTracking, keyFenderShooter, keyKeyShooter, 
-		keyBarrier, keyClimb, keyNotes, keyAutonomous, keyAvgHoops, keyAvgBalance, keyAvgBroke};
+		keyWheel2Type, keyWheel2Diameter, keyDeadWheelType, keyTracking, keyFenderShooter, keyKeyShooter, 
+		keyBarrier, keyClimb, keyNotes, keyAvgHoops, keyAvgBalance, keyAvgBroke}, competitions);
     
-    public static String[] schemaArray;
+    public static final SchemaArray schemaArray = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
+    		keyTeam, keyRank, keyOrientation, keyWidth, keyHeight, keyNumWheels, keyWheelTypes, 
+    		keyDeadWheel, keyWheel1Type, keyWheel1Diameter, keyWheel2Type, keyWheel2Diameter, keyDeadWheelType,
+    		keyTracking, keyFenderShooter, keyKeyShooter, keyBarrier, keyClimb, keyNotes, keyAutoBridge,
+    		keyAutoShooter, keyShootingRating, keyBalancingRating, keyAvgAuto, keyAvgHoops, keyAvgBalance, keyAvgBroke}, competitions);
 
     private static final String logTag = "TeamScoutingProvider";
     private static final String authority = "com.mechinn.android.ouralliance.providers."+logTag;
@@ -60,11 +72,7 @@ public class TeamScoutingProvider extends ContentProvider {
     private static HashMap<String, String> teamInfoProjectionMap;
     
     static {
-    	schemaArray = new String[competitions.length+mostSchema.length];
-		System.arraycopy(competitions, 0, schemaArray, 0, competitions.length);
-		System.arraycopy(mostSchema, 0, schemaArray, competitions.length, mostSchema.length);
-    	
-        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    	sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(authority, DBTable, sig);
 
         teamInfoProjectionMap = new HashMap<String, String>();

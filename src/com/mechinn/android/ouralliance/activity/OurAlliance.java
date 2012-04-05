@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.activity;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.mechinn.android.ouralliance.DatabaseConnection;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.ResetDB;
@@ -23,14 +22,13 @@ public class OurAlliance extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        BugSenseHandler.setup(this, "a92dda4a");
         prefs = new Prefs(this);
         
-        //first run setup the DB
-        if(prefs.getDBVersion()==0) {
+        //first run setup the DB else get the latest version # with a writable db so it can update itself if need be
+        if(prefs.getDBVersion()<1) {
         	new ResetDB(OurAlliance.this,true).show();
         } else {
-        	new DatabaseConnection(this).getVersion();
+        	prefs.setDBVersion(new DatabaseConnection(this).getVersion());
         }
         
         final Button scouting = (Button)  findViewById(R.id.scouting);

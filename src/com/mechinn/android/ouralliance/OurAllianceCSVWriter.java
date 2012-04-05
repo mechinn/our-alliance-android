@@ -10,6 +10,7 @@ import java.util.TimeZone;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.os.Environment;
 import android.util.Log;
 
 import com.mechinn.android.ouralliance.data.MatchListInterface;
@@ -44,7 +45,10 @@ public class OurAllianceCSVWriter {
 		activity = act;
         timeFormatter = new SimpleDateFormat("hh:mma");
         timeFormatter.setTimeZone(TimeZone.getDefault());
-		dir = new File(activity.getExternalFilesDir(null).getAbsolutePath()+"/csvExport/");
+        String packageName = activity.getPackageName();
+        File externalPath = Environment.getExternalStorageDirectory();
+        File appFiles = new File(externalPath.getAbsolutePath() +  "/Android/data/" + packageName + "/files");
+		dir = new File(appFiles.getAbsolutePath()+"/csvExport/");
 		if(!dir.exists()) {
 			dir.mkdirs();
         }
@@ -68,7 +72,7 @@ public class OurAllianceCSVWriter {
 		String[] holder;
 		Log.i(logTag,"Finished setting up");
 		Cursor cursor = matchList.fetchAllMatches();
-		if(cursor!=null && cursor.getCount()>0){
+		if(cursor!=null && !cursor.isClosed() && cursor.getCount()>0){
 			Log.i(logTag,"Exporting match list");
 			holder = new String[cursor.getColumnCount()];
 			for(i = 0; i<cursor.getColumnCount();++i) {
@@ -93,7 +97,7 @@ public class OurAllianceCSVWriter {
 			} while(cursor.moveToNext());
 		}
 		cursor = matchScouting.fetchAllMatches();
-		if(cursor!=null && cursor.getCount()>0){
+		if(cursor!=null && !cursor.isClosed() && cursor.getCount()>0){
 			Log.i(logTag,"Exporting match scouting");
 			holder = new String[cursor.getColumnCount()];
 			for(i = 0; i<cursor.getColumnCount();++i) {
@@ -110,8 +114,8 @@ public class OurAllianceCSVWriter {
 	            		holder[i] = Integer.toString(cursor.getInt(i));
 	            	} else if(colName.equals(MatchScoutingProvider.keySlot) || colName.equals(MatchScoutingProvider.keyNotes)) {
 	            		holder[i] = '"'+cursor.getString(i)+'"';
-	            	} else if(colName.equals(MatchScoutingProvider.keyBroke) || colName.equals(MatchScoutingProvider.keyAuto) ||
-	            			colName.equals(MatchScoutingProvider.keyBalance)) {
+	            	} else if(colName.equals(MatchScoutingProvider.keyBroke) || colName.equals(MatchScoutingProvider.keyAutoBridge) ||
+	            			colName.equals(MatchScoutingProvider.keyAutoShooter) || colName.equals(MatchScoutingProvider.keyBalance)) {
 	            		holder[i] = Boolean.toString(cursor.getInt(i)==0?false:true);
 	            	} else if(colName.equals(MatchScoutingProvider.keyShooter)) {
 	            		switch(cursor.getInt(i)) {
@@ -125,19 +129,28 @@ public class OurAllianceCSVWriter {
 	        					holder[i] = "Shooter";
 	        					break;
 	            		}
+	            	} else {
+	            		for(String eachCompetition : TeamScoutingProvider.competitions) {
+	            			if(colName.equals(eachCompetition)) {
+	            				switch(cursor.getInt(i)) {
+			            			case 0:holder[i] = "no";break;
+			            			default:holder[i] = "yes";
+			            		}
+            	        	}
+	                    }
 	            	}
 	            }
 	        	matchScoutingStrings.add(holder);
 			} while(cursor.moveToNext());
 		}
 		cursor = teamScouting.fetchAllTeams();
-		if(cursor!=null && cursor.getCount()>0){
+		if(cursor!=null && !cursor.isClosed() && cursor.getCount()>0){
 			Log.i(logTag,"Exporting team scouting");
 			holder = new String[cursor.getColumnCount()];
 			for(i = 0; i<cursor.getColumnCount();++i) {
 				holder[i] = cursor.getColumnName(i);
 			}
-			matchScoutingStrings.add(holder);
+			teamScoutingStrings.add(holder);
 			do {
         		holder = new String[cursor.getColumnCount()];
 	        	for(i=0;i<cursor.getColumnCount();++i) {
@@ -147,23 +160,35 @@ public class OurAllianceCSVWriter {
 	            			colName.equals(TeamScoutingProvider.keyNotes)){
 	            		holder[i] = '"'+cursor.getString(i)+'"';
 	            	} else if (colName.equals(TeamScoutingProvider.keyNumWheels)|| colName.equals(TeamScoutingProvider.keyTeam) || colName.equals(DatabaseConnection._LASTMOD) ||
-	            			colName.equals(DatabaseConnection._ID)) {
+	            			colName.equals(DatabaseConnection._ID) || colName.equals(TeamScoutingProvider.keyRank) || colName.equals(TeamScoutingProvider.keyWheelTypes)) {
 	            		holder[i] = Integer.toString(cursor.getInt(i));
-	            	} else if (colName.equals(TeamScoutingProvider.keyTurret) || 
-	            			colName.equals(TeamScoutingProvider.keyTracking) || colName.equals(TeamScoutingProvider.keyFenderShooter) || 
+	            	} else if (colName.equals(TeamScoutingProvider.keyTracking) || colName.equals(TeamScoutingProvider.keyFenderShooter) || 
 	            			colName.equals(TeamScoutingProvider.keyKeyShooter) || colName.equals(TeamScoutingProvider.keyBarrier) || 
-	            			colName.equals(TeamScoutingProvider.keyClimb) || colName.equals(TeamScoutingProvider.keyAutonomous)) {
+	            			colName.equals(TeamScoutingProvider.keyClimb) || colName.equals(TeamScoutingProvider.keyAutoBridge) ||
+	            			colName.equals(TeamScoutingProvider.keyAutoShooter) || colName.equals(TeamScoutingProvider.keyDeadWheel)) {
 	            		switch(cursor.getInt(i)) {
 	            			case 0:holder[i] = "no";break;
 	            			default:holder[i] = "yes";
 	            		}
 	            	} else if (colName.equals(TeamScoutingProvider.keyAvgHoops) || colName.equals(TeamScoutingProvider.keyAvgBalance) || 
 	            			colName.equals(TeamScoutingProvider.keyAvgBroke) || colName.equals(TeamScoutingProvider.keyWheel1Diameter) || 
-	            			colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
+	            			colName.equals(TeamScoutingProvider.keyWheel2Diameter) || colName.equals(TeamScoutingProvider.keyAvgAuto) ||
+	            			colName.equals(TeamScoutingProvider.keyWidth) || colName.equals(TeamScoutingProvider.keyHeight)) {
 	            		holder[i] = Double.toString(cursor.getDouble(i));
+	            	} else if (colName.equals(TeamScoutingProvider.keyShootingRating) || colName.equals(TeamScoutingProvider.keyBalancingRating)) {
+	            		holder[i] = Float.toString(cursor.getFloat(i));
+	            	} else {
+	            		for(String eachCompetition : TeamScoutingProvider.competitions) {
+	            			if(colName.equals(eachCompetition)) {
+	            				switch(cursor.getInt(i)) {
+			            			case 0:holder[i] = "no";break;
+			            			default:holder[i] = "yes";
+			            		}
+            	        	}
+	                    }
 	            	}
 	            }
-	        	matchScoutingStrings.add(holder);
+	        	teamScoutingStrings.add(holder);
 			} while(cursor.moveToNext());
 		}
 	}
