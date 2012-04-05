@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MatchTeamInfo extends Fragment {
+	private static final String logTag = "MatchTeamInfo";
 	private Activity activity;
 	private Bundle args;
 	private View view;
@@ -51,7 +53,6 @@ public class MatchTeamInfo extends Fragment {
 	private TeamScoutingInterface teamScouting;
 	private Prefs prefs;
 	private String comp;
-	private static final String logTag = "MatchTeamInfo";
 	private int topAuto;
 	private int midAuto;
 	private int botAuto;
@@ -115,27 +116,42 @@ public class MatchTeamInfo extends Fragment {
     	noShooting = (RadioButton)view.findViewById(R.id.MatchScoutingNoShooting);
     	dunker = (RadioButton)view.findViewById(R.id.MatchScoutingDunker);
     	shooter = (RadioButton)view.findViewById(R.id.MatchScoutingShooter);
-    	mode = (RadioGroup)view.findViewById(R.id.mode);
-    	mode.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-    		public void onCheckedChanged(RadioGroup group, int checkedId) {
-				if(checkedId==0) {
-					topScoreTotal.setText(Integer.toString(topAuto));
-					topScoreTotal.setText(Integer.toString(midAuto));
-					topScoreTotal.setText(Integer.toString(botAuto));
-					topScoreTotal.setText(Integer.toString(missAuto));
-				} else {
-					topScoreTotal.setText(Integer.toString(top));
-					topScoreTotal.setText(Integer.toString(mid));
-					topScoreTotal.setText(Integer.toString(bot));
-					topScoreTotal.setText(Integer.toString(miss));
-				}
-			}
-    	});
-    	autonomous = (RadioButton)view.findViewById(R.id.autonomous);
     	topScoreTotal = (TextView)view.findViewById(R.id.topScoreTotal);
 		midScoreTotal = (TextView)view.findViewById(R.id.midScoreTotal);
 		botScoreTotal = (TextView)view.findViewById(R.id.botScoreTotal);
 		missTotal = (TextView)view.findViewById(R.id.missTotal);
+		
+		autonomous = (RadioButton)view.findViewById(R.id.autonomous);
+    	autonomous.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked) {
+					top = Integer.parseInt(topScoreTotal.getText().toString());
+					mid = Integer.parseInt(midScoreTotal.getText().toString());
+					bot = Integer.parseInt(botScoreTotal.getText().toString());
+					miss = Integer.parseInt(missTotal.getText().toString());
+					topScoreTotal.setText(Integer.toString(topAuto));
+					midScoreTotal.setText(Integer.toString(midAuto));
+					botScoreTotal.setText(Integer.toString(botAuto));
+					missTotal.setText(Integer.toString(missAuto));
+				}
+			}
+    	});
+    	teleoperated = (RadioButton)view.findViewById(R.id.teleoperated);
+    	teleoperated.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked) {
+					topAuto = Integer.parseInt(topScoreTotal.getText().toString());
+					midAuto = Integer.parseInt(midScoreTotal.getText().toString());
+					botAuto = Integer.parseInt(botScoreTotal.getText().toString());
+					missAuto = Integer.parseInt(missTotal.getText().toString());
+					topScoreTotal.setText(Integer.toString(top));
+					midScoreTotal.setText(Integer.toString(mid));
+					botScoreTotal.setText(Integer.toString(bot));
+					missTotal.setText(Integer.toString(miss));
+				}
+			}
+    	});
+		
 		notes = (TextView)view.findViewById(R.id.notes);
     	
     	teamNumber.setText(Integer.toString(team));
@@ -145,7 +161,7 @@ public class MatchTeamInfo extends Fragment {
     	button = (Button)view.findViewById(R.id.subTopScore);
     	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(mode.getCheckedRadioButtonId()==0){
+				if(autonomous.isChecked()){
 					try{
 						topAuto = Integer.parseInt(topScoreTotal.getText().toString())-1;
 						if(topAuto<0) {
@@ -171,7 +187,7 @@ public class MatchTeamInfo extends Fragment {
     	button = (Button)view.findViewById(R.id.addTopScore);
     	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(mode.getCheckedRadioButtonId()==0){
+				if(autonomous.isChecked()){
 					try{
 						topAuto = Integer.parseInt(topScoreTotal.getText().toString())+1;
 						if(topAuto<0) {
@@ -198,7 +214,7 @@ public class MatchTeamInfo extends Fragment {
     	button = (Button)view.findViewById(R.id.subMidScore);
     	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(mode.getCheckedRadioButtonId()==0){
+				if(autonomous.isChecked()){
 					try{
 						midAuto = Integer.parseInt(midScoreTotal.getText().toString())-1;
 						if(midAuto<0) {
@@ -225,7 +241,7 @@ public class MatchTeamInfo extends Fragment {
     	button = (Button)view.findViewById(R.id.addMidScore);
     	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(mode.getCheckedRadioButtonId()==0){
+				if(autonomous.isChecked()){
 					try{
 						midAuto = Integer.parseInt(midScoreTotal.getText().toString())+1;
 						if(midAuto<0) {
@@ -252,7 +268,7 @@ public class MatchTeamInfo extends Fragment {
     	button = (Button)view.findViewById(R.id.subBotScore);
     	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(mode.getCheckedRadioButtonId()==0){
+				if(autonomous.isChecked()){
 					try{
 						botAuto = Integer.parseInt(botScoreTotal.getText().toString())-1;
 						if(botAuto<0) {
@@ -279,7 +295,7 @@ public class MatchTeamInfo extends Fragment {
     	button = (Button)view.findViewById(R.id.addBotScore);
     	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(mode.getCheckedRadioButtonId()==0){
+				if(autonomous.isChecked()){
 					try{
 						botAuto = Integer.parseInt(botScoreTotal.getText().toString())+1;
 						if(botAuto<0) {
@@ -306,7 +322,7 @@ public class MatchTeamInfo extends Fragment {
     	button = (Button)view.findViewById(R.id.subMiss);
     	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(mode.getCheckedRadioButtonId()==0){
+				if(autonomous.isChecked()){
 					try{
 						missAuto = Integer.parseInt(missTotal.getText().toString())-1;
 						if(missAuto<0) {
@@ -333,7 +349,7 @@ public class MatchTeamInfo extends Fragment {
     	button = (Button)view.findViewById(R.id.addMiss);
     	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(mode.getCheckedRadioButtonId()==0){
+				if(autonomous.isChecked()){
 					try{
 						missAuto = Integer.parseInt(missTotal.getText().toString())+1;
 						if(missAuto<0) {
@@ -361,6 +377,17 @@ public class MatchTeamInfo extends Fragment {
     	button.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				int type = shootingType.indexOfChild(view.findViewById(shootingType.getCheckedRadioButtonId()));
+				if(autonomous.isChecked()) {
+					topAuto = Integer.parseInt(topScoreTotal.getText().toString());
+					midAuto = Integer.parseInt(midScoreTotal.getText().toString());
+					botAuto = Integer.parseInt(botScoreTotal.getText().toString());
+					missAuto = Integer.parseInt(missTotal.getText().toString());
+				} else {
+					top = Integer.parseInt(topScoreTotal.getText().toString());
+					mid = Integer.parseInt(midScoreTotal.getText().toString());
+					bot = Integer.parseInt(botScoreTotal.getText().toString());
+					miss = Integer.parseInt(missTotal.getText().toString());
+				}
 				matchScouting.updateMatch(comp, matchNum, team, matchSlot.getText().toString(),
 						broke.isChecked(), autoBridge.isChecked(), autoShooter.isChecked(), balanced.isChecked(), 
 						type, top, mid, bot, miss, topAuto, midAuto, botAuto, missAuto, notes.getText().toString());
@@ -444,10 +471,10 @@ public class MatchTeamInfo extends Fragment {
 			midAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMidAuto));
 			botAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBotAuto));
 			missAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMissAuto));
-			topScoreTotal.setText(Integer.toString(top));
-			midScoreTotal.setText(Integer.toString(mid));
-			botScoreTotal.setText(Integer.toString(bot));
-			missTotal.setText(Integer.toString(miss));
+			topScoreTotal.setText(Integer.toString(topAuto));
+			midScoreTotal.setText(Integer.toString(midAuto));
+			botScoreTotal.setText(Integer.toString(botAuto));
+			missTotal.setText(Integer.toString(missAuto));
 			notes.setText(match.getString(match.getColumnIndex(MatchScoutingProvider.keyNotes)));
 		} else {
 			Toast.makeText(activity, "Something went wrong loading data", Toast.LENGTH_SHORT).show();

@@ -21,6 +21,7 @@ public class ChangeLog extends Activity {
         changelog.setText(Html.fromHtml(
 				"<h1>ChangeLog:</h1>" +
 	    		"<p>" +
+	    			"0.4.1 - major bug fixed in match scouting scoring.<br />" +
 	        		"0.4 - Added scouting ranking, frame dimensions, drive train types, autonomous types, shooting rating, and balancing rating to team scouting. Added autonomous scoring, and shooting misses to match scouting. Also hopefully fixed a few bugs here and there.<br />"+
 					"0.3.1 - Fixed minor bugs in team info UI and export CSV.<br />"+
 					"0.3 - Fixed major bug in match scouting and added exporting CSVs to an FTP server<br />"+
