@@ -10,7 +10,7 @@ import android.database.SQLException;
 import android.net.Uri;
 
 public class MatchScoutingInterface {
-	private final String logTag = "MatchScoutingInterface";
+	private final String TAG = "MatchScoutingInterface";
 	private Activity activity;
 	
 	public MatchScoutingInterface(Activity act) {
@@ -18,7 +18,7 @@ public class MatchScoutingInterface {
 	}
 	
 	public int deleteMatch(String comp, int matchNum) {
-		return activity.getContentResolver().delete(MatchScoutingProvider.mUri, MatchScoutingProvider.keyCompetition+" = '"+comp+"' AND "+MatchScoutingProvider.keyMatchNum+" = "+matchNum, null);
+		return activity.getContentResolver().delete(MatchScoutingProvider.URI, MatchScoutingProvider.KEY_COMPETITION+" = '"+comp+"' AND "+MatchScoutingProvider.KEY_MATCH_NUM+" = "+matchNum, null);
 	}
 
     public Uri createMatch(String competition, int matchNum, int team, String slot, boolean broke, boolean autoBridge, boolean autoShooter, boolean balanced, 
@@ -27,13 +27,13 @@ public class MatchScoutingInterface {
         ContentValues initialValues = putVals(true, -1, competition, matchNum, team, slot, broke, 
 				autoBridge, autoShooter, balanced, shooterType, top, mid, bot, miss, topAuto, midAuto, botAuto, missAuto, notes);
         
-        return activity.getContentResolver().insert(MatchScoutingProvider.mUri, initialValues);
+        return activity.getContentResolver().insert(MatchScoutingProvider.URI, initialValues);
     }
 
     public Cursor fetchAllMatches() {
     	
-    	Cursor mCursor = activity.managedQuery(MatchScoutingProvider.mUri, MatchScoutingProvider.schemaArray.toArray(),
-        		null, null, MatchScoutingProvider.keyTeam);
+    	Cursor mCursor = activity.managedQuery(MatchScoutingProvider.URI, MatchScoutingProvider.SCHEMA_ARRAY.toArray(),
+        		null, null, MatchScoutingProvider.KEY_TEAM);
     	if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -42,8 +42,8 @@ public class MatchScoutingInterface {
 
     public Cursor fetchMatch(String competition, int matchNum, int team) throws SQLException {
 
-    	Cursor mCursor = activity.managedQuery(MatchScoutingProvider.mUri, MatchScoutingProvider.schemaArray.toArray(),
-    			MatchScoutingProvider.keyCompetition + " = '" + competition + "' AND " + MatchScoutingProvider.keyMatchNum + " = " + matchNum + " AND " + MatchScoutingProvider.keyTeam + " = " + team, null, MatchScoutingProvider.keyTeam);
+    	Cursor mCursor = activity.managedQuery(MatchScoutingProvider.URI, MatchScoutingProvider.SCHEMA_ARRAY.toArray(),
+    			MatchScoutingProvider.KEY_COMPETITION + " = '" + competition + "' AND " + MatchScoutingProvider.KEY_MATCH_NUM + " = " + matchNum + " AND " + MatchScoutingProvider.KEY_TEAM + " = " + team, null, MatchScoutingProvider.KEY_TEAM);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -53,8 +53,8 @@ public class MatchScoutingInterface {
     
     public Cursor fetchTeam(int team) throws SQLException {
 
-    	Cursor mCursor = activity.managedQuery(MatchScoutingProvider.mUri, MatchScoutingProvider.schemaArray.toArray(),
-    			MatchScoutingProvider.keyTeam + " = " + team, null, MatchScoutingProvider.keyTeam);
+    	Cursor mCursor = activity.managedQuery(MatchScoutingProvider.URI, MatchScoutingProvider.SCHEMA_ARRAY.toArray(),
+    			MatchScoutingProvider.KEY_TEAM + " = " + team, null, MatchScoutingProvider.KEY_TEAM);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -67,8 +67,8 @@ public class MatchScoutingInterface {
     	ContentValues args = putVals(false, -1, competition, matchNum, team, slot, broke, autoBridge, autoShooter, balanced,
     			shooterType, top, mid, bot, miss, topAuto, midAuto, botAuto, missAuto, notes);
         
-        return activity.getContentResolver().update(MatchScoutingProvider.mUri, 
-        		args,MatchScoutingProvider.keyCompetition + " = '" + competition + "' AND " + MatchScoutingProvider.keyMatchNum + " = " + matchNum + " AND " + MatchScoutingProvider.keyTeam + " = " + team,
+        return activity.getContentResolver().update(MatchScoutingProvider.URI, 
+        		args,MatchScoutingProvider.KEY_COMPETITION + " = '" + competition + "' AND " + MatchScoutingProvider.KEY_MATCH_NUM + " = " + matchNum + " AND " + MatchScoutingProvider.KEY_TEAM + " = " + team,
         		null);
     }
 
@@ -95,8 +95,8 @@ public class MatchScoutingInterface {
 				missAuto,
 				notes);
         
-        return activity.getContentResolver().update(MatchScoutingProvider.mUri,
-        		args,MatchScoutingProvider.keyCompetition + " = " + competition + " AND " + MatchScoutingProvider.keyMatchNum + " = " + matchNum + " AND " + MatchScoutingProvider.keyTeam + " = " + team,
+        return activity.getContentResolver().update(MatchScoutingProvider.URI,
+        		args,MatchScoutingProvider.KEY_COMPETITION + " = " + competition + " AND " + MatchScoutingProvider.KEY_MATCH_NUM + " = " + matchNum + " AND " + MatchScoutingProvider.KEY_TEAM + " = " + team,
         		null);
     }
     
@@ -105,10 +105,10 @@ public class MatchScoutingInterface {
     	ContentValues cv = new ContentValues();
     	if(lastMod<0) {
 	    	if(create) {
-	    		cv.put(MatchScoutingProvider.keyCompetition, competition);
-	    		cv.put(MatchScoutingProvider.keyMatchNum, matchNum);
-	    		cv.put(MatchScoutingProvider.keyTeam, team);
-	    		cv.put(MatchScoutingProvider.keySlot, slot);
+	    		cv.put(MatchScoutingProvider.KEY_COMPETITION, competition);
+	    		cv.put(MatchScoutingProvider.KEY_MATCH_NUM, matchNum);
+	    		cv.put(MatchScoutingProvider.KEY_TEAM, team);
+	    		cv.put(MatchScoutingProvider.KEY_SLOT, slot);
 	    		cv.put(DatabaseConnection._LASTMOD, 0);
 	    	} else {
 	    		cv.put(DatabaseConnection._LASTMOD, System.currentTimeMillis());
@@ -116,20 +116,20 @@ public class MatchScoutingInterface {
     	} else {
     		cv.put(DatabaseConnection._LASTMOD, lastMod);
     	}
-    	cv.put(MatchScoutingProvider.keyBroke, broke);
-    	cv.put(MatchScoutingProvider.keyAutoBridge, autoBridge);
-    	cv.put(MatchScoutingProvider.keyAutoShooter, autoShooter);
-    	cv.put(MatchScoutingProvider.keyBalance, balanced);
-    	cv.put(MatchScoutingProvider.keyShooter, shooterType);
-    	cv.put(MatchScoutingProvider.keyTop, top);
-    	cv.put(MatchScoutingProvider.keyMid, mid);
-    	cv.put(MatchScoutingProvider.keyBot, bot);
-    	cv.put(MatchScoutingProvider.keyMiss, miss);
-    	cv.put(MatchScoutingProvider.keyTopAuto, topAuto);
-    	cv.put(MatchScoutingProvider.keyMidAuto, midAuto);
-    	cv.put(MatchScoutingProvider.keyBotAuto, botAuto);
-    	cv.put(MatchScoutingProvider.keyMissAuto, missAuto);
-        cv.put(MatchScoutingProvider.keyNotes, notes);
+    	cv.put(MatchScoutingProvider.KEY_BROKE, broke);
+    	cv.put(MatchScoutingProvider.KEY_AUTO_BRIDGE, autoBridge);
+    	cv.put(MatchScoutingProvider.KEY_AUTO_SHOOTER, autoShooter);
+    	cv.put(MatchScoutingProvider.KEY_BALANCE, balanced);
+    	cv.put(MatchScoutingProvider.KEY_SHOOTER, shooterType);
+    	cv.put(MatchScoutingProvider.KEY_TOP, top);
+    	cv.put(MatchScoutingProvider.KEY_MID, mid);
+    	cv.put(MatchScoutingProvider.KEY_BOT, bot);
+    	cv.put(MatchScoutingProvider.KEY_MISS, miss);
+    	cv.put(MatchScoutingProvider.KEY_TOP_AUTO, topAuto);
+    	cv.put(MatchScoutingProvider.KEY_MID_AUTO, midAuto);
+    	cv.put(MatchScoutingProvider.KEY_BOT_AUTO, botAuto);
+    	cv.put(MatchScoutingProvider.KEY_MISS_AUTO, missAuto);
+        cv.put(MatchScoutingProvider.KEY_NOTES, notes);
         return cv;
     }
 }

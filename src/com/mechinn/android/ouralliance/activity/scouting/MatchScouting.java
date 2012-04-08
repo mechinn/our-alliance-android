@@ -30,9 +30,9 @@ public class MatchScouting extends FragmentActivity {
         matchList = new MatchListInterface(this);
     	Cursor firstNlast = matchList.fetchMatches(comp);
     	firstNlast.moveToFirst();
-    	firstMatchNum = firstNlast.getInt(firstNlast.getColumnIndex(MatchListProvider.keyMatchNum));
+    	firstMatchNum = firstNlast.getInt(firstNlast.getColumnIndex(MatchListProvider.KEY_MATCH_NUM));
     	firstNlast.moveToLast();
-    	lastMatchNum = firstNlast.getInt(firstNlast.getColumnIndex(MatchListProvider.keyMatchNum));
+    	lastMatchNum = firstNlast.getInt(firstNlast.getColumnIndex(MatchListProvider.KEY_MATCH_NUM));
         setContentView(R.layout.fullscouting);
     }
 

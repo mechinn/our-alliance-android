@@ -31,7 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Teams extends Activity {
-	private final String logTag = "Teams";
+	private final String TAG = "Teams";
 	private final int ADDTEAM = 0;
 	private TeamScoutingInterface teamInfo;
 	private TableLayout staticTable;
@@ -111,7 +111,7 @@ public class Teams extends Activity {
         selectedTeam = 0;
         startTrack = true;
         prefs = new Prefs(this);
-        orderBy = TeamScoutingProvider.keyTeam;
+        orderBy = TeamScoutingProvider.KEY_TEAM;
         desc = false;
         vScroll = (ScrollView) findViewById(R.id.vScroll);
         hScrollHeader = (HorizontalScrollView) findViewById(R.id.hScrollHeader);
@@ -166,13 +166,13 @@ public class Teams extends Activity {
     			"Key Shooter", "Crosses Barrier", "Climb Bridge", "Auto Bridge", "Auto Shooter", "Shooting Rating",
     			"Balancing Rating", "Avg Auto Points", "Avg Teleop Points", "Avg Matches Balanced", "Avg Matches Broke" };
         
-    	private final String[] from = new String[] {TeamScoutingProvider.keyTeam, TeamScoutingProvider.keyRank,
-    			TeamScoutingProvider.keyOrientation, TeamScoutingProvider.keyWheel1Type, TeamScoutingProvider.keyWheel2Type, 
-    			TeamScoutingProvider.keyTracking, TeamScoutingProvider.keyFenderShooter,
-    			TeamScoutingProvider.keyKeyShooter, TeamScoutingProvider.keyBarrier, TeamScoutingProvider.keyClimb,
-    			TeamScoutingProvider.keyAutoBridge, TeamScoutingProvider.keyAutoShooter, TeamScoutingProvider.keyShootingRating,
-    			TeamScoutingProvider.keyBalancingRating, TeamScoutingProvider.keyAvgAuto, TeamScoutingProvider.keyAvgHoops,
-    			TeamScoutingProvider.keyAvgBalance, TeamScoutingProvider.keyAvgBroke};
+    	private final String[] from = new String[] {TeamScoutingProvider.KEY_TEAM, TeamScoutingProvider.KEY_RANK,
+    			TeamScoutingProvider.KEY_ORIENTATION, TeamScoutingProvider.KEY_WHEEL1_TYPE, TeamScoutingProvider.KEY_WHEEL2_TYPE, 
+    			TeamScoutingProvider.KEY_TRACKING, TeamScoutingProvider.KEY_FENDER_SHOOTER,
+    			TeamScoutingProvider.KEY_KEY_SHOOTER, TeamScoutingProvider.KEY_BARRIER, TeamScoutingProvider.KEY_CLIMB,
+    			TeamScoutingProvider.KEY_AUTO_BRIDGE, TeamScoutingProvider.KEY_AUTO_SHOOTER, TeamScoutingProvider.KEY_SHOOTING_RATING,
+    			TeamScoutingProvider.KEY_BALANCING_RATING, TeamScoutingProvider.KEY_AVG_AUTO, TeamScoutingProvider.KEY_AVG_HOOPS,
+    			TeamScoutingProvider.KEY_AVG_BALANCE, TeamScoutingProvider.KEY_AVG_BROKE};
     	
     	private TextView addText(String s) {
     		TextView v = setupText();
@@ -316,7 +316,7 @@ public class Teams extends Activity {
     				text = setupText();
     				break;
     			case ROWONCLICK:
-    				Log.d(logTag, "Adding team "+(Integer)data[1]);
+    				Log.d(TAG, "Adding team "+(Integer)data[1]);
     				staticTeamRow.setTag((Integer)data[1]);
     				row.setTag((Integer)data[1]);
     				final String teamString = Integer.toString((Integer)data[1]);
@@ -378,27 +378,27 @@ public class Teams extends Activity {
 		            	int col = thisTeam.getColumnIndex(colName);
 //		            	Log.d("table fill", Integer.toString(col));
 //		            	Log.d("table colname", colName);
-		            	if(colName.equals(TeamScoutingProvider.keyTeam)) {
+		            	if(colName.equals(TeamScoutingProvider.KEY_TEAM)) {
 		            		publishProgress(ROWONCLICK,thisTeam.getInt(col));
 		            	} else {
 		            		publishProgress(NEWTEXT);
-		            		if(colName.equals(TeamScoutingProvider.keyOrientation) || colName.equals(TeamScoutingProvider.keyWheel1Type) || 
-		            				colName.equals(TeamScoutingProvider.keyWheel2Type)){
+		            		if(colName.equals(TeamScoutingProvider.KEY_ORIENTATION) || colName.equals(TeamScoutingProvider.KEY_WHEEL1_TYPE) || 
+		            				colName.equals(TeamScoutingProvider.KEY_WHEEL2_TYPE)){
 			            		publishProgress(SETTEXT,thisTeam.getString(col));
-			            	} else if (colName.equals(TeamScoutingProvider.keyRank)) {
+			            	} else if (colName.equals(TeamScoutingProvider.KEY_RANK)) {
 			            		publishProgress(SETTEXT,Integer.toString(thisTeam.getInt(col)));
-			            	} else if (colName.equals(TeamScoutingProvider.keyTracking) || colName.equals(TeamScoutingProvider.keyFenderShooter) || 
-			            			colName.equals(TeamScoutingProvider.keyKeyShooter) || colName.equals(TeamScoutingProvider.keyBarrier) || 
-			            			colName.equals(TeamScoutingProvider.keyClimb) || colName.equals(TeamScoutingProvider.keyAutoBridge) ||
-			            			colName.equals(TeamScoutingProvider.keyAutoShooter)) {
+			            	} else if (colName.equals(TeamScoutingProvider.KEY_TRACKING) || colName.equals(TeamScoutingProvider.KEY_FENDER_SHOOTER) || 
+			            			colName.equals(TeamScoutingProvider.KEY_KEY_SHOOTER) || colName.equals(TeamScoutingProvider.KEY_BARRIER) || 
+			            			colName.equals(TeamScoutingProvider.KEY_CLIMB) || colName.equals(TeamScoutingProvider.KEY_AUTO_BRIDGE) ||
+			            			colName.equals(TeamScoutingProvider.KEY_AUTO_SHOOTER)) {
 			            		switch(thisTeam.getInt(col)) {
 			            			case 0:publishProgress(SETTEXT,"no");break;
 			            			default:publishProgress(SETTEXT,"yes");
 			            		}
-			            	} else if (colName.equals(TeamScoutingProvider.keyAvgHoops) || colName.equals(TeamScoutingProvider.keyAvgBalance) || 
-			            			colName.equals(TeamScoutingProvider.keyAvgBroke) || colName.equals(TeamScoutingProvider.keyAvgAuto)) {
+			            	} else if (colName.equals(TeamScoutingProvider.KEY_AVG_HOOPS) || colName.equals(TeamScoutingProvider.KEY_AVG_BALANCE) || 
+			            			colName.equals(TeamScoutingProvider.KEY_AVG_BROKE) || colName.equals(TeamScoutingProvider.KEY_AVG_AUTO)) {
 			            		publishProgress(SETTEXT,Double.toString(thisTeam.getDouble(col)));
-			            	} else if (colName.equals(TeamScoutingProvider.keyShootingRating) || colName.equals(TeamScoutingProvider.keyBalancingRating)) {
+			            	} else if (colName.equals(TeamScoutingProvider.KEY_SHOOTING_RATING) || colName.equals(TeamScoutingProvider.KEY_BALANCING_RATING)) {
 			            		publishProgress(SETTEXT,Float.toString(thisTeam.getFloat(col)));
 			            	} 
 			            	publishProgress(ADDTEXT);

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
+    android:contentAuthority="com.mechinn.android.ouralliance.providers.TeamRankingsProvider"
+    android:accountType="com.mechinn.android.ouralliance.account"
+    android:supportsUploading="true"
+    android:userVisible="true"
+/>

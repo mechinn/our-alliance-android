@@ -16,7 +16,7 @@ import android.app.Activity;
 import android.util.Log;
 
 public class FTPConnection {
-	private final String logTag = "FTPConnection";
+	private final String TAG = "FTPConnection";
 	private Activity activity;
 	private Prefs prefs;
 	private FTPClient ftp;
@@ -63,7 +63,7 @@ public class FTPConnection {
 	    	ftp.disconnect();
 	        return true;
 	    } catch (Exception e) {
-	        Log.d(logTag, "Error occurred while disconnecting from ftp server.");
+	        Log.d(TAG, "Error occurred while disconnecting from ftp server.");
 	    }
 
 	    return false;
@@ -74,7 +74,7 @@ public class FTPConnection {
 	        String workingDir = ftp.printWorkingDirectory();
 	        return workingDir;
 	    } catch(Exception e) {
-	        Log.d(logTag, "Error: could not get current working directory.");
+	        Log.d(TAG, "Error: could not get current working directory.");
 	    }
 
 	    return null;
@@ -84,7 +84,7 @@ public class FTPConnection {
 	    try {
 	        return ftp.changeWorkingDirectory(directory_path);
 	    } catch(Exception e) {
-	        Log.d(logTag, "Error: could not change directory to " + directory_path);
+	        Log.d(TAG, "Error: could not change directory to " + directory_path);
 	    }
 
 	    return false;
@@ -100,10 +100,10 @@ public class FTPConnection {
 	            boolean isFile = ftpFiles[i].isFile();
 
 	            if (isFile) {
-	                Log.i(logTag, "File : " + name);
+	                Log.i(TAG, "File : " + name);
 	            }
 	            else {
-	                Log.i(logTag, "Directory : " + name);
+	                Log.i(TAG, "Directory : " + name);
 	            }
 	        }
 	    } catch(Exception e) {
@@ -116,7 +116,7 @@ public class FTPConnection {
 	        boolean status = ftp.makeDirectory(new_dir_path);
 	        return status;
 	    } catch(Exception e) {
-	        Log.d(logTag, "Error: could not create new directory named " + new_dir_path);
+	        Log.d(TAG, "Error: could not create new directory named " + new_dir_path);
 	    }
 
 	 return false;
@@ -127,7 +127,7 @@ public class FTPConnection {
 	        boolean status = ftp.removeDirectory(dir_path);
 	        return status;
 	    } catch(Exception e) {
-	        Log.d(logTag, "Error: could not remove directory named " + dir_path);
+	        Log.d(TAG, "Error: could not remove directory named " + dir_path);
 	    }
 
 	    return false;
@@ -149,7 +149,7 @@ public class FTPConnection {
 	        boolean status = ftp.rename(from, to);
 	        return status;
 	    } catch (Exception e) {
-	        Log.d(logTag, "Could not rename file: " + from + " to: " + to);
+	        Log.d(TAG, "Could not rename file: " + from + " to: " + to);
 	    }
 
 	    return false;
@@ -169,7 +169,7 @@ public class FTPConnection {
 
 	        return status;
 	    } catch (Exception e) {
-	        Log.d(logTag, "download failed");
+	        Log.d(TAG, "download failed");
 	    }
 
 	    return status;
@@ -194,7 +194,7 @@ public class FTPConnection {
 	        srcFileStream.close();
 	        return status;
 	    } catch (Exception e) {
-	        Log.d(logTag, "upload failed");
+	        Log.d(TAG, "upload failed");
 	    }
 
 	    return status;

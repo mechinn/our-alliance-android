@@ -10,7 +10,7 @@ import android.database.SQLException;
 import android.net.Uri;
 
 public class MatchListInterface {
-	private final String logTag = "MatchListInterface";
+	private final String TAG = "MatchListInterface";
 	private Activity activity;
 	
 	public MatchListInterface(Activity act) {
@@ -37,7 +37,7 @@ public class MatchListInterface {
     }
 	
 	public int delete(String comp, int matchNum) {
-		return activity.getContentResolver().delete(MatchListProvider.mUri, MatchListProvider.keyCompetition+" = '"+comp+"' AND "+MatchListProvider.keyMatchNum+" = "+matchNum, null);
+		return activity.getContentResolver().delete(MatchListProvider.URI, MatchListProvider.KEY_COMPETITON+" = '"+comp+"' AND "+MatchListProvider.KEY_MATCH_NUM+" = "+matchNum, null);
 	}
 
     public Uri createMatch(String competition, int matchNum, long time, 
@@ -46,11 +46,11 @@ public class MatchListInterface {
         ContentValues initialValues = putVals(true, -1, competition, matchNum, 
     			time, red1, red2, red3, blue1, blue2, blue3);
         
-        return activity.getContentResolver().insert(MatchListProvider.mUri, initialValues);
+        return activity.getContentResolver().insert(MatchListProvider.URI, initialValues);
     }
 
     public Cursor fetchAllMatches() {
-    	Cursor mCursor = activity.managedQuery(MatchListProvider.mUri, MatchListProvider.schemaArray.toArray(), null, null, MatchListProvider.keyMatchNum);
+    	Cursor mCursor = activity.managedQuery(MatchListProvider.URI, MatchListProvider.SCHEMA_ARRAY.toArray(), null, null, MatchListProvider.KEY_MATCH_NUM);
     	if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -58,8 +58,8 @@ public class MatchListInterface {
     }
     
     public Cursor fetchMatches(String competition) {
-    	Cursor mCursor = activity.managedQuery(MatchListProvider.mUri, MatchListProvider.schemaArray.toArray(),
-    			MatchListProvider.keyCompetition + " = '" + competition + "'", null, MatchListProvider.keyMatchNum);
+    	Cursor mCursor = activity.managedQuery(MatchListProvider.URI, MatchListProvider.SCHEMA_ARRAY.toArray(),
+    			MatchListProvider.KEY_COMPETITON + " = '" + competition + "'", null, MatchListProvider.KEY_MATCH_NUM);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -68,8 +68,8 @@ public class MatchListInterface {
 
     public Cursor fetchMatch(String competition, int matchNum) throws SQLException {
 
-    	Cursor mCursor = activity.managedQuery(MatchListProvider.mUri, MatchListProvider.schemaArray.toArray(),
-    			MatchListProvider.keyCompetition + " = '" + competition + "' AND " + MatchListProvider.keyMatchNum + " = " + matchNum, null, MatchListProvider.keyMatchNum);
+    	Cursor mCursor = activity.managedQuery(MatchListProvider.URI, MatchListProvider.SCHEMA_ARRAY.toArray(),
+    			MatchListProvider.KEY_COMPETITON + " = '" + competition + "' AND " + MatchListProvider.KEY_MATCH_NUM + " = " + matchNum, null, MatchListProvider.KEY_MATCH_NUM);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -82,7 +82,7 @@ public class MatchListInterface {
     	ContentValues args = putVals(false, lastMod, competition, matchNum, 
     			time, red1, red2, red3, blue1, blue2, blue3);
         
-        return activity.getContentResolver().update(MatchListProvider.mUri, args,MatchListProvider.keyCompetition + " = '" + competition + "' AND " + MatchListProvider.keyMatchNum + " = " + matchNum,null) > 0;
+        return activity.getContentResolver().update(MatchListProvider.URI, args,MatchListProvider.KEY_COMPETITON + " = '" + competition + "' AND " + MatchListProvider.KEY_MATCH_NUM + " = " + matchNum,null) > 0;
     }
     
     private ContentValues putVals(boolean create, int lastMod, String competition, int matchNum, long time, 
@@ -90,8 +90,8 @@ public class MatchListInterface {
     	ContentValues cv = new ContentValues();
     	if(lastMod<0) {
 	    	if(create) {
-	        	cv.put(MatchListProvider.keyCompetition, competition);
-	        	cv.put(MatchListProvider.keyMatchNum, matchNum);
+	        	cv.put(MatchListProvider.KEY_COMPETITON, competition);
+	        	cv.put(MatchListProvider.KEY_MATCH_NUM, matchNum);
 	    		cv.put(DatabaseConnection._LASTMOD, 0);
 	    	} else {
 	    		cv.put(DatabaseConnection._LASTMOD, System.currentTimeMillis());
@@ -99,13 +99,13 @@ public class MatchListInterface {
     	} else {
     		cv.put(DatabaseConnection._LASTMOD, lastMod);
     	}
-    	cv.put(MatchListProvider.keyTime, time);
-    	cv.put(MatchListProvider.keyRed1, red1);
-    	cv.put(MatchListProvider.keyRed2, red2);
-    	cv.put(MatchListProvider.keyRed3, red3);
-    	cv.put(MatchListProvider.keyBlue1, blue1);
-    	cv.put(MatchListProvider.keyBlue2, blue2);
-        cv.put(MatchListProvider.keyBlue3, blue3);
+    	cv.put(MatchListProvider.KEY_TIME, time);
+    	cv.put(MatchListProvider.KEY_RED1, red1);
+    	cv.put(MatchListProvider.KEY_RED2, red2);
+    	cv.put(MatchListProvider.KEY_RED3, red3);
+    	cv.put(MatchListProvider.KEY_BLUE1, blue1);
+    	cv.put(MatchListProvider.KEY_BLUE2, blue2);
+        cv.put(MatchListProvider.KEY_BLUE3, blue3);
         return cv;
     }
 }

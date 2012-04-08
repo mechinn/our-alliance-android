@@ -48,7 +48,7 @@ import android.widget.Toast;
 
 public class Info extends Activity {
     private static final int CAMERA_PIC_REQUEST = 869;
-    private final String logTag = "Info";
+    private final String TAG = "Info";
 
 	private AlertDialog takePicAlert;
 	private AlertDialog delPicAlert;
@@ -234,15 +234,15 @@ public class Info extends Activity {
         competitionsSelected = new HashSet<String>();
         pickCompetitionsDialogBuilder = new AlertDialog.Builder(this);
         pickCompetitionsDialogBuilder.setTitle("Pick competitions this team is at.");
-        pickCompetitionsDialogBuilder.setMultiChoiceItems(TeamScoutingProvider.competitions, compsSelected, new OnMultiChoiceClickListener() {
+        pickCompetitionsDialogBuilder.setMultiChoiceItems(TeamScoutingProvider.COMPETITIONS, compsSelected, new OnMultiChoiceClickListener() {
         	public void onClick(DialogInterface dialog, int which, boolean isChecked) {
         		if(isChecked) {
-        			if(!competitionsSelected.contains(TeamScoutingProvider.competitions[which])) {
-            			competitionsSelected.add(TeamScoutingProvider.competitions[which]);
+        			if(!competitionsSelected.contains(TeamScoutingProvider.COMPETITIONS[which])) {
+            			competitionsSelected.add(TeamScoutingProvider.COMPETITIONS[which]);
             		}
         		} else {
-        			if(competitionsSelected.contains(TeamScoutingProvider.competitions[which])) {
-        				competitionsSelected.remove(TeamScoutingProvider.competitions[which]);
+        			if(competitionsSelected.contains(TeamScoutingProvider.COMPETITIONS[which])) {
+        				competitionsSelected.remove(TeamScoutingProvider.COMPETITIONS[which]);
             		}
         		}
 			}
@@ -612,89 +612,89 @@ public class Info extends Activity {
 		        for(int i=0;i<thisTeam.getColumnCount();++i) {
 		        	String colName = thisTeam.getColumnName(i);
 		        	Log.d("column",colName);
-		        	if (colName.equals(TeamScoutingProvider.keyRank)) {
+		        	if (colName.equals(TeamScoutingProvider.KEY_RANK)) {
 		        		rank = thisTeam.getInt(i);
-		        	} else if(colName.equals(TeamScoutingProvider.keyOrientation)){
+		        	} else if(colName.equals(TeamScoutingProvider.KEY_ORIENTATION)){
 		        		orientation = thisTeam.getString(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyWidth)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_WIDTH)) {
 		        		width = thisTeam.getDouble(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyHeight)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_HEIGHT)) {
 		        		height = thisTeam.getDouble(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyNumWheels)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_NUM_WHEELS)) {
 		        		numWheels = thisTeam.getInt(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyWheelTypes)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_WHEEL_TYPES)) {
 		        		wheelTypes = thisTeam.getInt(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyDeadWheel)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_DEAD_WHEEL)) {
 		        		if(thisTeam.getInt(i)==0) {
 		            		deadWheel = false;
 		            	} else {
 		            		deadWheel = true;
 		            	}
-		        	} else if (colName.equals(TeamScoutingProvider.keyWheel1Type)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_WHEEL1_TYPE)) {
 		        		wheel1Type = thisTeam.getString(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyWheel1Diameter)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_WHEEL1_DIAMETER)) {
 		        		wheel1Diameter = thisTeam.getInt(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyWheel2Type)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_WHEEL2_TYPE)) {
 		        		wheel2Type = thisTeam.getString(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyWheel2Diameter)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_WHEEL2_DIAMETER)) {
 		        		wheel2Diameter = thisTeam.getInt(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyDeadWheelType)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_DEAD_WHEEL_TYPE)) {
 		        		deadWheelType = thisTeam.getString(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyTracking)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_TRACKING)) {
 		        		if(thisTeam.getInt(i)==0) {
 		            		tracking = false;
 		            	} else {
 		            		tracking = true;
 		            	}
-		        	} else if (colName.equals(TeamScoutingProvider.keyFenderShooter)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_FENDER_SHOOTER)) {
 		        		if(thisTeam.getInt(i)==0) {
 		            		fender = false;
 		            	} else {
 		            		fender = true;
 		            	}
-		        	} else if (colName.equals(TeamScoutingProvider.keyKeyShooter)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_KEY_SHOOTER)) {
 		        		if(thisTeam.getInt(i)==0) {
 		            		key = false;
 		            	} else {
 		            		key = true;
 		            	}
-		        	} else if (colName.equals(TeamScoutingProvider.keyBarrier)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_BARRIER)) {
 		        		if(thisTeam.getInt(i)==0) {
 		            		barrier = false;
 		            	} else {
 		            		barrier = true;
 		            	}
-		        	} else if (colName.equals(TeamScoutingProvider.keyClimb)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_CLIMB)) {
 		        		if(thisTeam.getInt(i)==0) {
 		            		climb = false;
 		            	} else {
 		            		climb = true;
 		            	}
-		        	} else if (colName.equals(TeamScoutingProvider.keyAutoBridge)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_AUTO_BRIDGE)) {
 		        		if(thisTeam.getInt(i)==0) {
 		            		autoBridge = false;
 		            	} else {
 		            		autoBridge = true;
 		            	}
-		        	} else if (colName.equals(TeamScoutingProvider.keyAutoShooter)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_AUTO_SHOOTER)) {
 		        		if(thisTeam.getInt(i)==0) {
 		            		autoShooter = false;
 		            	} else {
 		            		autoShooter = true;
 		            	}
-		        	} else if(colName.equals(TeamScoutingProvider.keyShootingRating)){
+		        	} else if(colName.equals(TeamScoutingProvider.KEY_SHOOTING_RATING)){
 		        		shooting = thisTeam.getFloat(i);
-		        	} else if(colName.equals(TeamScoutingProvider.keyBalancingRating)){
+		        	} else if(colName.equals(TeamScoutingProvider.KEY_BALANCING_RATING)){
 		        		balancing = thisTeam.getFloat(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyAvgAuto)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_AVG_AUTO)) {
 		        		auto = thisTeam.getDouble(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyAvgHoops)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_AVG_HOOPS)) {
 		        		hoops = thisTeam.getDouble(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyAvgBalance)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_AVG_BALANCE)) {
 		        		balance = thisTeam.getDouble(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyAvgBroke)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_AVG_BROKE)) {
 		        		broke = thisTeam.getDouble(i);
-		        	} else if (colName.equals(TeamScoutingProvider.keyNotes)) {
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_NOTES)) {
 		        		notes = thisTeam.getString(i);
 		        	}
 		        }

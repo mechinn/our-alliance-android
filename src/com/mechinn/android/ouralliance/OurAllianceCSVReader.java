@@ -17,7 +17,7 @@ import android.os.Environment;
 import android.util.Log;
 
 public class OurAllianceCSVReader {
-	private final String logTag = "csvtool";
+	private final String TAG = "csvtool";
 	private Activity activity;
 	private SimpleDateFormat timeFormatter;
 	private File dir;
@@ -49,13 +49,13 @@ public class OurAllianceCSVReader {
 		teamRankings = new TeamRankingsInterface(activity);
 		teamScouting = new TeamScoutingInterface(activity);
 		matchListFile = new File(dir.getAbsolutePath(),"matchList-"+timeFormatter.format(new Date())+".csv");
-		Log.i(logTag,matchListFile.toString());
+		Log.i(TAG,matchListFile.toString());
 		matchScoutingFile = new File(dir.getAbsolutePath(),"matchScouting-"+timeFormatter.format(new Date())+".csv");
-		Log.i(logTag,matchScoutingFile.toString());
+		Log.i(TAG,matchScoutingFile.toString());
 		teamRankingsFile = new File(dir.getAbsolutePath(),"teamRankings-"+timeFormatter.format(new Date())+".csv");
-		Log.i(logTag,teamRankingsFile.toString());
+		Log.i(TAG,teamRankingsFile.toString());
 		teamScoutingFile = new File(dir.getAbsolutePath(),"teamScouting-"+timeFormatter.format(new Date())+".csv");
-		Log.i(logTag,teamScoutingFile.toString());
+		Log.i(TAG,teamScoutingFile.toString());
 		matchListStrings = new ArrayList<String[]>();
 		matchScoutingStrings = new ArrayList<String[]>();
 		teamRankingsStrings = new ArrayList<String[]>();

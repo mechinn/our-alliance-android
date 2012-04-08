@@ -25,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MatchTeamInfo extends Fragment {
-	private static final String logTag = "MatchTeamInfo";
+	private static final String TAG = "MatchTeamInfo";
 	private Activity activity;
 	private Bundle args;
 	private View view;
@@ -400,8 +400,8 @@ public class MatchTeamInfo extends Fragment {
 					do {
 						avgAuto+=(topAuto*6+midAuto*4+botAuto*2);
 						avgHoops+=(top*3+mid*2+bot);
-						avgBalance+=thisTeam.getInt(thisTeam.getColumnIndex(MatchScoutingProvider.keyBalance));
-						avgBroke+=thisTeam.getInt(thisTeam.getColumnIndex(MatchScoutingProvider.keyBroke));
+						avgBalance+=thisTeam.getInt(thisTeam.getColumnIndex(MatchScoutingProvider.KEY_BALANCE));
+						avgBroke+=thisTeam.getInt(thisTeam.getColumnIndex(MatchScoutingProvider.KEY_BROKE));
 					} while(thisTeam.moveToNext());
 					avgHoops/=thisTeam.getCount();
 					avgBalance/=thisTeam.getCount();
@@ -445,14 +445,14 @@ public class MatchTeamInfo extends Fragment {
     public void getInfo() {
 		Cursor match = matchScouting.fetchMatch(comp, matchNum, team);
 		if(match!=null && !match.isClosed() && match.getCount()>0) {
-			int col = match.getColumnIndex(MatchScoutingProvider.keySlot);
+			int col = match.getColumnIndex(MatchScoutingProvider.KEY_SLOT);
 			Log.d("getinfo","col index = "+col);
 			matchSlot.setText(match.getString(col));
-			broke.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBroke))==0?false:true);
-			autoBridge.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyAutoBridge))==0?false:true);
-			autoShooter.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyAutoShooter))==0?false:true);
-			balanced.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBalance))==0?false:true);
-			switch(match.getInt(match.getColumnIndex(MatchScoutingProvider.keyShooter))) {
+			broke.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_BROKE))==0?false:true);
+			autoBridge.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_AUTO_BRIDGE))==0?false:true);
+			autoShooter.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_AUTO_SHOOTER))==0?false:true);
+			balanced.setChecked(match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_BALANCE))==0?false:true);
+			switch(match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_SHOOTER))) {
 				default:
 					noShooting.toggle();
 					break;
@@ -463,19 +463,19 @@ public class MatchTeamInfo extends Fragment {
 					shooter.toggle();
 					break;
 			}
-			top = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyTop));
-			mid = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMid));
-			bot = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBot));
-			miss = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMiss));
-			topAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyTopAuto));
-			midAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMidAuto));
-			botAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyBotAuto));
-			missAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.keyMissAuto));
+			top = match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_TOP));
+			mid = match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_MID));
+			bot = match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_BOT));
+			miss = match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_MISS));
+			topAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_TOP_AUTO));
+			midAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_MID_AUTO));
+			botAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_BOT_AUTO));
+			missAuto = match.getInt(match.getColumnIndex(MatchScoutingProvider.KEY_MISS_AUTO));
 			topScoreTotal.setText(Integer.toString(topAuto));
 			midScoreTotal.setText(Integer.toString(midAuto));
 			botScoreTotal.setText(Integer.toString(botAuto));
 			missTotal.setText(Integer.toString(missAuto));
-			notes.setText(match.getString(match.getColumnIndex(MatchScoutingProvider.keyNotes)));
+			notes.setText(match.getString(match.getColumnIndex(MatchScoutingProvider.KEY_NOTES)));
 		} else {
 			Toast.makeText(activity, "Something went wrong loading data", Toast.LENGTH_SHORT).show();
 			activity.finish();

@@ -17,70 +17,70 @@ import com.mechinn.android.ouralliance.DatabaseConnection;
 import com.mechinn.android.ouralliance.SchemaArray;
 
 public class MatchScoutingProvider extends ContentProvider {
-    public static final String DBTable = "matchScouting";
+    public static final String TABLE = "matchScouting";
     
-    public static final String keyCompetition = "competition";
-    public static final String keyMatchNum = "matchNum";
-    public static final String keyTeam = "team";
-    public static final String keySlot = "slot";
-    public static final String keyBroke = "broke";
-    public static final String keyAuto = "autonomous";
-    public static final String keyBalance = "balanced";
-    public static final String keyShooter = "shooter";
-    public static final String keyTop = "top";
-    public static final String keyMid = "mid";
-    public static final String keyBot = "bot";
-    public static final String keyMiss = "miss";
-    public static final String keyNotes = "notes";
+    public static final String KEY_COMPETITION = "competition";
+    public static final String KEY_MATCH_NUM = "matchNum";
+    public static final String KEY_TEAM = "team";
+    public static final String KEY_SLOT = "slot";
+    public static final String KEY_BROKE = "broke";
+    public static final String KEY_AUTO = "autonomous";
+    public static final String KEY_BALANCE = "balanced";
+    public static final String KEY_SHOOTER = "shooter";
+    public static final String KEY_TOP = "top";
+    public static final String KEY_MID = "mid";
+    public static final String KEY_BOT = "bot";
+    public static final String KEY_MISS = "miss";
+    public static final String KEY_NOTES = "notes";
     
-    public static final String keyAutoBridge = "autoBridge";
-    public static final String keyAutoShooter = "autoShooter";
-    public static final String keyTopAuto = "topAuto";
-    public static final String keyMidAuto = "midAuto";
-    public static final String keyBotAuto = "botAuto";
-    public static final String keyMissAuto = "missAuto";
+    public static final String KEY_AUTO_BRIDGE = "autoBridge";
+    public static final String KEY_AUTO_SHOOTER = "autoShooter";
+    public static final String KEY_TOP_AUTO = "topAuto";
+    public static final String KEY_MID_AUTO = "midAuto";
+    public static final String KEY_BOT_AUTO = "botAuto";
+    public static final String KEY_MISS_AUTO = "missAuto";
     
-    public static final SchemaArray v5schemaArray = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
-		keyCompetition, keyMatchNum, keyTeam, keySlot, keyBroke, keyBalance, keyShooter, 
-		keyTop, keyMid, keyBot, keyNotes});
+    public static final SchemaArray V5_SCHEMA_ARRAY = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
+		KEY_COMPETITION, KEY_MATCH_NUM, KEY_TEAM, KEY_SLOT, KEY_BROKE, KEY_BALANCE, KEY_SHOOTER, 
+		KEY_TOP, KEY_MID, KEY_BOT, KEY_NOTES});
 
-    public static final SchemaArray schemaArray = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
-		keyCompetition, keyMatchNum, keyTeam, keySlot, keyBroke, keyBalance, keyShooter, 
-		keyTop, keyMid, keyBot, keyNotes, keyAutoBridge, keyAutoShooter, keyMiss, 
-		keyTopAuto, keyMidAuto, keyBotAuto, keyMissAuto});
+    public static final SchemaArray SCHEMA_ARRAY = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
+		KEY_COMPETITION, KEY_MATCH_NUM, KEY_TEAM, KEY_SLOT, KEY_BROKE, KEY_BALANCE, KEY_SHOOTER, 
+		KEY_TOP, KEY_MID, KEY_BOT, KEY_NOTES, KEY_AUTO_BRIDGE, KEY_AUTO_SHOOTER, KEY_MISS, 
+		KEY_TOP_AUTO, KEY_MID_AUTO, KEY_BOT_AUTO, KEY_MISS_AUTO});
 
-    private static final String logTag = "MatchScoutingProvider";
-    private static final String authority = "com.mechinn.android.ouralliance.providers."+logTag;
-    private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+DBTable;
-    public static final Uri mUri = Uri.parse("content://" + authority + "/"+DBTable);
-    private static final int sig = 1;
+    private static final String TAG = "MatchScoutingProvider";
+    private static final String AUTHORITY = "com.mechinn.android.ouralliance.providers."+TAG;
+    private static final String TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+TABLE;
+    public static final Uri URI = Uri.parse("content://" + AUTHORITY + "/"+TABLE);
+    private static final int SIG = 1;
     private static final UriMatcher sUriMatcher;
-    private static HashMap<String, String> matchesProjectionMap;
+    private static final HashMap<String, String> matchesProjectionMap;
     
-    public static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+
+    public static final String DATABASE_CREATE = "CREATE TABLE "+ TABLE +" ("+
     		DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
     		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
-			keyCompetition+" TEXT NOT NULL, " +
-			keyMatchNum+" INTEGER, " +
-			keyTeam+" INTEGER, " +
-			keySlot+" TEXT, " +
-			keyBroke+" INTEGER, " +
-			keyAuto+" INTEGER, " +
-			keyBalance+" INTEGER, "+
-			keyShooter+" INTEGER, " +
-			keyTop+" INTEGER, " +
-			keyMid+" INTEGER, " +
-			keyBot+" INTEGER, " +
-			keyNotes+" TEXT);";
+			KEY_COMPETITION+" TEXT NOT NULL, " +
+			KEY_MATCH_NUM+" INTEGER, " +
+			KEY_TEAM+" INTEGER, " +
+			KEY_SLOT+" TEXT, " +
+			KEY_BROKE+" INTEGER, " +
+			KEY_AUTO+" INTEGER, " +
+			KEY_BALANCE+" INTEGER, "+
+			KEY_SHOOTER+" INTEGER, " +
+			KEY_TOP+" INTEGER, " +
+			KEY_MID+" INTEGER, " +
+			KEY_BOT+" INTEGER, " +
+			KEY_NOTES+" TEXT);";
 
     private DatabaseConnection mDB;
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(authority, DBTable, sig);
+        sUriMatcher.addURI(AUTHORITY, TABLE, SIG);
 
         matchesProjectionMap = new HashMap<String, String>();
-        for(String schema : schemaArray) {
+        for(String schema : SCHEMA_ARRAY) {
             matchesProjectionMap.put(schema, schema);
         }
     }
@@ -90,8 +90,8 @@ public class MatchScoutingProvider extends ContentProvider {
         SQLiteDatabase db = mDB.getWritableDatabase();
         int count = 0;
         switch (sUriMatcher.match(uri)) {
-            case sig:
-                count = db.delete(DBTable, where, whereArgs);
+            case SIG:
+                count = db.delete(TABLE, where, whereArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -104,8 +104,8 @@ public class MatchScoutingProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         switch (sUriMatcher.match(uri)) {
-            case sig:
-                return type;
+            case SIG:
+                return TYPE;
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -115,7 +115,7 @@ public class MatchScoutingProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues initialValues) {
     	switch(sUriMatcher.match(uri)) {
-    		case sig: {
+    		case SIG: {
     			ContentValues values;
     	        if (initialValues != null) {
     	            values = new ContentValues(initialValues);
@@ -124,9 +124,9 @@ public class MatchScoutingProvider extends ContentProvider {
     	        }
 
     	        SQLiteDatabase db = mDB.getWritableDatabase();
-    	        long rowId = db.insert(DBTable, null, values);
+    	        long rowId = db.insert(TABLE, null, values);
     	        if (rowId > 0) {
-    	            Uri teamUri = ContentUris.withAppendedId(mUri, rowId);
+    	            Uri teamUri = ContentUris.withAppendedId(URI, rowId);
     	            getContext().getContentResolver().notifyChange(teamUri, null);
     	            return teamUri;
     	        }
@@ -151,8 +151,8 @@ public class MatchScoutingProvider extends ContentProvider {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         switch (sUriMatcher.match(uri)) {
-            case sig:
-                qb.setTables(DBTable);
+            case SIG:
+                qb.setTables(TABLE);
                 qb.setProjectionMap(matchesProjectionMap);
                 break;
 
@@ -172,8 +172,8 @@ public class MatchScoutingProvider extends ContentProvider {
         SQLiteDatabase db = mDB.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
-            case sig:
-                count = db.update(DBTable, values, where, whereArgs);
+            case SIG:
+                count = db.update(TABLE, values, where, whereArgs);
                 break;
 
             default:

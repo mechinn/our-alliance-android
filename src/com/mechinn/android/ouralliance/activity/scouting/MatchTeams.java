@@ -31,7 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MatchTeams extends ListFragment {
-	private final String logTag = "MatchTeams";
+	private final String TAG = "MatchTeams";
 	private FragmentActivity activity;
 	private boolean mDualPane;
 	private int matchNum;
@@ -166,9 +166,9 @@ public class MatchTeams extends ListFragment {
     	}
     	
 		protected Void doInBackground(Void... no) {
-			String[] from = new String[] {MatchListProvider.keyTime,
-					MatchListProvider.keyRed1, MatchListProvider.keyRed2, MatchListProvider.keyRed3,
-					MatchListProvider.keyBlue1, MatchListProvider.keyBlue2, MatchListProvider.keyBlue3};
+			String[] from = new String[] {MatchListProvider.KEY_TIME,
+					MatchListProvider.KEY_RED1, MatchListProvider.KEY_RED2, MatchListProvider.KEY_RED3,
+					MatchListProvider.KEY_BLUE1, MatchListProvider.KEY_BLUE2, MatchListProvider.KEY_BLUE3};
 			
 			Cursor match = matchList.fetchMatch(prefs.getCompetition(), matchNum);
 			if(match!=null && !match.isClosed() && match.getCount()>0){
@@ -178,19 +178,19 @@ public class MatchTeams extends ListFragment {
 		            	int col = match.getColumnIndex(rowName);
 		            	Log.d("matchTeams",rowName);
 		            	Log.d("matchTeams",Integer.toString(col));
-		            	if(rowName.equals(MatchListProvider.keyTime)) {
+		            	if(rowName.equals(MatchListProvider.KEY_TIME)) {
 		            		time = match.getLong(col);
-		            	} else if(rowName.equals(MatchListProvider.keyRed1)) {
+		            	} else if(rowName.equals(MatchListProvider.KEY_RED1)) {
 		            		red1Val = match.getInt(col);
-		            	} else if(rowName.equals(MatchListProvider.keyRed2)) {
+		            	} else if(rowName.equals(MatchListProvider.KEY_RED2)) {
 		            		red2Val = match.getInt(col);
-		            	} else if(rowName.equals(MatchListProvider.keyRed3)) {
+		            	} else if(rowName.equals(MatchListProvider.KEY_RED3)) {
 		            		red3Val = match.getInt(col);
-		            	} else if(rowName.equals(MatchListProvider.keyBlue1)) {
+		            	} else if(rowName.equals(MatchListProvider.KEY_BLUE1)) {
 		            		blue1Val = match.getInt(col);
-		            	} else if(rowName.equals(MatchListProvider.keyBlue2)) {
+		            	} else if(rowName.equals(MatchListProvider.KEY_BLUE2)) {
 		            		blue2Val = match.getInt(col);
-		            	} else if(rowName.equals(MatchListProvider.keyBlue3)) {
+		            	} else if(rowName.equals(MatchListProvider.KEY_BLUE3)) {
 		            		blue3Val = match.getInt(col);
 		            	}
 		            }

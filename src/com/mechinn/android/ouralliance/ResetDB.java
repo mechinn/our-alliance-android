@@ -15,7 +15,7 @@ import android.util.Log;
 
 /** Nested class that performs progress calculations (counting) */
 public class ResetDB extends ProgressDialog {
-	private final String logTag = "ResetDB";
+	private final String TAG = "ResetDB";
  	private Handler resetHandler;
     private TeamScoutingInterface teamInfo;
     private Prefs prefs;
@@ -80,7 +80,7 @@ public class ResetDB extends ProgressDialog {
 	    
 	    private void addBlankTeam(int team) {
 	    	HashSet<String> comps = new HashSet<String>();
-	    	for(String comp : TeamScoutingProvider.competitions) {
+	    	for(String comp : TeamScoutingProvider.COMPETITIONS) {
 	    		comps.add(comp);
 	    	}
 	        teamInfo.createTeam(comps,team);
@@ -97,13 +97,13 @@ public class ResetDB extends ProgressDialog {
 	    		setTotal(1);
 	    	}
 	        for(int team : teams) {
-	        	Log.d(logTag,"Adding team "+team);
+	        	Log.d(TAG,"Adding team "+team);
 	        	addBlankTeam(team);
 	        }
-        	Log.d(logTag,"Updating 869");
+        	Log.d(TAG,"Updating 869");
 	    	HashSet<String> comps = new HashSet<String>();
-	    	for(String comp : TeamScoutingProvider.competitions) {
-	        	Log.d(logTag,"Adding comp "+comp);
+	    	for(String comp : TeamScoutingProvider.COMPETITIONS) {
+	        	Log.d(TAG,"Adding comp "+comp);
 	    		comps.add(comp);
 	    	}
 	        teamInfo.updateTeam(869, comps, 0, "Long", 27, 34.5, 8, 1, false, "Traction", 4, "None", 0, "None", false, false, false, false, true, true, false, 0, 0, 0, 0, 0, 0, "Defender");

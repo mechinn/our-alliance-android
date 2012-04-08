@@ -10,7 +10,7 @@ import android.database.SQLException;
 import android.net.Uri;
 
 public class TeamRankingsInterface {
-	private final String logTag = "TeamRankingsInterface";
+	private final String TAG = "TeamRankingsInterface";
 	Activity activity;
 	
 	public TeamRankingsInterface(Activity act) {
@@ -23,11 +23,11 @@ public class TeamRankingsInterface {
         ContentValues initialValues = putVals(true, -1, competition, team, rank, 
     			qs, hybrid, bridge, teleop, coop, record, dq, dq);
         
-        return activity.getContentResolver().insert(TeamRankingsProvider.mUri, initialValues);
+        return activity.getContentResolver().insert(TeamRankingsProvider.URI, initialValues);
     }
 
     public Cursor fetchAllTeams() {
-    	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.mUri, TeamRankingsProvider.schemaArray.toArray(), null, null, TeamRankingsProvider.keyRank);
+    	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.URI, TeamRankingsProvider.SCHEMA_ARRAY.toArray(), null, null, TeamRankingsProvider.KEY_RANK);
     	if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -35,8 +35,8 @@ public class TeamRankingsInterface {
     }
 
     public Cursor fetchTeam(String competition, int team) throws SQLException {
-    	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.mUri, TeamRankingsProvider.schemaArray.toArray(), 
-    			TeamRankingsProvider.keyCompetition + " = '" + competition + "' AND " + TeamRankingsProvider.keyTeam + " = " + team, null, TeamRankingsProvider.keyRank);
+    	Cursor mCursor = activity.managedQuery(TeamRankingsProvider.URI, TeamRankingsProvider.SCHEMA_ARRAY.toArray(), 
+    			TeamRankingsProvider.KEY_COMPETITION + " = '" + competition + "' AND " + TeamRankingsProvider.KEY_TEAM + " = " + team, null, TeamRankingsProvider.KEY_RANK);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -48,7 +48,7 @@ public class TeamRankingsInterface {
     	ContentValues args = putVals(false, -1, competition, team, rank, 
     			qs, hybrid, bridge, teleop, coop, record, dq, dq);
         
-        return activity.getContentResolver().update(TeamRankingsProvider.mUri, args,null,null) > 0;
+        return activity.getContentResolver().update(TeamRankingsProvider.URI, args,null,null) > 0;
     }
     
     private ContentValues putVals(boolean create, int lastMod, String competition, int team, int rank, double qs, double hybrid,
@@ -56,8 +56,8 @@ public class TeamRankingsInterface {
     	ContentValues cv = new ContentValues();
     	if(lastMod<0) {
 	    	if(create) {
-	    		cv.put(TeamRankingsProvider.keyCompetition, competition);
-	    		cv.put(TeamRankingsProvider.keyTeam, team);
+	    		cv.put(TeamRankingsProvider.KEY_COMPETITION, competition);
+	    		cv.put(TeamRankingsProvider.KEY_TEAM, team);
 	    		cv.put(DatabaseConnection._LASTMOD, 0);
 	    	} else {
 	    		cv.put(DatabaseConnection._LASTMOD, System.currentTimeMillis());
@@ -65,15 +65,15 @@ public class TeamRankingsInterface {
     	} else {
     		cv.put(DatabaseConnection._LASTMOD, lastMod);
     	}
-    	cv.put(TeamRankingsProvider.keyRank, rank);
-    	cv.put(TeamRankingsProvider.keyQS, qs);
-    	cv.put(TeamRankingsProvider.keyHybrid, hybrid);
-    	cv.put(TeamRankingsProvider.keyBridge, bridge);
-    	cv.put(TeamRankingsProvider.keyTeleop, teleop);
-    	cv.put(TeamRankingsProvider.keyCoop, coop);
-    	cv.put(TeamRankingsProvider.keyRecord, record);
-    	cv.put(TeamRankingsProvider.keyDQ, dq);
-        cv.put(TeamRankingsProvider.keyPlayed, played);
+    	cv.put(TeamRankingsProvider.KEY_RANK, rank);
+    	cv.put(TeamRankingsProvider.KEY_QS, qs);
+    	cv.put(TeamRankingsProvider.KEY_HYBRID, hybrid);
+    	cv.put(TeamRankingsProvider.KEY_BRIDGE, bridge);
+    	cv.put(TeamRankingsProvider.KEY_TELEOP, teleop);
+    	cv.put(TeamRankingsProvider.KEY_COOP, coop);
+    	cv.put(TeamRankingsProvider.KEY_RECORD, record);
+    	cv.put(TeamRankingsProvider.KEY_DQ, dq);
+        cv.put(TeamRankingsProvider.KEY_PLAYED, played);
         return cv;
     }
 }

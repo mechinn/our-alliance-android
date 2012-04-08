@@ -34,15 +34,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MatchList extends Activity {
-	private final String logTag = "MatchList";
+	private final String TAG = "MatchList";
 	private static final int ADDMATCH = 0;
-	private final String[] white = new String[] {
+	private final String[] WHITE = new String[] {
 		"Match #", "Time",	
 	};
-	private final String[] red = new String[] {
+	private final String[] RED = new String[] {
 		"Red 1", "Red 2", "Red 3"
 	};
-	private final String[] blue = new String[] {
+	private final String[] BLUE = new String[] {
 		"Blue 1", "Blue 2", "Blue 3"
 	};
 	private MatchListInterface matchListData;
@@ -81,18 +81,18 @@ public class MatchList extends Activity {
         header = (TableRow) this.findViewById(R.id.header);
         matchListData = new MatchListInterface(this);
         teamScoutingData = new TeamScoutingInterface(this);
-        for(String col : white) {
+        for(String col : WHITE) {
 			headerText = textSetup();
 			headerText.setText(col);
 			header.addView(headerText);
 		}
-        for(String col : red) {
+        for(String col : RED) {
 			headerText = textSetup();
 			headerText.setText(col);
 			headerText.setTextColor(getResources().getColor(R.color.red));
 			header.addView(headerText);
 		}
-		for(String col : blue) {
+		for(String col : BLUE) {
 			headerText = textSetup();
 			headerText.setText(col);
 			headerText.setTextColor(getResources().getColor(R.color.blue));
@@ -105,20 +105,20 @@ public class MatchList extends Activity {
 	private void setup() {
 		matchTable.removeAllViews();
 		tableRow = new TableRow(MatchList.this);
-		for(String col : white) {
+		for(String col : WHITE) {
 			textView = textSetup();
 			textView.setText(col);
 			textView.setHeight(0);
 			tableRow.addView(textView);
 		}
-		for(String col : red) {
+		for(String col : RED) {
 			textView = textSetup();
 			textView.setText(col);
 			textView.setTextColor(getResources().getColor(R.color.red));
 			textView.setHeight(0);
 			tableRow.addView(textView);
 		}
-		for(String col : blue) {
+		for(String col : BLUE) {
 			textView = textSetup();
 			textView.setText(col);
 			textView.setTextColor(getResources().getColor(R.color.blue));
@@ -210,9 +210,9 @@ public class MatchList extends Activity {
     	}
     	
 		protected Void doInBackground(Void... no) {
-			String[] from = new String[] {MatchListProvider.keyMatchNum, MatchListProvider.keyTime,
-					MatchListProvider.keyRed1, MatchListProvider.keyRed2, MatchListProvider.keyRed3,
-					MatchListProvider.keyBlue1, MatchListProvider.keyBlue2, MatchListProvider.keyBlue3};
+			String[] from = new String[] {MatchListProvider.KEY_MATCH_NUM, MatchListProvider.KEY_TIME,
+					MatchListProvider.KEY_RED1, MatchListProvider.KEY_RED2, MatchListProvider.KEY_RED3,
+					MatchListProvider.KEY_BLUE1, MatchListProvider.KEY_BLUE2, MatchListProvider.KEY_BLUE3};
 			
 			Cursor thisMatch = matchListData.fetchMatches(prefs.getCompetition());
 			if(thisMatch!=null && !thisMatch.isClosed() && thisMatch.getCount()>0){
@@ -222,17 +222,17 @@ public class MatchList extends Activity {
 		        	for(int j=0;j<from.length;++j) {
 		            	String colName = from[j];
 		            	int col = thisMatch.getColumnIndex(colName);
-		            	if(colName.equals(MatchListProvider.keyMatchNum)) {
+		            	if(colName.equals(MatchListProvider.KEY_MATCH_NUM)) {
 		            		publishProgress(SETMATCH,thisMatch.getInt(col));
 		            		publishProgress(ADDTEXT,Integer.toString(thisMatch.getInt(col)));
-		            	} else if(colName.equals(MatchListProvider.keyTime)) {
+		            	} else if(colName.equals(MatchListProvider.KEY_TIME)) {
 							lastMatchTime = thisMatch.getLong(col);
 		            		publishProgress(ADDTEXT,timeFormatter.format(new Date(lastMatchTime)));
-		            	} else if(colName.equals(MatchListProvider.keyRed1) || colName.equals(MatchListProvider.keyRed2) || 
-		            			colName.equals(MatchListProvider.keyRed3)){
+		            	} else if(colName.equals(MatchListProvider.KEY_RED1) || colName.equals(MatchListProvider.KEY_RED2) || 
+		            			colName.equals(MatchListProvider.KEY_RED3)){
 		            		publishProgress(ADDRED,Integer.toString(thisMatch.getInt(col)));
-		            	} else if (colName.equals(MatchListProvider.keyBlue1) || colName.equals(MatchListProvider.keyBlue2) || 
-		            			colName.equals(MatchListProvider.keyBlue3)) {
+		            	} else if (colName.equals(MatchListProvider.KEY_BLUE1) || colName.equals(MatchListProvider.KEY_BLUE2) || 
+		            			colName.equals(MatchListProvider.KEY_BLUE3)) {
 		            		publishProgress(ADDBLUE,Integer.toString(thisMatch.getInt(col)));
 		            	}
 		            }

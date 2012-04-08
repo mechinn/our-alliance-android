@@ -32,7 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Settings extends Activity {
-	private final String logTag = "settings";
+	private final String TAG = "settings";
     private Prefs prefs;
 	private EditText scouter;
 	private EditText host;
@@ -115,7 +115,7 @@ public class Settings extends Activity {
         
         competitions = (Spinner) findViewById(R.id.competitions);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.matchteamrow);
-        for(String comp : TeamScoutingProvider.competitions) {
+        for(String comp : TeamScoutingProvider.COMPETITIONS) {
         	adapter.add(comp);
         }
         competitions.setAdapter(adapter);
@@ -132,7 +132,7 @@ public class Settings extends Activity {
         export.setOnClickListener(new Button.OnClickListener() {
     		public void onClick(View v) {
     			csvTool = new OurAllianceCSVWriter(Settings.this);
-    			Log.i(logTag,"Finished building database to CSVs");
+    			Log.i(TAG,"Finished building database to CSVs");
     			try {
 					csvTool.writeMatchList();
 				} catch (IOException e) {
@@ -149,7 +149,7 @@ public class Settings extends Activity {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-    			Log.i(logTag,"Finished writing database to CSVs");
+    			Log.i(TAG,"Finished writing database to CSVs");
 			}
         });
         
@@ -157,7 +157,7 @@ public class Settings extends Activity {
         exportSend.setOnClickListener(new Button.OnClickListener() {
     		public void onClick(View v) {
     			csvTool = new OurAllianceCSVWriter(Settings.this);
-    			Log.i(logTag,"Finished building database to CSVs");
+    			Log.i(TAG,"Finished building database to CSVs");
     			Toast.makeText(Settings.this, "Working...", Toast.LENGTH_LONG).show();
     			new SendCSVFTP().execute();
 			}
@@ -223,7 +223,7 @@ public class Settings extends Activity {
 				Filename filename = new Filename(file,"/",".csv");
     			ftp.upload(file, filename.filename()+".csv", dir);
 			}
-			Log.i(logTag,"Finished writing database to CSVs");
+			Log.i(TAG,"Finished writing database to CSVs");
 	        return filenames;
 		}
     }

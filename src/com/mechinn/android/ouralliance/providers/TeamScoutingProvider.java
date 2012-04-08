@@ -17,89 +17,90 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class TeamScoutingProvider extends ContentProvider {
-    public static final String DBTable = "teamScouting";
+    public static final String TABLE = "teamScouting";
     
-    public static final String keyTeam = "team";
-    public static final String keyOrientation = "orientation";
-    public static final String keyNumWheels = "numWheels";
-    public static final String keyWheelTypes = "wheelTypes";
-    public static final String keyDeadWheel = "deadWheel";
-    public static final String keyWheel1Type = "wheel1Type";
-    public static final String keyWheel1Diameter = "wheel1Diameter";
-    public static final String keyWheel2Type = "wheel2Type";
-    public static final String keyWheel2Diameter = "wheel2Diameter";
-    public static final String keyDeadWheelType = "deadWheelType";
-    public static final String keyTurret = "turret";
-    public static final String keyTracking = "tracking";
-    public static final String keyFenderShooter = "fendershooter";
-    public static final String keyKeyShooter = "keyshooter";
-    public static final String keyBarrier = "barrier";
-    public static final String keyClimb = "climb";
-    public static final String keyNotes = "notes";
-    public static final String keyAutonomous = "autonomous";
-    public static final String keyAvgHoops = "avghoops";
-    public static final String keyAvgBalance = "avgbalance";
-    public static final String keyAvgBroke = "avgbroke";
-    public static final String keyRank = "rank";
-    public static final String keyWidth = "width";
-    public static final String keyHeight = "height";
-    public static final String keyAutoBridge = "autoBridge";
-    public static final String keyAutoShooter = "autoShooter";
-    public static final String keyShootingRating = "shooting";
-    public static final String keyBalancingRating = "balancing";
-    public static final String keyAvgAuto = "avgAuto";
+    public static final String KEY_TEAM = "team";
+    public static final String KEY_ORIENTATION = "orientation";
+    public static final String KEY_NUM_WHEELS = "numWheels";
+    public static final String KEY_WHEEL_TYPES = "wheelTypes";
+    public static final String KEY_DEAD_WHEEL = "deadWheel";
+    public static final String KEY_WHEEL1_TYPE = "wheel1Type";
+    public static final String KEY_WHEEL1_DIAMETER = "wheel1Diameter";
+    public static final String KEY_WHEEL2_TYPE = "wheel2Type";
+    public static final String KEY_WHEEL2_DIAMETER = "wheel2Diameter";
+    public static final String KEY_DEAD_WHEEL_TYPE = "deadWheelType";
+    public static final String KEY_TURRET = "turret";
+    public static final String KEY_TRACKING = "tracking";
+    public static final String KEY_FENDER_SHOOTER = "fendershooter";
+    public static final String KEY_KEY_SHOOTER = "keyshooter";
+    public static final String KEY_BARRIER = "barrier";
+    public static final String KEY_CLIMB = "climb";
+    public static final String KEY_NOTES = "notes";
     
-    public static final String[] competitions = new String[] {"CT"};
+    public static final String KEY_AUTONOMOUS = "autonomous";
+    public static final String KEY_AVG_HOOPS = "avghoops";
+    public static final String KEY_AVG_BALANCE = "avgbalance";
+    public static final String KEY_AVG_BROKE = "avgbroke";
+    public static final String KEY_RANK = "rank";
+    public static final String KEY_WIDTH = "width";
+    public static final String KEY_HEIGHT = "height";
+    public static final String KEY_AUTO_BRIDGE = "autoBridge";
+    public static final String KEY_AUTO_SHOOTER = "autoShooter";
+    public static final String KEY_SHOOTING_RATING = "shooting";
+    public static final String KEY_BALANCING_RATING = "balancing";
+    public static final String KEY_AVG_AUTO = "avgAuto";
     
-    public static final SchemaArray v5schemaArray = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
-		keyTeam, keyOrientation, keyNumWheels, keyWheelTypes, 
-		keyDeadWheel, keyWheel1Type, keyWheel1Diameter, 
-		keyWheel2Type, keyWheel2Diameter, keyDeadWheelType, keyTracking, keyFenderShooter, keyKeyShooter, 
-		keyBarrier, keyClimb, keyNotes, keyAvgHoops, keyAvgBalance, keyAvgBroke}, competitions);
+    public static final String[] COMPETITIONS = new String[] {"CT"};
     
-    public static final SchemaArray schemaArray = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
-    		keyTeam, keyRank, keyOrientation, keyWidth, keyHeight, keyNumWheels, keyWheelTypes, 
-    		keyDeadWheel, keyWheel1Type, keyWheel1Diameter, keyWheel2Type, keyWheel2Diameter, keyDeadWheelType,
-    		keyTracking, keyFenderShooter, keyKeyShooter, keyBarrier, keyClimb, keyNotes, keyAutoBridge,
-    		keyAutoShooter, keyShootingRating, keyBalancingRating, keyAvgAuto, keyAvgHoops, keyAvgBalance, keyAvgBroke}, competitions);
+    public static final SchemaArray V5_SCHEMA_ARRAY = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
+		KEY_TEAM, KEY_ORIENTATION, KEY_NUM_WHEELS, KEY_WHEEL_TYPES, 
+		KEY_DEAD_WHEEL, KEY_WHEEL1_TYPE, KEY_WHEEL1_DIAMETER, 
+		KEY_WHEEL2_TYPE, KEY_WHEEL2_DIAMETER, KEY_DEAD_WHEEL_TYPE, KEY_TRACKING, KEY_FENDER_SHOOTER, KEY_KEY_SHOOTER, 
+		KEY_BARRIER, KEY_CLIMB, KEY_NOTES, KEY_AVG_HOOPS, KEY_AVG_BALANCE, KEY_AVG_BROKE}, COMPETITIONS);
+    
+    public static final SchemaArray SCHEMA_ARRAY = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
+    		KEY_TEAM, KEY_RANK, KEY_ORIENTATION, KEY_WIDTH, KEY_HEIGHT, KEY_NUM_WHEELS, KEY_WHEEL_TYPES, 
+    		KEY_DEAD_WHEEL, KEY_WHEEL1_TYPE, KEY_WHEEL1_DIAMETER, KEY_WHEEL2_TYPE, KEY_WHEEL2_DIAMETER, KEY_DEAD_WHEEL_TYPE,
+    		KEY_TRACKING, KEY_FENDER_SHOOTER, KEY_KEY_SHOOTER, KEY_BARRIER, KEY_CLIMB, KEY_NOTES, KEY_AUTO_BRIDGE,
+    		KEY_AUTO_SHOOTER, KEY_SHOOTING_RATING, KEY_BALANCING_RATING, KEY_AVG_AUTO, KEY_AVG_HOOPS, KEY_AVG_BALANCE, KEY_AVG_BROKE}, COMPETITIONS);
 
-    private static final String logTag = "TeamScoutingProvider";
-    private static final String authority = "com.mechinn.android.ouralliance.providers."+logTag;
-    private static final String type = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+DBTable;
-    public static final Uri mUri = Uri.parse("content://" + authority + "/"+DBTable);
-    private static final int sig = 1;
+    private static final String TAG = "TeamScoutingProvider";
+    private static final String AUTHORITY = "com.mechinn.android.ouralliance.providers."+TAG;
+    private static final String TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE+"/com.mechinn."+TABLE;
+    public static final Uri URI = Uri.parse("content://" + AUTHORITY + "/"+TABLE);
+    private static final int SIG = 1;
     private static final UriMatcher sUriMatcher;
-    private static HashMap<String, String> teamInfoProjectionMap;
+    private static final HashMap<String, String> teamInfoProjectionMap;
     
     static {
     	sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(authority, DBTable, sig);
+        sUriMatcher.addURI(AUTHORITY, TABLE, SIG);
 
         teamInfoProjectionMap = new HashMap<String, String>();
-        for(String schema : schemaArray) {
+        for(String schema : SCHEMA_ARRAY) {
         	teamInfoProjectionMap.put(schema, schema);
         }
     }
     
-    public static final String DATABASE_CREATE = "CREATE TABLE "+ DBTable +" ("+DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+    public static final String DATABASE_CREATE = "CREATE TABLE "+ TABLE +" ("+DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
     		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
-			keyTeam+" INTEGER NOT NULL UNIQUE, " +
-			keyOrientation+" TEXT, " +
-			keyNumWheels+" INTEGER, " +
-			keyWheelTypes+" INTEGER, " +
-			keyDeadWheel+" INTEGER, " +
-			keyWheel1Type+" TEXT, " +
-			keyWheel1Diameter+" INTEGER, " +
-			keyWheel2Type+" TEXT, " +
-			keyWheel2Diameter+" INTEGER, " +
-			keyDeadWheelType+" TEXT, " +
-			keyTurret+" INTEGER, " +
-			keyTracking+" INTEGER, " +
-			keyFenderShooter+" INTEGER, " +
-			keyKeyShooter+" INTEGER, " +
-			keyBarrier+" INTEGER, " +
-			keyClimb+" INTEGER, " +
-			keyNotes+" TEXT);";
+			KEY_TEAM+" INTEGER NOT NULL UNIQUE, " +
+			KEY_ORIENTATION+" TEXT, " +
+			KEY_NUM_WHEELS+" INTEGER, " +
+			KEY_WHEEL_TYPES+" INTEGER, " +
+			KEY_DEAD_WHEEL+" INTEGER, " +
+			KEY_WHEEL1_TYPE+" TEXT, " +
+			KEY_WHEEL1_DIAMETER+" INTEGER, " +
+			KEY_WHEEL2_TYPE+" TEXT, " +
+			KEY_WHEEL2_DIAMETER+" INTEGER, " +
+			KEY_DEAD_WHEEL_TYPE+" TEXT, " +
+			KEY_TURRET+" INTEGER, " +
+			KEY_TRACKING+" INTEGER, " +
+			KEY_FENDER_SHOOTER+" INTEGER, " +
+			KEY_KEY_SHOOTER+" INTEGER, " +
+			KEY_BARRIER+" INTEGER, " +
+			KEY_CLIMB+" INTEGER, " +
+			KEY_NOTES+" TEXT);";
 
     private DatabaseConnection mDB;
 
@@ -108,8 +109,8 @@ public class TeamScoutingProvider extends ContentProvider {
         SQLiteDatabase db = mDB.getWritableDatabase();
         int count = 0;
         switch (sUriMatcher.match(uri)) {
-            case sig:
-                count = db.delete(DBTable, where, whereArgs);
+            case SIG:
+                count = db.delete(TABLE, where, whereArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -122,8 +123,8 @@ public class TeamScoutingProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         switch (sUriMatcher.match(uri)) {
-            case sig:
-                return type;
+            case SIG:
+                return TYPE;
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -133,7 +134,7 @@ public class TeamScoutingProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues initialValues) {
     	switch(sUriMatcher.match(uri)) {
-    		case sig: {
+    		case SIG: {
     			ContentValues values;
     	        if (initialValues != null) {
     	            values = new ContentValues(initialValues);
@@ -142,9 +143,9 @@ public class TeamScoutingProvider extends ContentProvider {
     	        }
 
     	        SQLiteDatabase db = mDB.getWritableDatabase();
-    	        long rowId = db.insert(DBTable, null, values);
+    	        long rowId = db.insert(TABLE, null, values);
     	        if (rowId > 0) {
-    	            Uri teamUri = ContentUris.withAppendedId(mUri, rowId);
+    	            Uri teamUri = ContentUris.withAppendedId(URI, rowId);
     	            getContext().getContentResolver().notifyChange(teamUri, null);
     	            return teamUri;
     	        }
@@ -169,8 +170,8 @@ public class TeamScoutingProvider extends ContentProvider {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         switch (sUriMatcher.match(uri)) {
-            case sig:
-                qb.setTables(DBTable);
+            case SIG:
+                qb.setTables(TABLE);
                 qb.setProjectionMap(teamInfoProjectionMap);
                 break;
 
@@ -190,8 +191,8 @@ public class TeamScoutingProvider extends ContentProvider {
         SQLiteDatabase db = mDB.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
-            case sig:
-                count = db.update(DBTable, values, where, whereArgs);
+            case SIG:
+                count = db.update(TABLE, values, where, whereArgs);
                 break;
 
             default:
