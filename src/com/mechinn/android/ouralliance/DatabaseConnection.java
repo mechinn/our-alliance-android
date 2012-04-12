@@ -15,7 +15,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 	public static final String _COUNT = "_count";
 	public static final String _LASTMOD = "_lastmod";
 	private static final String NAME = "ourAlliance.sqlite";
-	private static final int VERSION = 5;
+	private static final int VERSION = 6;
 	private final String TAG = "DatabaseConnection";
 
 	public DatabaseConnection(Context context) {
@@ -252,10 +252,10 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     				db.endTransaction();
     			}
     		case 6:
-//    			Log.i(TAG, "v2 added "+TeamScoutingProvider.keyAutonomous+" column to the "+TeamScoutingProvider.DBTable+" table.");
-//    			query = "ALTER TABLE "+TeamScoutingProvider.DBTable+" ADD COLUMN "+TeamScoutingProvider.keyAutonomous+" INTEGER;";
-//    			Log.d(TAG,query);
-//        		db.execSQL(query);
+    			Log.i(TAG, "v6 added "+TeamScoutingProvider.KEY_THIS+" column to the "+TeamScoutingProvider.TABLE+" table.");
+    			query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_THIS+" INTEGER;";
+    			Log.d(TAG,query);
+        		db.execSQL(query);
     	}
     }
     

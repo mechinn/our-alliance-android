@@ -36,6 +36,7 @@ public class TeamScoutingProvider extends ContentProvider {
     public static final String KEY_BARRIER = "barrier";
     public static final String KEY_CLIMB = "climb";
     public static final String KEY_NOTES = "notes";
+    public static final String KEY_THIS = "This";
     
     public static final String KEY_AUTONOMOUS = "autonomous";
     public static final String KEY_AVG_HOOPS = "avghoops";
