@@ -339,6 +339,15 @@
 	        <TableRow
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content" >
+	            
+	            <CheckBox
+		            android:id="@+id/turretShooter"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="@string/turretShooter"
+	                android:gravity="center"
+	            	android:layout_margin="1dip"
+	                android:layout_weight="1" />
 	
 		        <CheckBox
 		            android:id="@+id/autoTracking"
@@ -348,7 +357,11 @@
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
-		        
+	        
+	    	</TableRow>
+	        <TableRow
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content" >
 		        <CheckBox
 		            android:id="@+id/fenderShooter"
 		            android:layout_width="wrap_content"
@@ -366,7 +379,6 @@
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
 	                android:layout_weight="1" />
-	        
 	    	</TableRow>
 	        <TableRow
 	            android:layout_width="fill_parent"
@@ -388,12 +400,6 @@
 		            android:text="@string/climbBridge"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
-	                android:layout_weight="1" />
-		        
-		        <TextView
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-                	android:gravity="center"
 	                android:layout_weight="1" />
 	        
 	    	</TableRow>
@@ -418,12 +424,6 @@
 		            android:text="@string/autoShooter"
 	                android:gravity="center"
 	            	android:layout_margin="1dip"
-	                android:layout_weight="1" />
-		        
-		        <TextView
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-                	android:gravity="center"
 	                android:layout_weight="1" />
 	
 		    </TableRow>

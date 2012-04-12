@@ -163,13 +163,15 @@ public class Teams extends Activity {
     	private final int ADDSTATICTEAM = 10;
     	private final int ADDSTATICTABLE = 11;
     	
-    	private final String[] colNames = new String[] { "Team", "Rank", "Orientation", "Wheel Type 1", "Wheel Type 2", "Auto Tracking", "Fender Shooter",
+    	//19
+    	private final String[] colNames = new String[] { "Team", "Rank", "Orientation", "Wheel Type 1", "Wheel Type 2", "Turret", "Auto Tracking", "Fender Shooter",
     			"Key Shooter", "Crosses Barrier", "Climb Bridge", "Auto Bridge", "Auto Shooter", "Shooting Rating",
     			"Balancing Rating", "Avg Auto Points", "Avg Teleop Points", "Avg Matches Balanced", "Avg Matches Broke" };
         
+    	//19
     	private final String[] from = new String[] {TeamScoutingProvider.KEY_TEAM, TeamScoutingProvider.KEY_RANK,
     			TeamScoutingProvider.KEY_ORIENTATION, TeamScoutingProvider.KEY_WHEEL1_TYPE, TeamScoutingProvider.KEY_WHEEL2_TYPE, 
-    			TeamScoutingProvider.KEY_TRACKING, TeamScoutingProvider.KEY_FENDER_SHOOTER,
+    			TeamScoutingProvider.KEY_TURRET, TeamScoutingProvider.KEY_TRACKING, TeamScoutingProvider.KEY_FENDER_SHOOTER,
     			TeamScoutingProvider.KEY_KEY_SHOOTER, TeamScoutingProvider.KEY_BARRIER, TeamScoutingProvider.KEY_CLIMB,
     			TeamScoutingProvider.KEY_AUTO_BRIDGE, TeamScoutingProvider.KEY_AUTO_SHOOTER, TeamScoutingProvider.KEY_SHOOTING_RATING,
     			TeamScoutingProvider.KEY_BALANCING_RATING, TeamScoutingProvider.KEY_AVG_AUTO, TeamScoutingProvider.KEY_AVG_HOOPS,
@@ -391,7 +393,7 @@ public class Teams extends Activity {
 			            	} else if (colName.equals(TeamScoutingProvider.KEY_TRACKING) || colName.equals(TeamScoutingProvider.KEY_FENDER_SHOOTER) || 
 			            			colName.equals(TeamScoutingProvider.KEY_KEY_SHOOTER) || colName.equals(TeamScoutingProvider.KEY_BARRIER) || 
 			            			colName.equals(TeamScoutingProvider.KEY_CLIMB) || colName.equals(TeamScoutingProvider.KEY_AUTO_BRIDGE) ||
-			            			colName.equals(TeamScoutingProvider.KEY_AUTO_SHOOTER)) {
+			            			colName.equals(TeamScoutingProvider.KEY_AUTO_SHOOTER) || colName.equals(TeamScoutingProvider.KEY_TURRET)) {
 			            		switch(thisTeam.getInt(col)) {
 			            			case 0:publishProgress(SETTEXT,"no");break;
 			            			default:publishProgress(SETTEXT,"yes");

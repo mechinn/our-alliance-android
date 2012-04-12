@@ -76,6 +76,7 @@ public class Info extends Activity {
 	String wheel2Type;
 	double wheel2Diameter;
 	String deadWheelType;
+	boolean turret;
 	boolean tracking;
 	boolean fender;
 	boolean key;
@@ -114,6 +115,7 @@ public class Info extends Activity {
 	private EditText wheel2DiameterText;
 	private TableRow deadWheels;
 	private Spinner deadWheelTypeSpinner;
+	private CheckBox turretShooter;
 	private CheckBox autoTracking;
 	private CheckBox fenderShooter;
 	private CheckBox keyShooter;
@@ -387,6 +389,13 @@ public class Info extends Activity {
             }
         });
         
+        turretShooter = (CheckBox) findViewById(R.id.turretShooter);
+        turretShooter.setOnClickListener(new CheckBox.OnClickListener() {
+            public void onClick(View v) {
+            	turret = ((CheckBox) v).isChecked();
+            }
+        });
+        
         autoTracking = (CheckBox) findViewById(R.id.autoTracking);
         autoTracking.setOnClickListener(new CheckBox.OnClickListener() {
             public void onClick(View v) {
@@ -528,6 +537,7 @@ public class Info extends Activity {
             if(!deadWheel) {
     	    	deadWheels.setVisibility(View.GONE);
     	    }
+            turretShooter.setChecked(turret);
             autoTracking.setChecked(tracking);
             fenderShooter.setChecked(fender);
             keyShooter.setChecked(key);
@@ -586,6 +596,7 @@ public class Info extends Activity {
                     	deadWheelType = "None";
                     }
                     Log.d("deadWheelType", deadWheelType);
+                    Log.d("turret", Boolean.toString(turret));
                     Log.d("tracking", Boolean.toString(tracking));
                     Log.d("fender", Boolean.toString(fender));
                     Log.d("key", Boolean.toString(key));
@@ -598,7 +609,7 @@ public class Info extends Activity {
                     
                     teamInfo.updateTeam(team, competitionsSelected, rank, orientation, width, height, numWheels, wheelTypes, 
                 			deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter, 
-                			deadWheelType, tracking, fender, key, barrier, climb, autoBridge, autoShooter, shooting, balancing,
+                			deadWheelType, turret, tracking, fender, key, barrier, climb, autoBridge, autoShooter, shooting, balancing,
                 			auto, hoops, balance, broke, notes);
                     Toast.makeText(Info.this, "Saved "+Integer.toString(team), Toast.LENGTH_SHORT).show();
                 }
@@ -671,6 +682,12 @@ public class Info extends Activity {
 		        		wheel2Diameter = thisTeam.getInt(i);
 		        	} else if (colName.equals(TeamScoutingProvider.KEY_DEAD_WHEEL_TYPE)) {
 		        		deadWheelType = thisTeam.getString(i);
+		        	} else if (colName.equals(TeamScoutingProvider.KEY_TURRET)) {
+		        		if(thisTeam.getInt(i)==0) {
+		            		turret = false;
+		            	} else {
+		            		turret = true;
+		            	}
 		        	} else if (colName.equals(TeamScoutingProvider.KEY_TRACKING)) {
 		        		if(thisTeam.getInt(i)==0) {
 		            		tracking = false;

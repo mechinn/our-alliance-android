@@ -32,20 +32,20 @@ public class TeamScoutingInterface {
 	}
 	
 	public Uri createTeam(HashSet<String> competitions, int team) {
-		ContentValues initialValues = putVals(true,-1,team,competitions,0,"None",0,0,0,1,false,"None",0,"None",0,"None",false,false,false,false,false,false,false,0,0,0,0,0,0,"");
+		ContentValues initialValues = putVals(true,-1,team,competitions,0,"None",0,0,0,1,false,"None",0,"None",0,"None",false,false,false,false,false,false,false,false,0,0,0,0,0,0,"");
         
         return activity.getContentResolver().insert(TeamScoutingProvider.URI, initialValues);
 	}
 
     public Uri createTeam(int team, HashSet<String> competitions, int rank, String orientation, double width, double height, int numWheels, int wheelTypes, 
     		boolean deadWheel, String wheel1Type, double wheel1Diameter, String wheel2Type, double wheel2Diameter,
-    		String deadWheelType, boolean tracking, boolean fender, boolean key, boolean barrier, boolean climb,
+    		String deadWheelType, boolean turret, boolean tracking, boolean fender, boolean key, boolean barrier, boolean climb,
     		boolean autoBridge, boolean autoShooter, float shooting, float balancing, double avgAuto,
     		double avgHoops, double avgBalance, double avgBroke, String notes) {
     	
         ContentValues initialValues = putVals(true, -1, team, competitions, rank, orientation, width, height, numWheels, wheelTypes, 
         		deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter,
-    			deadWheelType, tracking, fender, key, barrier, climb, autoBridge, autoShooter, shooting, balancing,
+    			deadWheelType, turret, tracking, fender, key, barrier, climb, autoBridge, autoShooter, shooting, balancing,
     			avgAuto, avgHoops, avgBalance, avgBroke, notes);
         
         return activity.getContentResolver().insert(TeamScoutingProvider.URI, initialValues);
@@ -134,12 +134,12 @@ public class TeamScoutingInterface {
     
     public int updateTeam(int team, HashSet<String> competitions, int rank, String orientation, double width, double height, int numWheels, int wheelTypes, 
     		boolean deadWheel, String wheel1Type, double wheel1Diameter, String wheel2Type, double wheel2Diameter,
-    		String deadWheelType, boolean tracking, boolean fender, boolean key, boolean barrier, boolean climb,
+    		String deadWheelType, boolean turret, boolean tracking, boolean fender, boolean key, boolean barrier, boolean climb,
     		boolean autoBridge, boolean autoShooter, float shooting, float balancing, double avgAuto,
     		double avgHoops, double avgBalance, double avgBroke, String notes) {
     	ContentValues args = putVals(false, -1, team, competitions, rank, orientation, width, height, numWheels, wheelTypes, 
     		deadWheel, wheel1Type, wheel1Diameter, wheel2Type, wheel2Diameter,
-			deadWheelType, tracking, fender,
+			deadWheelType, turret, tracking, fender,
 			key, barrier, climb, autoBridge, autoShooter, shooting, balancing,
 			avgAuto, avgHoops, avgBalance, avgBroke, notes);
         
@@ -162,7 +162,7 @@ public class TeamScoutingInterface {
     
     private ContentValues putVals(boolean create, int lastMod, int team, HashSet<String> competitions, int rank, String orientation,
     		double width, double height, int numWheels, int wheelTypes, boolean deadWheel, String wheel1Type, double wheel1Diameter,
-    		String wheel2Type, double wheel2Diameter, String deadWheelType, boolean tracking, boolean fender, boolean key,
+    		String wheel2Type, double wheel2Diameter, String deadWheelType, boolean turret, boolean tracking, boolean fender, boolean key,
     		boolean barrier, boolean climb, boolean autoBridge, boolean autoShooter, float shooting, float balancing, double avgAuto,
     		double avgHoops, double avgBalance, double avgBroke, String notes) {
     	ContentValues cv = new ContentValues();
@@ -188,6 +188,7 @@ public class TeamScoutingInterface {
     	cv.put(TeamScoutingProvider.KEY_WHEEL2_TYPE, wheel2Type);
     	cv.put(TeamScoutingProvider.KEY_WHEEL2_DIAMETER, wheel2Diameter);
         cv.put(TeamScoutingProvider.KEY_DEAD_WHEEL_TYPE, deadWheelType);
+        cv.put(TeamScoutingProvider.KEY_TURRET, turret);
         cv.put(TeamScoutingProvider.KEY_TRACKING, tracking);
         cv.put(TeamScoutingProvider.KEY_FENDER_SHOOTER, fender);
         cv.put(TeamScoutingProvider.KEY_KEY_SHOOTER, key);

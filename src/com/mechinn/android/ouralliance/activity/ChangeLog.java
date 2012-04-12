@@ -21,6 +21,7 @@ public class ChangeLog extends Activity {
         changelog.setText(Html.fromHtml(
 				"<h1>ChangeLog:</h1>" +
 	    		"<p>" +
+	    			"0.5.2 - added turret checkbox back to team scouting" +
 	    			"0.5.1 - major bug fixed in adding team to team scouting list" +
 	    			"0.5 - added multiple pictures and team info button to match scouting" +
 	    			"0.4.1 - major bug fixed in match scouting scoring.<br />" +
