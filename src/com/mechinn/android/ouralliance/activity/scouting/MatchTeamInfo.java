@@ -7,6 +7,7 @@ import com.mechinn.android.ouralliance.data.TeamScoutingInterface;
 import com.mechinn.android.ouralliance.providers.MatchScoutingProvider;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -372,6 +373,15 @@ public class MatchTeamInfo extends Fragment {
 				}
 			}
 		});
+    	
+    	button = (Button)view.findViewById(R.id.teamInfo);
+    	button.setOnClickListener(new OnClickListener() {
+    		public void onClick(View v) {
+				Intent intent = new Intent("com.mechinn.android.ouralliance.OpenTeamInfo");
+				intent.putExtra("team", team);
+	    		startActivity(intent);
+			}
+    	});
     	
     	button = (Button)view.findViewById(R.id.matchScoutingSave);
     	button.setOnClickListener(new OnClickListener() {

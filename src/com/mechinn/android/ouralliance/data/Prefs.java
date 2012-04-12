@@ -31,7 +31,7 @@ public class Prefs {
 	 * @return returns true, if this is the first run
 	 */
 	public String getCompetition() {
-		return prefs.getString("competition", "CT");
+		return prefs.getString("competition", "This");
 	}
 	 
 	/**

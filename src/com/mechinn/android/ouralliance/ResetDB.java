@@ -22,11 +22,7 @@ public class ResetDB extends ProgressDialog {
     private Activity activity;
     private DatabaseConnection db;
     boolean initial;
-    private final int[] teams = {20, 95, 118, 126, 155, 173, 175, 176, 177, 178, 181, 195, 228, 229, 230, 236, 237, 250, 549, 558, 
-    		571, 663, 694, 743, 839, 869, 999, 1027, 1071, 1073, 1099, 1124, 1493, 1511, 1559, 1665, 1699, 1740, 
-    		1784, 1880, 1922, 1991, 2067, 2168, 2170, 2785, 2791, 2836, 3017, 3104, 3146, 3182, 3461, 3464, 3467, 
-    		3525, 3555, 3634, 3654, 3718, 3719, 4055, 4122, 4134};
-    private final int total = teams.length+2;
+    private final int total = 1;
     
     public ResetDB(Activity act) {
     	this(act,false);
@@ -96,18 +92,6 @@ public class ResetDB extends ProgressDialog {
 	    	} else {
 	    		setTotal(1);
 	    	}
-	        for(int team : teams) {
-	        	Log.d(TAG,"Adding team "+team);
-	        	addBlankTeam(team);
-	        }
-        	Log.d(TAG,"Updating 869");
-	    	HashSet<String> comps = new HashSet<String>();
-	    	for(String comp : TeamScoutingProvider.COMPETITIONS) {
-	        	Log.d(TAG,"Adding comp "+comp);
-	    		comps.add(comp);
-	    	}
-	        teamInfo.updateTeam(869, comps, 0, "Long", 27, 34.5, 8, 1, false, "Traction", 4, "None", 0, "None", false, false, false, false, true, true, false, 0, 0, 0, 0, 0, 0, "Defender");
-	        incrementTotal();
 	        return null;
 		}
 	}

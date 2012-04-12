@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import com.mechinn.android.ouralliance.Filename;
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.ResetDB;
 import com.mechinn.android.ouralliance.data.Prefs;
 import com.mechinn.android.ouralliance.data.TeamScoutingInterface;
 import com.mechinn.android.ouralliance.providers.TeamScoutingProvider;
@@ -30,6 +32,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -55,8 +58,9 @@ public class Info extends Activity {
 	
 	private Prefs prefs;
 	private TeamScoutingInterface teamInfo;
-	private Uri mImageUri;
-	private File pic;
+	private ArrayList<File> imageFiles;
+	private File nextImage;
+	private int picCount;
 	private File picDir;
 	
 	int team;
@@ -138,10 +142,13 @@ public class Info extends Activity {
 	private ArrayAdapter<CharSequence> wheelTypeStrings;
 	
 	private boolean breakNicely;
+
+	private AlertDialog deleteImage;
+	private View selected;
 	
 	private void takePic() {
 		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-	    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+	    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(nextImage));
 	    //start camera intent
 	    Info.this.startActivityForResult(intent, CAMERA_PIC_REQUEST);
 	}
@@ -169,17 +176,20 @@ public class Info extends Activity {
     
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
         if (requestCode == CAMERA_PIC_REQUEST && resultCode==RESULT_OK) {
-        	this.grabImage();
+        	this.grabImage(nextImage);
+        	++picCount;
+        	nextImage=new File(picDir.getAbsolutePath()+"/"+picCount+".jpg");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
     
-    private void grabImage() {
-        this.getContentResolver().notifyChange(mImageUri, null);
+    private void grabImage(File thisImage) {
+    	Uri imageUri = Uri.fromFile(thisImage);
+        this.getContentResolver().notifyChange(imageUri, null);
         ContentResolver cr = this.getContentResolver();
         Bitmap bitmap;
         try {
-            bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+            bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, imageUri);
             
             int thumbWidth = 300;//Specify image width in px
             int thumbHeight = 300;//Specify image height in px
@@ -208,13 +218,33 @@ public class Info extends Activity {
             image = new ImageView(this);
             image.setContentDescription("Team Picture");
             image.setImageBitmap(resizedBitmap);
-            image.setTag(mImageUri);
+            image.setTag(thisImage);
             image.setOnClickListener(new OnClickListener() {
             	public void onClick(View v) {
 					Intent intent = new Intent();
 		            intent.setAction(android.content.Intent.ACTION_VIEW);
-		            intent.setDataAndType((Uri)v.getTag(), "image/jpg");
+		            intent.setDataAndType(Uri.fromFile((File)v.getTag()), "image/jpg");
 		            Info.this.startActivity(intent);
+				}
+            });
+            image.setLongClickable(true);
+            image.setOnLongClickListener(new OnLongClickListener() {
+				public boolean onLongClick(View arg0) {
+					selected = arg0;
+					deleteImage = new AlertDialog.Builder(Info.this)
+	                .setTitle("Delete this picture?")
+	                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	                    public void onClick(DialogInterface dialog, int whichButton) {
+	                    	((File)selected.getTag()).delete();
+	                    	images.removeView(selected);
+	                    }
+	                })
+	                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	                    public void onClick(DialogInterface dialog, int whichButton) {
+	                    	deleteImage.dismiss();
+	                    }
+	                }).show();
+					return true;
 				}
             });
             images.addView(image);
@@ -229,6 +259,8 @@ public class Info extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info);
         breakNicely = false;
+        picCount = 0;
+        imageFiles = new ArrayList<File>();
         prefs = new Prefs(Info.this);
         competitionRankStrings = new ArrayList<String>();
         competitionsSelected = new HashSet<String>();
@@ -452,25 +484,12 @@ public class Info extends Activity {
     		teamNumber.setText(Integer.toString(team));
             takePic.setOnClickListener(new OnClickListener() {
             	public void onClick(View v) {
-            		if(pic.exists()) {
-            			takePicAlert = new AlertDialog.Builder(Info.this)
-    	                .setTitle("Really overwrite the team picture?")
-    	                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-    	                    public void onClick(DialogInterface dialog, int whichButton) {
-    	                    	takePic();
-    	                    }
-    	                })
-    	                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-    	                    public void onClick(DialogInterface dialog, int whichButton) {
-    	                    	takePicAlert.dismiss();
-    	                    }
-    	                }).show();
-            		} else {
-            			takePic();
-            		}
+        			takePic();
     			}
             });
-    		grabImage();
+            for(File eachImage : imageFiles){
+            	grabImage(eachImage);
+            }
             for(String rank : competitionRankStrings) {
             	competitionRanks.add(rank);
             }
@@ -591,15 +610,27 @@ public class Info extends Activity {
 	        String packageName = Info.this.getPackageName();
 	        File externalPath = Environment.getExternalStorageDirectory();
 	        picDir = new File(externalPath.getAbsolutePath() +  "/Android/data/" + packageName + "/files");
-	        picDir = new File(picDir.getAbsolutePath()+"/teamPic/2012/");
+	        picDir = new File(picDir.getAbsolutePath()+"/teamPic/2012/"+Integer.toString(team)+"/");
 	        if(!picDir.exists()) {
 	        	picDir.mkdirs();
+		        nextImage = new File(picDir.getAbsolutePath()+"/0.jpg");
+	        } else {
+	        	File[] images = picDir.listFiles();
+	        	if(images.length>0) {
+			        for(File eachImage : images) {
+				        imageFiles.add(eachImage);
+			        	Log.d("imageUri",Uri.fromFile(eachImage).getPath());
+				        ++picCount;
+					}
+			        Filename lastFile = new Filename(images[images.length-1].getName(),"/",".jpg");
+			        nextImage = new File(picDir.getAbsolutePath()+"/"+(Integer.parseInt(lastFile.filename())+1)+".jpg");
+	        	} else {
+	        		nextImage = new File(picDir.getAbsolutePath()+"/0.jpg");
+	        	}
 	        }
-	        pic=new File(picDir.getAbsolutePath()+"/"+Integer.toString(team)+".jpg");
-	        mImageUri = Uri.fromFile(pic);
-	        Log.d("imageUri",mImageUri.getPath());
 	        
-	        Cursor compTeams = teamInfo.fetchCompetitionTeamNums(prefs.getCompetition());
+	        Cursor compTeams = teamInfo.fetchAllTeamNums();
+//	        Cursor compTeams = teamInfo.fetchCompetitionTeamNums(prefs.getCompetition());
 	        if(compTeams!=null && !compTeams.isClosed() && compTeams.getCount()>0){
 	        	for(int i=0;i<=compTeams.getCount();++i) {
 	        		competitionRankStrings.add(Integer.toString(i));

@@ -115,9 +115,10 @@ public class Settings extends Activity {
         
         competitions = (Spinner) findViewById(R.id.competitions);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.matchteamrow);
-        for(String comp : TeamScoutingProvider.COMPETITIONS) {
-        	adapter.add(comp);
-        }
+//        for(String comp : TeamScoutingProvider.COMPETITIONS) {
+//        	adapter.add(comp);
+//        }
+        adapter.add("This");
         competitions.setAdapter(adapter);
         competitions.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {

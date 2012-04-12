@@ -111,6 +111,7 @@ public class Teams extends Activity {
         selectedTeam = 0;
         startTrack = true;
         prefs = new Prefs(this);
+        prefs.setAllTeams(true);
         orderBy = TeamScoutingProvider.KEY_TEAM;
         desc = false;
         vScroll = (ScrollView) findViewById(R.id.vScroll);
@@ -445,11 +446,11 @@ public class Teams extends Activity {
 	        	}
 	    		onStart();
 	            return true;
-            case R.id.allTeams:
-            	prefs.setAllTeams();
-            	item.setChecked(prefs.getAllTeams());
-            	onStart();
-	            return true;
+//            case R.id.allTeams:
+//            	prefs.setAllTeams();
+//            	item.setChecked(prefs.getAllTeams());
+//            	onStart();
+//	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

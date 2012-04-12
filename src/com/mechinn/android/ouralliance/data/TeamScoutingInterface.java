@@ -22,7 +22,7 @@ public class TeamScoutingInterface {
 	}
 	
 	public int deleteTeam(int team) {
-		return activity.getContentResolver().delete(TeamScoutingProvider.URI, TeamScoutingProvider.KEY_TEAM+" = '"+team+"'", null);
+		return activity.getContentResolver().delete(TeamScoutingProvider.URI, TeamScoutingProvider.KEY_TEAM+" = "+team, null);
 	}
 	
 	public Uri createTeam(String competition, int team) {
