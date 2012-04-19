@@ -298,7 +298,7 @@ public class Info extends Activity {
         rankSpinner = (Spinner) findViewById(R.id.rank);
         rankSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            	wheel1Type = (parent.getItemAtPosition(pos).toString());
+            	rank = Integer.parseInt(parent.getItemAtPosition(pos).toString());
             }
             public void onNothingSelected(AdapterView<?> parent) {
               // Do nothing.
@@ -507,7 +507,7 @@ public class Info extends Activity {
 				Toast.makeText(Info.this, "Something went wrong loading data", Toast.LENGTH_SHORT).show();
     			return;
     		}
-            rankSpinner.setSelection(rank-1);
+            rankSpinner.setSelection(rank);
             if(orientation.equals(con.getString(R.string.orientationLong))){
             	orientationLong.toggle();
             } else if(orientation.equals(con.getString(R.string.orientationWide))){
