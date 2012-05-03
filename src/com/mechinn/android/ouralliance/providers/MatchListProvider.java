@@ -42,10 +42,10 @@ public class MatchListProvider extends ContentProvider {
     
     public static final String DATABASE_CREATE = "CREATE TABLE "+ TABLE +" ("+
     		DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
+    		DatabaseConnection._LASTMOD+" DATE NOT NULL, "+
 			KEY_COMPETITON+" TEXT NOT NULL, " +
 			KEY_MATCH_NUM+" INTEGER, " +
-			KEY_TIME+" REAL, " +
+			KEY_TIME+" DATE, " +
 			KEY_RED1+" INTEGER, " +
 			KEY_RED2+" INTEGER, " +
 			KEY_RED3+" INTEGER, " +

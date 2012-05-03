@@ -24,25 +24,21 @@ public class MatchScoutingProvider extends ContentProvider {
     public static final String KEY_TEAM = "team";
     public static final String KEY_SLOT = "slot";
     public static final String KEY_BROKE = "broke";
-    public static final String KEY_AUTO = "autonomous";
+    public static final String KEY_AUTO_BRIDGE = "autoBridge";
+    public static final String KEY_AUTO_SHOOTER = "autoShooter";
     public static final String KEY_BALANCE = "balanced";
     public static final String KEY_SHOOTER = "shooter";
     public static final String KEY_TOP = "top";
     public static final String KEY_MID = "mid";
     public static final String KEY_BOT = "bot";
     public static final String KEY_MISS = "miss";
-    public static final String KEY_NOTES = "notes";
-    
-    public static final String KEY_AUTO_BRIDGE = "autoBridge";
-    public static final String KEY_AUTO_SHOOTER = "autoShooter";
     public static final String KEY_TOP_AUTO = "topAuto";
     public static final String KEY_MID_AUTO = "midAuto";
     public static final String KEY_BOT_AUTO = "botAuto";
     public static final String KEY_MISS_AUTO = "missAuto";
+    public static final String KEY_NOTES = "notes";
     
-    public static final SchemaArray V5_SCHEMA_ARRAY = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
-		KEY_COMPETITION, KEY_MATCH_NUM, KEY_TEAM, KEY_SLOT, KEY_BROKE, KEY_BALANCE, KEY_SHOOTER, 
-		KEY_TOP, KEY_MID, KEY_BOT, KEY_NOTES});
+    
 
     public static final SchemaArray SCHEMA_ARRAY = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
 		KEY_COMPETITION, KEY_MATCH_NUM, KEY_TEAM, KEY_SLOT, KEY_BROKE, KEY_BALANCE, KEY_SHOOTER, 
@@ -59,19 +55,25 @@ public class MatchScoutingProvider extends ContentProvider {
     
     public static final String DATABASE_CREATE = "CREATE TABLE "+ TABLE +" ("+
     		DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
+    		DatabaseConnection._LASTMOD+" DATE NOT NULL, "+
 			KEY_COMPETITION+" TEXT NOT NULL, " +
 			KEY_MATCH_NUM+" INTEGER, " +
 			KEY_TEAM+" INTEGER, " +
 			KEY_SLOT+" TEXT, " +
 			KEY_BROKE+" INTEGER, " +
-			KEY_AUTO+" INTEGER, " +
 			KEY_BALANCE+" INTEGER, "+
 			KEY_SHOOTER+" INTEGER, " +
 			KEY_TOP+" INTEGER, " +
 			KEY_MID+" INTEGER, " +
 			KEY_BOT+" INTEGER, " +
-			KEY_NOTES+" TEXT);";
+			KEY_NOTES+" TEXT, " +
+			KEY_AUTO_BRIDGE+" INTEGER, " +
+			KEY_AUTO_SHOOTER+" INTEGER, " +
+			KEY_MISS+" INTEGER, " +
+			KEY_TOP_AUTO+" INTEGER, " +
+			KEY_MID_AUTO+" INTEGER, " +
+			KEY_BOT_AUTO+" INTEGER, " +
+			KEY_MISS_AUTO+" INTEGER);";
 
     private DatabaseConnection mDB;
 

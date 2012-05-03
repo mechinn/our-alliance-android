@@ -43,7 +43,7 @@ public class TeamRankingsProvider extends ContentProvider {
     private static final HashMap<String, String> projectionMap;
     
     public static final String DATABASE_CREATE = "CREATE TABLE "+ TABLE +" ("+DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
+    		DatabaseConnection._LASTMOD+" DATE NOT NULL, "+
 			KEY_COMPETITION+" TEXT NOT NULL, " +
 			KEY_RANK+" INTEGER, " +
 			KEY_TEAM+" INTEGER, " +

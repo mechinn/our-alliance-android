@@ -15,7 +15,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 	public static final String _COUNT = "_count";
 	public static final String _LASTMOD = "_lastmod";
 	private static final String NAME = "ourAlliance.sqlite";
-	private static final int VERSION = 7;
+	private static final int VERSION = 8;
 	private final String TAG = "DatabaseConnection";
 
 	public DatabaseConnection(Context context) {
@@ -33,6 +33,13 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     	String query;
     	switch(oldVersion+1){
 	    	default: //case 1
+	    	case 2:
+	    	case 3:
+	    	case 4:
+	    	case 5:
+	    	case 6:
+	    	case 7:
+	    	case 8: //reset db for major changes
 	    		Log.i(TAG, "v1 original tables.");
 	    		String drop = "DROP TABLE IF EXISTS ";
     			try {
@@ -66,201 +73,26 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     			} finally {
     				db.endTransaction();
     			}
-    		case 2:
-    			Log.i(TAG, "v2 added "+TeamScoutingProvider.KEY_AUTONOMOUS+" column to the "+TeamScoutingProvider.TABLE+" table.");
-    			query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_AUTONOMOUS+" INTEGER;";
-    			Log.d(TAG,query);
-        		db.execSQL(query);
-    		case 3:
-    			Log.i(TAG, "v3 added competition columns to the "+TeamScoutingProvider.TABLE+" table.");
-    			db.beginTransaction();
-    			try {
-    				for(String comp : TeamScoutingProvider.COMPETITIONS) {
-    	    			query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+comp+" INTEGER;";
-    	    			Log.d(TAG,query);
-    	        		db.execSQL(query);
-        			}
-            		
-    				db.setTransactionSuccessful();
-    				Log.d(TAG,"Transaction Successful");
-    			} finally {
-    				db.endTransaction();
-    			}
-    		case 4:
-    			Log.i(TAG, "v4 added "+TeamScoutingProvider.KEY_AVG_HOOPS+", "+TeamScoutingProvider.KEY_AVG_BALANCE+", "+TeamScoutingProvider.KEY_AVG_BROKE+" column to the "+TeamScoutingProvider.TABLE+" table.");
-        		db.beginTransaction();
-    			try {
-    				query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_AVG_HOOPS+" REAL;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-        			query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_AVG_BALANCE+" REAL;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-        			query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_AVG_BROKE+" REAL;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				db.setTransactionSuccessful();
-    				Log.d(TAG,"Transaction Successful");
-    			} finally {
-    				db.endTransaction();
-    			}
-    		case 5:
-    			Log.i(TAG, "v5 removed "+MatchScoutingProvider.KEY_AUTO+" from the "+MatchScoutingProvider.TABLE+" table.");
-    			db.beginTransaction();
-    			try {
-    				query = "CREATE TEMPORARY TABLE "+MatchScoutingProvider.TABLE+"_backup("+MatchScoutingProvider.V5_SCHEMA_ARRAY+");";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-
-					query = "INSERT INTO "+MatchScoutingProvider.TABLE+"_backup SELECT "+MatchScoutingProvider.V5_SCHEMA_ARRAY+" FROM "+MatchScoutingProvider.TABLE+";";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-					query = "DROP TABLE "+MatchScoutingProvider.TABLE+";";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-					query = "CREATE TABLE "+MatchScoutingProvider.TABLE+"("+MatchScoutingProvider.V5_SCHEMA_ARRAY+");";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-					query = "INSERT INTO "+MatchScoutingProvider.TABLE+" SELECT "+MatchScoutingProvider.V5_SCHEMA_ARRAY+" FROM "+MatchScoutingProvider.TABLE+"_backup;";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-					query = "DROP TABLE "+MatchScoutingProvider.TABLE+"_backup;";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				db.setTransactionSuccessful();
-    				Log.d(TAG,"Transaction Successful");
-    			} finally {
-    				db.endTransaction();
-    			}
-    			Log.i(TAG, "v5 added "+MatchScoutingProvider.KEY_AUTO_BRIDGE+", "+MatchScoutingProvider.KEY_AUTO_SHOOTER+", "+
-    					MatchScoutingProvider.KEY_MISS+", "+MatchScoutingProvider.KEY_TOP_AUTO+", "+MatchScoutingProvider.KEY_MID_AUTO+", "+MatchScoutingProvider.KEY_BOT_AUTO+", "+
-    					MatchScoutingProvider.KEY_MISS_AUTO+" column to the "+MatchScoutingProvider.TABLE+" table.");
-        		db.beginTransaction();
-    			try {
-    				query = "ALTER TABLE "+MatchScoutingProvider.TABLE+" ADD COLUMN "+MatchScoutingProvider.KEY_AUTO_BRIDGE+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+MatchScoutingProvider.TABLE+" ADD COLUMN "+MatchScoutingProvider.KEY_AUTO_SHOOTER+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+MatchScoutingProvider.TABLE+" ADD COLUMN "+MatchScoutingProvider.KEY_MISS+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+MatchScoutingProvider.TABLE+" ADD COLUMN "+MatchScoutingProvider.KEY_TOP_AUTO+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+MatchScoutingProvider.TABLE+" ADD COLUMN "+MatchScoutingProvider.KEY_MID_AUTO+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+MatchScoutingProvider.TABLE+" ADD COLUMN "+MatchScoutingProvider.KEY_BOT_AUTO+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+MatchScoutingProvider.TABLE+" ADD COLUMN "+MatchScoutingProvider.KEY_MISS_AUTO+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				db.setTransactionSuccessful();
-    				Log.d(TAG,"Transaction Successful");
-    			} finally {
-    				db.endTransaction();
-    			}
-    			
-    			Log.i(TAG, "v5 removed "+TeamScoutingProvider.KEY_AUTONOMOUS+" and "+TeamScoutingProvider.KEY_TURRET+" from the "+TeamScoutingProvider.TABLE+" table.");
-    			db.beginTransaction();
-    			try {
-    				query = "CREATE TEMPORARY TABLE "+TeamScoutingProvider.TABLE+"_backup("+TeamScoutingProvider.V5_SCHEMA_ARRAY+");";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-
-					query = "INSERT INTO "+TeamScoutingProvider.TABLE+"_backup SELECT "+TeamScoutingProvider.V5_SCHEMA_ARRAY+" FROM "+TeamScoutingProvider.TABLE+";";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-					query = "DROP TABLE "+TeamScoutingProvider.TABLE+";";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-					query = "CREATE TABLE "+TeamScoutingProvider.TABLE+"("+TeamScoutingProvider.V5_SCHEMA_ARRAY+");";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-					query = "INSERT INTO "+TeamScoutingProvider.TABLE+" SELECT "+TeamScoutingProvider.V5_SCHEMA_ARRAY+" FROM "+TeamScoutingProvider.TABLE+"_backup;";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-					query = "DROP TABLE "+TeamScoutingProvider.TABLE+"_backup;";
-    				Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				db.setTransactionSuccessful();
-    				Log.d(TAG,"Transaction Successful");
-    			} finally {
-    				db.endTransaction();
-    			}
-    			Log.i(TAG, "v5 added "+TeamScoutingProvider.KEY_RANK+", "+TeamScoutingProvider.KEY_WIDTH+", "+TeamScoutingProvider.KEY_HEIGHT+", "+
-    					TeamScoutingProvider.KEY_AUTO_BRIDGE+", "+TeamScoutingProvider.KEY_AUTO_SHOOTER+", "+TeamScoutingProvider.KEY_SHOOTING_RATING+", "+TeamScoutingProvider.KEY_BALANCING_RATING+", "+
-    					TeamScoutingProvider.KEY_AVG_AUTO+" column to the "+TeamScoutingProvider.TABLE+" table.");
-        		db.beginTransaction();
-    			try {
-    				query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_RANK+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_WIDTH+" REAL;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_HEIGHT+" REAL;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_AUTO_BRIDGE+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_AUTO_SHOOTER+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_SHOOTING_RATING+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_BALANCING_RATING+" INTEGER;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_AVG_AUTO+" REAL;";
-        			Log.d(TAG,query);
-            		db.execSQL(query);
-            		
-    				db.setTransactionSuccessful();
-    				Log.d(TAG,"Transaction Successful");
-    			} finally {
-    				db.endTransaction();
-    			}
-    		case 6:
-    			Log.i(TAG, "v6 added "+TeamScoutingProvider.KEY_THIS+" column to the "+TeamScoutingProvider.TABLE+" table.");
-    			query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_THIS+" INTEGER;";
-    			Log.d(TAG,query);
-        		db.execSQL(query);
-    		case 7:
-    			Log.i(TAG, "v7 added "+TeamScoutingProvider.KEY_TURRET+" column to the "+TeamScoutingProvider.TABLE+" table.");
-    			query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_TURRET+" INTEGER;";
-    			Log.d(TAG,query);
-        		db.execSQL(query);
+    		
+//    			Log.i(TAG, "v2 added "+TeamScoutingProvider.KEY_AUTONOMOUS+" column to the "+TeamScoutingProvider.TABLE+" table.");
+//    			query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+TeamScoutingProvider.KEY_AUTONOMOUS+" INTEGER;";
+//    			Log.d(TAG,query);
+//        		db.execSQL(query);
+//    		
+//    			Log.i(TAG, "v3 added competition columns to the "+TeamScoutingProvider.TABLE+" table.");
+//    			db.beginTransaction();
+//    			try {
+//    				for(String comp : TeamScoutingProvider.COMPETITIONS) {
+//    	    			query = "ALTER TABLE "+TeamScoutingProvider.TABLE+" ADD COLUMN "+comp+" INTEGER;";
+//    	    			Log.d(TAG,query);
+//    	        		db.execSQL(query);
+//        			}
+//            		
+//    				db.setTransactionSuccessful();
+//    				Log.d(TAG,"Transaction Successful");
+//    			} finally {
+//    				db.endTransaction();
+//    			}
     	}
     }
     

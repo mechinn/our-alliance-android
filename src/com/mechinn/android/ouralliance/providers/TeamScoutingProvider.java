@@ -20,7 +20,10 @@ public class TeamScoutingProvider extends ContentProvider {
     public static final String TABLE = "teamScouting";
     
     public static final String KEY_TEAM = "team";
+    public static final String KEY_RANK = "rank";
     public static final String KEY_ORIENTATION = "orientation";
+    public static final String KEY_WIDTH = "width";
+    public static final String KEY_HEIGHT = "height";
     public static final String KEY_NUM_WHEELS = "numWheels";
     public static final String KEY_WHEEL_TYPES = "wheelTypes";
     public static final String KEY_DEAD_WHEEL = "deadWheel";
@@ -31,33 +34,22 @@ public class TeamScoutingProvider extends ContentProvider {
     public static final String KEY_DEAD_WHEEL_TYPE = "deadWheelType";
     public static final String KEY_TURRET = "turret";
     public static final String KEY_TRACKING = "tracking";
-    public static final String KEY_FENDER_SHOOTER = "fendershooter";
-    public static final String KEY_KEY_SHOOTER = "keyshooter";
+    public static final String KEY_FENDER_SHOOTER = "fenderShooter";
+    public static final String KEY_KEY_SHOOTER = "keyShooter";
     public static final String KEY_BARRIER = "barrier";
     public static final String KEY_CLIMB = "climb";
     public static final String KEY_NOTES = "notes";
-    public static final String KEY_THIS = "This";
-    
-    public static final String KEY_AUTONOMOUS = "autonomous";
-    public static final String KEY_AVG_HOOPS = "avghoops";
-    public static final String KEY_AVG_BALANCE = "avgbalance";
-    public static final String KEY_AVG_BROKE = "avgbroke";
-    public static final String KEY_RANK = "rank";
-    public static final String KEY_WIDTH = "width";
-    public static final String KEY_HEIGHT = "height";
     public static final String KEY_AUTO_BRIDGE = "autoBridge";
     public static final String KEY_AUTO_SHOOTER = "autoShooter";
     public static final String KEY_SHOOTING_RATING = "shooting";
     public static final String KEY_BALANCING_RATING = "balancing";
     public static final String KEY_AVG_AUTO = "avgAuto";
+    public static final String KEY_AVG_HOOPS = "avgHoops";
+    public static final String KEY_AVG_BALANCE = "avgBalance";
+    public static final String KEY_AVG_BROKE = "avgBroke";
+    public static final String KEY_THIS = "This";
     
     public static final String[] COMPETITIONS = new String[] {"CT"};
-    
-    public static final SchemaArray V5_SCHEMA_ARRAY = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
-		KEY_TEAM, KEY_ORIENTATION, KEY_NUM_WHEELS, KEY_WHEEL_TYPES, 
-		KEY_DEAD_WHEEL, KEY_WHEEL1_TYPE, KEY_WHEEL1_DIAMETER, 
-		KEY_WHEEL2_TYPE, KEY_WHEEL2_DIAMETER, KEY_DEAD_WHEEL_TYPE, KEY_TRACKING, KEY_FENDER_SHOOTER, KEY_KEY_SHOOTER, 
-		KEY_BARRIER, KEY_CLIMB, KEY_NOTES, KEY_AVG_HOOPS, KEY_AVG_BALANCE, KEY_AVG_BROKE}, COMPETITIONS);
     
     public static final SchemaArray SCHEMA_ARRAY = new SchemaArray(new String[] {DatabaseConnection._ID, DatabaseConnection._LASTMOD, 
     		KEY_TEAM, KEY_RANK, KEY_ORIENTATION, KEY_WIDTH, KEY_HEIGHT, KEY_NUM_WHEELS, KEY_WHEEL_TYPES, 
@@ -84,16 +76,19 @@ public class TeamScoutingProvider extends ContentProvider {
     }
     
     public static final String DATABASE_CREATE = "CREATE TABLE "+ TABLE +" ("+DatabaseConnection._ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    		DatabaseConnection._LASTMOD+" INTEGER NOT NULL, "+
+    		DatabaseConnection._LASTMOD+" DATE NOT NULL, "+
 			KEY_TEAM+" INTEGER NOT NULL UNIQUE, " +
+			KEY_RANK+" INTEGER, " +
 			KEY_ORIENTATION+" TEXT, " +
+			KEY_WIDTH+" REAL, " +
+			KEY_HEIGHT+" REAL, " +
 			KEY_NUM_WHEELS+" INTEGER, " +
 			KEY_WHEEL_TYPES+" INTEGER, " +
 			KEY_DEAD_WHEEL+" INTEGER, " +
 			KEY_WHEEL1_TYPE+" TEXT, " +
-			KEY_WHEEL1_DIAMETER+" INTEGER, " +
+			KEY_WHEEL1_DIAMETER+" REAL, " +
 			KEY_WHEEL2_TYPE+" TEXT, " +
-			KEY_WHEEL2_DIAMETER+" INTEGER, " +
+			KEY_WHEEL2_DIAMETER+" REAL, " +
 			KEY_DEAD_WHEEL_TYPE+" TEXT, " +
 			KEY_TURRET+" INTEGER, " +
 			KEY_TRACKING+" INTEGER, " +
@@ -101,7 +96,16 @@ public class TeamScoutingProvider extends ContentProvider {
 			KEY_KEY_SHOOTER+" INTEGER, " +
 			KEY_BARRIER+" INTEGER, " +
 			KEY_CLIMB+" INTEGER, " +
-			KEY_NOTES+" TEXT);";
+			KEY_NOTES+" TEXT, " +
+			KEY_AUTO_BRIDGE+" INTEGER, " +
+    		KEY_AUTO_SHOOTER+" INTEGER, " +
+			KEY_SHOOTING_RATING+" REAL, " +
+    		KEY_BALANCING_RATING+" REAL, " +
+			KEY_AVG_AUTO+" REAL, " +
+    		KEY_AVG_HOOPS+" REAL, " +
+			KEY_AVG_BALANCE+" REAL, " + 
+    		KEY_AVG_BROKE+" REAL, " +
+    		KEY_THIS+" INTEGER);";
 
     private DatabaseConnection mDB;
 
