@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/settings" android:title="@string/settings" android:orderInCategory="5"></item>
-    <item android:id="@+id/refresh" android:title="@string/refresh" android:orderInCategory="1"></item>
-    <item android:id="@+id/addTeam" android:title="@string/addTeam" android:orderInCategory="2"></item>
-    <item android:id="@+id/allTeams" android:title="@string/allTeams" android:checkable="true" android:orderInCategory="4"></item>
-    <item android:id="@+id/deleteTeam" android:title="@string/deleteTeam" android:orderInCategory="3"></item>
-
-</menu>

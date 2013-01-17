@@ -1,147 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Our Alliance</string>
-    <string name="scouting">Scouting</string>
-    <string name="teams">Teams</string>
-    <string name="settings">Settings</string>
-    <string name="pullfrc">Pull FRC Data</string>
-    <string name="teamInfo">Team Info</string>
-    <string-array name="driveTrainTypes">
-        <item >CIM-U-LATOR</item>
-        <item >ToughBox</item>
-        <item >Bainbots</item>
-        <item >Other</item>
-    </string-array>
-    <string-array name="wheelTypes">
-        <item >Kit</item>
-        <item >Traction</item>
-        <item >Mechanum</item>
-        <item >Omni</item>
-        <item >Slick</item>
-        <item >Tire</item>
-        <item >Track</item>
-        <item >Other</item>
-    </string-array>
-    <string-array name="deadWheelTypes">
-        <item >Kit</item>
-        <item >Traction</item>
-        <item >Mechanum</item>
-        <item >Omni</item>
-        <item >Slick</item>
-        <item >Tire</item>
-        <item >Caster</item>
-        <item >Other</item>
-    </string-array>
-    <string-array name="teamsSchema">
-        <item >_id</item>
-        <item >_lastMod</item>
-        <item >team</item>
-        <item >orientation</item>
-        <item >numWheels</item>
-        <item >wheelTypes</item>
-        <item >deadWheel</item>
-        <item >wheel1Type</item>
-        <item >wheel1Diameter</item>
-        <item >wheel2Type</item>
-        <item >wheel2Diameter</item>
-        <item >deadWheelType</item>
-        <item >turret</item>
-        <item >tracking</item>
-        <item >fender</item>
-        <item >key</item>
-        <item >barrier</item>
-        <item >climb</item>
-        <item >notes</item>
-    </string-array>
-    <string name="teamLabel">Team: </string>
-    <string name="orientation">Frame Orientation: </string>
-    <string name="orientationLong">Long</string>
-    <string name="orientationWide">Wide</string>
-    <string name="orientationSquare">Square</string>
-    <string name="orientationOther">Other</string>
-    <string name="wheelLabel">Number of Wheels: </string>
-    <string name="typeLabel">Wheel Types: </string>
-    <string name="hasDeadWheel">Dead Wheel</string>
-    <string name="wheelTypeLabel">Wheel Type</string>
-    <string name="wheelDiameterLabel">Wheel Diameter (inches)</string>
-    <string name="turretShooter">Turret Shooter</string>
-    <string name="autoTracking">Auto Tracking</string>
-    <string name="fenderShooter">Fender Shooter</string>
-    <string name="keyShooter">Key Shooter</string>
-    <string name="crossesBarrier">Crosses Barrier</string>
-    <string name="climbBridge">Climb Bridge</string>
-    <string name="autonomous">Autonomous</string>
-    <string name="notesLabel">Other Notes:</string>
-    <string name="save">Save</string>
-    <string name="discard">Discard</string>
-    <string name="one">1</string>
-    <string name="two">2</string>
-    <string name="teamPic">Team Picture</string>
-    <string name="takePic">Take Picture</string>
-    <string name="portLabel">Port: </string>
-    <string name="deletePic">Delete Picture</string>
-    <string name="refresh">Refresh</string>
-    <string name="subAutoScore">- Autonomous</string>
-    <string name="addAutoScore">+ Autonomous</string>
-    <string name="subTopScore">- Top</string>
-    <string name="addTopScore">+ Top</string>
-    <string name="subMidScore">- Middle</string>
-    <string name="addMidScore">+ Middle</string>
-    <string name="subBotScore">- Bottom</string>
-    <string name="addBotScore">+ Bottom</string>
-    <string name="subMiss">- Miss</string>
-    <string name="addMiss">+ Miss</string>
-    <string name="noShooting">No Shooting</string>
-    <string name="dunker">Dunker</string>
-    <string name="shooter">Shooter</string>
-    <string name="zero">0</string>
-    <string name="balanced">Balanced</string>
-    <string name="broke">Broke</string>
-    <string name="matchSlotLabel">Slot: </string>
-    <string name="matchList">Match List</string>
-    <string name="matchScouting">Match Scouting</string>
-    <string name="teamRankings">Team Rankings</string>
-    <string name="matchTeamImg">Team Image</string>
-    <string name="addMatch">Add Match</string>
-    <string name="red1Label">Red 1: </string>
-    <string name="red2Label">Red 2: </string>
-    <string name="red3Label">Red 3: </string>
-    <string name="blue1Label">Blue 1: </string>
-    <string name="blue2Label">Blue 2: </string>
-    <string name="blue3Label">Blue 3: </string>
-    <string name="matchNumLabel">Match #: </string>
-    <string name="timeLabel">Time: </string>
-    <string name="cancel">Cancel</string>
-    <string name="add">Add</string>
-    <string name="nextMatch">Next</string>
-    <string name="previousMatch">Previous</string>
-    <string name="addTeam">Add Team</string>
-    <string name="pickComp">Choose Competitions</string>
-    <string name="allTeams">Show All Teams</string>
-    <string name="avgHoops">Avg Hoop Pts: </string>
-    <string name="avgBroke">Avg Matches Broke: </string>
-    <string name="avgBalance">Avg Matches Balanced: </string>
-    <string name="deleteMatch">Delete Match</string>
-    <string name="deleteTeam">Delete Team</string>
-    <string name="resetDB">Reset Database</string>
-    <string name="exportCSV">Export Database to CSV on SDCard</string>
-    <string name="host">Host: </string>
-    <string name="username">Username: </string>
-    <string name="password">Password: </string>
-    <string name="port">Port: </string>
-    <string name="exportCSVSend">Export CSV and send to FTP server</string>
-    <string name="scouter">Scouter: </string>
-    <string name="frameWidth">Frame Width: </string>
-    <string name="frameHeight">Frame Depth: </string>
-    <string name="rank">Rank: </string>
-    <string name="driveTrainLabel">Drive Train Type: </string>
-    <string name="autoBridge">Autonomous Bridge</string>
-    <string name="autoShooter">Autonomous Shooter</string>
-    <string name="teleoperated">Teleoperated</string>
-    <string name="mode">Mode: </string>
-    <string name="avgAuto">Average Autonomous: </string>
-    <string name="shootingLabel">Shooting: </string>
-    <string name="balacingLabel">Balancing: </string>
-    <string name="back">Back</string>
-    <string name="changelog">ChangeLog</string>
+    <string name="title_team_detail">Team Detail</string>
+	<string name="provider_name">Our Alliance Data</string>
+	<string name="deleteTeam">Delete Team?</string>
+	<string name="delete">Delete</string>
+	<string name="cancel">Cancel</string>
+	<string name="teamNumber">Team Number</string>
+	<string name="teamName">Team Name</string>
+	<string name="create">Create</string>
+	<string name="update">Update</string>
+	
+	<string name="title_next_screen_toggle_preference">Toggle preference</string>
+    <string name="summary_next_screen_toggle_preference">Preference that is on the next screen but same hierarchy</string>
+	<string name="inline_preferences">In-line preferences</string>
+    <string name="dialog_based_preferences">Dialog-based preferences</string>
+    <string name="launch_preferences">Launch preferences</string>
+    <string name="preference_attributes">Preference attributes</string>
+    <string name="title_toggle_preference">Toggle preference</string>
+    <string name="summary_toggle_preference">This is a toggle button</string>
+    <string name="title_edittext_preference">Edit text preference</string>
+    <string name="summary_edittext_preference">An example that uses an edit text dialog</string>
+    <string name="dialog_title_edittext_preference">Enter your favorite animal</string>
+    <string name="title_list_preference">List preference</string>
+    <string name="summary_list_preference">An example that uses a list dialog</string>
+    <string name="dialog_title_list_preference">Choose one</string>
+    <string name="title_fragment_preference">Fragment preference</string>
+    <string name="summary_fragment_preference">Shows another fragment of preferences</string>
+    <string name="title_parent_preference">Parent toggle</string>
+    <string name="summary_parent_preference">This is visually a parent</string>
+    <string name="title_child_preference">Child toggle</string>
+    <string name="summary_child_preference">This is visually a child</string>
+    <string name="title_intent_preference">Intent preference</string>
+    <string name="summary_intent_preference">Launches an Activity from an Intent</string>
+    <string name="example_preference_dependency">Example preference dependency</string>
+    <string name="title_wifi">WiFi</string>
+    <string name="title_wifi_settings">WiFi settings</string>
+    <string name="title_my_preference">My preference</string>
+    <string name="summary_my_preference">This is a custom counter preference</string>
+    <string name="title_advanced_toggle_preference">Haunted preference</string>
+    <string name="summary_on_advanced_toggle_preference">I\'m on! :)</string>
+    <string name="summary_off_advanced_toggle_preference">I\'m off! :(</string>
+
 </resources>

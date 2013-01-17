@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="Our Alliance">
+		<ListPreference
+			android:key="@string/pref_season"
+			android:title="FRC Season"
+			android:summary="Select the season to scout"
+			android:entries="@array/entries_list_preference"
+			android:entryValues="@array/entryvalues_list_preference"
+			android:dialogTitle="FRC Season" android:defaultValue="2013"/>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="About">
+		<Preference
+			android:key="@string/pref_resetDB"
+			android:title="Reset DB"
+			android:summary="Reset Our Alliance's DB" />
+		<Preference
+			android:key="@string/pref_changeLog"
+			android:title="Change Log" />pref_
+		<Preference
+			android:key="@string/pref_about"
+			android:title="About" />
+	</PreferenceCategory>
+</PreferenceScreen>
