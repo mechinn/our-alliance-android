@@ -17,9 +17,9 @@ import java.util.List;
 
 import com.mechinn.android.ouralliance.Database;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.SeasonDataSource;
-import com.mechinn.android.ouralliance.TeamDataSource;
 import com.mechinn.android.ouralliance.data.Season;
+import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
+import com.mechinn.android.ouralliance.data.source.TeamDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 /**

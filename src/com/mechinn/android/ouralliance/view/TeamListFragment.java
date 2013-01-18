@@ -1,11 +1,14 @@
 package com.mechinn.android.ouralliance.view;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,10 +18,11 @@ import android.widget.SimpleCursorAdapter;
 import com.mechinn.android.ouralliance.Database;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.SeasonDataSource;
-import com.mechinn.android.ouralliance.TeamDataSource;
+import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
+import com.mechinn.android.ouralliance.data.source.TeamDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 /**
@@ -75,15 +79,12 @@ public class TeamListFragment extends ListFragment {
 	 * nothing. Used only when this fragment is not attached to an activity.
 	 */
 	private static Listener sDummyCallbacks = new Listener() {
-		@Override
 		public void onItemSelected(Team team) {
 		}
 
-		@Override
 		public void deleteTeam(Team team) {
 		}
 
-		@Override
 		public void insertTeam(Team team) {
 		}
 	};
@@ -110,10 +111,14 @@ public class TeamListFragment extends ListFragment {
 //			datasource.createTeam(869, "Power Cord");
 //			prefs.setDbSetup(true);
 //		} else {
-			new Database(this.getActivity()).reset();
 			try {
 				teamData.editTeam(new Team(869, "Power Cord"));
-				seasonData.editSeason(new Season(2013, "Test Comp"));
+				teamData.editTeam(new Team(1676, "Pioneers"));
+				teamData.editTeam(new Team(3637, "The Daleks"));
+				teamData.editTeam(new Team(25, "Raider Robotix"));
+				teamData.editTeam(new Team(75, "RoboRaiders"));
+				teamData.editTeam(new Team(11, "Chief Delphi"));
+				seasonData.editSeason(new Season(2013, "Ultimate Ascent"));
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (OurAllianceException e) {

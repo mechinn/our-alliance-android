@@ -1,9 +1,10 @@
-package com.mechinn.android.ouralliance;
+package com.mechinn.android.ouralliance.data.source;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.mechinn.android.ouralliance.Database;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
@@ -72,6 +73,20 @@ public class TeamScoutingDataSource {
 	public TeamScouting getTeamScouting(long id) throws IllegalArgumentException, OurAllianceException {
 		TeamScouting scouting;
 		Cursor cursor = database.query(TeamScouting.TABLE, TeamScouting.ALLCOLUMNS, BaseColumns._ID + " = " + id, null, null, null, null, null);
+		if(cursor.getCount()==1) {
+			cursor.moveToFirst();
+			scouting = cursorToTeamScouting(cursor);
+		} else if(cursor.getCount()==0) {
+			throw new OurAllianceException(TAG,"Team scouting not found in db.",new NoObjectsThrowable());
+		} else {
+			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+		}
+		cursor.close();
+		return scouting;
+	}
+	public TeamScouting getTeamScouting(Team team, Season season) throws IllegalArgumentException, OurAllianceException {
+		TeamScouting scouting;
+		Cursor cursor = database.query(TeamScouting.TABLE, TeamScouting.ALLCOLUMNS, TeamScouting.TEAM + " = " + team.getId() + " AND " + TeamScouting.SEASON + " = " + season.getId(), null, null, null, null, null);
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
 			scouting = cursorToTeamScouting(cursor);

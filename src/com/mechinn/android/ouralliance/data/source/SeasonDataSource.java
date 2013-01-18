@@ -1,9 +1,10 @@
-package com.mechinn.android.ouralliance;
+package com.mechinn.android.ouralliance.data.source;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.mechinn.android.ouralliance.Database;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
@@ -56,6 +57,20 @@ public class SeasonDataSource {
 	public Season getSeason(long id) throws IllegalArgumentException, OurAllianceException {
 		Season season;
 		Cursor cursor = database.query(Season.TABLE, Season.ALLCOLUMNS, BaseColumns._ID + " = " + id, null, null, null, null, null);
+		if(cursor.getCount()==1) {
+			cursor.moveToFirst();
+			season = cursorToSeason(cursor);
+		} else if(cursor.getCount()==0) {
+			throw new OurAllianceException(TAG,"Season not found in db.",new NoObjectsThrowable());
+		} else {
+			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+		}
+		cursor.close();
+		return season;
+	}
+	public Season getSeason(int year) throws IllegalArgumentException, OurAllianceException {
+		Season season;
+		Cursor cursor = database.query(Season.TABLE, Season.ALLCOLUMNS, Season.YEAR + " = " + year, null, null, null, null, null);
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
 			season = cursorToSeason(cursor);

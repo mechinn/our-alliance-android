@@ -1,8 +1,12 @@
 package com.mechinn.android.ouralliance.view;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.R.id;
 import com.mechinn.android.ouralliance.R.layout;
+import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Team;
 
 import android.app.Activity;
@@ -10,7 +14,10 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.ListFragment;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -39,7 +46,7 @@ import android.widget.Toast;
  * interface to listen for item selections.
  */
 public class TeamListActivity extends Activity implements TeamListFragment.Listener, DeleteTeamDialogFragment.Listener, InsertTeamDialogFragment.Listener {
-
+	public static final String TAG = "TeamListActivity";
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
 	 * device.
@@ -49,6 +56,23 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        String packageName = this.getPackageName();
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+	        File externalPath = Environment.getExternalStorageDirectory();
+	        File picDir = new File(externalPath.getAbsolutePath() +  "/Android/data/" + packageName + "/files");
+	        Utility.deleteRecursive(picDir);
+//	        picDir = new File(picDir.getAbsolutePath()+"/teamPic/2012/"+Integer.toString(team)+"/");
+	        if(!picDir.exists()) {
+	        	picDir.mkdirs();
+	        }
+        }
+
+		if(SQLiteDatabase.deleteDatabase(this.getDatabasePath("ourAlliance.sqlite"))) {
+			Log.d(TAG,"deleted db");
+		} else {
+			Log.d(TAG,"did not delete db");
+		}
 
 		setContentView(R.layout.activity_team_list);
 
@@ -65,15 +89,12 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 				.findFragmentById(R.id.team_list))
 				.setActivateOnItemClick(true);
 		}
-
-		// TODO: If exposing deep links into your app, handle intents here.
 	}
 	
 	/**
 	 * Callback method from {@link TeamListFragment.Callbacks} indicating that
 	 * the item with the given ID was selected.
 	 */
-	@Override
 	public void onItemSelected(Team team) {
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
@@ -153,7 +174,6 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	    }
 	}
 	
-	@Override
 	public void insertTeam(Team team) {
         // The user selected the headline of an article from the HeadlinesFragment
         // Do something here to display that article
@@ -167,7 +187,6 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
         }
     }
 	
-	@Override
 	public void deleteTeam(Team team) {
         // The user selected the headline of an article from the HeadlinesFragment
         // Do something here to display that article
@@ -181,22 +200,18 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
         }
     }
 
-	@Override
 	public void onInsertDialogPositiveClick(Team team) {
 		this.insertTeam(team);
 	}
 
-	@Override
 	public void onInsertDialogNegativeClick(DialogFragment dialog, int id) {
 		dialog.getDialog().cancel();
 	}
 
-	@Override
 	public void onDeleteDialogPositiveClick(Team team) {
 		this.deleteTeam(team);
 	}
 
-	@Override
 	public void onDeleteDialogNegativeClick(DialogFragment dialog, int id) {
 		dialog.getDialog().cancel();
 		

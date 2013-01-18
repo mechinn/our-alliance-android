@@ -5,8 +5,6 @@
 			android:key="@string/pref_season"
 			android:title="FRC Season"
 			android:summary="Select the season to scout"
-			android:entries="@array/entries_list_preference"
-			android:entryValues="@array/entryvalues_list_preference"
 			android:dialogTitle="FRC Season" android:defaultValue="2013"/>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="About">

@@ -1,9 +1,10 @@
-package com.mechinn.android.ouralliance;
+package com.mechinn.android.ouralliance.data.source;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.mechinn.android.ouralliance.Database;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;

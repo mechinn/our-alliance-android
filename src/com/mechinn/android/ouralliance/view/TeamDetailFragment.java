@@ -8,10 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.R.id;
 import com.mechinn.android.ouralliance.R.layout;
+import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.TeamScouting;
+import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
+import com.mechinn.android.ouralliance.data.source.TeamScoutingDataSource;
+import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 /**
  * A fragment representing a single Team detail screen. This fragment is either
@@ -19,14 +25,14 @@ import com.mechinn.android.ouralliance.data.Team;
  * {@link TeamDetailActivity} on handsets.
  */
 public class TeamDetailFragment extends Fragment {
-	private static final String tag = "TeamDetailFragment";
+	private static final String TAG = "TeamDetailFragment";
 	/**
 	 * The fragment argument representing the item ID that this fragment
 	 * represents.
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
 	
-	private Team team;
+	private TeamScouting scouting;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -39,20 +45,39 @@ public class TeamDetailFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (getArguments().containsKey(ARG_ITEM_ID)) {
-			team = (Team) getArguments().getSerializable(ARG_ITEM_ID);
+		Prefs prefs = new Prefs(this.getActivity());
+		int year = prefs.getSeason();
+		Log.d(TAG, "year: "+year);
+		SeasonDataSource seasonData = new SeasonDataSource(this.getActivity());
+		seasonData.open();
+		try {
+			Season season = seasonData.getSeason(year);
+			TeamScoutingDataSource teamScoutingData = new TeamScoutingDataSource(this.getActivity());
+			teamScoutingData.open();
+			if (getArguments().containsKey(ARG_ITEM_ID)) {
+				Team team = (Team) getArguments().getSerializable(ARG_ITEM_ID);
+				scouting = teamScoutingData.getTeamScouting(team, season);
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_team_detail,
-				container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_team_detail, container, false);
 
-		// Show the dummy content as text in a TextView.
-		if (team != null) {
-			((TextView) rootView.findViewById(R.id.team_detail)).setText(team.toString());
+		if (scouting != null) {
+			((TextView) rootView.findViewById(R.id.rank)).setText(Integer.toString(scouting.getRank()));
+			((TextView) rootView.findViewById(R.id.teamNumber)).setText(Integer.toString(scouting.getTeam().getNumber()));
+			((TextView) rootView.findViewById(R.id.teamName)).setText(scouting.getTeam().getName());
+			((TextView) rootView.findViewById(R.id.orientation)).setText(scouting.getOrientation());
+			((TextView) rootView.findViewById(R.id.width)).setText(Integer.toString(scouting.getWidth()));
+			((TextView) rootView.findViewById(R.id.length)).setText(Integer.toString(scouting.getLength()));
+			((TextView) rootView.findViewById(R.id.height)).setText(Integer.toString(scouting.getHeight()));
+			((TextView) rootView.findViewById(R.id.notes)).setText(scouting.getNotes());
 		}
 
 		return rootView;
