@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.view.DeleteTeamDialogFragment.Listener;
 
 public class InsertTeamDialogFragment extends DialogFragment {
 	public static final String tag = "InsertTeamDialog";
@@ -22,7 +21,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface Listener {
-        public void onInsertDialogPositiveClick(Team team);
+        public void onInsertDialogPositiveClick(boolean update, Team team);
         public void onInsertDialogNegativeClick(DialogFragment dialog, int id);
     }
     
@@ -31,6 +30,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
     private TextView teamNumber;
     private TextView teamName;
     private Team team;
+    private boolean update;
     
     @Override
     public void onAttach(Activity activity) {
@@ -59,9 +59,11 @@ public class InsertTeamDialogFragment extends DialogFragment {
     		teamNumber.setText(Integer.toString(team.getNumber()));
     		teamName.setText(team.getName());
     		yes = R.string.update;
+    		update = true;
 		} catch(NullPointerException e) {
 			team = new Team();
 			yes = R.string.create;
+			update = false;
 		}
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
@@ -75,7 +77,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
 					}
 					team.setNumber(num);
 					team.setName(teamName.getText().toString());
-					listener.onInsertDialogPositiveClick(team);
+					listener.onInsertDialogPositiveClick(update, team);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.mechinn.android.ouralliance.Database;
 import com.mechinn.android.ouralliance.data.Competition;
@@ -39,30 +39,46 @@ public class CompetitionDataSource {
 		db.close();
 	}
 
-	public Competition editCompetition(Competition competition) throws IllegalArgumentException, OurAllianceException {
-		ContentValues values = new ContentValues();
-		values.put(Database.MODIFIED, new Date().getTime());
-		values.put(Competition.SEASON, competition.getSeason().getId());
-		values.put(Competition.NAME, competition.getName());
-		values.put(Competition.CODE, competition.getCode());
-		long id;
-		if(competition.getId()==0) {
-			id = database.insert(Competition.TABLE, null, values);
+	public Competition insert(Competition competition) throws IllegalArgumentException, OurAllianceException {
+		this.open();
+		long id = database.insert(Competition.TABLE, null, competition.toCV());
+		this.close();
+		if(id!=-1) {
+			Log.d(TAG, "insert "+competition);
 		} else {
-			id = database.update(Competition.TABLE, values, BaseColumns._ID + " = " + competition.getId(), null);
+			Log.d(TAG, "did not insert "+competition);
 		}
-		return getCompetition(id);
-	}
-
-	public void deleteCompetition(Competition competition) {
-		long id = competition.getId();
-		System.out.println("Comment deleted with id: " + id);
-		database.delete(Competition.TABLE, BaseColumns._ID + " = " + id, null);
+		return get(id);
 	}
 	
-	public Competition getCompetition(long id) throws IllegalArgumentException, OurAllianceException {
+	public int update(Competition competition) throws IllegalArgumentException, OurAllianceException {
+		this.open();
+		int count = database.update(Competition.TABLE, competition.toCV(), BaseColumns._ID + " = " + competition.getId(), null);
+		this.close();
+		Log.d(TAG, "updated "+count+" competitions from "+competition);
+		return count;
+	}
+
+	public int delete(Competition competition) {
+		this.open();
+		int count = database.delete(Competition.TABLE, BaseColumns._ID + " = " + competition.getId(), null);
+		this.close();
+		Log.d(TAG, "deleted "+count+" from "+competition);
+		return count;
+	}
+	
+	public Competition get(long id) throws IllegalArgumentException, OurAllianceException {
+		return getWhere(BaseColumns._ID + " = " + id);
+	}
+	
+	public Competition get(String code) throws IllegalArgumentException, OurAllianceException {
+		return getWhere(Competition.CODE + " = '" + code + "'");
+	}
+	
+	private Competition getWhere(String where) throws IllegalArgumentException, OurAllianceException {
 		Competition competition;
-		Cursor cursor = database.query(Competition.TABLE, Competition.ALLCOLUMNS, BaseColumns._ID + " = " + id, null, null, null, null, null);
+		this.open();
+		Cursor cursor = database.query(Competition.TABLE, Competition.ALLCOLUMNS, where, null, null, null, null, null);
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
 			competition = cursorToCompetition(cursor);
@@ -72,14 +88,22 @@ public class CompetitionDataSource {
 			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
 		}
 		cursor.close();
+		this.close();
 		return competition;
 	}
+	
+	public List<Competition> getAll() throws IllegalArgumentException, OurAllianceException {
+		return getAllWhere(null);
+	}
+	
+	public List<Competition> getAll(Competition comp) throws IllegalArgumentException, OurAllianceException {
+		return getAllWhere(Competition.SEASON + " = " + comp.getId());
+	}
 
-	public List<Competition> getAllCompetitions() throws IllegalArgumentException, OurAllianceException {
+	private List<Competition> getAllWhere(String where) throws IllegalArgumentException, OurAllianceException {
 		List<Competition> comps = new ArrayList<Competition>();
-	
-		Cursor cursor = database.query(Competition.TABLE, Competition.ALLCOLUMNS, null, null, null, null, null);
-	
+		this.open();
+		Cursor cursor = database.query(Competition.TABLE, Competition.ALLCOLUMNS, where, null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Competition competition = cursorToCompetition(cursor);
@@ -91,6 +115,7 @@ public class CompetitionDataSource {
 		}
 		// Make sure to close the cursor
 		cursor.close();
+		this.close();
 		return comps;
 	}
 
@@ -99,7 +124,7 @@ public class CompetitionDataSource {
 		competition.setId(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)));
 		competition.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Database.MODIFIED))));
 		try {
-			competition.setSeason(seasonData.getSeason(cursor.getLong(cursor.getColumnIndexOrThrow(Competition.SEASON))));
+			competition.setSeason(seasonData.get(cursor.getLong(cursor.getColumnIndexOrThrow(Competition.SEASON))));
 		} catch (Exception e) {
 			throw new OurAllianceException("Unable to lookup season referenced in this team scouting");
 		}

@@ -6,10 +6,11 @@ import java.util.Date;
 import com.mechinn.android.ouralliance.DataProvider;
 import com.mechinn.android.ouralliance.Database;
 
+import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public class Team implements Serializable {
+public class Team implements Serializable, Comparable<Team> {
 	public static final String CLASS = "Team";
 	public static final String TABLE = "team";
 	public static final String NUMBER = "number";
@@ -69,5 +70,15 @@ public class Team implements Serializable {
 	}
 	public String toString() {
 		return this.number+": "+name;
+	}
+	public int compareTo(Team another) {
+		return this.getNumber() - another.getNumber();
+	}
+	public ContentValues toCV() {
+		ContentValues values = new ContentValues();
+		values.put(Database.MODIFIED, new Date().getTime());
+		values.put(Team.NUMBER, this.getNumber());
+		values.put(Team.NAME, this.getName());
+		return values;
 	}
 }

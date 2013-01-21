@@ -1,28 +1,29 @@
 package com.mechinn.android.ouralliance.view;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
-import com.mechinn.android.ouralliance.Database;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.Utility;
+import com.mechinn.android.ouralliance.data.Competition;
+import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.TeamScouting;
+import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
+import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamDataSource;
+import com.mechinn.android.ouralliance.data.source.TeamScoutingDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 /**
@@ -36,7 +37,7 @@ import com.mechinn.android.ouralliance.error.OurAllianceException;
  */
 public class TeamListFragment extends ListFragment {
 	
-	private static final String tag = "TeamListFragment";
+	private static final String TAG = "TeamListFragment";
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -54,11 +55,15 @@ public class TeamListFragment extends ListFragment {
 	 * The current activated item position. Only used on tablets.
 	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
-	private SimpleCursorAdapter adapter;
-	private TeamDataSource teamData;
-	private SeasonDataSource seasonData;
 	private List<Team> teams;
 	private Prefs prefs;
+	private Season thisSeason;
+	private Competition thisComp;
+	private TeamDataSource teamData;
+	private SeasonDataSource seasonData;
+	private CompetitionDataSource competitionData;
+	private TeamScoutingDataSource teamScoutingData;
+	private CompetitionTeamDataSource competitionTeamData;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -100,38 +105,27 @@ public class TeamListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		prefs = new Prefs(this.getActivity());
 		teamData = new TeamDataSource(this.getActivity());
-		teamData.open();
 		seasonData = new SeasonDataSource(this.getActivity());
-		seasonData.open();
-		
-//		prefs = new Prefs(this.getActivity());
-//		if(!prefs.getDbSetup()) {
-//			datasource.createTeam(869, "Power Cord");
-//			prefs.setDbSetup(true);
-//		} else {
-			try {
-				teamData.editTeam(new Team(869, "Power Cord"));
-				teamData.editTeam(new Team(1676, "Pioneers"));
-				teamData.editTeam(new Team(3637, "The Daleks"));
-				teamData.editTeam(new Team(25, "Raider Robotix"));
-				teamData.editTeam(new Team(75, "RoboRaiders"));
-				teamData.editTeam(new Team(11, "Chief Delphi"));
-				seasonData.editSeason(new Season(2013, "Ultimate Ascent"));
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (OurAllianceException e) {
-				e.printStackTrace();
-			}
-//		}
-			
-		refreshView();
+		competitionData = new CompetitionDataSource(this.getActivity());
+		teamScoutingData = new TeamScoutingDataSource(this.getActivity());
+		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
 	}
 	
 	public void refreshView() {
 		try {
-			teams = teamData.getAllTeams();
+			long season = prefs.getSeason();
+			Log.d(TAG,"seasonID: "+season);
+			thisSeason = seasonData.get(season);
+			Log.d(TAG,thisSeason.toString());
+			
+			long comp = prefs.getComp();
+			Log.d(TAG,"compID: "+comp);
+			thisComp = competitionData.get(comp);
+			Log.d(TAG,thisComp.toString());
+			
+			teams = competitionTeamData.getAllTeams(thisComp);
 		} catch (Exception e) {
 			teams = new ArrayList<Team>();
 		}
@@ -144,11 +138,17 @@ public class TeamListFragment extends ListFragment {
 			)
 		);
 	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		refreshView();
+	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-
+		
 		// Restore the previously serialized activated item position.
 		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
@@ -216,18 +216,34 @@ public class TeamListFragment extends ListFragment {
 	}
 	
 	public void deleteTeam(Team team) {
-		Log.d(tag, "id: "+team);
-		teamData.deleteTeam(team);
+		Log.d(TAG, "id: "+team);
+		try {
+			competitionTeamData.delete(competitionTeamData.get(team));
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		}
 		refreshView();
 	}
 	
 	public void insertTeam(Team team) {
-		Log.d(tag, "id: "+team);
+		Log.d(TAG, "id: "+team);
 		try {
-			teamData.editTeam(team);
+			competitionTeamData.insert(new CompetitionTeam(thisComp,team));
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		}
+		refreshView();
+	}
+	
+	public void updateTeam(Team team) {
+		Log.d(TAG, "id: "+team);
+		try {
+			teamData.update(team);
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}
 		refreshView();

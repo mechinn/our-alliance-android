@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="Our Alliance">
+	<PreferenceCategory android:title="@string/pref_category_ourAlliance">
 		<ListPreference
 			android:key="@string/pref_season"
-			android:title="FRC Season"
-			android:summary="Select the season to scout"
-			android:dialogTitle="FRC Season" android:defaultValue="2013"/>
+			android:title="@string/pref_season_title"
+			android:summary="@string/pref_season_summary"
+			android:dialogTitle="@string/pref_season_dialogTitle" android:defaultValue="@string/pref_season_default"/>
+		<ListPreference
+			android:key="@string/pref_comp"
+			android:title="@string/pref_comp_title"
+			android:summary="@string/pref_comp_summary"
+			android:dialogTitle="@string/pref_comp_dialogTitle" android:defaultValue="@string/pref_comp_default"/>
 	</PreferenceCategory>
-	<PreferenceCategory android:title="About">
+	<PreferenceCategory android:title="@string/pref_category_about">
 		<Preference
 			android:key="@string/pref_resetDB"
-			android:title="Reset DB"
-			android:summary="Reset Our Alliance's DB" />
+			android:title="@string/pref_resetDB_title"
+			android:summary="@string/pref_resetDB_summary" />
 		<Preference
 			android:key="@string/pref_changeLog"
-			android:title="Change Log" />pref_
+			android:title="@string/pref_changeLog_title" />pref_
 		<Preference
 			android:key="@string/pref_about"
-			android:title="About" />
+			android:title="@string/pref_about_title" />
 	</PreferenceCategory>
 </PreferenceScreen>

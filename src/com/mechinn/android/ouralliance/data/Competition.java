@@ -3,13 +3,14 @@ package com.mechinn.android.ouralliance.data;
 import java.io.Serializable;
 import java.util.Date;
 
+import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
 import com.mechinn.android.ouralliance.DataProvider;
 import com.mechinn.android.ouralliance.Database;
 
-public class Competition implements Serializable {
+public class Competition implements Serializable, Comparable<Competition> {
 	public static final String CLASS = "Competition";
 	public static final String TABLE = "competition";
 	public static final String SEASON = Season.TABLE;
@@ -77,5 +78,16 @@ public class Competition implements Serializable {
 	}
 	public String toString() {
 		return this.season+" - "+this.name;
+	}
+	public ContentValues toCV() {
+		ContentValues values = new ContentValues();
+		values.put(Database.MODIFIED, new Date().getTime());
+		values.put(Competition.SEASON, this.getSeason().getId());
+		values.put(Competition.NAME, this.getName());
+		values.put(Competition.CODE, this.getCode());
+		return values;
+	}
+	public int compareTo(Competition another) {
+		return this.getName().compareTo(another.getName());
 	}
 }

@@ -1,13 +1,11 @@
 package com.mechinn.android.ouralliance.view;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Team;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,24 +24,25 @@ public class TeamListAdapter extends ArrayAdapter<Team> {
 			this.c = context;
 			this.resource = resource;
 			this.textViewResource = textViewResource;
+			Collections.sort(items);
 			this.items = items;
 		}
 	 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			View v = convertView;
-			if (v == null) {
-				LayoutInflater vi = (LayoutInflater)this.c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = vi.inflate(resource, null);
+			View view = convertView;
+			if (view == null) {
+				LayoutInflater inflater = (LayoutInflater)this.c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				view = inflater.inflate(resource, null);
 			}
 	 
-			Team o = items.get(position);
-			if (o != null) {
-				TextView tt = (TextView) v.findViewById(textViewResource);
-				if (tt != null) {
-					tt.setText(o.toString());
+			Team team = items.get(position);
+			if (team != null) {
+				TextView text = (TextView) view.findViewById(textViewResource);
+				if (text != null) {
+					text.setText(team.toString());
 				}
 			}
-			return v;
+			return view;
 		}
 	}

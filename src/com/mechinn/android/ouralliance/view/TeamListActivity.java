@@ -1,18 +1,14 @@
 package com.mechinn.android.ouralliance.view;
 
 import java.io.File;
-import java.io.IOException;
 
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.R.id;
-import com.mechinn.android.ouralliance.R.layout;
+import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Team;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.ListFragment;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -20,15 +16,11 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.PopupMenu;
-import android.widget.Toast;
 
 /**
  * An activity representing a list of Teams. This activity has different
@@ -52,27 +44,12 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	 * device.
 	 */
 	private boolean mTwoPane;
+	private Setup setup;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-        String packageName = this.getPackageName();
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-	        File externalPath = Environment.getExternalStorageDirectory();
-	        File picDir = new File(externalPath.getAbsolutePath() +  "/Android/data/" + packageName + "/files");
-	        Utility.deleteRecursive(picDir);
-//	        picDir = new File(picDir.getAbsolutePath()+"/teamPic/2012/"+Integer.toString(team)+"/");
-	        if(!picDir.exists()) {
-	        	picDir.mkdirs();
-	        }
-        }
-
-		if(SQLiteDatabase.deleteDatabase(this.getDatabasePath("ourAlliance.sqlite"))) {
-			Log.d(TAG,"deleted db");
-		} else {
-			Log.d(TAG,"did not delete db");
-		}
+		setup = new Setup(this);
 
 		setContentView(R.layout.activity_team_list);
 
@@ -85,9 +62,7 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 
 			// In two-pane mode, list items should be given the
 			// 'activated' state when touched.
-			((TeamListFragment) getFragmentManager()
-				.findFragmentById(R.id.team_list))
-				.setActivateOnItemClick(true);
+			((TeamListFragment) getFragmentManager().findFragmentById(R.id.team_list)).setActivateOnItemClick(true);
 		}
 	}
 	
@@ -126,11 +101,11 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
-	        case R.id.insert:
-	            DialogFragment newFragment = new InsertTeamDialogFragment();
-	    		newFragment.show(this.getFragmentManager(), "Create Team");
-	            return true;
-	        case R.id.help:
+//	        case R.id.insert:
+//	            DialogFragment newFragment = new InsertTeamDialogFragment();
+//	    		newFragment.show(this.getFragmentManager(), "Create Team");
+//	            return true;
+	        case R.id.settings:
 	        	Intent intent = new Intent(this, SettingsActivity.class);
 //	            EditText editText = (EditText) findViewById(R.id.edit_message);
 //	            String message = editText.getText().toString();
@@ -187,6 +162,19 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
         }
     }
 	
+	public void updateTeam(Team team) {
+        // The user selected the headline of an article from the HeadlinesFragment
+        // Do something here to display that article
+
+		TeamListFragment teamListFrag = (TeamListFragment) getFragmentManager().findFragmentById(R.id.team_list);
+
+        if (teamListFrag != null) {
+        	teamListFrag.updateTeam(team);
+        } else {
+        	//shouldn't be possible
+        }
+    }
+	
 	public void deleteTeam(Team team) {
         // The user selected the headline of an article from the HeadlinesFragment
         // Do something here to display that article
@@ -200,8 +188,12 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
         }
     }
 
-	public void onInsertDialogPositiveClick(Team team) {
-		this.insertTeam(team);
+	public void onInsertDialogPositiveClick(boolean update, Team team) {
+		if(update) {
+			this.updateTeam(team);
+		} else {
+			this.insertTeam(team);
+		}
 	}
 
 	public void onInsertDialogNegativeClick(DialogFragment dialog, int id) {

@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.mechinn.android.ouralliance.Database;
+import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
@@ -43,29 +45,46 @@ public class CompetitionTeamDataSource {
 		db.close();
 	}
 
-	public CompetitionTeam editCompetitionTeam(CompetitionTeam competitionTeam) throws IllegalArgumentException, OurAllianceException {
-		ContentValues values = new ContentValues();
-		values.put(Database.MODIFIED, new Date().getTime());
-		values.put(CompetitionTeam.COMPETITION, competitionTeam.getCompetition().getId());
-		values.put(CompetitionTeam.TEAM, competitionTeam.getTeam().getId());
-		long id;
-		if(competitionTeam.getId()==0) {
-			id = database.insert(CompetitionTeam.TABLE, null, values);
+	public CompetitionTeam insert(CompetitionTeam competitionTeam) throws IllegalArgumentException, OurAllianceException {
+		this.open();
+		long id = database.insert(CompetitionTeam.TABLE, null, competitionTeam.toCV());
+		this.close();
+		if(id!=-1) {
+			Log.d(TAG, "insert "+competitionTeam);
 		} else {
-			id = database.update(CompetitionTeam.TABLE, values, BaseColumns._ID + " = " + competitionTeam.getId(), null);
+			Log.d(TAG, "did not insert "+competitionTeam);
 		}
-		return getCompetitionTeam(id);
-	}
-
-	public void deleteCompetitionTeam(CompetitionTeam competitionTeam) {
-		long id = competitionTeam.getId();
-		System.out.println("Comment deleted with id: " + id);
-		database.delete(CompetitionTeam.TABLE, BaseColumns._ID + " = " + id, null);
+		return get(id);
 	}
 	
-	public CompetitionTeam getCompetitionTeam(long id) throws IllegalArgumentException, OurAllianceException {
+	public int update(CompetitionTeam competitionTeam) {
+		this.open();
+		int count = database.update(CompetitionTeam.TABLE, competitionTeam.toCV(), BaseColumns._ID + " = " + competitionTeam.getId(), null);
+		this.close();
+		Log.d(TAG, "updated "+count+" from "+competitionTeam);
+		return count;
+	}
+
+	public int delete(CompetitionTeam competitionTeam) {
+		this.open();
+		int count = database.delete(CompetitionTeam.TABLE, BaseColumns._ID + " = " + competitionTeam.getId(), null);
+		this.close();
+		Log.d(TAG, "delete "+count+" from "+competitionTeam);
+		return count;
+	}
+	
+	public CompetitionTeam get(long id) throws IllegalArgumentException, OurAllianceException {
+		return getWhere(BaseColumns._ID + " = " + id);
+	}
+	
+	public CompetitionTeam get(Team team) throws IllegalArgumentException, OurAllianceException {
+		return getWhere(CompetitionTeam.TEAM + " = " + team.getId());
+	}
+	
+	private CompetitionTeam getWhere(String where) throws IllegalArgumentException, OurAllianceException {
 		CompetitionTeam competitionTeam;
-		Cursor cursor = database.query(CompetitionTeam.TABLE, CompetitionTeam.ALLCOLUMNS, BaseColumns._ID + " = " + id, null, null, null, null, null);
+		this.open();
+		Cursor cursor = database.query(CompetitionTeam.TABLE, CompetitionTeam.ALLCOLUMNS, where, null, null, null, null, null);
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
 			competitionTeam = cursorToCompetitionTeam(cursor);
@@ -75,14 +94,27 @@ public class CompetitionTeamDataSource {
 			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
 		}
 		cursor.close();
+		this.close();
 		return competitionTeam;
 	}
 
-	public List<CompetitionTeam> getAllCompetitionTeams() throws IllegalArgumentException, OurAllianceException {
+	public List<CompetitionTeam> getAll() throws IllegalArgumentException, OurAllianceException {
+		return getAllWhere(null);
+	}
+	
+	public List<Team> getAllTeams(Competition comp) throws IllegalArgumentException, OurAllianceException {
+		List<CompetitionTeam> compTeams = getAllWhere(CompetitionTeam.COMPETITION + " = " + comp.getId());
+		List<Team> teams = new ArrayList<Team>();
+		for(CompetitionTeam each : compTeams) {
+			teams.add(each.getTeam());
+		}
+		return teams;
+	}
+	
+	private List<CompetitionTeam> getAllWhere(String where) throws IllegalArgumentException, OurAllianceException {
 		List<CompetitionTeam> compTeams = new ArrayList<CompetitionTeam>();
-	
-		Cursor cursor = database.query(CompetitionTeam.TABLE, CompetitionTeam.ALLCOLUMNS, null, null, null, null, null);
-	
+		this.open();
+		Cursor cursor = database.query(CompetitionTeam.TABLE, CompetitionTeam.ALLCOLUMNS, where, null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			CompetitionTeam competitionTeam = cursorToCompetitionTeam(cursor);
@@ -94,6 +126,7 @@ public class CompetitionTeamDataSource {
 		}
 		// Make sure to close the cursor
 		cursor.close();
+		this.close();
 		return compTeams;
 	}
 
@@ -102,12 +135,12 @@ public class CompetitionTeamDataSource {
 		competitionTeam.setId(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)));
 		competitionTeam.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Database.MODIFIED))));
 		try {
-			competitionTeam.setTeam(teamData.getTeam(cursor.getLong(cursor.getColumnIndexOrThrow(CompetitionTeam.TEAM))));
+			competitionTeam.setTeam(teamData.get(cursor.getLong(cursor.getColumnIndexOrThrow(CompetitionTeam.TEAM))));
 		} catch (Exception e) {
 			throw new OurAllianceException("Unable to lookup team referenced in this team scouting");
 		}
 		try {
-			competitionTeam.setCompetition(competitionData.getCompetition(cursor.getLong(cursor.getColumnIndexOrThrow(CompetitionTeam.COMPETITION))));
+			competitionTeam.setCompetition(competitionData.get(cursor.getLong(cursor.getColumnIndexOrThrow(CompetitionTeam.COMPETITION))));
 		} catch (Exception e) {
 			throw new OurAllianceException("Unable to lookup competition referenced in this team scouting");
 		}

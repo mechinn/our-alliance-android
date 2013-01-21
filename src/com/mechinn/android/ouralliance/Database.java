@@ -9,7 +9,6 @@ import com.mechinn.android.ouralliance.data.TeamScouting;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
@@ -66,7 +65,7 @@ public class Database extends SQLiteOpenHelper {
 	public void setup(SQLiteDatabase db, int currentVersion) {
 		Log.i(tag,"Updating Database from "+currentVersion+" to "+VERSION);
 		switch(currentVersion+1) {
-			default:
+			case 0:
 				Log.i(tag,"Clear Database");
 				db.execSQL("DROP TABLE IF EXISTS "+Team.TABLE);
 				db.execSQL("DROP TABLE IF EXISTS "+Season.TABLE);
@@ -79,8 +78,9 @@ public class Database extends SQLiteOpenHelper {
 				String teamSchema = "CREATE TABLE "+Team.TABLE+" ( "+
 						BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 						MODIFIED+" DATE NOT NULL," +
-						Team.NUMBER+" INTEGER NOT NULL UNIQUE," +
-						Team.NAME+" TEXT" +
+						Team.NUMBER+" INTEGER NOT NULL," +
+						Team.NAME+" TEXT," +
+						" UNIQUE ("+Team.NUMBER+") ON CONFLICT IGNORE"+
 						" );";
 				Log.i(tag,teamSchema);
 				db.execSQL(teamSchema);
@@ -88,8 +88,9 @@ public class Database extends SQLiteOpenHelper {
 				String seasonSchema = "CREATE TABLE "+Season.TABLE+" ( "+
 						BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 						MODIFIED+" DATE NOT NULL," +
-						Season.YEAR+" INTEGER NOT NULL UNIQUE," +
-						Season.COMPETITION+" TEXT" +
+						Season.YEAR+" INTEGER NOT NULL," +
+						Season.COMPETITION+" TEXT," +
+						" UNIQUE ("+Season.YEAR+") ON CONFLICT IGNORE"+
 						" );";
 				Log.i(tag,seasonSchema);
 				db.execSQL(seasonSchema);
@@ -97,9 +98,10 @@ public class Database extends SQLiteOpenHelper {
 				String competitionSchema = "CREATE TABLE "+Competition.TABLE+" ( "+
 						BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 						MODIFIED+" DATE NOT NULL," +
-						Competition.SEASON+" INTEGER NOT NULL UNIQUE"+foreignSeason+"," +
+						Competition.SEASON+" INTEGER NOT NULL"+foreignSeason+"," +
 						Competition.NAME+" TEXT NOT NULL," +
-						Competition.CODE+" TEXT NOT NULL UNIQUE" +
+						Competition.CODE+" TEXT NOT NULL,"+
+						" UNIQUE ("+Competition.SEASON+","+Competition.CODE+") ON CONFLICT IGNORE"+
 						" );";
 				Log.i(tag,competitionSchema);
 				db.execSQL(competitionSchema);
@@ -107,14 +109,14 @@ public class Database extends SQLiteOpenHelper {
 				String teamScoutingSchema = "CREATE TABLE "+TeamScouting.TABLE+" ( "+
 						BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 						MODIFIED+" DATE NOT NULL," +
-						TeamScouting.SEASON+" INTEGER NOT NULL UNIQUE"+foreignSeason+"," +
-						TeamScouting.TEAM+" INTEGER NOT NULL UNIQUE"+foreignTeam+"," +
-						TeamScouting.RANK+" INTEGER NOT NULL," +
+						TeamScouting.SEASON+" INTEGER NOT NULL"+foreignSeason+"," +
+						TeamScouting.TEAM+" INTEGER NOT NULL"+foreignTeam+"," +
 						TeamScouting.ORIENTATION+" TEXT," +
 						TeamScouting.WIDTH+" INTEGER," +
 						TeamScouting.LENGTH+" INTEGER," +
 						TeamScouting.HEIGHT+" INTEGER," +
-						TeamScouting.NOTES+" TEXT" +
+						TeamScouting.NOTES+" TEXT," +
+						" UNIQUE ("+TeamScouting.SEASON+","+TeamScouting.TEAM+") ON CONFLICT IGNORE"+
 						" );";
 				Log.i(tag,teamScoutingSchema);
 				db.execSQL(teamScoutingSchema);
@@ -122,8 +124,9 @@ public class Database extends SQLiteOpenHelper {
 				String competitionTeamSchema = "CREATE TABLE "+CompetitionTeam.TABLE+" ( "+
 						BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 						MODIFIED+" DATE NOT NULL," +
-						CompetitionTeam.COMPETITION+" INTEGER NOT NULL UNIQUE"+foreignCompetition+"," +
-						CompetitionTeam.TEAM+" INTEGER NOT NULL UNIQUE"+foreignTeam+
+						CompetitionTeam.COMPETITION+" INTEGER NOT NULL"+foreignCompetition+"," +
+						CompetitionTeam.TEAM+" INTEGER NOT NULL"+foreignTeam+","+
+						" UNIQUE ("+CompetitionTeam.COMPETITION+","+CompetitionTeam.TEAM+") ON CONFLICT IGNORE"+
 						" );";
 				Log.i(tag,competitionTeamSchema);
 				db.execSQL(competitionTeamSchema);
@@ -133,6 +136,7 @@ public class Database extends SQLiteOpenHelper {
 //				Log.i(tag,"Upgrade to version 2");
 //				
 //				Log.i(tag,"At version 2");
+			default:
 		}
 	}
 }

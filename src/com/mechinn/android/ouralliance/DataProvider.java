@@ -19,7 +19,7 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 public class DataProvider extends ContentProvider {
-	private static final String tag = "DataProvider";
+	private static final String TAG = "DataProvider";
 	
 	// database
 	private Database database;

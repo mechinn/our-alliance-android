@@ -3,6 +3,7 @@ package com.mechinn.android.ouralliance.data;
 import java.io.Serializable;
 import java.util.Date;
 
+import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -66,5 +67,12 @@ public class CompetitionTeam  implements Serializable {
 	}
 	public String toString() {
 		return this.competition+" - "+this.team;
+	}
+	public ContentValues toCV() {
+		ContentValues values = new ContentValues();
+		values.put(Database.MODIFIED, new Date().getTime());
+		values.put(CompetitionTeam.COMPETITION, this.getCompetition().getId());
+		values.put(CompetitionTeam.TEAM, this.getTeam().getId());
+		return values;
 	}
 }

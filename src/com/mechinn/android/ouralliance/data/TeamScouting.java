@@ -3,6 +3,7 @@ package com.mechinn.android.ouralliance.data;
 import java.io.Serializable;
 import java.util.Date;
 
+import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -14,14 +15,13 @@ public class TeamScouting implements Serializable {
 	public static final String TABLE = "teamscouting";
 	public static final String SEASON = Season.TABLE;
 	public static final String TEAM = Team.TABLE;
-    public static final String RANK = "rank";
     public static final String ORIENTATION = "orientation";
     public static final String WIDTH = "width";
     public static final String LENGTH = "length";
     public static final String HEIGHT = "height";
     public static final String NOTES = "notes";
 	
-	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, SEASON, TEAM, RANK, ORIENTATION, WIDTH, LENGTH, HEIGHT, NOTES };
+	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, SEASON, TEAM, ORIENTATION, WIDTH, LENGTH, HEIGHT, NOTES };
 
 	public static final String PATH = TABLE+"s/";
 	public static final String IDPATH = PATH+"id/";
@@ -37,7 +37,6 @@ public class TeamScouting implements Serializable {
 	private Date modified;
 	private Season season;
 	private Team team;
-	private int rank;
 	private String orientation;
 	private int width;
 	private int length;
@@ -49,12 +48,11 @@ public class TeamScouting implements Serializable {
 		this.season = season;
 		this.team = team;
 	}
-	public TeamScouting(int id, Date mod, Season season, Team team, int rank, String orientation, int width, int length, int height, String notes) {
+	public TeamScouting(int id, Date mod, Season season, Team team, String orientation, int width, int length, int height, String notes) {
 		this.id = id;
 		this.modified = mod;
 		this.season = season;
 		this.team = team;
-		this.rank = rank;
 		this.orientation = orientation;
 		this.width = width;
 		this.length = length;
@@ -84,12 +82,6 @@ public class TeamScouting implements Serializable {
 	}
 	public void setTeam(Team team) {
 		this.team = team;
-	}
-	public int getRank() {
-		return rank;
-	}
-	public void setRank(int rank) {
-		this.rank = rank;
 	}
 	public String getOrientation() {
 		return orientation;
@@ -124,5 +116,16 @@ public class TeamScouting implements Serializable {
 	public String toString() {
 		return this.season+" - "+this.team;
 	}
-	
+	public ContentValues toCV() {
+		ContentValues values = new ContentValues();
+		values.put(Database.MODIFIED, new Date().getTime());
+		values.put(TeamScouting.SEASON, this.getSeason().getId());
+		values.put(TeamScouting.TEAM, this.getTeam().getId());
+		values.put(TeamScouting.ORIENTATION, this.getOrientation());
+		values.put(TeamScouting.WIDTH, this.getWidth());
+		values.put(TeamScouting.LENGTH, this.getLength());
+		values.put(TeamScouting.HEIGHT, this.getHeight());
+		values.put(TeamScouting.NOTES, this.getNotes());
+		return values;
+	}
 }

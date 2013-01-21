@@ -10,12 +10,12 @@ import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 public class TeamDataSource {
 	private static final String TAG = "TeamDataSource";
@@ -35,28 +35,46 @@ public class TeamDataSource {
 		db.close();
 	}
 
-	public Team editTeam(Team team) throws IllegalArgumentException, OurAllianceException {
-		ContentValues values = new ContentValues();
-		values.put(Database.MODIFIED, new Date().getTime());
-		values.put(Team.NUMBER, team.getNumber());
-		values.put(Team.NAME, team.getName());
-		long id;
-		if(team.getId()==0) {
-			id = database.insert(Team.TABLE, null, values);
+	public Team insert(Team team) throws IllegalArgumentException, OurAllianceException {
+		this.open();
+		long id = database.insert(Team.TABLE, null, team.toCV());
+		this.close();
+		if(id!=-1) {
+			Log.d(TAG,"insert "+team);
 		} else {
-			id = database.update(Team.TABLE, values, BaseColumns._ID + " = " + team.getId(), null);
+			Log.d(TAG,"did not insert "+team);
 		}
-		return getTeam(id);
+		return get(id);
+	}
+	
+	public int update(Team team) {
+		this.open();
+		int count = database.update(Team.TABLE, team.toCV(), BaseColumns._ID + " = " + team.getId(), null);
+		this.close();
+		Log.d(TAG, "updated "+count+" from "+team);
+		return count;
 	}
 
-	public void deleteTeam(Team team) {
-		long id = team.getId();
-		System.out.println("Comment deleted with id: " + id);
-		database.delete(Team.TABLE, BaseColumns._ID + " = " + id, null);
+	public int delete(Team team) {
+		this.open();
+		int count = database.delete(Team.TABLE, BaseColumns._ID + " = " + team.getId(), null);
+		this.close();
+		Log.d(TAG, "delete "+count+" from "+team);
+		return count;
 	}
-	public Team getTeam(long id) throws IllegalArgumentException, OurAllianceException {
+	
+	public Team get(long id) throws IllegalArgumentException, OurAllianceException {
+		return getWhere(BaseColumns._ID + " = " + id);
+	}
+	
+	public Team getNum(int num) throws IllegalArgumentException, OurAllianceException {
+		return getWhere(Team.NUMBER + " = " + num);
+	}
+	
+	private Team getWhere(String where) throws IllegalArgumentException, OurAllianceException {
 		Team team;
-		Cursor cursor = database.query(Team.TABLE, Team.ALLCOLUMNS, BaseColumns._ID + " = " + id, null, null, null, null, null);
+		this.open();
+		Cursor cursor = database.query(Team.TABLE, Team.ALLCOLUMNS, where, null, null, null, null, null);
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
 			team = cursorToTeam(cursor);
@@ -66,14 +84,18 @@ public class TeamDataSource {
 			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
 		}
 		cursor.close();
+		this.close();
 		return team;
 	}
 
-	public List<Team> getAllTeams() throws IllegalArgumentException, OurAllianceException {
+	public List<Team> getAll() throws IllegalArgumentException, OurAllianceException {
+		return getAllWhere(null);
+	}
+	
+	private List<Team> getAllWhere(String where) throws IllegalArgumentException, OurAllianceException {
 		List<Team> comments = new ArrayList<Team>();
-	
-		Cursor cursor = database.query(Team.TABLE, Team.ALLCOLUMNS, null, null, null, null, null);
-	
+		this.open();
+		Cursor cursor = database.query(Team.TABLE, Team.ALLCOLUMNS, where, null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Team team = cursorToTeam(cursor);
@@ -85,6 +107,7 @@ public class TeamDataSource {
 		}
 		// Make sure to close the cursor
 		cursor.close();
+		this.close();
 		return comments;
 	}
 

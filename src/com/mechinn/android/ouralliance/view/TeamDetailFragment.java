@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.R.id;
-import com.mechinn.android.ouralliance.R.layout;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
@@ -46,17 +44,15 @@ public class TeamDetailFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 
 		Prefs prefs = new Prefs(this.getActivity());
-		int year = prefs.getSeason();
+		int year = 2013;//prefs.getSeason();
 		Log.d(TAG, "year: "+year);
 		SeasonDataSource seasonData = new SeasonDataSource(this.getActivity());
-		seasonData.open();
 		try {
-			Season season = seasonData.getSeason(year);
+			Season season = seasonData.get(year);
 			TeamScoutingDataSource teamScoutingData = new TeamScoutingDataSource(this.getActivity());
-			teamScoutingData.open();
 			if (getArguments().containsKey(ARG_ITEM_ID)) {
 				Team team = (Team) getArguments().getSerializable(ARG_ITEM_ID);
-				scouting = teamScoutingData.getTeamScouting(team, season);
+				scouting = teamScoutingData.get(team, season);
 			}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -70,7 +66,6 @@ public class TeamDetailFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_team_detail, container, false);
 
 		if (scouting != null) {
-			((TextView) rootView.findViewById(R.id.rank)).setText(Integer.toString(scouting.getRank()));
 			((TextView) rootView.findViewById(R.id.teamNumber)).setText(Integer.toString(scouting.getTeam().getNumber()));
 			((TextView) rootView.findViewById(R.id.teamName)).setText(scouting.getTeam().getName());
 			((TextView) rootView.findViewById(R.id.orientation)).setText(scouting.getOrientation());
