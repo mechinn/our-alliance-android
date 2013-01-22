@@ -5,113 +5,109 @@ import java.util.Date;
 import java.util.List;
 
 import com.mechinn.android.ouralliance.Database;
+import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 public class TeamDataSource {
 	private static final String TAG = "TeamDataSource";
 	// Database fields
-	private SQLiteDatabase database;
-	private Database db;
+	private Context context;
+	private ContentResolver data;
 
 	public TeamDataSource(Context context) {
-		db = new Database(context);
-	}
-	
-	public void open() throws SQLException {
-		database = db.getWritableDatabase();
-	}
-	
-	public void close() {
-		db.close();
+		this.context = context;
+		data = context.getContentResolver();
 	}
 
-	public Team insert(Team team) throws IllegalArgumentException, OurAllianceException {
-		this.open();
-		long id = database.insert(Team.TABLE, null, team.toCV());
-		this.close();
-		if(id!=-1) {
-			Log.d(TAG,"insert "+team);
-		} else {
-			Log.d(TAG,"did not insert "+team);
-		}
-		return get(id);
+	public Team insert(Team team) throws OurAllianceException {
+		Uri newRow = data.insert(Team.URI, team.toCV());
+		Log.d(TAG, "insert "+team);
+		Cursor cursor = data.query(newRow, Team.ALLCOLUMNS, null, null, null);
+		return getTeam(cursor);
 	}
 	
-	public int update(Team team) {
-		this.open();
-		int count = database.update(Team.TABLE, team.toCV(), BaseColumns._ID + " = " + team.getId(), null);
-		this.close();
+	public int update(Team team) throws OurAllianceException {
+		int count = data.update(Team.uriFromId(team), team.toCV(), null, null);
 		Log.d(TAG, "updated "+count+" from "+team);
+		if(count>1) {
+			throw new OurAllianceException(TAG,"Updated multiple teams from "+team+", please contact developer.");
+		} else if(count<1) {
+			throw new OurAllianceException(TAG,"Could not update "+team);
+		}
 		return count;
 	}
 
-	public int delete(Team team) {
-		this.open();
-		int count = database.delete(Team.TABLE, BaseColumns._ID + " = " + team.getId(), null);
-		this.close();
+	public int delete(Team team) throws OurAllianceException {
+		int count = data.delete(Team.uriFromId(team), null, null);
 		Log.d(TAG, "delete "+count+" from "+team);
+		if(count>1) {
+			throw new OurAllianceException(TAG,"Deleted multiple teams from "+team+", please contact developer.");
+		} else if(count<1) {
+			throw new OurAllianceException(TAG,"Could not delete "+team);
+		}
 		return count;
 	}
 	
-	public Team get(long id) throws IllegalArgumentException, OurAllianceException {
-		return getWhere(BaseColumns._ID + " = " + id);
+	public Team get(long id) throws OurAllianceException {
+		Cursor cursor = data.query(Team.uriFromId(id), Team.ALLCOLUMNS, null, null, null);
+		return getTeam(cursor);
 	}
 	
-	public Team getNum(int num) throws IllegalArgumentException, OurAllianceException {
-		return getWhere(Team.NUMBER + " = " + num);
+	public Team getNum(int num) throws OurAllianceException {
+		Cursor cursor = data.query(Team.uriFromNum(num), Team.ALLCOLUMNS, null, null, null);
+		return getTeam(cursor);
+	}
+
+	public List<Team> getAll() throws OurAllianceException {
+		Cursor cursor = data.query(Team.URI, Team.ALLCOLUMNS, null, null, Team.NUMBER);
+		return getTeams(cursor);
 	}
 	
-	private Team getWhere(String where) throws IllegalArgumentException, OurAllianceException {
-		Team team;
-		this.open();
-		Cursor cursor = database.query(Team.TABLE, Team.ALLCOLUMNS, where, null, null, null, null, null);
+	private Team getTeam(Cursor cursor) throws OurAllianceException {
+		Team competitionTeam;
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
-			team = cursorToTeam(cursor);
-		} else if(cursor.getCount()==0) {
-			throw new OurAllianceException(TAG,"Team not found in db.",new NoObjectsThrowable());
+			competitionTeam = cursorToTeam(cursor);
+			Log.d(TAG, "get "+competitionTeam);
+		} else if(cursor.getCount()<1) {
+			throw new OurAllianceException(TAG,"CompetitionTeam not found in db.",new NoObjectsThrowable());
 		} else {
 			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
 		}
 		cursor.close();
-		this.close();
-		return team;
-	}
-
-	public List<Team> getAll() throws IllegalArgumentException, OurAllianceException {
-		return getAllWhere(null);
+		return competitionTeam;
 	}
 	
-	private List<Team> getAllWhere(String where) throws IllegalArgumentException, OurAllianceException {
-		List<Team> comments = new ArrayList<Team>();
-		this.open();
-		Cursor cursor = database.query(Team.TABLE, Team.ALLCOLUMNS, where, null, null, null, null);
+	private List<Team> getTeams(Cursor cursor) throws OurAllianceException {
+		List<Team> teams = new ArrayList<Team>();
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			Team team = cursorToTeam(cursor);
-			comments.add(team);
+			Team competitionTeam = cursorToTeam(cursor);
+			Log.d(TAG, "get "+competitionTeam);
+			teams.add(competitionTeam);
 			cursor.moveToNext();
 		}
-		if(comments.isEmpty()) {
-			throw new OurAllianceException(TAG,"No teams in db.",new NoObjectsThrowable());
+		if(teams.isEmpty()) {
+			throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
 		}
 		// Make sure to close the cursor
 		cursor.close();
-		this.close();
-		return comments;
+		return teams;
 	}
 
-	private Team cursorToTeam(Cursor cursor) {
+	public static Team cursorToTeam(Cursor cursor) {
 		Team team = new Team();
 		team.setId(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)));
 		team.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Database.MODIFIED))));

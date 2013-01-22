@@ -5,10 +5,15 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
@@ -35,7 +40,7 @@ import com.mechinn.android.ouralliance.error.OurAllianceException;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class TeamListFragment extends ListFragment {
+public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 	
 	private static final String TAG = "TeamListFragment";
 
@@ -64,6 +69,7 @@ public class TeamListFragment extends ListFragment {
 	private CompetitionDataSource competitionData;
 	private TeamScoutingDataSource teamScoutingData;
 	private CompetitionTeamDataSource competitionTeamData;
+	private TeamCursorAdapter adapter;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -103,8 +109,8 @@ public class TeamListFragment extends ListFragment {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
 		teamData = new TeamDataSource(this.getActivity());
 		seasonData = new SeasonDataSource(this.getActivity());
@@ -113,36 +119,26 @@ public class TeamListFragment extends ListFragment {
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
 	}
 	
-	public void refreshView() {
+	@Override
+	public void onResume() {
+		super.onResume();
 		try {
 			long season = prefs.getSeason();
 			Log.d(TAG,"seasonID: "+season);
 			thisSeason = seasonData.get(season);
 			Log.d(TAG,thisSeason.toString());
-			
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		}
+		
+		try {
 			long comp = prefs.getComp();
 			Log.d(TAG,"compID: "+comp);
 			thisComp = competitionData.get(comp);
 			Log.d(TAG,thisComp.toString());
-			
-			teams = competitionTeamData.getAllTeams(thisComp);
-		} catch (Exception e) {
-			teams = new ArrayList<Team>();
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
 		}
-		setListAdapter(
-			new TeamListAdapter(
-				getActivity(),
-				R.layout.fragment_team_list,
-				R.id.team_list_item,
-				teams
-			)
-		);
-	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		refreshView();
 	}
 
 	@Override
@@ -154,6 +150,8 @@ public class TeamListFragment extends ListFragment {
 			setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
 		}
 		this.registerForContextMenu(this.getListView());
+		adapter = new TeamCursorAdapter(getActivity(), null);
+		setListAdapter(adapter);
 	}
 
 	@Override
@@ -224,7 +222,6 @@ public class TeamListFragment extends ListFragment {
 		} catch (OurAllianceException e) {
 			e.printStackTrace();
 		}
-		refreshView();
 	}
 	
 	public void insertTeam(Team team) {
@@ -236,20 +233,31 @@ public class TeamListFragment extends ListFragment {
 		} catch (OurAllianceException e) {
 			e.printStackTrace();
 		}
-		refreshView();
 	}
 	
 	public void updateTeam(Team team) {
 		Log.d(TAG, "id: "+team);
 		try {
 			teamData.update(team);
-		} catch (IllegalArgumentException e) {
+		} catch (OurAllianceException e) {
 			e.printStackTrace();
 		}
-		refreshView();
 	}
 	
 	public Team getTeamFromList(int position) {
 		return (Team) this.getListAdapter().getItem(position);
 	}
+
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return competitionTeamData.getAllTeams(thisComp);
+	}
+
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+		adapter.swapCursor(data);
+	}
+
+	public void onLoaderReset(Loader<Cursor> loader) {
+		adapter.swapCursor(null);
+	}
+
 }

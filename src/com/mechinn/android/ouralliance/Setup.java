@@ -62,11 +62,11 @@ public class Setup {
 			        }
 		        }
 
-				if(SQLiteDatabase.deleteDatabase(dbPath)) {
-					Log.d(TAG,"deleted db");
-				} else {
-					Log.d(TAG,"did not delete db");
-				}
+//				if(SQLiteDatabase.deleteDatabase(dbPath)) {
+//					Log.d(TAG,"deleted db");
+//				} else {
+//					Log.d(TAG,"did not delete db");
+//				}
 			default:
 		}
 		switch(version+1) {
@@ -94,11 +94,6 @@ public class Setup {
 				}
 			default:
 		}
-		competitionTeamData.close();
-		teamScoutingData.close();
-		competitionData.close();
-		seasonData.close();
-		teamData.close();
 		prefs.setVersion(VERSION);
 	}
 	

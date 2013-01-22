@@ -50,6 +50,7 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setup = new Setup(this);
+		setup.run();
 
 		setContentView(R.layout.activity_team_list);
 

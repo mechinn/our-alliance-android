@@ -89,7 +89,7 @@ public class Database extends SQLiteOpenHelper {
 						BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 						MODIFIED+" DATE NOT NULL," +
 						Season.YEAR+" INTEGER NOT NULL," +
-						Season.COMPETITION+" TEXT," +
+						Season.TITLE+" TEXT," +
 						" UNIQUE ("+Season.YEAR+") ON CONFLICT IGNORE"+
 						" );";
 				Log.i(tag,seasonSchema);
@@ -106,6 +106,26 @@ public class Database extends SQLiteOpenHelper {
 				Log.i(tag,competitionSchema);
 				db.execSQL(competitionSchema);
 				
+				String competitionView = "CREATE VIEW "+Competition.VIEW+" AS " +
+						"SELECT "+
+						Competition.CLASS+"."+BaseColumns._ID+" AS "+Competition.VIEW_ID+"," +
+						Competition.CLASS+"."+Database.MODIFIED+" AS "+Competition.VIEW_MODIFIED+"," +
+						Competition.CLASS+"."+Competition.SEASON+" AS "+Competition.VIEW_SEASON+"," +
+						Competition.CLASS+"."+Competition.NAME+" AS "+Competition.VIEW_NAME+"," +
+						Competition.CLASS+"."+Competition.CODE+" AS "+Competition.VIEW_CODE+"," +
+						Season.CLASS+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
+						Season.CLASS+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
+						Season.CLASS+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
+						Season.CLASS+"."+Season.TITLE+" AS "+Season.VIEW_TITLE +
+						" FROM " +
+						Competition.TABLE+" "+Competition.CLASS+"," +
+						Season.TABLE+" "+Season.CLASS +
+						" WHERE " +
+						Competition.VIEW_SEASON+"="+Season.VIEW_ID+
+						";";
+				Log.i(tag,competitionView);
+				db.execSQL(competitionView);
+				
 				String teamScoutingSchema = "CREATE TABLE "+TeamScouting.TABLE+" ( "+
 						BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 						MODIFIED+" DATE NOT NULL," +
@@ -121,6 +141,37 @@ public class Database extends SQLiteOpenHelper {
 				Log.i(tag,teamScoutingSchema);
 				db.execSQL(teamScoutingSchema);
 				
+				String teamScoutingView = "CREATE VIEW "+TeamScouting.VIEW+" AS " +
+						"SELECT "+
+						TeamScouting.CLASS+"."+BaseColumns._ID+" AS "+TeamScouting.VIEW_ID+"," +
+						TeamScouting.CLASS+"."+Database.MODIFIED+" AS "+TeamScouting.VIEW_MODIFIED+"," +
+						TeamScouting.CLASS+"."+TeamScouting.SEASON+" AS "+TeamScouting.VIEW_SEASON+"," +
+						TeamScouting.CLASS+"."+TeamScouting.TEAM+" AS "+TeamScouting.VIEW_TEAM+"," +
+						TeamScouting.CLASS+"."+TeamScouting.ORIENTATION+" AS "+TeamScouting.VIEW_ORIENTATION+"," +
+						TeamScouting.CLASS+"."+TeamScouting.WIDTH+" AS "+TeamScouting.VIEW_WIDTH+"," +
+						TeamScouting.CLASS+"."+TeamScouting.LENGTH	+" AS "+TeamScouting.VIEW_LENGTH+"," +
+						TeamScouting.CLASS+"."+TeamScouting.HEIGHT+" AS "+TeamScouting.VIEW_HEIGHT+"," +
+						TeamScouting.CLASS+"."+TeamScouting.NOTES+" AS "+TeamScouting.VIEW_NOTES+"," +
+						Season.CLASS+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
+						Season.CLASS+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
+						Season.CLASS+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
+						Season.CLASS+"."+Season.TITLE+" AS "+Season.VIEW_TITLE+"," +
+						Team.CLASS+"."+BaseColumns._ID+" AS "+Team.VIEW_ID+"," +
+						Team.CLASS+"."+Database.MODIFIED+" AS "+Team.VIEW_MODIFIED+"," +
+						Team.CLASS+"."+Team.NUMBER+" AS "+Team.VIEW_NUMBER+"," +
+						Team.CLASS+"."+Team.NAME+" AS "+Team.VIEW_NAME +
+						" FROM " +
+						TeamScouting.TABLE+" "+TeamScouting.CLASS+"," +
+						Season.TABLE+" "+Season.CLASS+"," +
+						Team.TABLE+" "+Team.CLASS+
+						" WHERE " +
+						TeamScouting.VIEW_SEASON+"="+Season.VIEW_ID+
+						" AND "+
+						TeamScouting.VIEW_TEAM+"="+Team.VIEW_ID+
+						";";
+				Log.i(tag,teamScoutingView);
+				db.execSQL(teamScoutingView);
+				
 				String competitionTeamSchema = "CREATE TABLE "+CompetitionTeam.TABLE+" ( "+
 						BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 						MODIFIED+" DATE NOT NULL," +
@@ -130,6 +181,40 @@ public class Database extends SQLiteOpenHelper {
 						" );";
 				Log.i(tag,competitionTeamSchema);
 				db.execSQL(competitionTeamSchema);
+				
+				String competitionTeamView = "CREATE VIEW "+CompetitionTeam.VIEW+" AS " +
+						"SELECT "+
+						CompetitionTeam.CLASS+"."+BaseColumns._ID+" AS "+CompetitionTeam.VIEW_ID+"," +
+						CompetitionTeam.CLASS+"."+Database.MODIFIED+" AS "+CompetitionTeam.VIEW_MODIFIED+"," +
+						CompetitionTeam.CLASS+"."+CompetitionTeam.COMPETITION+" AS "+CompetitionTeam.VIEW_COMPETITION+"," +
+						CompetitionTeam.CLASS+"."+CompetitionTeam.TEAM+" AS "+CompetitionTeam.VIEW_TEAM+"," +
+						Competition.CLASS+"."+BaseColumns._ID+" AS "+Competition.VIEW_ID+"," +
+						Competition.CLASS+"."+Database.MODIFIED+" AS "+Competition.VIEW_MODIFIED+"," +
+						Competition.CLASS+"."+Competition.SEASON+" AS "+Competition.VIEW_SEASON+"," +
+						Competition.CLASS+"."+Competition.NAME+" AS "+Competition.VIEW_NAME+"," +
+						Competition.CLASS+"."+Competition.CODE+" AS "+Competition.VIEW_CODE+"," +
+						Season.CLASS+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
+						Season.CLASS+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
+						Season.CLASS+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
+						Season.CLASS+"."+Season.TITLE+" AS "+Season.VIEW_TITLE+"," +
+						Team.CLASS+"."+BaseColumns._ID+" AS "+Team.VIEW_ID+"," +
+						Team.CLASS+"."+Database.MODIFIED+" AS "+Team.VIEW_MODIFIED+"," +
+						Team.CLASS+"."+Team.NUMBER+" AS "+Team.VIEW_NUMBER+"," +
+						Team.CLASS+"."+Team.NAME+" AS "+Team.VIEW_NAME +
+						" FROM " +
+						CompetitionTeam.TABLE+" "+CompetitionTeam.CLASS+"," +
+						Competition.TABLE+" "+Competition.CLASS+"," +
+						Season.TABLE+" "+Season.CLASS+"," +
+						Team.TABLE+" "+Team.CLASS+
+						" WHERE " +
+						CompetitionTeam.VIEW_COMPETITION+"="+Competition.VIEW_ID+
+						" AND "+
+						Competition.VIEW_SEASON+"="+Season.VIEW_ID+
+						" AND "+
+						CompetitionTeam.VIEW_TEAM+"="+Team.VIEW_ID+
+						";";
+				Log.i(tag,competitionTeamView);
+				db.execSQL(competitionTeamView);
 				
 				Log.i(tag,"At version 1");
 //			case 2:

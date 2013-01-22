@@ -10,7 +10,7 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public class Team implements Serializable, Comparable<Team> {
+public class Team extends AOurAllianceData implements Serializable, Comparable<Team> {
 	public static final String CLASS = "Team";
 	public static final String TABLE = "team";
 	public static final String NUMBER = "number";
@@ -18,43 +18,45 @@ public class Team implements Serializable, Comparable<Team> {
 	
 	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, NUMBER, NAME };
 
+    public static final String VIEW_ID = TABLE+BaseColumns._ID;
+    public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
+    public static final String VIEW_NUMBER = TABLE+NUMBER;
+    public static final String VIEW_NAME = TABLE+NAME;
+
 	public static final String PATH = TABLE+"s/";
 	public static final String IDPATH = PATH+"id/";
 	public static final String NUMPATH = PATH+"num/";
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+PATH);
-	public static final Uri URI_ID = Uri.parse(DataProvider.BASE_URI_STRING+IDPATH);
-	public static final Uri URI_NUM = Uri.parse(DataProvider.BASE_URI_STRING+NUMPATH);
+	public static final String URI_ID = DataProvider.BASE_URI_STRING+IDPATH;
+	public static final String URI_NUM = DataProvider.BASE_URI_STRING+NUMPATH;
 
 	public static final String DIRTYPE = DataProvider.BASE_DIR+CLASS;
 	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
 	
-	private long id;
-	private Date modified;
 	private int number;
 	private String name;
 	public Team() {
+		super();
 	}
 	public Team(int number, String name) {
-		this.number = number;
-		this.name = name;
+		setData(number, name);
 	}
-	public Team(int id, Date mod, int number, String name) {
-		this.id = id;
-		this.modified = mod;
-		this.number = number;
-		this.name = name;
+	public Team(long id, Date mod, int number, String name) {
+		super(id, mod);
+		setData(number, name);
 	}
-	public long getId() {
-		return id;
+	private void setData(int number, String name) {
+		this.setNumber(number);
+		this.setName(name);
 	}
-	public void setId(long id) {
-		this.id = id;
+	public static Uri uriFromId(long id) {
+		return Uri.parse(URI_ID + id);
 	}
-	public Date getModified() {
-		return modified;
+	public static Uri uriFromId(Team id) {
+		return Uri.parse(URI_ID + id.getId());
 	}
-	public void setModified(Date modified) {
-		this.modified = modified;
+	public static Uri uriFromNum(int num) {
+		return Uri.parse(URI_NUM + num);
 	}
 	public int getNumber() {
 		return number;

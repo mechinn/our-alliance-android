@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
 import com.mechinn.android.ouralliance.DataProvider;
 import com.mechinn.android.ouralliance.Database;
 
-public class TeamScouting implements Serializable {
+public class TeamScouting extends AOurAllianceData implements Serializable {
 	public static final String CLASS = "TeamScouting";
 	public static final String TABLE = "teamscouting";
 	public static final String SEASON = Season.TABLE;
@@ -20,21 +20,33 @@ public class TeamScouting implements Serializable {
     public static final String LENGTH = "length";
     public static final String HEIGHT = "height";
     public static final String NOTES = "notes";
-	
 	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, SEASON, TEAM, ORIENTATION, WIDTH, LENGTH, HEIGHT, NOTES };
+    
+    public static final String VIEW = "teamscoutingview";
+    public static final String VIEW_ID = TABLE+BaseColumns._ID;
+    public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
+    public static final String VIEW_SEASON = TABLE+SEASON;
+    public static final String VIEW_TEAM = TABLE+TEAM;
+    public static final String VIEW_ORIENTATION = TABLE+ORIENTATION;
+    public static final String VIEW_WIDTH = TABLE+WIDTH;
+    public static final String VIEW_LENGTH = TABLE+LENGTH;
+    public static final String VIEW_HEIGHT = TABLE+HEIGHT;
+    public static final String VIEW_NOTES = TABLE+NOTES;
+	public static final String[] VIEWCOLUMNS = { VIEW_ID, VIEW_MODIFIED, VIEW_SEASON, VIEW_TEAM, VIEW_ORIENTATION, VIEW_WIDTH, VIEW_LENGTH, VIEW_HEIGHT, VIEW_NOTES,
+		Season.VIEW_ID, Season.VIEW_MODIFIED, Season.VIEW_YEAR, Season.VIEW_TITLE,
+		Team.VIEW_ID, Team.VIEW_MODIFIED, Team.VIEW_NUMBER, Team.VIEW_NAME };
 
 	public static final String PATH = TABLE+"s/";
 	public static final String IDPATH = PATH+"id/";
-	public static final String RANKPATH = PATH+"rank/";
+	public static final String SEASONPATH = PATH+"season/";
+	public static final String TEAMADDON = "/team/";
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+PATH);
-	public static final Uri URI_ID = Uri.parse(DataProvider.BASE_URI_STRING+IDPATH);
-	public static final Uri URI_RANK = Uri.parse(DataProvider.BASE_URI_STRING+RANKPATH);
+	public static final String URI_ID = DataProvider.BASE_URI_STRING+IDPATH;
+	public static final String URI_SEASON = DataProvider.BASE_URI_STRING+SEASONPATH;
 
 	public static final String DIRTYPE = DataProvider.BASE_DIR+CLASS;
 	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
 	
-	private long id;
-	private Date modified;
 	private Season season;
 	private Team team;
 	private String orientation;
@@ -43,33 +55,35 @@ public class TeamScouting implements Serializable {
 	private int height;
 	private String notes;
 	public TeamScouting() {
+		super();
 	}
 	public TeamScouting(Season season, Team team) {
-		this.season = season;
-		this.team = team;
+		this.setData(season, team);
 	}
-	public TeamScouting(int id, Date mod, Season season, Team team, String orientation, int width, int length, int height, String notes) {
-		this.id = id;
-		this.modified = mod;
-		this.season = season;
-		this.team = team;
-		this.orientation = orientation;
-		this.width = width;
-		this.length = length;
-		this.height = height;
-		this.notes = notes;
+	public TeamScouting(long id, Date mod, Season season, Team team, String orientation, int width, int length, int height, String notes) {
+		super(id, mod);
+		this.setData(season, team);
+		this.setOrientation(orientation);
+		this.setWidth(width);
+		this.setLength(length);
+		this.setHeight(height);
+		this.setNotes(notes);
 	}
-	public long getId() {
-		return id;
+	public void setData(Season season, Team team) {
+		this.setSeason(season);
+		this.setTeam(team);
 	}
-	public void setId(long id) {
-		this.id = id;
+	public static Uri uriFromId(long id) {
+		return Uri.parse(URI_ID + id);
 	}
-	public Date getModified() {
-		return modified;
+	public static Uri uriFromId(TeamScouting id) {
+		return Uri.parse(URI_ID + id.getId());
 	}
-	public void setModified(Date modified) {
-		this.modified = modified;
+	public static Uri uriFromSeason(Season season) {
+		return Uri.parse(URI_SEASON + season.getId());
+	}
+	public static Uri uriFromSeasonTeam(Season season, Team team) {
+		return Uri.parse(URI_SEASON + season.getId() + TEAMADDON + team.getId());
 	}
 	public Season getSeason() {
 		return season;

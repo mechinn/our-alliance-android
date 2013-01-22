@@ -52,7 +52,7 @@ public class TeamDetailFragment extends Fragment {
 			TeamScoutingDataSource teamScoutingData = new TeamScoutingDataSource(this.getActivity());
 			if (getArguments().containsKey(ARG_ITEM_ID)) {
 				Team team = (Team) getArguments().getSerializable(ARG_ITEM_ID);
-				scouting = teamScoutingData.get(team, season);
+				scouting = teamScoutingData.get(season, team);
 			}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

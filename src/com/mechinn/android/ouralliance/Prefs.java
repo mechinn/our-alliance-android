@@ -51,6 +51,11 @@ public class Prefs {
 	public boolean getDbSetup() {
 		return Boolean.parseBoolean(prefs.getString(dbSetupPref, dbSetupDefault));
 	}
+	public void setSeason(String season) {
+		Editor editor = prefs.edit();
+		editor.putString(dbSetupPref, season);
+		editor.apply();
+	}
 	public long getSeason() {
 		return Long.parseLong(prefs.getString(seasonPref, seasonDefault));
 	}

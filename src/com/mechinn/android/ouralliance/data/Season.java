@@ -10,51 +10,53 @@ import android.provider.BaseColumns;
 import com.mechinn.android.ouralliance.DataProvider;
 import com.mechinn.android.ouralliance.Database;
 
-public class Season implements Serializable, Comparable<Season> {
+public class Season extends AOurAllianceData implements Serializable, Comparable<Season> {
 	public static final String CLASS = "Season";
 	public static final String TABLE = "season";
 	public static final String YEAR = "year";
-	public static final String COMPETITION = "competition";
+	public static final String TITLE = "title";
 	
-	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, YEAR, COMPETITION };
+	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, YEAR, TITLE };
+
+    public static final String VIEW_ID = TABLE+BaseColumns._ID;
+    public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
+    public static final String VIEW_YEAR = TABLE+YEAR;
+    public static final String VIEW_TITLE = TABLE+TITLE;
 
 	public static final String PATH = TABLE+"s/";
 	public static final String IDPATH = PATH+"id/";
 	public static final String YEARPATH = PATH+"year/";
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+PATH);
-	public static final Uri URI_ID = Uri.parse(DataProvider.BASE_URI_STRING+IDPATH);
-	public static final Uri URI_YEAR = Uri.parse(DataProvider.BASE_URI_STRING+YEARPATH);
+	public static final String URI_ID = DataProvider.BASE_URI_STRING+IDPATH;
+	public static final String URI_YEAR = DataProvider.BASE_URI_STRING+YEARPATH;
 
 	public static final String DIRTYPE = DataProvider.BASE_DIR+CLASS;
 	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
 	
-	private long id;
-	private Date modified;
 	private int year;
-	private String competition;
+	private String title;
 	public Season() {
+		super();
 	}
-	public Season(int year, String competition) {
-		this.year = year;
-		this.competition = competition;
+	public Season(int year, String title) {
+		setData(year, title);
 	}
-	public Season(int id, Date mod, int number, String name) {
-		this.id = id;
-		this.modified = mod;
-		this.year = number;
-		this.competition = name;
+	public Season(long id, Date mod, int year, String title) {
+		super(id, mod);
+		setData(year, title);
 	}
-	public long getId() {
-		return id;
+	private void setData(int year, String title) {
+		this.setYear(year);
+		this.setTitle(title);
 	}
-	public void setId(long id) {
-		this.id = id;
+	public static Uri uriFromId(long id) {
+		return Uri.parse(URI_ID + id);
 	}
-	public Date getModified() {
-		return modified;
+	public static Uri uriFromId(Season id) {
+		return Uri.parse(URI_ID + id.getId());
 	}
-	public void setModified(Date modified) {
-		this.modified = modified;
+	public static Uri uriFromYear(int year) {
+		return Uri.parse(URI_YEAR + year);
 	}
 	public int getYear() {
 		return year;
@@ -62,14 +64,14 @@ public class Season implements Serializable, Comparable<Season> {
 	public void setYear(int year) {
 		this.year = year;
 	}
-	public String getCompetition() {
-		return competition;
+	public String getTitle() {
+		return title;
 	}
-	public void setCompetition(String competition) {
-		this.competition = competition;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 	public String toString() {
-		return this.year+": "+competition;
+		return getYear()+": "+getTitle();
 	}
 	public int compareTo(Season another) {
 		return this.getYear() - another.getYear();
@@ -78,7 +80,7 @@ public class Season implements Serializable, Comparable<Season> {
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
 		values.put(Season.YEAR, this.getYear());
-		values.put(Season.COMPETITION, this.getCompetition());
+		values.put(Season.TITLE, this.getTitle());
 		return values;
 	}
 }

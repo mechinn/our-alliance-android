@@ -10,53 +10,67 @@ import android.provider.BaseColumns;
 import com.mechinn.android.ouralliance.DataProvider;
 import com.mechinn.android.ouralliance.Database;
 
-public class Competition implements Serializable, Comparable<Competition> {
+public class Competition extends AOurAllianceData implements Serializable, Comparable<Competition> {
 	public static final String CLASS = "Competition";
 	public static final String TABLE = "competition";
 	public static final String SEASON = Season.TABLE;
     public static final String NAME = "name";
     public static final String CODE = "code";
-	
 	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, SEASON, NAME, CODE };
+
+    public static final String VIEW = "competitionview";
+    public static final String VIEW_ID = TABLE+BaseColumns._ID;
+    public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
+    public static final String VIEW_SEASON = TABLE+SEASON;
+    public static final String VIEW_NAME = TABLE+NAME;
+    public static final String VIEW_CODE = TABLE+CODE;
+	public static final String[] VIEWCOLUMNS = { VIEW_ID, VIEW_MODIFIED, VIEW_SEASON, VIEW_NAME, VIEW_CODE,
+		Season.VIEW_ID, Season.VIEW_MODIFIED, Season.VIEW_YEAR, Season.VIEW_TITLE };
 
 	public static final String PATH = TABLE+"s/";
 	public static final String IDPATH = PATH+"id/";
+	public static final String SEASONPATH = PATH+"season/";
 	public static final String CODEPATH = PATH+"code/";
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+PATH);
-	public static final Uri URI_ID = Uri.parse(DataProvider.BASE_URI_STRING+IDPATH);
-	public static final Uri URI_CODE = Uri.parse(DataProvider.BASE_URI_STRING+CODEPATH);
+	public static final String URI_ID = DataProvider.BASE_URI_STRING+IDPATH;
+	public static final String URI_SEASON = DataProvider.BASE_URI_STRING+SEASONPATH;
+	public static final String URI_CODE = DataProvider.BASE_URI_STRING+CODEPATH;
 
 	public static final String DIRTYPE = DataProvider.BASE_DIR+CLASS;
 	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
 	
-	private long id;
-	private Date modified;
 	private Season season;
 	private String name;
 	private String code;
 	public Competition() {
+		super();
 	}
 	public Competition(Season season, String name, String code) {
-		this.season = season;
-		this.name = name;
-		this.code = code;
+		setData(season, name, code);
 	}
-	public Competition(int id, Date mod, Season season, String name, String code) {
-		this(season, name, code);
-		this.id = id;
-		this.modified = mod;
+	public Competition(long id, Date mod, Season season, String name, String code) {
+		super(id, mod);
+		setData(season, name, code);
 	}
-	public long getId() {
-		return id;
+	private void setData(Season season, String name, String code) {
+		this.setSeason(season);
+		this.setName(name);
+		this.setCode(code);
 	}
-	public void setId(long id) {
-		this.id = id;
+	public static Uri uriFromId(long id) {
+		return Uri.parse(URI_ID + id);
 	}
-	public Date getModified() {
-		return modified;
+	public static Uri uriFromId(Competition id) {
+		return Uri.parse(URI_ID + id.getId());
 	}
-	public void setModified(Date modified) {
-		this.modified = modified;
+	public static Uri uriFromSeason(long id) {
+		return Uri.parse(URI_SEASON + id);
+	}
+	public static Uri uriFromSeason(Season id) {
+		return Uri.parse(URI_SEASON + id.getId());
+	}
+	public static Uri uriFromCode(String code) {
+		return Uri.parse(URI_CODE + code);
 	}
 	public Season getSeason() {
 		return season;
