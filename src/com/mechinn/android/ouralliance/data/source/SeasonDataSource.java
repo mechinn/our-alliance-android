@@ -33,11 +33,8 @@ public class SeasonDataSource {
 		data = context.getContentResolver();
 	}
 
-	public Season insert(Season season) throws OurAllianceException {
-		Uri newRow = data.insert(Season.URI, season.toCV());
-		Log.d(TAG, "insert "+season);
-		Cursor cursor = data.query(newRow, Season.ALLCOLUMNS, null, null, null);
-		return getSeason(cursor);
+	public Uri insert(Season season) {
+		return data.insert(Season.URI, season.toCV());
 	}
 	
 	public int update(Season season) throws OurAllianceException {
@@ -61,22 +58,24 @@ public class SeasonDataSource {
 		}
 		return count;
 	}
-	public Season get(long id) throws OurAllianceException {
-		Cursor cursor = data.query(Season.uriFromId(id), Season.ALLCOLUMNS, null, null, null);
-		return getSeason(cursor);
+	
+	public CursorLoader get(Uri uri) {
+		return new CursorLoader(context, uri, Season.ALLCOLUMNS, null, null, null);
 	}
 	
-	public Season get(int year) throws OurAllianceException {
-		Cursor cursor = data.query(Season.uriFromYear(year), Season.ALLCOLUMNS, null, null, null);
-		return getSeason(cursor);
-	}
-
-	public List<Season> getAll() throws OurAllianceException {
-		Cursor cursor = data.query(Season.URI, Season.ALLCOLUMNS, null, null, Season.YEAR+" DESC");
-		return getSeasons(cursor);
+	public CursorLoader get(Season id) {
+		return get(id.getId());
 	}
 	
-	public CursorLoader getAllSeasons() {
+	public CursorLoader get(long id) {
+		return new CursorLoader(context, Season.uriFromId(id), Season.ALLCOLUMNS, null, null, null);
+	}
+	
+	public CursorLoader get(int year) {
+		return new CursorLoader(context, Season.uriFromYear(year), Season.ALLCOLUMNS, null, null, null);
+	}
+	
+	public CursorLoader getAll() {
 		return new CursorLoader(context, Season.URI, Season.ALLCOLUMNS, null, null, Season.YEAR+" DESC");
 	}
 	

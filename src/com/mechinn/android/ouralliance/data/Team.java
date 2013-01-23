@@ -55,8 +55,8 @@ public class Team extends AOurAllianceData implements Serializable, Comparable<T
 	public static Uri uriFromId(Team id) {
 		return Uri.parse(URI_ID + id.getId());
 	}
-	public static Uri uriFromNum(int num) {
-		return Uri.parse(URI_NUM + num);
+	public static Uri uriFromNum(int id) {
+		return Uri.parse(URI_NUM + id);
 	}
 	public int getNumber() {
 		return number;
@@ -71,7 +71,7 @@ public class Team extends AOurAllianceData implements Serializable, Comparable<T
 		this.name = name;
 	}
 	public String toString() {
-		return this.number+": "+name;
+		return this.getNumber()+": "+this.getName();
 	}
 	public int compareTo(Team another) {
 		return this.getNumber() - another.getNumber();

@@ -47,18 +47,18 @@ public class TeamDetailFragment extends Fragment {
 		int year = 2013;//prefs.getSeason();
 		Log.d(TAG, "year: "+year);
 		SeasonDataSource seasonData = new SeasonDataSource(this.getActivity());
-		try {
-			Season season = seasonData.get(year);
-			TeamScoutingDataSource teamScoutingData = new TeamScoutingDataSource(this.getActivity());
-			if (getArguments().containsKey(ARG_ITEM_ID)) {
-				Team team = (Team) getArguments().getSerializable(ARG_ITEM_ID);
-				scouting = teamScoutingData.get(season, team);
-			}
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (OurAllianceException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			Season season = seasonData.get(year);
+//			TeamScoutingDataSource teamScoutingData = new TeamScoutingDataSource(this.getActivity());
+//			if (getArguments().containsKey(ARG_ITEM_ID)) {
+//				Team team = (Team) getArguments().getSerializable(ARG_ITEM_ID);
+//				scouting = teamScoutingData.get(season, team);
+//			}
+//		} catch (IllegalArgumentException e) {
+//			e.printStackTrace();
+//		} catch (OurAllianceException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override

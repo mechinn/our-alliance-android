@@ -122,23 +122,23 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	@Override
 	public void onResume() {
 		super.onResume();
-		try {
-			long season = prefs.getSeason();
-			Log.d(TAG,"seasonID: "+season);
-			thisSeason = seasonData.get(season);
-			Log.d(TAG,thisSeason.toString());
-		} catch (OurAllianceException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			long comp = prefs.getComp();
-			Log.d(TAG,"compID: "+comp);
-			thisComp = competitionData.get(comp);
-			Log.d(TAG,thisComp.toString());
-		} catch (OurAllianceException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			long season = prefs.getSeason();
+//			Log.d(TAG,"seasonID: "+season);
+//			thisSeason = seasonData.get(season);
+//			Log.d(TAG,thisSeason.toString());
+//		} catch (OurAllianceException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		try {
+//			long comp = prefs.getComp();
+//			Log.d(TAG,"compID: "+comp);
+//			thisComp = competitionData.get(comp);
+//			Log.d(TAG,thisComp.toString());
+//		} catch (OurAllianceException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
@@ -215,24 +215,24 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	
 	public void deleteTeam(Team team) {
 		Log.d(TAG, "id: "+team);
-		try {
-			competitionTeamData.delete(competitionTeamData.get(team));
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (OurAllianceException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			competitionTeamData.delete(competitionTeamData.get(team));
+//		} catch (IllegalArgumentException e) {
+//			e.printStackTrace();
+//		} catch (OurAllianceException e) {
+//			e.printStackTrace();
+//		}
 	}
 	
 	public void insertTeam(Team team) {
 		Log.d(TAG, "id: "+team);
-		try {
-			competitionTeamData.insert(new CompetitionTeam(thisComp,team));
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (OurAllianceException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			competitionTeamData.insert(new CompetitionTeam(thisComp,team));
+//		} catch (IllegalArgumentException e) {
+//			e.printStackTrace();
+//		} catch (OurAllianceException e) {
+//			e.printStackTrace();
+//		}
 	}
 	
 	public void updateTeam(Team team) {

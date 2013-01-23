@@ -42,8 +42,11 @@ import com.mechinn.android.ouralliance.error.OurAllianceException;
  * API Guide</a> for more information on devdeloping a Settings UI.
  */
 public class SettingsFragment extends PreferenceFragment implements LoaderCallbacks<Cursor> {
+	private static final String TAG = "SettingsFragment";
 	private static final int LOADER_SEASON = 0;
 	private static final int LOADER_COMPETITION = 1;
+	private static final int LOADER_SEASON_SUMMARY = 2;
+	private static final int LOADER_COMPETITION_SUMMARY = 3;
 	Prefs prefs;
 	SQLiteDatabase db;
 	SeasonDataSource seasonData;
@@ -60,11 +63,10 @@ public class SettingsFragment extends PreferenceFragment implements LoaderCallba
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 		setup = new Setup(this.getActivity());
-        prefs = new Prefs(this.getActivity());
         //builds list from DB
-        db = new Database(this.getActivity()).getWritableDatabase();
         seasonData = new SeasonDataSource(this.getActivity());
         competitionData = new CompetitionDataSource(this.getActivity());
+        
         season = (ListPreference) getPreferenceScreen().findPreference(this.getString(R.string.pref_season));
         season.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -92,9 +94,6 @@ public class SettingsFragment extends PreferenceFragment implements LoaderCallba
             	return true;
             }
         });
-        this.getLoaderManager().initLoader(LOADER_SEASON, null, this);
-        this.getLoaderManager().initLoader(LOADER_COMPETITION, null, this);
-        
         resetDB = (Preference) getPreferenceScreen().findPreference(this.getString(R.string.pref_resetDB));
         resetDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
@@ -118,16 +117,26 @@ public class SettingsFragment extends PreferenceFragment implements LoaderCallba
 					return true;
 				}
 			});
+        this.getLoaderManager().initLoader(LOADER_SEASON, null, this);
+        this.getLoaderManager().initLoader(LOADER_COMPETITION, null, this);
     }
 
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+		long seasonID = Long.parseLong(season.getValue());
+    	Log.d(TAG,"season: "+seasonID);
+		long compID = Long.parseLong(season.getValue());
+     	Log.d(TAG,"season: "+compID);
 		switch(id) {
 			case LOADER_SEASON:
-				return seasonData.getAllSeasons();
+				return seasonData.getAll();
 			case LOADER_COMPETITION:
-				return competitionData.getAllCompetitions(prefs.getSeason());
+				return competitionData.getAllCompetitions(seasonID);
+			case LOADER_SEASON_SUMMARY:
+				return seasonData.get(seasonID);
+			case LOADER_COMPETITION_SUMMARY:
+				return competitionData.get(compID);
 			default:
-				return new CursorLoader(this.getActivity());
+				return null;
 		}
 	}
 
@@ -137,6 +146,10 @@ public class SettingsFragment extends PreferenceFragment implements LoaderCallba
 				setSeasonList(cursor);
 			case LOADER_COMPETITION:
 				setCompList(cursor);
+			case LOADER_SEASON_SUMMARY:
+				setSeasonSummary(cursor);
+			case LOADER_COMPETITION_SUMMARY:
+				setCompSummary(cursor);
 		}
 	}
 
@@ -146,6 +159,10 @@ public class SettingsFragment extends PreferenceFragment implements LoaderCallba
 				setSeasonList(null);
 			case LOADER_COMPETITION:
 				setSeasonList(null);
+			case LOADER_SEASON_SUMMARY:
+				setSeasonSummary(null);
+			case LOADER_COMPETITION_SUMMARY:
+				setCompSummary(null);
 		}
 	}
 	
@@ -160,17 +177,11 @@ public class SettingsFragment extends PreferenceFragment implements LoaderCallba
 			}
 	        season.setEntries(seasonsViews);
 	        season.setEntryValues(seasonsIds);
-	        try {
-	        	season.setSummary(seasonData.get(Long.parseLong(comp.getValue())).toString());
-	        	comp.setEnabled(true);
-	        } catch (Exception e) {
-				season.setSummary(getActivity().getString(R.string.pref_season_summary));
-				comp.setEnabled(false);
-	        }
+        	this.getLoaderManager().restartLoader(LOADER_SEASON_SUMMARY, null, this);
 		} catch (Exception e) {
 			e.printStackTrace();
-	        season.setEntries(new CharSequence[0]);
-	        season.setEntryValues(new CharSequence[0]);
+	        season.setEntries(new CharSequence[]{"Loading"});
+	        season.setEntryValues(new CharSequence[]{"0"});
 			season.setSummary(getActivity().getString(R.string.pref_season_summary));
 			comp.setEnabled(false);
 		}
@@ -187,16 +198,34 @@ public class SettingsFragment extends PreferenceFragment implements LoaderCallba
 			}
 	        comp.setEntries(compsViews);
 	        comp.setEntryValues(compsIds);
-	        try {
-	        	comp.setSummary(competitionData.get(Long.parseLong(comp.getValue())).toString());
-	        } catch (Exception e) {
-		        comp.setSummary(getActivity().getString(R.string.pref_comp_summary));
-	        }
+        	this.getLoaderManager().restartLoader(LOADER_COMPETITION_SUMMARY, null, this);
 		} catch (Exception e) {
 			e.printStackTrace();
-	        comp.setEntries(new CharSequence[0]);
-	        comp.setEntryValues(new CharSequence[0]);
+			comp.setEntries(new CharSequence[]{"Loading"});
+	        comp.setEntryValues(new CharSequence[]{"0"});
 	        comp.setSummary(getActivity().getString(R.string.pref_comp_summary));
 		}
+	}
+	
+	private void setSeasonSummary(Cursor cursor) {
+		try {
+			Season thisSeason = SeasonDataSource.getSeason(cursor);
+        	season.setSummary(thisSeason.toString());
+        	comp.setEnabled(true);
+        } catch (Exception e) {
+        	e.printStackTrace();
+			season.setSummary(getActivity().getString(R.string.pref_season_summary));
+			comp.setEnabled(false);
+        }
+	}
+	
+	private void setCompSummary(Cursor cursor) {
+		try {
+        	Competition thisComp = CompetitionDataSource.getCompetition(cursor);
+        	comp.setSummary(thisComp.toString());
+        } catch (Exception e) {
+        	e.printStackTrace();
+	        comp.setSummary(getActivity().getString(R.string.pref_comp_summary));
+        }
 	}
 }

@@ -15,6 +15,7 @@ import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,11 +34,8 @@ public class TeamScoutingDataSource {
 		data = context.getContentResolver();
 	}
 
-	public TeamScouting insert(TeamScouting teamScouting) throws OurAllianceException {
-		Uri newRow = data.insert(TeamScouting.URI, teamScouting.toCV());
-		Log.d(TAG, "insert "+teamScouting);
-		Cursor cursor = data.query(newRow, TeamScouting.VIEWCOLUMNS, null, null, null);
-		return getTeamScouting(cursor);
+	public Uri insert(TeamScouting teamScouting) {
+		return data.insert(TeamScouting.URI, teamScouting.toCV());
 	}
 	
 	public int update(TeamScouting teamScouting) throws OurAllianceException {
@@ -62,23 +60,57 @@ public class TeamScoutingDataSource {
 		return count;
 	}
 	
-	public TeamScouting get(long id) throws OurAllianceException {
-		Cursor cursor = data.query(TeamScouting.uriFromId(id), TeamScouting.VIEWCOLUMNS, null, null, null);
-		return getTeamScouting(cursor);
+	public CursorLoader get(Uri uri) {
+		return new CursorLoader(context, uri, TeamScouting.VIEWCOLUMNS, null, null, null);
 	}
 	
-	public TeamScouting get(Season season, Team team) throws OurAllianceException {
-		Cursor cursor = data.query(TeamScouting.uriFromSeasonTeam(season, team), TeamScouting.VIEWCOLUMNS, null, null, null);
-		return getTeamScouting(cursor);
+	public CursorLoader get(TeamScouting teamScouting) {
+		return get(teamScouting.getId());
+	}
+	
+	public CursorLoader get(long id) {
+		return new CursorLoader(context, TeamScouting.uriFromId(id), TeamScouting.VIEWCOLUMNS, null, null, null);
+	}
+	
+	public CursorLoader get(Season season, Team team) {
+		return new CursorLoader(context, TeamScouting.uriFromSeasonTeam(season, team), TeamScouting.VIEWCOLUMNS, null, null, null);
 	}
 
-	public List<TeamScouting> getAll() throws OurAllianceException {
-		Cursor cursor = data.query(TeamScouting.URI, TeamScouting.VIEWCOLUMNS, null, null, Team.VIEW_NUMBER);
-		return getTeamScoutings(cursor);
+	public CursorLoader getAll() {
+		return new CursorLoader(context, TeamScouting.URI, TeamScouting.VIEWCOLUMNS, null, null, Team.VIEW_NUMBER);
 	}
 	
-	public List<Team> getAllTeams(Season season) throws OurAllianceException {
-		Cursor cursor = data.query(TeamScouting.uriFromSeason(season), CompetitionTeam.VIEWCOLUMNS, null, null, Team.VIEW_NUMBER);
+	public static TeamScouting getTeamScouting(Cursor cursor) throws OurAllianceException {
+		TeamScouting scouting;
+		if(cursor.getCount()==1) {
+			cursor.moveToFirst();
+			scouting = cursorToTeamScouting(cursor);
+		} else if(cursor.getCount()==0) {
+			throw new OurAllianceException(TAG,"Team scouting not found in db.",new NoObjectsThrowable());
+		} else {
+			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+		}
+		cursor.close();
+		return scouting;
+	}
+	
+	public static List<TeamScouting> getTeamScoutings(Cursor cursor) throws OurAllianceException {
+		List<TeamScouting> scoutings = new ArrayList<TeamScouting>();
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			TeamScouting team = cursorToTeamScouting(cursor);
+			scoutings.add(team);
+			cursor.moveToNext();
+		}
+		if(scoutings.isEmpty()) {
+			throw new OurAllianceException(TAG,"No team scouting in db.",new NoObjectsThrowable());
+		}
+		// Make sure to close the cursor
+		cursor.close();
+		return scoutings;
+	}
+	
+	public static List<Team> getAllTeams(Cursor cursor) throws OurAllianceException {
 		List<Team> teams = new ArrayList<Team>();
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
@@ -94,38 +126,8 @@ public class TeamScoutingDataSource {
 		cursor.close();
 		return teams;
 	}
-	
-	private TeamScouting getTeamScouting(Cursor cursor) throws OurAllianceException {
-		TeamScouting scouting;
-		if(cursor.getCount()==1) {
-			cursor.moveToFirst();
-			scouting = cursorToTeamScouting(cursor);
-		} else if(cursor.getCount()==0) {
-			throw new OurAllianceException(TAG,"Team scouting not found in db.",new NoObjectsThrowable());
-		} else {
-			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
-		}
-		cursor.close();
-		return scouting;
-	}
-	
-	private List<TeamScouting> getTeamScoutings(Cursor cursor) throws OurAllianceException {
-		List<TeamScouting> scoutings = new ArrayList<TeamScouting>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			TeamScouting team = cursorToTeamScouting(cursor);
-			scoutings.add(team);
-			cursor.moveToNext();
-		}
-		if(scoutings.isEmpty()) {
-			throw new OurAllianceException(TAG,"No team scouting in db.",new NoObjectsThrowable());
-		}
-		// Make sure to close the cursor
-		cursor.close();
-		return scoutings;
-	}
 
-	public static TeamScouting cursorToTeamScouting(Cursor cursor) throws OurAllianceException {
+	public static TeamScouting cursorToTeamScouting(Cursor cursor) {
 		TeamScouting team = new TeamScouting();
 		team.setId(cursor.getLong(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_ID)));
 		team.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_MODIFIED))));

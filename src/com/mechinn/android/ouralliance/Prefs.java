@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -19,21 +18,21 @@ public class Prefs {
 	private String versionPref;
 	private String versionDefault;
 	
-	public Prefs(Activity activity) {
-		this.dbSetupPref = activity.getString(R.string.pref_resetDB);
-		this.dbSetupDefault = activity.getString(R.string.pref_resetDB_default);
-		this.seasonPref = activity.getString(R.string.pref_season);
-		this.seasonDefault = activity.getString(R.string.pref_season_default);
-		this.compPref = activity.getString(R.string.pref_comp);
-		this.compDefault = activity.getString(R.string.pref_comp_default);
-		this.versionPref = activity.getString(R.string.pref_about);
-		this.versionDefault = activity.getString(R.string.pref_about_default);
+	public Prefs(Context context) {
+		this.dbSetupPref = context.getString(R.string.pref_resetDB);
+		this.dbSetupDefault = context.getString(R.string.pref_resetDB_default);
+		this.seasonPref = context.getString(R.string.pref_season);
+		this.seasonDefault = context.getString(R.string.pref_season_default);
+		this.compPref = context.getString(R.string.pref_comp);
+		this.compDefault = context.getString(R.string.pref_comp_default);
+		this.versionPref = context.getString(R.string.pref_about);
+		this.versionDefault = context.getString(R.string.pref_about_default);
 		try {
-			this.currentVersion = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionCode;
+			this.currentVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
 		} catch (NameNotFoundException e) {
 			this.currentVersion = 0;
 		};
-		prefs = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 	public int getCurrentVersion() {
 		return currentVersion;

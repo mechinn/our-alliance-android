@@ -32,11 +32,8 @@ public class CompetitionTeamDataSource {
 		data = context.getContentResolver();
 	}
 
-	public CompetitionTeam insert(CompetitionTeam competitionTeam) throws OurAllianceException {
-		Uri newRow = data.insert(CompetitionTeam.URI, competitionTeam.toCV());
-		Log.d(TAG, "insert "+competitionTeam);
-		Cursor cursor = data.query(newRow, CompetitionTeam.VIEWCOLUMNS, null, null, null);
-		return getCompetitionTeam(cursor);
+	public Uri insert(CompetitionTeam competitionTeam) {
+		return data.insert(CompetitionTeam.URI, competitionTeam.toCV());
 	}
 	
 	public int update(CompetitionTeam competitionTeam) throws OurAllianceException {
@@ -61,19 +58,24 @@ public class CompetitionTeamDataSource {
 		return count;
 	}
 	
-	public CompetitionTeam get(long id) throws OurAllianceException {
-		Cursor cursor = data.query(CompetitionTeam.uriFromId(id), CompetitionTeam.VIEWCOLUMNS, null, null, null);
-		return getCompetitionTeam(cursor);
+	public CursorLoader get(Uri uri) {
+		return new CursorLoader(context, uri, CompetitionTeam.VIEWCOLUMNS, null, null, null);
 	}
 	
-	public CompetitionTeam get(Team team) throws OurAllianceException {
-		Cursor cursor = data.query(CompetitionTeam.uriFromTeam(team), CompetitionTeam.VIEWCOLUMNS, null, null, null);
-		return getCompetitionTeam(cursor);
+	public CursorLoader get(CompetitionTeam id) {
+		return get(id.getId());
+	}
+	
+	public CursorLoader get(long id) {
+		return new CursorLoader(context, CompetitionTeam.uriFromId(id), CompetitionTeam.VIEWCOLUMNS, null, null, null);
+	}
+	
+	public CursorLoader get(Team team) {
+		return new CursorLoader(context, CompetitionTeam.uriFromTeam(team), CompetitionTeam.VIEWCOLUMNS, null, null, null);
 	}
 
-	public List<CompetitionTeam> getAll() throws OurAllianceException {
-		Cursor cursor = data.query(CompetitionTeam.URI, CompetitionTeam.VIEWCOLUMNS, null, null, Team.VIEW_NUMBER);
-		return getCompetitionTeams(cursor);
+	public CursorLoader getAll() {
+		return new CursorLoader(context, CompetitionTeam.URI, CompetitionTeam.VIEWCOLUMNS, null, null, Team.VIEW_NUMBER);
 	}
 	
 	public CursorLoader getAllTeams(Competition comp) {

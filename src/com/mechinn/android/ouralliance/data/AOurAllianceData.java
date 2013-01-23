@@ -22,6 +22,9 @@ public abstract class AOurAllianceData {
 	public AOurAllianceData() {
 		
 	}
+	public AOurAllianceData(long id) {
+		this.setId(id);
+	}
 	public AOurAllianceData(long id, Date mod) {
 		this.setId(id);
 		this.setModified(mod);

@@ -1,11 +1,15 @@
 package com.mechinn.android.ouralliance;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
@@ -71,33 +75,17 @@ public class Setup {
 		}
 		switch(version+1) {
 			case 1:
-				try {
-					seasonData.insert(new Season(2013, "Ultimate Ascent"));
-					Season thisSeason = seasonData.get(2013);
-					Team team869 = teamData.insert(new Team(869, "Power Cord"));
-					teamScoutingData.insert(new TeamScouting(thisSeason, team869));
-					Team team1676 = teamData.insert(new Team(1676, "Pioneers"));
-					teamScoutingData.insert(new TeamScouting(thisSeason, team1676));
-					Team team3637 = teamData.insert(new Team(3637, "The Daleks"));
-					teamScoutingData.insert(new TeamScouting(thisSeason, team3637));
-					Team team25 = teamData.insert(new Team(25, "Raider Robotix"));
-					teamScoutingData.insert(new TeamScouting(thisSeason, team25));
-					Team team75 = teamData.insert(new Team(75, "RoboRaiders"));
-					teamScoutingData.insert(new TeamScouting(thisSeason, team75));
-					Team team11 = teamData.insert(new Team(11, "Chief Delphi"));
-					teamScoutingData.insert(new TeamScouting(thisSeason, team11));
-					this.addCompetitions(thisSeason);
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (OurAllianceException e) {
-					e.printStackTrace();
-				}
+				Season s2013 = new Season(2013, "Ultimate Ascent");
+				Uri s2013Uri = seasonData.insert(s2013);
+				long s2013Id = Long.parseLong(s2013Uri.getLastPathSegment());
+				s2013.setId(s2013Id);
+				this.addCompetitions(s2013);
 			default:
 		}
 		prefs.setVersion(VERSION);
 	}
 	
-	private void addCompetitions(Season season) throws IllegalArgumentException, OurAllianceException {
+	private void addCompetitions(Season season) {
 		competitionData.insert(new Competition(season, "Alamo Regional", "STX"));
 		competitionData.insert(new Competition(season, "BAE Systems Granite State Regional", "NH"));
 		competitionData.insert(new Competition(season, "Greater Kansas City Regional", "KC"));
@@ -171,13 +159,30 @@ public class Setup {
 		competitionData.insert(new Competition(season, "FIRST Championship - Curie Division", "Curie"));
 		competitionData.insert(new Competition(season, "FIRST Championship - Galileo Division", "Galileo"));
 		competitionData.insert(new Competition(season, "FIRST Championship - Newton Division", "Newton"));
-		Competition temp = competitionData.insert(new Competition(season, "FIRST Championship", "CMP"));
-
-		competitionTeamData.insert(new CompetitionTeam(temp, teamData.getNum(869)));
-		competitionTeamData.insert(new CompetitionTeam(temp, teamData.getNum(1676)));
-		competitionTeamData.insert(new CompetitionTeam(temp, teamData.getNum(3637)));
-		competitionTeamData.insert(new CompetitionTeam(temp, teamData.getNum(25)));
-		competitionTeamData.insert(new CompetitionTeam(temp, teamData.getNum(75)));
-		competitionTeamData.insert(new CompetitionTeam(temp, teamData.getNum(11)));
+		
+		Competition champs = new Competition(season, "FIRST Championship", "CMP");
+		Uri temp = competitionData.insert(champs);
+		long champsId = Long.parseLong(temp.getLastPathSegment());
+		champs.setId(champsId);
+		addTestData(season, champs);
+	}
+	
+	private void addTestData(Season season, Competition comp) {
+		SparseArray<String> teams = new SparseArray<String>();
+		teams.append(869, "Power Cord");
+		teams.append(1676, "Pioneers");
+		teams.append(3637, "The Daleks");
+		teams.append(25, "Raider Robotix");
+		teams.append(75, "RoboRaiders");
+		teams.append(11, "Chief Delphi");
+		
+		for(int i=0;i<teams.size();++i) {
+			Team team = new Team(teams.keyAt(i), teams.valueAt(i));
+			Uri teamUri = teamData.insert(team);
+			long teamId = Long.parseLong(teamUri.getLastPathSegment());
+			team.setId(teamId);
+			teamScoutingData.insert(new TeamScouting(season, team));
+			competitionTeamData.insert(new CompetitionTeam(comp, team));
+		}
 	}
 }

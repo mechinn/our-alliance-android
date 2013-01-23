@@ -34,11 +34,8 @@ public class CompetitionDataSource {
 		data = context.getContentResolver();
 	}
 
-	public Competition insert(Competition competition) throws OurAllianceException {
-		Uri newRow = data.insert(Competition.URI, competition.toCV());
-		Log.d(TAG, "insert "+competition);
-		Cursor cursor = data.query(newRow, Competition.VIEWCOLUMNS, null, null, null);
-		return getCompetition(cursor);
+	public Uri insert(Competition competition) {
+		return data.insert(Competition.URI, competition.toCV());
 	}
 	
 	public int update(Competition competition) throws OurAllianceException {
@@ -63,30 +60,31 @@ public class CompetitionDataSource {
 		return count;
 	}
 	
-	public Competition get(long id) throws OurAllianceException {
-		Cursor cursor = data.query(Competition.uriFromId(id), Competition.VIEWCOLUMNS, null, null, null);
-		return getCompetition(cursor);
+	public CursorLoader get(Uri uri) {
+		return new CursorLoader(context, uri, Competition.VIEWCOLUMNS, null, null, null);
 	}
 	
-	public Competition get(String code) throws OurAllianceException {
-		Cursor cursor = data.query(Competition.uriFromCode(code), Competition.VIEWCOLUMNS, null, null, null);
-		return getCompetition(cursor);
+	public CursorLoader get(Competition comp) {
+		return get(comp.getId());
 	}
 	
-	public List<Competition> getAll() throws OurAllianceException {
-		Cursor cursor = data.query(Competition.URI, Competition.VIEWCOLUMNS, null, null, Competition.VIEW_NAME);
-		return getCompetitions(cursor);
+	public CursorLoader get(long id) {
+		return new CursorLoader(context, Competition.uriFromId(id), Competition.VIEWCOLUMNS, null, null, null);
+	}
+	
+	public CursorLoader get(String code) {
+		return new CursorLoader(context, Competition.uriFromCode(code), Competition.VIEWCOLUMNS, null, null, null);
+	}
+	
+	public CursorLoader getAll() {
+		return new CursorLoader(context, Competition.URI, Competition.VIEWCOLUMNS, null, null, Competition.VIEW_NAME);
 	}
 	
 	public CursorLoader getAllCompetitions(Season season) {
-		return getAllComps(season.getId());
+		return getAllCompetitions(season.getId());
 	}
 	
 	public CursorLoader getAllCompetitions(long season) {
-		return getAllComps(season);
-	}
-	
-	private CursorLoader getAllComps(long season) {
 		return new CursorLoader(context, Competition.uriFromSeason(season), Competition.VIEWCOLUMNS, null, null, Competition.VIEW_NAME);
 	}
 	

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.mechinn.android.ouralliance.Database;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
@@ -13,6 +14,7 @@ import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,11 +33,8 @@ public class TeamDataSource {
 		data = context.getContentResolver();
 	}
 
-	public Team insert(Team team) throws OurAllianceException {
-		Uri newRow = data.insert(Team.URI, team.toCV());
-		Log.d(TAG, "insert "+team);
-		Cursor cursor = data.query(newRow, Team.ALLCOLUMNS, null, null, null);
-		return getTeam(cursor);
+	public Uri insert(Team team) {
+		return data.insert(Team.URI, team.toCV());
 	}
 	
 	public int update(Team team) throws OurAllianceException {
@@ -60,22 +59,27 @@ public class TeamDataSource {
 		return count;
 	}
 	
-	public Team get(long id) throws OurAllianceException {
-		Cursor cursor = data.query(Team.uriFromId(id), Team.ALLCOLUMNS, null, null, null);
-		return getTeam(cursor);
+	public CursorLoader get(Uri uri) {
+		return new CursorLoader(context, uri, Team.ALLCOLUMNS, null, null, null);
 	}
 	
-	public Team getNum(int num) throws OurAllianceException {
-		Cursor cursor = data.query(Team.uriFromNum(num), Team.ALLCOLUMNS, null, null, null);
-		return getTeam(cursor);
+	public CursorLoader get(Team team) {
+		return get(team.getId());
+	}
+	
+	public CursorLoader get(long id) {
+		return new CursorLoader(context, Team.uriFromId(id), Team.ALLCOLUMNS, null, null, null);
+	}
+	
+	public CursorLoader get(int num) {
+		return new CursorLoader(context, Team.uriFromNum(num), Team.ALLCOLUMNS, null, null, null);
 	}
 
-	public List<Team> getAll() throws OurAllianceException {
-		Cursor cursor = data.query(Team.URI, Team.ALLCOLUMNS, null, null, Team.NUMBER);
-		return getTeams(cursor);
+	public CursorLoader getAll() {
+		return new CursorLoader(context, Team.URI, Team.ALLCOLUMNS, null, null, Team.NUMBER);
 	}
 	
-	private Team getTeam(Cursor cursor) throws OurAllianceException {
+	public static Team getTeam(Cursor cursor) throws OurAllianceException {
 		Team competitionTeam;
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
@@ -90,7 +94,7 @@ public class TeamDataSource {
 		return competitionTeam;
 	}
 	
-	private List<Team> getTeams(Cursor cursor) throws OurAllianceException {
+	public static List<Team> getTeams(Cursor cursor) throws OurAllianceException {
 		List<Team> teams = new ArrayList<Team>();
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
