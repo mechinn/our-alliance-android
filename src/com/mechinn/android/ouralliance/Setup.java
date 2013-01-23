@@ -1,11 +1,8 @@
 package com.mechinn.android.ouralliance;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.app.Activity;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -21,7 +18,6 @@ import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamScoutingDataSource;
-import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public class Setup {
 	private static final String TAG = "Setup";
@@ -159,7 +155,7 @@ public class Setup {
 		competitionData.insert(new Competition(season, "FIRST Championship - Curie Division", "Curie"));
 		competitionData.insert(new Competition(season, "FIRST Championship - Galileo Division", "Galileo"));
 		competitionData.insert(new Competition(season, "FIRST Championship - Newton Division", "Newton"));
-		
+//		competitionData.insert(new Competition(season, "FIRST Championship", "CMP"));
 		Competition champs = new Competition(season, "FIRST Championship", "CMP");
 		Uri temp = competitionData.insert(champs);
 		long champsId = Long.parseLong(temp.getLastPathSegment());
