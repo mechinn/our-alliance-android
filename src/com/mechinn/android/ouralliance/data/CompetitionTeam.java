@@ -7,8 +7,8 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.mechinn.android.ouralliance.DataProvider;
-import com.mechinn.android.ouralliance.Database;
+import com.mechinn.android.ouralliance.provider.DataProvider;
+import com.mechinn.android.ouralliance.provider.Database;
 
 public class CompetitionTeam extends AOurAllianceData implements Serializable {
 	public static final String CLASS = "CompetitionTeam";
@@ -22,7 +22,7 @@ public class CompetitionTeam extends AOurAllianceData implements Serializable {
     public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
     public static final String VIEW_COMPETITION = TABLE+COMPETITION;
     public static final String VIEW_TEAM = TABLE+TEAM;
-	public static final String[] VIEWCOLUMNS = { VIEW_ID, VIEW_MODIFIED, VIEW_COMPETITION, VIEW_TEAM,
+	public static final String[] VIEWCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM,
 		Competition.VIEW_ID, Competition.VIEW_MODIFIED, Competition.VIEW_SEASON, Competition.VIEW_NAME, Competition.VIEW_CODE,
 		Season.VIEW_ID, Season.VIEW_MODIFIED, Season.VIEW_YEAR, Season.VIEW_TITLE,
 		Team.VIEW_ID, Team.VIEW_MODIFIED, Team.VIEW_NUMBER, Team.VIEW_NAME };
@@ -59,13 +59,19 @@ public class CompetitionTeam extends AOurAllianceData implements Serializable {
 		return Uri.parse(URI_ID + id);
 	}
 	public static Uri uriFromId(CompetitionTeam id) {
-		return Uri.parse(URI_ID + id.getId());
+		return uriFromId(id.getId());
 	}
 	public static Uri uriFromTeam(Team id) {
-		return Uri.parse(URI_TEAM + id.getId());
+		return uriFromTeam(id.getId());
+	}
+	public static Uri uriFromTeam(long id) {
+		return Uri.parse(URI_TEAM + id);
 	}
 	public static Uri uriFromComp(Competition id) {
-		return Uri.parse(URI_COMP + id.getId());
+		return uriFromComp(id.getId());
+	}
+	public static Uri uriFromComp(long id) {
+		return Uri.parse(URI_COMP + id);
 	}
 	public Competition getCompetition() {
 		return competition;

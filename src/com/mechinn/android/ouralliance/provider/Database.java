@@ -1,4 +1,4 @@
-package com.mechinn.android.ouralliance;
+package com.mechinn.android.ouralliance.provider;
 
 
 import com.mechinn.android.ouralliance.data.Competition;
@@ -108,11 +108,11 @@ public class Database extends SQLiteOpenHelper {
 				
 				String competitionView = "CREATE VIEW "+Competition.VIEW+" AS " +
 						"SELECT "+
-						Competition.CLASS+"."+BaseColumns._ID+" AS "+Competition.VIEW_ID+"," +
-						Competition.CLASS+"."+Database.MODIFIED+" AS "+Competition.VIEW_MODIFIED+"," +
-						Competition.CLASS+"."+Competition.SEASON+" AS "+Competition.VIEW_SEASON+"," +
-						Competition.CLASS+"."+Competition.NAME+" AS "+Competition.VIEW_NAME+"," +
-						Competition.CLASS+"."+Competition.CODE+" AS "+Competition.VIEW_CODE+"," +
+						Competition.CLASS+"."+BaseColumns._ID+"," +
+						Competition.CLASS+"."+Database.MODIFIED+"," +
+						Competition.CLASS+"."+Competition.SEASON+"," +
+						Competition.CLASS+"."+Competition.NAME+"," +
+						Competition.CLASS+"."+Competition.CODE+"," +
 						Season.CLASS+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
 						Season.CLASS+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
 						Season.CLASS+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
@@ -121,7 +121,7 @@ public class Database extends SQLiteOpenHelper {
 						Competition.TABLE+" "+Competition.CLASS+"," +
 						Season.TABLE+" "+Season.CLASS +
 						" WHERE " +
-						Competition.VIEW_SEASON+"="+Season.VIEW_ID+
+						Competition.SEASON+"="+Season.VIEW_ID+
 						";";
 				Log.i(tag,competitionView);
 				db.execSQL(competitionView);
@@ -143,15 +143,15 @@ public class Database extends SQLiteOpenHelper {
 				
 				String teamScoutingView = "CREATE VIEW "+TeamScouting.VIEW+" AS " +
 						"SELECT "+
-						TeamScouting.CLASS+"."+BaseColumns._ID+" AS "+TeamScouting.VIEW_ID+"," +
-						TeamScouting.CLASS+"."+Database.MODIFIED+" AS "+TeamScouting.VIEW_MODIFIED+"," +
-						TeamScouting.CLASS+"."+TeamScouting.SEASON+" AS "+TeamScouting.VIEW_SEASON+"," +
-						TeamScouting.CLASS+"."+TeamScouting.TEAM+" AS "+TeamScouting.VIEW_TEAM+"," +
-						TeamScouting.CLASS+"."+TeamScouting.ORIENTATION+" AS "+TeamScouting.VIEW_ORIENTATION+"," +
-						TeamScouting.CLASS+"."+TeamScouting.WIDTH+" AS "+TeamScouting.VIEW_WIDTH+"," +
-						TeamScouting.CLASS+"."+TeamScouting.LENGTH	+" AS "+TeamScouting.VIEW_LENGTH+"," +
-						TeamScouting.CLASS+"."+TeamScouting.HEIGHT+" AS "+TeamScouting.VIEW_HEIGHT+"," +
-						TeamScouting.CLASS+"."+TeamScouting.NOTES+" AS "+TeamScouting.VIEW_NOTES+"," +
+						TeamScouting.CLASS+"."+BaseColumns._ID+"," +
+						TeamScouting.CLASS+"."+Database.MODIFIED+"," +
+						TeamScouting.CLASS+"."+TeamScouting.SEASON+"," +
+						TeamScouting.CLASS+"."+TeamScouting.TEAM+"," +
+						TeamScouting.CLASS+"."+TeamScouting.ORIENTATION+"," +
+						TeamScouting.CLASS+"."+TeamScouting.WIDTH+"," +
+						TeamScouting.CLASS+"."+TeamScouting.LENGTH	+"," +
+						TeamScouting.CLASS+"."+TeamScouting.HEIGHT+"," +
+						TeamScouting.CLASS+"."+TeamScouting.NOTES+"," +
 						Season.CLASS+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
 						Season.CLASS+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
 						Season.CLASS+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
@@ -165,9 +165,9 @@ public class Database extends SQLiteOpenHelper {
 						Season.TABLE+" "+Season.CLASS+"," +
 						Team.TABLE+" "+Team.CLASS+
 						" WHERE " +
-						TeamScouting.VIEW_SEASON+"="+Season.VIEW_ID+
+						TeamScouting.SEASON+"="+Season.VIEW_ID+
 						" AND "+
-						TeamScouting.VIEW_TEAM+"="+Team.VIEW_ID+
+						TeamScouting.TEAM+"="+Team.VIEW_ID+
 						";";
 				Log.i(tag,teamScoutingView);
 				db.execSQL(teamScoutingView);
@@ -184,10 +184,10 @@ public class Database extends SQLiteOpenHelper {
 				
 				String competitionTeamView = "CREATE VIEW "+CompetitionTeam.VIEW+" AS " +
 						"SELECT "+
-						CompetitionTeam.CLASS+"."+BaseColumns._ID+" AS "+CompetitionTeam.VIEW_ID+"," +
-						CompetitionTeam.CLASS+"."+Database.MODIFIED+" AS "+CompetitionTeam.VIEW_MODIFIED+"," +
-						CompetitionTeam.CLASS+"."+CompetitionTeam.COMPETITION+" AS "+CompetitionTeam.VIEW_COMPETITION+"," +
-						CompetitionTeam.CLASS+"."+CompetitionTeam.TEAM+" AS "+CompetitionTeam.VIEW_TEAM+"," +
+						CompetitionTeam.CLASS+"."+BaseColumns._ID+"," +
+						CompetitionTeam.CLASS+"."+Database.MODIFIED+"," +
+						CompetitionTeam.CLASS+"."+CompetitionTeam.COMPETITION+"," +
+						CompetitionTeam.CLASS+"."+CompetitionTeam.TEAM+"," +
 						Competition.CLASS+"."+BaseColumns._ID+" AS "+Competition.VIEW_ID+"," +
 						Competition.CLASS+"."+Database.MODIFIED+" AS "+Competition.VIEW_MODIFIED+"," +
 						Competition.CLASS+"."+Competition.SEASON+" AS "+Competition.VIEW_SEASON+"," +
@@ -207,11 +207,11 @@ public class Database extends SQLiteOpenHelper {
 						Season.TABLE+" "+Season.CLASS+"," +
 						Team.TABLE+" "+Team.CLASS+
 						" WHERE " +
-						CompetitionTeam.VIEW_COMPETITION+"="+Competition.VIEW_ID+
+						CompetitionTeam.COMPETITION+"="+Competition.VIEW_ID+
 						" AND "+
 						Competition.VIEW_SEASON+"="+Season.VIEW_ID+
 						" AND "+
-						CompetitionTeam.VIEW_TEAM+"="+Team.VIEW_ID+
+						CompetitionTeam.TEAM+"="+Team.VIEW_ID+
 						";";
 				Log.i(tag,competitionTeamView);
 				db.execSQL(competitionTeamView);

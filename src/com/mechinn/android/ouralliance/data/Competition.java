@@ -7,8 +7,8 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.mechinn.android.ouralliance.DataProvider;
-import com.mechinn.android.ouralliance.Database;
+import com.mechinn.android.ouralliance.provider.DataProvider;
+import com.mechinn.android.ouralliance.provider.Database;
 
 public class Competition extends AOurAllianceData implements Serializable, Comparable<Competition> {
 	public static final String CLASS = "Competition";
@@ -24,7 +24,7 @@ public class Competition extends AOurAllianceData implements Serializable, Compa
     public static final String VIEW_SEASON = TABLE+SEASON;
     public static final String VIEW_NAME = TABLE+NAME;
     public static final String VIEW_CODE = TABLE+CODE;
-	public static final String[] VIEWCOLUMNS = { VIEW_ID, VIEW_MODIFIED, VIEW_SEASON, VIEW_NAME, VIEW_CODE,
+	public static final String[] VIEWCOLUMNS = { BaseColumns._ID, Database.MODIFIED, SEASON, NAME, CODE,
 		Season.VIEW_ID, Season.VIEW_MODIFIED, Season.VIEW_YEAR, Season.VIEW_TITLE };
 
 	public static final String PATH = TABLE+"s/";
@@ -61,13 +61,13 @@ public class Competition extends AOurAllianceData implements Serializable, Compa
 		return Uri.parse(URI_ID + id);
 	}
 	public static Uri uriFromId(Competition id) {
-		return Uri.parse(URI_ID + id.getId());
+		return uriFromId(id.getId());
 	}
 	public static Uri uriFromSeason(long id) {
 		return Uri.parse(URI_SEASON + id);
 	}
 	public static Uri uriFromSeason(Season id) {
-		return Uri.parse(URI_SEASON + id.getId());
+		return uriFromSeason(id.getId());
 	}
 	public static Uri uriFromCode(String code) {
 		return Uri.parse(URI_CODE + code);

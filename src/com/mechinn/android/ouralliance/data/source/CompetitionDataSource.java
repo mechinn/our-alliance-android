@@ -8,24 +8,19 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import com.mechinn.android.ouralliance.Database;
 import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
+import com.mechinn.android.ouralliance.provider.Database;
 
 public class CompetitionDataSource {
 	private static final String TAG = "CompetitionDataSource";
-	// Database fields
 	private Context context;
 	private ContentResolver data;
 
@@ -77,7 +72,7 @@ public class CompetitionDataSource {
 	}
 	
 	public CursorLoader getAll() {
-		return new CursorLoader(context, Competition.URI, Competition.VIEWCOLUMNS, null, null, Competition.VIEW_NAME);
+		return new CursorLoader(context, Competition.URI, Competition.VIEWCOLUMNS, null, null, Competition.NAME);
 	}
 	
 	public CursorLoader getAllCompetitions(Season season) {
@@ -85,7 +80,7 @@ public class CompetitionDataSource {
 	}
 	
 	public CursorLoader getAllCompetitions(long season) {
-		return new CursorLoader(context, Competition.uriFromSeason(season), Competition.VIEWCOLUMNS, null, null, Competition.VIEW_NAME);
+		return new CursorLoader(context, Competition.uriFromSeason(season), Competition.VIEWCOLUMNS, null, null, Competition.NAME);
 	}
 	
 	public static Competition getCompetition(Cursor cursor) throws OurAllianceException {
@@ -122,15 +117,15 @@ public class CompetitionDataSource {
 
 	public static Competition cursorToCompetition(Cursor cursor) {
 		Competition competition = new Competition();
-		competition.setId(cursor.getLong(cursor.getColumnIndexOrThrow(Competition.VIEW_ID)));
-		competition.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Competition.VIEW_MODIFIED))));
-		int seasonId = cursor.getInt(cursor.getColumnIndexOrThrow(Competition.VIEW_SEASON));
+		competition.setId(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)));
+		competition.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Database.MODIFIED))));
+		int seasonId = cursor.getInt(cursor.getColumnIndexOrThrow(Competition.SEASON));
 		Date seasonMod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Season.VIEW_MODIFIED)));
 		int seasonYear = cursor.getInt(cursor.getColumnIndexOrThrow(Season.VIEW_YEAR));
 		String seasonTitle = cursor.getString(cursor.getColumnIndexOrThrow(Season.VIEW_TITLE));
 		competition.setSeason(new Season(seasonId, seasonMod, seasonYear, seasonTitle));
-		competition.setName(cursor.getString(cursor.getColumnIndexOrThrow(Competition.VIEW_NAME)));
-		competition.setCode(cursor.getString(cursor.getColumnIndexOrThrow(Competition.VIEW_CODE)));
+		competition.setName(cursor.getString(cursor.getColumnIndexOrThrow(Competition.NAME)));
+		competition.setCode(cursor.getString(cursor.getColumnIndexOrThrow(Competition.CODE)));
 		return competition;
 	}
 }

@@ -3,6 +3,7 @@ package com.mechinn.android.ouralliance;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 
@@ -68,5 +69,11 @@ public class Prefs {
 		Editor editor = prefs.edit();
 		editor.putString(versionPref, Integer.toString(version));
 		editor.apply();
+	}
+	public void setChangeListener(OnSharedPreferenceChangeListener listener) {
+		prefs.registerOnSharedPreferenceChangeListener(listener);
+	}
+	public void unsetChangeListener(OnSharedPreferenceChangeListener listener) {
+		prefs.unregisterOnSharedPreferenceChangeListener(listener);
 	}
 }

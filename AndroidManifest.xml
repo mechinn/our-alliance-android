@@ -15,28 +15,34 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.mechinn.android.ouralliance.view.TeamListActivity"
-            android:label="@string/app_name" >
+            android:name=".view.TeamListActivity" 
+            android:label="@string/title_team_list" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                <!-- <category android:name="android.intent.category.DEFAULT"/> -->
             </intent-filter>
         </activity>
+        <!-- <activity
+            android:name=".view.StartupActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".view.TeamListActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity> -->
         <activity
-            android:name="com.mechinn.android.ouralliance.view.TeamDetailActivity"
+            android:name=".view.TeamDetailActivity"
             android:label="@string/title_team_detail"
             android:parentActivityName=".view.TeamListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.TeamListActivity" />
         </activity>
-        <activity android:name="com.mechinn.android.ouralliance.view.SettingsActivity"
+        <activity android:name=".view.SettingsActivity"
             android:label="@string/title_team_detail"
             android:parentActivityName=".view.SettingsActivity">
         </activity>
         <provider 
-            android:name="com.mechinn.android.ouralliance.DataProvider"
+            android:name=".provider.DataProvider"
             android:authorities="com.mechinn.android.ouralliance.data"
             android:logo="@drawable/ic_launcher"
             android:icon="@drawable/ic_launcher"

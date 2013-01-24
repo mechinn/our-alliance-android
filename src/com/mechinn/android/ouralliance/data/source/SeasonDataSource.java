@@ -4,27 +4,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.mechinn.android.ouralliance.Database;
-import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
+import com.mechinn.android.ouralliance.provider.Database;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 public class SeasonDataSource {
 	private static final String TAG = "SeasonDataSource";
-	// Database fields
 	private Context context;
 	private ContentResolver data;
 

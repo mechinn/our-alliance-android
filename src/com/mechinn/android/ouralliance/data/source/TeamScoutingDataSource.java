@@ -4,28 +4,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.mechinn.android.ouralliance.Database;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
+import com.mechinn.android.ouralliance.provider.Database;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 public class TeamScoutingDataSource {
 	private static final String TAG = "TeamScoutingDataSource";
-	// Database fields
 	private Context context;
 	private ContentResolver data;
 
@@ -71,8 +67,12 @@ public class TeamScoutingDataSource {
 	public CursorLoader get(long id) {
 		return new CursorLoader(context, TeamScouting.uriFromId(id), TeamScouting.VIEWCOLUMNS, null, null, null);
 	}
-	
+
 	public CursorLoader get(Season season, Team team) {
+		return get(season.getId(), team.getId());
+	}
+	
+	public CursorLoader get(long season, long team) {
 		return new CursorLoader(context, TeamScouting.uriFromSeasonTeam(season, team), TeamScouting.VIEWCOLUMNS, null, null, null);
 	}
 
@@ -129,26 +129,26 @@ public class TeamScoutingDataSource {
 
 	public static TeamScouting cursorToTeamScouting(Cursor cursor) {
 		TeamScouting team = new TeamScouting();
-		team.setId(cursor.getLong(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_ID)));
-		team.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_MODIFIED))));
+		team.setId(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)));
+		team.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Database.MODIFIED))));
 		
-		long seasonId = cursor.getLong(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_SEASON));
+		long seasonId = cursor.getLong(cursor.getColumnIndexOrThrow(TeamScouting.SEASON));
 		Date seasonMod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Season.VIEW_MODIFIED)));
 		int seasonYear = cursor.getInt(cursor.getColumnIndexOrThrow(Season.VIEW_YEAR));
 		String seasonTitle = cursor.getString(cursor.getColumnIndexOrThrow(Season.VIEW_TITLE));
 		team.setSeason(new Season(seasonId, seasonMod, seasonYear, seasonTitle));
 		
-		long teamId = cursor.getLong(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_TEAM));
+		long teamId = cursor.getLong(cursor.getColumnIndexOrThrow(TeamScouting.TEAM));
 		Date teamMod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Team.VIEW_MODIFIED)));
 		int teamNumber = cursor.getInt(cursor.getColumnIndexOrThrow(Team.VIEW_NUMBER));
 		String teamName = cursor.getString(cursor.getColumnIndexOrThrow(Team.VIEW_NAME));
 		team.setTeam(new Team(teamId, teamMod, teamNumber, teamName));
 		
-		team.setOrientation(cursor.getString(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_ORIENTATION)));
-		team.setWidth(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_WIDTH)));
-		team.setLength(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_LENGTH)));
-		team.setHeight(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_HEIGHT)));
-		team.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(TeamScouting.VIEW_NOTES)));
+		team.setOrientation(cursor.getString(cursor.getColumnIndexOrThrow(TeamScouting.ORIENTATION)));
+		team.setWidth(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting.WIDTH)));
+		team.setLength(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting.LENGTH)));
+		team.setHeight(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting.HEIGHT)));
+		team.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(TeamScouting.NOTES)));
 		return team;
 	}
 }

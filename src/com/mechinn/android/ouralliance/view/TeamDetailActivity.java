@@ -37,7 +37,7 @@ public class TeamDetailActivity extends Activity {
 			// Create the detail fragment and add it to the activity
 			// using a fragment transaction.
 			Bundle arguments = new Bundle();
-			arguments.putSerializable(TeamDetailFragment.ARG_ITEM_ID, getIntent().getSerializableExtra(TeamDetailFragment.ARG_ITEM_ID));
+			arguments.putSerializable(TeamDetailFragment.ARG_COMPETITIONTEAM, getIntent().getSerializableExtra(TeamDetailFragment.ARG_COMPETITIONTEAM));
 			TeamDetailFragment fragment = new TeamDetailFragment();
 			fragment.setArguments(arguments);
 			this.getFragmentManager().beginTransaction().add(R.id.team_detail_container, fragment).commit();

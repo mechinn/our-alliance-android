@@ -3,8 +3,8 @@ package com.mechinn.android.ouralliance.data;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.mechinn.android.ouralliance.DataProvider;
-import com.mechinn.android.ouralliance.Database;
+import com.mechinn.android.ouralliance.provider.DataProvider;
+import com.mechinn.android.ouralliance.provider.Database;
 
 import android.content.ContentValues;
 import android.net.Uri;

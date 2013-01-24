@@ -7,8 +7,8 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.mechinn.android.ouralliance.DataProvider;
-import com.mechinn.android.ouralliance.Database;
+import com.mechinn.android.ouralliance.provider.DataProvider;
+import com.mechinn.android.ouralliance.provider.Database;
 
 public class Season extends AOurAllianceData implements Serializable, Comparable<Season> {
 	public static final String CLASS = "Season";

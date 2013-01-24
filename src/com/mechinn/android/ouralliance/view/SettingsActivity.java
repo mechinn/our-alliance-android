@@ -5,6 +5,10 @@ import android.preference.PreferenceActivity;
 
 public class SettingsActivity extends PreferenceActivity {
 //	final static String ACTION_PREFS_ONE = "com.example.prefs.PREFS_ONE";
+	public static final int LOADER_SEASON = 0;
+	public static final int LOADER_COMPETITION = 1;
+	public static final int LOADER_SEASON_SUMMARY = 2;
+	public static final int LOADER_COMPETITION_SUMMARY = 3;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {

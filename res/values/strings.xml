@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Our Alliance</string>
+    <string name="title_team_list">Team List</string>
     <string name="title_team_detail">Team Detail</string>
 	<string name="provider_name">Our Alliance Data</string>
 	<string name="deleteTeam">Delete Team?</string>

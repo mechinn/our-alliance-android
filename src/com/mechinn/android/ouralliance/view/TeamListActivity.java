@@ -1,18 +1,14 @@
 package com.mechinn.android.ouralliance.view;
 
-import java.io.File;
-
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
-import com.mechinn.android.ouralliance.Utility;
+import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -20,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
@@ -37,8 +34,10 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  * This activity also implements the required {@link TeamListFragment.Callbacks}
  * interface to listen for item selections.
  */
-public class TeamListActivity extends Activity implements TeamListFragment.Listener, DeleteTeamDialogFragment.Listener, InsertTeamDialogFragment.Listener {
+public class TeamListActivity extends Activity implements TeamListFragment.Listener, TeamDetailFragment.Listener, DeleteTeamDialogFragment.Listener, InsertTeamDialogFragment.Listener {
 	public static final String TAG = "TeamListActivity";
+	public static final int LOADER_TEAMS = 0;
+	public static final int LOADER_TEAMSCOUTING = 1;
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
 	 * device.
@@ -71,21 +70,21 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	 * Callback method from {@link TeamListFragment.Callbacks} indicating that
 	 * the item with the given ID was selected.
 	 */
-	public void onItemSelected(Team team) {
+	public void onItemSelected(CompetitionTeam team) {
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
 			// fragment transaction.
 			Bundle arguments = new Bundle();
-			arguments.putSerializable(TeamDetailFragment.ARG_ITEM_ID, team);
+			arguments.putSerializable(TeamDetailFragment.ARG_COMPETITIONTEAM, team);
 			TeamDetailFragment fragment = new TeamDetailFragment();
 			fragment.setArguments(arguments);
-			this.getFragmentManager().beginTransaction().replace(R.id.team_detail_container, fragment).commit();
+			this.getFragmentManager().beginTransaction().replace(R.id.team_detail_container, fragment, team.toString()).commit();
 		} else {
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this, TeamDetailActivity.class);
-			detailIntent.putExtra(TeamDetailFragment.ARG_ITEM_ID, team);
+			detailIntent.putExtra(TeamDetailFragment.ARG_COMPETITIONTEAM, team);
 //			detailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 			startActivity(detailIntent);
 		}
@@ -132,18 +131,18 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	    DialogFragment dialog;
 	    switch (item.getItemId()) {
 	        case R.id.edit:
-	        	dialog = new InsertTeamDialogFragment();
-	            Bundle updateArgs = new Bundle();
-	            updateArgs.putSerializable(InsertTeamDialogFragment.TEAM_ARG, teamListFrag.getTeamFromList(info.position));
-	            dialog.setArguments(updateArgs);
-	        	dialog.show(this.getFragmentManager(), "Edit Team");
+//	        	dialog = new InsertTeamDialogFragment();
+//	            Bundle updateArgs = new Bundle();
+//	            updateArgs.putSerializable(InsertTeamDialogFragment.TEAM_ARG, teamListFrag.getTeamFromList(info.position));
+//	            dialog.setArguments(updateArgs);
+//	        	dialog.show(this.getFragmentManager(), "Edit Team");
 	            return true;
 	        case R.id.delete:
-	        	dialog = new DeleteTeamDialogFragment();
-	            Bundle deleteArgs = new Bundle();
-	            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, teamListFrag.getTeamFromList(info.position));
-	            dialog.setArguments(deleteArgs);
-	            dialog.show(this.getFragmentManager(), "Delete Team");
+//	        	dialog = new DeleteTeamDialogFragment();
+//	            Bundle deleteArgs = new Bundle();
+//	            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, teamListFrag.getTeamFromList(info.position));
+//	            dialog.setArguments(deleteArgs);
+//	            dialog.show(this.getFragmentManager(), "Delete Team");
 	            return true;
 	        default:
 	            return super.onContextItemSelected(item);
@@ -208,5 +207,5 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	public void onDeleteDialogNegativeClick(DialogFragment dialog, int id) {
 		dialog.getDialog().cancel();
 		
-	}      
+	}
 }

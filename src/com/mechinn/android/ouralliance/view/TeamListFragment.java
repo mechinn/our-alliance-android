@@ -44,21 +44,8 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	
 	private static final String TAG = "TeamListFragment";
 
-	/**
-	 * The serialization (saved instance state) Bundle key representing the
-	 * activated item position. Only used on tablets.
-	 */
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
-	/**
-	 * The fragment's current callback object, which is notified of list item
-	 * clicks.
-	 */
-	private Listener mCallbacks = sDummyCallbacks;
-
-	/**
-	 * The current activated item position. Only used on tablets.
-	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
 	private List<Team> teams;
 	private Prefs prefs;
@@ -69,28 +56,19 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	private CompetitionDataSource competitionData;
 	private TeamScoutingDataSource teamScoutingData;
 	private CompetitionTeamDataSource competitionTeamData;
-	private TeamCursorAdapter adapter;
+	private CompetitionTeamCursorAdapter adapter;
 
-	/**
-	 * A callback interface that all activities containing this fragment must
-	 * implement. This mechanism allows activities to be notified of item
-	 * selections.
-	 */
+	private Listener mCallbacks = sDummyCallbacks;
 	public interface Listener {
 		/**
 		 * Callback for when an item has been selected.
 		 */
-		public void onItemSelected(Team team);
+		public void onItemSelected(CompetitionTeam team);
 		public void deleteTeam(Team team);
 		public void insertTeam(Team team);
 	}
-
-	/**
-	 * A dummy implementation of the {@link Callbacks} interface that does
-	 * nothing. Used only when this fragment is not attached to an activity.
-	 */
 	private static Listener sDummyCallbacks = new Listener() {
-		public void onItemSelected(Team team) {
+		public void onItemSelected(CompetitionTeam team) {
 		}
 
 		public void deleteTeam(Team team) {
@@ -99,6 +77,25 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		public void insertTeam(Team team) {
 		}
 	};
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof Listener)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
+
+		mCallbacks = (Listener) activity;
+	}
+	@Override
+	public void onDetach() {
+		super.onDetach();
+
+		// Reset the active callbacks interface to the dummy implementation.
+		mCallbacks = sDummyCallbacks;
+	}
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -122,23 +119,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	@Override
 	public void onResume() {
 		super.onResume();
-//		try {
-//			long season = prefs.getSeason();
-//			Log.d(TAG,"seasonID: "+season);
-//			thisSeason = seasonData.get(season);
-//			Log.d(TAG,thisSeason.toString());
-//		} catch (OurAllianceException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		try {
-//			long comp = prefs.getComp();
-//			Log.d(TAG,"compID: "+comp);
-//			thisComp = competitionData.get(comp);
-//			Log.d(TAG,thisComp.toString());
-//		} catch (OurAllianceException e) {
-//			e.printStackTrace();
-//		}
+		this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMS, null, this);
 	}
 
 	@Override
@@ -150,29 +131,8 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 			setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
 		}
 		this.registerForContextMenu(this.getListView());
-		adapter = new TeamCursorAdapter(getActivity(), null);
+		adapter = new CompetitionTeamCursorAdapter(getActivity(), null);
 		setListAdapter(adapter);
-	}
-
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-
-		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof Listener)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
-		}
-
-		mCallbacks = (Listener) activity;
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-
-		// Reset the active callbacks interface to the dummy implementation.
-		mCallbacks = sDummyCallbacks;
 	}
 
 	@Override
@@ -181,7 +141,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(getTeamFromList(position));
+		mCallbacks.onItemSelected(getCompetitionTeamFromList(position));
 	}
 
 	@Override
@@ -244,20 +204,33 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		}
 	}
 	
-	public Team getTeamFromList(int position) {
-		return (Team) this.getListAdapter().getItem(position);
+	public CompetitionTeam getCompetitionTeamFromList(int position) {
+		return adapter.get(position);
 	}
 
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		return competitionTeamData.getAllTeams(thisComp);
+		switch(id) {
+			case TeamListActivity.LOADER_TEAMS:
+				return competitionTeamData.getAllTeams(prefs.getComp());
+			default:
+				return null;
+		}
 	}
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		adapter.swapCursor(data);
+		switch(loader.getId()) {
+			case TeamListActivity.LOADER_TEAMS:
+				adapter.swapCursor(data);
+				break;
+		}
 	}
 
 	public void onLoaderReset(Loader<Cursor> loader) {
-		adapter.swapCursor(null);
+		switch(loader.getId()) {
+			case TeamListActivity.LOADER_TEAMS:
+				adapter.swapCursor(null);
+				break;
+		}
 	}
 
 }

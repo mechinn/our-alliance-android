@@ -7,8 +7,8 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.mechinn.android.ouralliance.DataProvider;
-import com.mechinn.android.ouralliance.Database;
+import com.mechinn.android.ouralliance.provider.DataProvider;
+import com.mechinn.android.ouralliance.provider.Database;
 
 public class TeamScouting extends AOurAllianceData implements Serializable {
 	public static final String CLASS = "TeamScouting";
@@ -32,7 +32,7 @@ public class TeamScouting extends AOurAllianceData implements Serializable {
     public static final String VIEW_LENGTH = TABLE+LENGTH;
     public static final String VIEW_HEIGHT = TABLE+HEIGHT;
     public static final String VIEW_NOTES = TABLE+NOTES;
-	public static final String[] VIEWCOLUMNS = { VIEW_ID, VIEW_MODIFIED, VIEW_SEASON, VIEW_TEAM, VIEW_ORIENTATION, VIEW_WIDTH, VIEW_LENGTH, VIEW_HEIGHT, VIEW_NOTES,
+	public static final String[] VIEWCOLUMNS = { BaseColumns._ID, Database.MODIFIED, SEASON, TEAM, ORIENTATION, WIDTH, LENGTH, HEIGHT, NOTES,
 		Season.VIEW_ID, Season.VIEW_MODIFIED, Season.VIEW_YEAR, Season.VIEW_TITLE,
 		Team.VIEW_ID, Team.VIEW_MODIFIED, Team.VIEW_NUMBER, Team.VIEW_NAME };
 
@@ -77,13 +77,19 @@ public class TeamScouting extends AOurAllianceData implements Serializable {
 		return Uri.parse(URI_ID + id);
 	}
 	public static Uri uriFromId(TeamScouting id) {
-		return Uri.parse(URI_ID + id.getId());
+		return uriFromId(id.getId());
 	}
 	public static Uri uriFromSeason(Season season) {
-		return Uri.parse(URI_SEASON + season.getId());
+		return uriFromSeason(season.getId());
+	}
+	public static Uri uriFromSeason(long season) {
+		return Uri.parse(URI_SEASON + season);
 	}
 	public static Uri uriFromSeasonTeam(Season season, Team team) {
-		return Uri.parse(URI_SEASON + season.getId() + TEAMADDON + team.getId());
+		return uriFromSeasonTeam(season.getId(), team.getId());
+	}
+	public static Uri uriFromSeasonTeam(long season, long team) {
+		return Uri.parse(URI_SEASON + season + TEAMADDON + team);
 	}
 	public Season getSeason() {
 		return season;
