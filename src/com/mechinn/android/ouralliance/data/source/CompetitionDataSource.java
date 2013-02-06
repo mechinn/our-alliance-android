@@ -19,7 +19,7 @@ import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mechinn.android.ouralliance.provider.Database;
 
-public class CompetitionDataSource {
+public class CompetitionDataSource implements IOurAllianceDataSource<Competition> {
 	private static final String TAG = "CompetitionDataSource";
 	private Context context;
 	private ContentResolver data;
@@ -83,11 +83,11 @@ public class CompetitionDataSource {
 		return new CursorLoader(context, Competition.uriFromSeason(season), Competition.VIEWCOLUMNS, null, null, Competition.NAME);
 	}
 	
-	public static Competition getCompetition(Cursor cursor) throws OurAllianceException {
+	public static Competition getSingle(Cursor cursor) throws OurAllianceException {
 		Competition competition;
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
-			competition = cursorToCompetition(cursor);
+			competition = fromCursor(cursor);
 			Log.d(TAG, "get "+competition);
 		} else if(cursor.getCount()==0) {
 			throw new OurAllianceException(TAG,"Competition not found in db.",new NoObjectsThrowable());
@@ -98,11 +98,11 @@ public class CompetitionDataSource {
 		return competition;
 	}
 
-	public static List<Competition> getCompetitions(Cursor cursor) throws OurAllianceException {
+	public static List<Competition> getList(Cursor cursor) throws OurAllianceException {
 		List<Competition> comps = new ArrayList<Competition>();
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			Competition competition = cursorToCompetition(cursor);
+			Competition competition = fromCursor(cursor);
 			Log.d(TAG, "get "+competition);
 			comps.add(competition);
 			cursor.moveToNext();
@@ -115,7 +115,7 @@ public class CompetitionDataSource {
 		return comps;
 	}
 
-	public static Competition cursorToCompetition(Cursor cursor) {
+	public static Competition fromCursor(Cursor cursor) {
 		Competition competition = new Competition();
 		competition.setId(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)));
 		competition.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Database.MODIFIED))));

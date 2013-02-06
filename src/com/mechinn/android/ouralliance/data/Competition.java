@@ -1,16 +1,16 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.text.TextUtils;
 
 import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
-public class Competition extends AOurAllianceData implements Serializable, Comparable<Competition> {
+public class Competition extends AOurAllianceData implements Comparable<Competition> {
 	public static final String CLASS = "Competition";
 	public static final String TABLE = "competition";
 	public static final String SEASON = Season.TABLE;
@@ -40,19 +40,19 @@ public class Competition extends AOurAllianceData implements Serializable, Compa
 	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
 	
 	private Season season;
-	private String name;
-	private String code;
+	private CharSequence name;
+	private CharSequence code;
 	public Competition() {
 		super();
 	}
-	public Competition(Season season, String name, String code) {
+	public Competition(Season season, CharSequence name, CharSequence code) {
 		setData(season, name, code);
 	}
-	public Competition(long id, Date mod, Season season, String name, String code) {
+	public Competition(long id, Date mod, Season season, CharSequence name, CharSequence code) {
 		super(id, mod);
 		setData(season, name, code);
 	}
-	private void setData(Season season, String name, String code) {
+	private void setData(Season season, CharSequence name, CharSequence code) {
 		this.setSeason(season);
 		this.setName(name);
 		this.setCode(code);
@@ -69,7 +69,7 @@ public class Competition extends AOurAllianceData implements Serializable, Compa
 	public static Uri uriFromSeason(Season id) {
 		return uriFromSeason(id.getId());
 	}
-	public static Uri uriFromCode(String code) {
+	public static Uri uriFromCode(CharSequence code) {
 		return Uri.parse(URI_CODE + code);
 	}
 	public Season getSeason() {
@@ -78,16 +78,16 @@ public class Competition extends AOurAllianceData implements Serializable, Compa
 	public void setSeason(Season season) {
 		this.season = season;
 	}
-	public String getName() {
+	public CharSequence getName() {
 		return name;
 	}
-	public void setName(String name) {
+	public void setName(CharSequence name) {
 		this.name = name;
 	}
-	public String getCode() {
+	public CharSequence getCode() {
 		return code;
 	}
-	public void setCode(String code) {
+	public void setCode(CharSequence code) {
 		this.code = code;
 	}
 	public String toString() {
@@ -97,11 +97,19 @@ public class Competition extends AOurAllianceData implements Serializable, Compa
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
 		values.put(Competition.SEASON, this.getSeason().getId());
-		values.put(Competition.NAME, this.getName());
-		values.put(Competition.CODE, this.getCode());
+		if(TextUtils.isEmpty(this.getName())) {
+			values.putNull(Competition.NAME);
+		} else {
+			values.put(Competition.NAME, this.getName().toString());
+		}
+		if(TextUtils.isEmpty(this.getCode())) {
+			values.putNull(Competition.CODE);
+		} else {
+			values.put(Competition.CODE, this.getCode().toString());
+		}
 		return values;
 	}
 	public int compareTo(Competition another) {
-		return this.getName().compareTo(another.getName());
+		return this.getName().toString().compareTo(another.getName().toString());
 	}
 }

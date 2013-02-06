@@ -1,16 +1,16 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.text.TextUtils;
 
 import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
-public class Season extends AOurAllianceData implements Serializable, Comparable<Season> {
+public class Season extends AOurAllianceData implements Comparable<Season> {
 	public static final String CLASS = "Season";
 	public static final String TABLE = "season";
 	public static final String YEAR = "year";
@@ -34,18 +34,18 @@ public class Season extends AOurAllianceData implements Serializable, Comparable
 	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
 	
 	private int year;
-	private String title;
+	private CharSequence title;
 	public Season() {
 		super();
 	}
-	public Season(int year, String title) {
+	public Season(int year, CharSequence title) {
 		setData(year, title);
 	}
-	public Season(long id, Date mod, int year, String title) {
+	public Season(long id, Date mod, int year, CharSequence title) {
 		super(id, mod);
 		setData(year, title);
 	}
-	private void setData(int year, String title) {
+	private void setData(int year, CharSequence title) {
 		this.setYear(year);
 		this.setTitle(title);
 	}
@@ -61,13 +61,20 @@ public class Season extends AOurAllianceData implements Serializable, Comparable
 	public int getYear() {
 		return year;
 	}
+	public void setYear(CharSequence year) {
+		try {
+			setYear(Integer.parseInt(year.toString()));
+		} catch (Exception e) {
+			setYear(0);
+		}
+	}
 	public void setYear(int year) {
 		this.year = year;
 	}
-	public String getTitle() {
+	public CharSequence getTitle() {
 		return title;
 	}
-	public void setTitle(String title) {
+	public void setTitle(CharSequence title) {
 		this.title = title;
 	}
 	public String toString() {
@@ -80,7 +87,11 @@ public class Season extends AOurAllianceData implements Serializable, Comparable
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
 		values.put(Season.YEAR, this.getYear());
-		values.put(Season.TITLE, this.getTitle());
+		if(TextUtils.isEmpty(this.getTitle())) {
+			values.putNull(Season.TITLE);
+		} else {
+			values.put(Season.TITLE, this.getTitle().toString());
+		}
 		return values;
 	}
 }

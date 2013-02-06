@@ -89,11 +89,11 @@ public class CompetitionTeamDataSource {
 		return new CursorLoader(context, CompetitionTeam.uriFromComp(id), CompetitionTeam.VIEWCOLUMNS, null, null, Team.VIEW_NUMBER);
 	}
 	
-	private CompetitionTeam getCompetitionTeam(Cursor cursor) throws OurAllianceException {
+	private CompetitionTeam getSingle(Cursor cursor) throws OurAllianceException {
 		CompetitionTeam competitionTeam;
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
-			competitionTeam = cursorToCompetitionTeam(cursor);
+			competitionTeam = fromCursor(cursor);
 			Log.d(TAG, "get "+competitionTeam);
 		} else if(cursor.getCount()<1) {
 			throw new OurAllianceException(TAG,"CompetitionTeam not found in db.",new NoObjectsThrowable());
@@ -104,11 +104,11 @@ public class CompetitionTeamDataSource {
 		return competitionTeam;
 	}
 	
-	private List<CompetitionTeam> getCompetitionTeams(Cursor cursor) throws OurAllianceException {
+	private List<CompetitionTeam> getList(Cursor cursor) throws OurAllianceException {
 		List<CompetitionTeam> compTeams = new ArrayList<CompetitionTeam>();
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			CompetitionTeam competitionTeam = cursorToCompetitionTeam(cursor);
+			CompetitionTeam competitionTeam = fromCursor(cursor);
 			Log.d(TAG, "get "+competitionTeam);
 			compTeams.add(competitionTeam);
 			cursor.moveToNext();
@@ -121,7 +121,7 @@ public class CompetitionTeamDataSource {
 		return compTeams;
 	}
 
-	public static CompetitionTeam cursorToCompetitionTeam(Cursor cursor) {
+	public static CompetitionTeam fromCursor(Cursor cursor) {
 		CompetitionTeam competitionTeam = new CompetitionTeam();
 		competitionTeam.setId(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)));
 		competitionTeam.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Database.MODIFIED))));

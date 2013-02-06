@@ -159,7 +159,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	
 	private void setSeasonList(Cursor cursor) {
 		try {
-			List<Season> seasons = SeasonDataSource.getSeasons(cursor);
+			List<Season> seasons = SeasonDataSource.getList(cursor);
 			CharSequence[] seasonsViews = new CharSequence[seasons.size()];
 			CharSequence[] seasonsIds = new CharSequence[seasons.size()];
 			for(int i=0;i<seasons.size();++i) {
@@ -180,7 +180,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	
 	private void setCompList(Cursor cursor) {
 		try {  
-			List<Competition> comps = CompetitionDataSource.getCompetitions(cursor);
+			List<Competition> comps = CompetitionDataSource.getList(cursor);
 			CharSequence[] compsViews = new CharSequence[comps.size()];
 			CharSequence[] compsIds = new CharSequence[comps.size()];
 			for(int i=0;i<comps.size();++i) {
@@ -200,7 +200,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	
 	private void setSeasonSummary(Cursor cursor) {
 		try {
-			Season thisSeason = SeasonDataSource.getSeason(cursor);
+			Season thisSeason = SeasonDataSource.getSingle(cursor);
         	season.setSummary(thisSeason.toString());
         	comp.setEnabled(true);
         } catch (Exception e) {
@@ -212,7 +212,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	
 	private void setCompSummary(Cursor cursor) {
 		try {
-        	Competition thisComp = CompetitionDataSource.getCompetition(cursor);
+        	Competition thisComp = CompetitionDataSource.getSingle(cursor);
         	comp.setSummary(thisComp.toString());
         } catch (Exception e) {
         	e.printStackTrace();

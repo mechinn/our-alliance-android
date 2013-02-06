@@ -1,14 +1,17 @@
 package com.mechinn.android.ouralliance.provider;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.TeamScouting;
+import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
+import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -45,14 +48,17 @@ public class DataProvider extends ContentProvider {
 	private static final int CODE_COMPETITION_ID = 8;
 	private static final int CODE_COMPETITION_SEASON = 9;
 	private static final int CODE_COMPETITION_CODE = 10;
-	private static final int CODE_TEAMSCOUTINGS = 11;
-	private static final int CODE_TEAMSCOUTING_ID = 12;
-	private static final int CODE_TEAMSCOUTING_SEASON = 13;
-	private static final int CODE_TEAMSCOUTING_SEASONTEAM = 14;
-	private static final int CODE_COMPETITIONTEAMS = 15;
-	private static final int CODE_COMPETITIONTEAMS_ID = 16;
-	private static final int CODE_COMPETITIONTEAMS_TEAM = 17;
-	private static final int CODE_COMPETITIONTEAMS_COMP = 18;
+	private static final int CODE_COMPETITIONTEAMS = 11;
+	private static final int CODE_COMPETITIONTEAMS_ID = 12;
+	private static final int CODE_COMPETITIONTEAMS_TEAM = 13;
+	private static final int CODE_COMPETITIONTEAMS_COMP = 14;
+	private static final int CODE_TEAMSCOUTINGWHEELS = 15;
+	private static final int CODE_TEAMSCOUTINGWHEEL_ID = 16;
+	private static final int CODE_TEAMSCOUTINGWHEEL_SCOUTING = 17;
+	private static final int CODE_2013TEAMSCOUTINGS = 18;
+	private static final int CODE_2013TEAMSCOUTING_ID = 19;
+	private static final int CODE_2013TEAMSCOUTING_SEASON = 20;
+	private static final int CODE_2013TEAMSCOUTING_SEASONTEAM = 21;
 	
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
@@ -66,14 +72,17 @@ public class DataProvider extends ContentProvider {
 		sURIMatcher.addURI(AUTHORITY, Competition.IDPATH + "#", CODE_COMPETITION_ID);
 		sURIMatcher.addURI(AUTHORITY, Competition.SEASONPATH + "#", CODE_COMPETITION_SEASON);
 		sURIMatcher.addURI(AUTHORITY, Competition.CODEPATH + "*", CODE_COMPETITION_CODE);
-		sURIMatcher.addURI(AUTHORITY, TeamScouting.PATH, CODE_TEAMSCOUTINGS);
-		sURIMatcher.addURI(AUTHORITY, TeamScouting.IDPATH + "#", CODE_TEAMSCOUTING_ID);
-		sURIMatcher.addURI(AUTHORITY, TeamScouting.SEASONPATH + "#", CODE_TEAMSCOUTING_SEASON);
-		sURIMatcher.addURI(AUTHORITY, TeamScouting.SEASONPATH + "#" + TeamScouting.TEAMADDON + "#", CODE_TEAMSCOUTING_SEASONTEAM);
 		sURIMatcher.addURI(AUTHORITY, CompetitionTeam.PATH, CODE_COMPETITIONTEAMS);
 		sURIMatcher.addURI(AUTHORITY, CompetitionTeam.IDPATH + "#", CODE_COMPETITIONTEAMS_ID);
 		sURIMatcher.addURI(AUTHORITY, CompetitionTeam.TEAMPATH + "#", CODE_COMPETITIONTEAMS_TEAM);
 		sURIMatcher.addURI(AUTHORITY, CompetitionTeam.COMPPATH + "#", CODE_COMPETITIONTEAMS_COMP);
+		sURIMatcher.addURI(AUTHORITY, TeamScoutingWheel.PATH, CODE_TEAMSCOUTINGWHEELS);
+		sURIMatcher.addURI(AUTHORITY, TeamScoutingWheel.IDPATH + "#", CODE_TEAMSCOUTINGWHEEL_ID);
+		sURIMatcher.addURI(AUTHORITY, TeamScoutingWheel.SEASONPATH + "#" + TeamScoutingWheel.TEAMADDON + "#", CODE_TEAMSCOUTINGWHEEL_SCOUTING);
+		sURIMatcher.addURI(AUTHORITY, TeamScouting2013.PATH, CODE_2013TEAMSCOUTINGS);
+		sURIMatcher.addURI(AUTHORITY, TeamScouting2013.IDPATH + "#", CODE_2013TEAMSCOUTING_ID);
+		sURIMatcher.addURI(AUTHORITY, TeamScouting2013.SEASONPATH + "#", CODE_2013TEAMSCOUTING_SEASON);
+		sURIMatcher.addURI(AUTHORITY, TeamScouting2013.SEASONPATH + "#" + TeamScouting2013.TEAMADDON + "#", CODE_2013TEAMSCOUTING_SEASONTEAM);
 	}
 	
 	@Override
@@ -83,11 +92,30 @@ public class DataProvider extends ContentProvider {
 		return db.isDatabaseIntegrityOk();
 	}
 	
+	private Map<String,String> getSeasonTeam(Uri uri) {
+		Map<String,String> scouting = new HashMap<String,String>();
+		// Adding the ID to the original query
+		List<String> segments = uri.getPathSegments();
+		for(String each : segments) {
+			Log.d(TAG, each);
+		}
+		String season = segments.get(segments.size()-3);
+		Log.d(TAG, season);
+		scouting.put(Season.CLASS, season);
+		String team = segments.get(segments.size()-1);
+		Log.d(TAG, team);
+		scouting.put(Team.CLASS, team);
+		return scouting;
+	}
+	
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+		Log.d(TAG, uri.toString());
 		// Using SQLiteQueryBuilder instead of query() method
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 		int uriType = sURIMatcher.match(uri);
+		Map<String,String> scouting = null;
+		String where = null;
 		switch (uriType) {
 			case CODE_TEAMS:
 				queryBuilder = buildMyQuery(queryBuilder, projection, Team.ALLCOLUMNS, Team.TABLE, null);
@@ -119,29 +147,6 @@ public class DataProvider extends ContentProvider {
 			case CODE_COMPETITION_CODE:
 				queryBuilder = buildMyQuery(queryBuilder, uri, projection, Competition.VIEWCOLUMNS, Competition.VIEW, Competition.CODE);
 				break;
-			case CODE_TEAMSCOUTINGS:
-				queryBuilder = buildMyQuery(queryBuilder, projection, TeamScouting.VIEWCOLUMNS, TeamScouting.VIEW, null);
-				break;
-			case CODE_TEAMSCOUTING_ID:
-				queryBuilder = buildMyQuery(queryBuilder, uri, projection, TeamScouting.VIEWCOLUMNS, TeamScouting.VIEW, BaseColumns._ID);
-				break;
-			case CODE_TEAMSCOUTING_SEASON:
-				queryBuilder = buildMyQuery(queryBuilder, uri, projection, TeamScouting.VIEWCOLUMNS, TeamScouting.VIEW, TeamScouting.SEASON);
-				break;
-			case CODE_TEAMSCOUTING_SEASONTEAM:
-				// Adding the ID to the original query
-				checkColumns(projection, TeamScouting.VIEWCOLUMNS);
-				queryBuilder.setTables(TeamScouting.VIEW);
-				List<String> segments = uri.getPathSegments();
-				for(String each : segments) {
-					Log.d(TAG, each);
-				}
-				String season = segments.get(segments.size()-3);
-				Log.d(TAG, season);
-				String team = segments.get(segments.size()-1);
-				Log.d(TAG, team);
-				queryBuilder = buildMyQuery(queryBuilder, projection, TeamScouting.VIEWCOLUMNS, TeamScouting.VIEW, TeamScouting.SEASON+"="+season+" and "+TeamScouting.TEAM+"="+team);
-				break;
 			case CODE_COMPETITIONTEAMS:
 				queryBuilder = buildMyQuery(queryBuilder, projection, CompetitionTeam.VIEWCOLUMNS, CompetitionTeam.VIEW, null);
 				break;
@@ -153,6 +158,31 @@ public class DataProvider extends ContentProvider {
 				break;
 			case CODE_COMPETITIONTEAMS_COMP:
 				queryBuilder = buildMyQuery(queryBuilder, uri, projection, CompetitionTeam.VIEWCOLUMNS, CompetitionTeam.VIEW, CompetitionTeam.COMPETITION);
+				break;
+			case CODE_TEAMSCOUTINGWHEELS:
+				queryBuilder = buildMyQuery(queryBuilder, projection, TeamScoutingWheel.VIEWCOLUMNS, TeamScoutingWheel.VIEW, null);
+				break;
+			case CODE_TEAMSCOUTINGWHEEL_ID:
+				queryBuilder = buildMyQuery(queryBuilder, uri, projection, TeamScoutingWheel.VIEWCOLUMNS, TeamScoutingWheel.VIEW, BaseColumns._ID);
+				break;
+			case CODE_TEAMSCOUTINGWHEEL_SCOUTING:
+				scouting = getSeasonTeam(uri);
+				where = TeamScoutingWheel.SEASON+"="+scouting.get(Season.CLASS)+" and "+TeamScoutingWheel.TEAM+"="+scouting.get(Team.CLASS);
+				queryBuilder = buildMyQuery(queryBuilder, projection, TeamScoutingWheel.VIEWCOLUMNS, TeamScoutingWheel.VIEW, where);
+				break;
+			case CODE_2013TEAMSCOUTINGS:
+				queryBuilder = buildMyQuery(queryBuilder, projection, TeamScouting2013.VIEWCOLUMNS, TeamScouting2013.VIEW, null);
+				break;
+			case CODE_2013TEAMSCOUTING_ID:
+				queryBuilder = buildMyQuery(queryBuilder, uri, projection, TeamScouting2013.VIEWCOLUMNS, TeamScouting2013.VIEW, BaseColumns._ID);
+				break;
+			case CODE_2013TEAMSCOUTING_SEASON:
+				queryBuilder = buildMyQuery(queryBuilder, uri, projection, TeamScouting2013.VIEWCOLUMNS, TeamScouting2013.VIEW, TeamScouting2013.SEASON);
+				break;
+			case CODE_2013TEAMSCOUTING_SEASONTEAM:
+				scouting = getSeasonTeam(uri);
+				where = TeamScouting2013.SEASON+"="+scouting.get(Season.CLASS)+" and "+TeamScouting2013.TEAM+"="+scouting.get(Team.CLASS);
+				queryBuilder = buildMyQuery(queryBuilder, projection, TeamScouting2013.VIEWCOLUMNS, TeamScouting2013.VIEW, where);
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -167,6 +197,7 @@ public class DataProvider extends ContentProvider {
 	
 	@Override
 	public String getType(Uri uri) {
+		Log.d(TAG, uri.toString());
 		int uriType = sURIMatcher.match(uri);
 		switch (uriType) {
 			case CODE_TEAMS:
@@ -185,18 +216,23 @@ public class DataProvider extends ContentProvider {
 			case CODE_COMPETITION_ID:
 			case CODE_COMPETITION_CODE:
 				return Competition.ITEMTYPE;
-			case CODE_TEAMSCOUTINGS:
-			case CODE_TEAMSCOUTING_SEASON:
-				return TeamScouting.DIRTYPE;
-			case CODE_TEAMSCOUTING_ID:
-			case CODE_TEAMSCOUTING_SEASONTEAM:
-				return TeamScouting.ITEMTYPE;
 			case CODE_COMPETITIONTEAMS:
 			case CODE_COMPETITIONTEAMS_COMP:
 				return CompetitionTeam.DIRTYPE;
 			case CODE_COMPETITIONTEAMS_ID:
 			case CODE_COMPETITIONTEAMS_TEAM:
 				return CompetitionTeam.ITEMTYPE;
+			case CODE_TEAMSCOUTINGWHEELS:
+			case CODE_TEAMSCOUTINGWHEEL_SCOUTING:
+				return TeamScoutingWheel.DIRTYPE;
+			case CODE_TEAMSCOUTINGWHEEL_ID:
+				return TeamScoutingWheel.ITEMTYPE;
+			case CODE_2013TEAMSCOUTINGS:
+			case CODE_2013TEAMSCOUTING_SEASON:
+				return TeamScouting2013.DIRTYPE;
+			case CODE_2013TEAMSCOUTING_ID:
+			case CODE_2013TEAMSCOUTING_SEASONTEAM:
+				return TeamScouting2013.ITEMTYPE;
 			default:
 				throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
@@ -204,185 +240,129 @@ public class DataProvider extends ContentProvider {
 	
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
+		Log.d(TAG, uri.toString());
 		int uriType = sURIMatcher.match(uri);
 		db = database.getWritableDatabase();
 		long id = 0;
+		Uri newUri;
 		switch (uriType) {
 			case CODE_TEAMS:
 				id = db.insert(Team.TABLE, null, values);
-				getContext().getContentResolver().notifyChange(uri, null);
-				return Team.uriFromId(id);
+				newUri = Team.uriFromId(id);
+				break;
 			case CODE_SEASONS:
 				id = db.insert(Season.TABLE, null, values);
-				getContext().getContentResolver().notifyChange(uri, null);
-				return Season.uriFromId(id);
+				newUri = Season.uriFromId(id);
+				break;
 			case CODE_COMPETITIONS:
 				id = db.insert(Competition.TABLE, null, values);
-				getContext().getContentResolver().notifyChange(uri, null);
-				return Competition.uriFromId(id);
-			case CODE_TEAMSCOUTINGS:
-				id = db.insert(TeamScouting.TABLE, null, values);
-				getContext().getContentResolver().notifyChange(uri, null);
-				return TeamScouting.uriFromId(id);
+				newUri = Competition.uriFromId(id);
+				break;
 			case CODE_COMPETITIONTEAMS:
 				id = db.insert(CompetitionTeam.TABLE, null, values);
-				getContext().getContentResolver().notifyChange(uri, null);
-				return CompetitionTeam.uriFromId(id);
+				newUri = CompetitionTeam.uriFromId(id);
+				break;
+			case CODE_TEAMSCOUTINGWHEELS:
+				id = db.insert(TeamScoutingWheel.TABLE, null, values);
+				newUri = TeamScoutingWheel.uriFromId(id);
+				break;
+			case CODE_2013TEAMSCOUTINGS:
+				id = db.insert(TeamScouting2013.TABLE, null, values);
+				newUri = TeamScouting2013.uriFromId(id);
+				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
+		getContext().getContentResolver().notifyChange(uri, null);
+		return newUri;
 	}
 	
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		int uriType = sURIMatcher.match(uri);
-		db = database.getWritableDatabase();
-		int rowsDeleted = 0;
-		String where;
-		switch (uriType) {
-			case CODE_TEAMS:
-				rowsDeleted = deleteOrUpdate(Team.TABLE, null, selection, selectionArgs, null);
-				break;
-			case CODE_TEAM_ID:
-				rowsDeleted = deleteOrUpdate(uri, Team.TABLE, null, selection, selectionArgs, BaseColumns._ID);
-				break;
-			case CODE_TEAM_NUMBER:
-				rowsDeleted = deleteOrUpdate(uri, Team.TABLE, null, selection, selectionArgs, Team.NUMBER);
-				break;
-			case CODE_SEASONS:
-				rowsDeleted = deleteOrUpdate(Season.TABLE, null, selection, selectionArgs, null);
-				break;
-			case CODE_SEASON_ID:
-				rowsDeleted = deleteOrUpdate(uri, Season.TABLE, null, selection, selectionArgs, BaseColumns._ID);
-				break;
-			case CODE_SEASON_YEAR:
-				rowsDeleted = deleteOrUpdate(uri, Season.TABLE, null, selection, selectionArgs, Season.YEAR);
-				break;
-			case CODE_COMPETITIONS:
-				rowsDeleted = deleteOrUpdate(Competition.TABLE, null, selection, selectionArgs, null);
-				break;
-			case CODE_COMPETITION_ID:
-				rowsDeleted = deleteOrUpdate(uri, Competition.TABLE, null, selection, selectionArgs, BaseColumns._ID);
-				break;
-			case CODE_COMPETITION_SEASON:
-				rowsDeleted = deleteOrUpdate(uri, Competition.TABLE, null, selection, selectionArgs, Competition.SEASON);
-				break;
-			case CODE_COMPETITION_CODE:
-				rowsDeleted = deleteOrUpdate(uri, Competition.TABLE, null, selection, selectionArgs, Competition.CODE);
-				break;
-			case CODE_TEAMSCOUTINGS:
-				rowsDeleted = deleteOrUpdate(TeamScouting.TABLE, null, selection, selectionArgs, null);
-				break;
-			case CODE_TEAMSCOUTING_ID:
-				rowsDeleted = deleteOrUpdate(uri, TeamScouting.TABLE, null, selection, selectionArgs, BaseColumns._ID);
-				break;
-			case CODE_TEAMSCOUTING_SEASON:
-				rowsDeleted = deleteOrUpdate(uri, TeamScouting.TABLE, null, selection, selectionArgs, TeamScouting.SEASON);
-				break;
-			case CODE_TEAMSCOUTING_SEASONTEAM:
-				List<String> segments = uri.getPathSegments();
-				for(String each : segments) {
-					Log.d(TAG, each);
-				}
-				String season = segments.get(segments.size()-3);
-				Log.d(TAG, season);
-				String team = segments.get(segments.size()-1);
-				Log.d(TAG, team);
-				rowsDeleted = deleteOrUpdate(uri, TeamScouting.TABLE, null, selection, selectionArgs, TeamScouting.SEASON + "=" + season + " and " + TeamScouting.TEAM + "=" + team);
-				break;
-			case CODE_COMPETITIONTEAMS:
-				rowsDeleted = deleteOrUpdate(CompetitionTeam.TABLE, null, selection, selectionArgs, null);
-				break;
-			case CODE_COMPETITIONTEAMS_ID:
-				rowsDeleted = deleteOrUpdate(uri, CompetitionTeam.TABLE, null, selection, selectionArgs, BaseColumns._ID);
-				break;
-			case CODE_COMPETITIONTEAMS_TEAM:
-				rowsDeleted = deleteOrUpdate(uri, CompetitionTeam.TABLE, null, selection, selectionArgs, CompetitionTeam.TEAM);
-				break;
-			case CODE_COMPETITIONTEAMS_COMP:
-				rowsDeleted = deleteOrUpdate(uri, CompetitionTeam.TABLE, null, selection, selectionArgs, CompetitionTeam.COMPETITION);
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown URI: " + uri);
-		}
-		getContext().getContentResolver().notifyChange(uri, null);
-		return rowsDeleted;
+		return update(uri, null, selection, selectionArgs);
 	}
 	
 	@Override
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+		Log.d(TAG, uri.toString());
 		int uriType = sURIMatcher.match(uri);
 		db = database.getWritableDatabase();
-		int rowsUpdated = 0;
-		String where;
+		int rows = 0;
+		Map<String,String> scouting = null;
+		String where = null;
 		switch (uriType) {
 			case CODE_TEAMS:
-				rowsUpdated = deleteOrUpdate(Team.TABLE, values, selection, selectionArgs, null);
+				rows = deleteOrUpdate(Team.TABLE, values, selection, selectionArgs, null);
 				break;
 			case CODE_TEAM_ID:
-				rowsUpdated = deleteOrUpdate(uri, Team.TABLE, values, selection, selectionArgs, BaseColumns._ID);
+				rows = deleteOrUpdate(uri, Team.TABLE, values, selection, selectionArgs, BaseColumns._ID);
 				break;
 			case CODE_TEAM_NUMBER:
-				rowsUpdated = deleteOrUpdate(uri, Team.TABLE, values, selection, selectionArgs, Team.NUMBER);
+				rows = deleteOrUpdate(uri, Team.TABLE, values, selection, selectionArgs, Team.NUMBER);
 				break;
 			case CODE_SEASONS:
-				rowsUpdated = deleteOrUpdate(Season.TABLE, values, selection, selectionArgs, null);
+				rows = deleteOrUpdate(Season.TABLE, values, selection, selectionArgs, null);
 				break;
 			case CODE_SEASON_ID:
-				rowsUpdated = deleteOrUpdate(uri, Season.TABLE, values, selection, selectionArgs, BaseColumns._ID);
+				rows = deleteOrUpdate(uri, Season.TABLE, values, selection, selectionArgs, BaseColumns._ID);
 				break;
 			case CODE_SEASON_YEAR:
-				rowsUpdated = deleteOrUpdate(uri, Season.TABLE, values, selection, selectionArgs, Season.YEAR);
+				rows = deleteOrUpdate(uri, Season.TABLE, values, selection, selectionArgs, Season.YEAR);
 				break;
 			case CODE_COMPETITIONS:
-				rowsUpdated = deleteOrUpdate(Competition.TABLE, values, selection, selectionArgs, null);
+				rows = deleteOrUpdate(Competition.TABLE, values, selection, selectionArgs, null);
 				break;
 			case CODE_COMPETITION_ID:
-				rowsUpdated = deleteOrUpdate(uri, Competition.TABLE, values, selection, selectionArgs, BaseColumns._ID);
+				rows = deleteOrUpdate(uri, Competition.TABLE, values, selection, selectionArgs, BaseColumns._ID);
 				break;
 			case CODE_COMPETITION_SEASON:
-				rowsUpdated = deleteOrUpdate(uri, Competition.TABLE, values, selection, selectionArgs, Competition.SEASON);
+				rows = deleteOrUpdate(uri, Competition.TABLE, values, selection, selectionArgs, Competition.SEASON);
 				break;
 			case CODE_COMPETITION_CODE:
-				rowsUpdated = deleteOrUpdate(uri, Competition.TABLE, values, selection, selectionArgs, Competition.CODE);
-				break;
-			case CODE_TEAMSCOUTINGS:
-				rowsUpdated = deleteOrUpdate(TeamScouting.TABLE, values, selection, selectionArgs, null);
-				break;
-			case CODE_TEAMSCOUTING_ID:
-				rowsUpdated = deleteOrUpdate(uri, TeamScouting.TABLE, values, selection, selectionArgs, BaseColumns._ID);
-				break;
-			case CODE_TEAMSCOUTING_SEASON:
-				rowsUpdated = deleteOrUpdate(uri, TeamScouting.TABLE, values, selection, selectionArgs, TeamScouting.SEASON);
-				break;
-			case CODE_TEAMSCOUTING_SEASONTEAM:
-				List<String> segments = uri.getPathSegments();
-				for(String each : segments) {
-					Log.d(TAG, each);
-				}
-				String season = segments.get(segments.size()-3);
-				Log.d(TAG, season);
-				String team = segments.get(segments.size()-1);
-				Log.d(TAG, team);
-				rowsUpdated = deleteOrUpdate(uri, TeamScouting.TABLE, values, selection, selectionArgs, TeamScouting.SEASON + "=" + season + " and " + TeamScouting.TEAM + "=" + team);
+				rows = deleteOrUpdate(uri, Competition.TABLE, values, selection, selectionArgs, Competition.CODE);
 				break;
 			case CODE_COMPETITIONTEAMS:
-				rowsUpdated = deleteOrUpdate(Team.TABLE, values, selection, selectionArgs, null);
+				rows = deleteOrUpdate(Team.TABLE, values, selection, selectionArgs, null);
 				break;
 			case CODE_COMPETITIONTEAMS_ID:
-				rowsUpdated = deleteOrUpdate(uri, Team.TABLE, values, selection, selectionArgs, BaseColumns._ID);
+				rows = deleteOrUpdate(uri, Team.TABLE, values, selection, selectionArgs, BaseColumns._ID);
 				break;
 			case CODE_COMPETITIONTEAMS_TEAM:
-				rowsUpdated = deleteOrUpdate(uri, Team.TABLE, values, selection, selectionArgs, CompetitionTeam.TEAM);
+				rows = deleteOrUpdate(uri, Team.TABLE, values, selection, selectionArgs, CompetitionTeam.TEAM);
 				break;
 			case CODE_COMPETITIONTEAMS_COMP:
-				rowsUpdated = deleteOrUpdate(uri, Team.TABLE, values, selection, selectionArgs, CompetitionTeam.COMPETITION);
+				rows = deleteOrUpdate(uri, Team.TABLE, values, selection, selectionArgs, CompetitionTeam.COMPETITION);
+				break;
+			case CODE_TEAMSCOUTINGWHEELS:
+				rows = deleteOrUpdate(TeamScoutingWheel.TABLE, values, selection, selectionArgs, null);
+				break;
+			case CODE_TEAMSCOUTINGWHEEL_ID:
+				rows = deleteOrUpdate(uri, TeamScoutingWheel.TABLE, values, selection, selectionArgs, BaseColumns._ID);
+				break;
+			case CODE_TEAMSCOUTINGWHEEL_SCOUTING:
+				scouting = getSeasonTeam(uri);
+				where = TeamScoutingWheel.SEASON+"="+scouting.get(Season.CLASS)+" and "+TeamScoutingWheel.TEAM+"="+scouting.get(Team.CLASS);
+				rows = deleteOrUpdate(uri, TeamScoutingWheel.TABLE, values, selection, selectionArgs, where);
+				break;
+			case CODE_2013TEAMSCOUTINGS:
+				rows = deleteOrUpdate(TeamScouting2013.TABLE, values, selection, selectionArgs, null);
+				break;
+			case CODE_2013TEAMSCOUTING_ID:
+				rows = deleteOrUpdate(uri, TeamScouting2013.TABLE, values, selection, selectionArgs, BaseColumns._ID);
+				break;
+			case CODE_2013TEAMSCOUTING_SEASON:
+				rows = deleteOrUpdate(uri, TeamScouting2013.TABLE, values, selection, selectionArgs, TeamScouting2013.SEASON);
+				break;
+			case CODE_2013TEAMSCOUTING_SEASONTEAM:
+				scouting = getSeasonTeam(uri);
+				where = TeamScouting2013.SEASON+"="+scouting.get(Season.CLASS)+" and "+TeamScouting2013.TEAM+"="+scouting.get(Team.CLASS);
+				rows = deleteOrUpdate(uri, TeamScouting2013.TABLE, values, selection, selectionArgs, where);
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
-		return rowsUpdated;
+		return rows;
 	}
 	
 	private void checkColumns(String[] projection, String[] expected) {
@@ -391,7 +371,13 @@ public class DataProvider extends ContentProvider {
 			HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(expected));
 			// Check if all columns which are requested are available
 			if (!availableColumns.containsAll(requestedColumns)) {
-				throw new IllegalArgumentException("Unknown columns in projection");
+				String message = "";
+				for(String each : requestedColumns) {
+					if(!availableColumns.contains(each)) {
+						message += each+", ";
+					}
+				}
+				throw new IllegalArgumentException("Unknown columns in projection: "+message);
 			}
 		}
 	}
@@ -426,6 +412,7 @@ public class DataProvider extends ContentProvider {
 			}
 			selection = where;
 		}
+		Log.d(TAG, table+" "+selection);
 		if(values!=null) {
 			return db.update(table, values, selection, selectionArgs);
 		}

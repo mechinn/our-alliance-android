@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import android.content.ContentValues;
@@ -10,14 +9,14 @@ import android.provider.BaseColumns;
 import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
-public class CompetitionTeam extends AOurAllianceData implements Serializable {
+public class CompetitionTeam extends AOurAllianceData implements Comparable<CompetitionTeam> {
 	public static final String CLASS = "CompetitionTeam";
 	public static final String TABLE = "competitionteam";
 	public static final String COMPETITION = Competition.TABLE;
     public static final String TEAM = Team.TABLE;
 	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM };
 
-    public static final String VIEW = "competitionteamview";
+	public static final String VIEW = TABLE+"view";
     public static final String VIEW_ID = TABLE+BaseColumns._ID;
     public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
     public static final String VIEW_COMPETITION = TABLE+COMPETITION;
@@ -29,8 +28,8 @@ public class CompetitionTeam extends AOurAllianceData implements Serializable {
 
 	public static final String PATH = TABLE+"s/";
 	public static final String IDPATH = PATH+"id/";
-	public static final String TEAMPATH = PATH+"team/";
-	public static final String COMPPATH = PATH+"comp/";
+	public static final String TEAMPATH = PATH+Team.TABLE+"/";
+	public static final String COMPPATH = PATH+Competition.TABLE+"/";
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+PATH);
 	public static final String URI_ID = DataProvider.BASE_URI_STRING+IDPATH;
 	public static final String URI_TEAM = DataProvider.BASE_URI_STRING+TEAMPATH;
@@ -94,5 +93,8 @@ public class CompetitionTeam extends AOurAllianceData implements Serializable {
 		values.put(CompetitionTeam.COMPETITION, this.getCompetition().getId());
 		values.put(CompetitionTeam.TEAM, this.getTeam().getId());
 		return values;
+	}
+	public int compareTo(CompetitionTeam another) {
+		return this.getTeam().compareTo(another.getTeam());
 	}
 }

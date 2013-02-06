@@ -4,6 +4,7 @@ import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -16,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
@@ -34,16 +34,18 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  * This activity also implements the required {@link TeamListFragment.Callbacks}
  * interface to listen for item selections.
  */
-public class TeamListActivity extends Activity implements TeamListFragment.Listener, TeamDetailFragment.Listener, DeleteTeamDialogFragment.Listener, InsertTeamDialogFragment.Listener {
+public class TeamListActivity extends Activity implements TeamListFragment.Listener, DeleteTeamDialogFragment.Listener, InsertTeamDialogFragment.Listener {
 	public static final String TAG = "TeamListActivity";
 	public static final int LOADER_TEAMS = 0;
 	public static final int LOADER_TEAMSCOUTING = 1;
+	public static final int LOADER_TEAMWHEEL = 2;
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
 	 * device.
 	 */
 	private boolean mTwoPane;
 	private Setup setup;
+	private TeamDetailFragment fragment;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,21 +73,34 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	 * the item with the given ID was selected.
 	 */
 	public void onItemSelected(CompetitionTeam team) {
+		Log.d(TAG, team.toString());
+		Log.d(TAG, team.getCompetition().getSeason()+" "+team.getTeam());
+		Log.d(TAG, team.getCompetition().getSeason().getId()+" "+team.getTeam().getId());
+		Log.d(TAG, "two pane: "+mTwoPane);
+		long seasonId = team.getCompetition().getSeason().getId();
+		int year = team.getCompetition().getSeason().getYear();
+		long teamId = team.getTeam().getId();
 		if (mTwoPane) {
-			// In two-pane mode, show the detail view in this activity by
-			// adding or replacing the detail fragment using a
-			// fragment transaction.
+			//update the frag before making a new one
+			if(null!=fragment) {
+				fragment.updateScouting();
+			}
 			Bundle arguments = new Bundle();
-			arguments.putSerializable(TeamDetailFragment.ARG_COMPETITIONTEAM, team);
-			TeamDetailFragment fragment = new TeamDetailFragment();
-			fragment.setArguments(arguments);
-			this.getFragmentManager().beginTransaction().replace(R.id.team_detail_container, fragment, team.toString()).commit();
+			arguments.putBoolean(TeamDetailFragment.ARG_TWOPANE, true);
+			arguments.putLong(TeamDetailFragment.ARG_SEASON, seasonId);
+			arguments.putInt(TeamDetailFragment.ARG_YEAR, year);
+			arguments.putLong(TeamDetailFragment.ARG_TEAM, teamId);
+			switch(year) {
+				case 2013:
+					fragment = new TeamDetail2013();
+					fragment.setArguments(arguments);
+					this.getFragmentManager().beginTransaction().replace(R.id.team_detail_container, fragment, team.toString()).commit();
+			}
 		} else {
-			// In single-pane mode, simply start the detail activity
-			// for the selected item ID.
 			Intent detailIntent = new Intent(this, TeamDetailActivity.class);
-			detailIntent.putExtra(TeamDetailFragment.ARG_COMPETITIONTEAM, team);
-//			detailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+			detailIntent.putExtra(TeamDetailFragment.ARG_SEASON, seasonId);
+			detailIntent.putExtra(TeamDetailFragment.ARG_YEAR, year);
+			detailIntent.putExtra(TeamDetailFragment.ARG_TEAM, teamId);
 			startActivity(detailIntent);
 		}
 	}
@@ -108,7 +123,7 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	        case R.id.settings:
 	        	Intent intent = new Intent(this, SettingsActivity.class);
 //	            EditText editText = (EditText) findViewById(R.id.edit_message);
-//	            String message = editText.getText().toString();
+//	            CharSequence message = editText.getText();
 //	            intent.putExtra(EXTRA_MESSAGE, message);
 	            startActivity(intent);
 	            return true;
@@ -150,11 +165,7 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	}
 	
 	public void insertTeam(Team team) {
-        // The user selected the headline of an article from the HeadlinesFragment
-        // Do something here to display that article
-
 		TeamListFragment teamListFrag = (TeamListFragment) getFragmentManager().findFragmentById(R.id.team_list);
-
         if (teamListFrag != null) {
         	teamListFrag.insertTeam(team);
         } else {
@@ -163,9 +174,6 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
     }
 	
 	public void updateTeam(Team team) {
-        // The user selected the headline of an article from the HeadlinesFragment
-        // Do something here to display that article
-
 		TeamListFragment teamListFrag = (TeamListFragment) getFragmentManager().findFragmentById(R.id.team_list);
 
         if (teamListFrag != null) {

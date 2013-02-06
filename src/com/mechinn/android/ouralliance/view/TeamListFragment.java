@@ -1,34 +1,20 @@
 package com.mechinn.android.ouralliance.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.Prefs;
-import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.Setup;
-import com.mechinn.android.ouralliance.Utility;
-import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
-import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamDataSource;
-import com.mechinn.android.ouralliance.data.source.TeamScoutingDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 /**
@@ -47,14 +33,8 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
 	private int mActivatedPosition = ListView.INVALID_POSITION;
-	private List<Team> teams;
 	private Prefs prefs;
-	private Season thisSeason;
-	private Competition thisComp;
 	private TeamDataSource teamData;
-	private SeasonDataSource seasonData;
-	private CompetitionDataSource competitionData;
-	private TeamScoutingDataSource teamScoutingData;
 	private CompetitionTeamDataSource competitionTeamData;
 	private CompetitionTeamCursorAdapter adapter;
 
@@ -109,10 +89,6 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
-		teamData = new TeamDataSource(this.getActivity());
-		seasonData = new SeasonDataSource(this.getActivity());
-		competitionData = new CompetitionDataSource(this.getActivity());
-		teamScoutingData = new TeamScoutingDataSource(this.getActivity());
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
 	}
 	

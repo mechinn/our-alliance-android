@@ -69,14 +69,8 @@ public class InsertTeamDialogFragment extends DialogFragment {
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					Toast.makeText(getActivity(), "create", Toast.LENGTH_SHORT).show();
-					int num;
-					try {
-						num = Integer.parseInt(teamNumber.getText().toString());
-					} catch(NumberFormatException e) {
-						num = 0;
-					}
-					team.setNumber(num);
-					team.setName(teamName.getText().toString());
+					team.setNumber(teamNumber.getText());
+					team.setName(teamName.getText());
 					listener.onInsertDialogPositiveClick(update, team);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

@@ -2,11 +2,19 @@ package com.mechinn.android.ouralliance.data;
 
 import java.util.Date;
 
+import com.mechinn.android.ouralliance.error.OurAllianceException;
+
 import android.content.ContentValues;
 
 public abstract class AOurAllianceData {
 	private long id;
 	private Date modified;
+	public boolean update() throws OurAllianceException {
+		if(getId()==0) {
+			return false;
+		}
+		return true;
+	}
 	public long getId() {
 		return id;
 	}

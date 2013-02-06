@@ -12,12 +12,12 @@ import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.TeamScouting;
+import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamDataSource;
-import com.mechinn.android.ouralliance.data.source.TeamScoutingDataSource;
+import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
 
 public class Setup {
 	private static final String TAG = "Setup";
@@ -26,7 +26,7 @@ public class Setup {
 	private TeamDataSource teamData;
 	private SeasonDataSource seasonData;
 	private CompetitionDataSource competitionData;
-	private TeamScoutingDataSource teamScoutingData;
+	private TeamScouting2013DataSource teamScouting2013Data;
 	private CompetitionTeamDataSource competitionTeamData;
 	private String packageName;
 	private File dbPath;
@@ -36,7 +36,7 @@ public class Setup {
 		teamData = new TeamDataSource(activity);
 		seasonData = new SeasonDataSource(activity);
 		competitionData = new CompetitionDataSource(activity);
-		teamScoutingData = new TeamScoutingDataSource(activity);
+		teamScouting2013Data = new TeamScouting2013DataSource(activity);
 		competitionTeamData = new CompetitionTeamDataSource(activity);
 		packageName = activity.getPackageName();
 		dbPath = activity.getDatabasePath("ourAlliance.sqlite");
@@ -82,7 +82,12 @@ public class Setup {
 	}
 	
 	private void addCompetitions(Season season) {
-		competitionData.insert(new Competition(season, "Alamo Regional", "STX"));
+		Competition comp = new Competition(season, "Alamo Regional", "STX");
+		Uri temp = competitionData.insert(comp);
+		long champsId = Long.parseLong(temp.getLastPathSegment());
+		comp.setId(champsId);
+		addTestData(season, comp);
+//		competitionData.insert(new Competition(season, "Alamo Regional", "STX"));
 		competitionData.insert(new Competition(season, "BAE Systems Granite State Regional", "NH"));
 		competitionData.insert(new Competition(season, "Greater Kansas City Regional", "KC"));
 		competitionData.insert(new Competition(season, "Hatboro-Horsham FIRST Robotics District Competition", "PAH"));
@@ -155,12 +160,7 @@ public class Setup {
 		competitionData.insert(new Competition(season, "FIRST Championship - Curie Division", "Curie"));
 		competitionData.insert(new Competition(season, "FIRST Championship - Galileo Division", "Galileo"));
 		competitionData.insert(new Competition(season, "FIRST Championship - Newton Division", "Newton"));
-//		competitionData.insert(new Competition(season, "FIRST Championship", "CMP"));
-		Competition champs = new Competition(season, "FIRST Championship", "CMP");
-		Uri temp = competitionData.insert(champs);
-		long champsId = Long.parseLong(temp.getLastPathSegment());
-		champs.setId(champsId);
-		addTestData(season, champs);
+		competitionData.insert(new Competition(season, "FIRST Championship", "CMP"));
 	}
 	
 	private void addTestData(Season season, Competition comp) {
@@ -171,13 +171,12 @@ public class Setup {
 		teams.append(25, "Raider Robotix");
 		teams.append(75, "RoboRaiders");
 		teams.append(11, "Chief Delphi");
-		
 		for(int i=0;i<teams.size();++i) {
 			Team team = new Team(teams.keyAt(i), teams.valueAt(i));
 			Uri teamUri = teamData.insert(team);
 			long teamId = Long.parseLong(teamUri.getLastPathSegment());
 			team.setId(teamId);
-			teamScoutingData.insert(new TeamScouting(season, team));
+			teamScouting2013Data.insert(new TeamScouting2013(season, team));
 			competitionTeamData.insert(new CompetitionTeam(comp, team));
 		}
 	}

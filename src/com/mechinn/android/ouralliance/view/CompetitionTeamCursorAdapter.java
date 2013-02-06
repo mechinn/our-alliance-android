@@ -23,7 +23,7 @@ public class CompetitionTeamCursorAdapter extends CursorAdapter {
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
 			Log.d(TAG, "binding view");
-			CompetitionTeam team = CompetitionTeamDataSource.cursorToCompetitionTeam(cursor);
+			CompetitionTeam team = CompetitionTeamDataSource.fromCursor(cursor);
 			TextView summary = (TextView)view.findViewById(R.id.team_list_item);
 			summary.setText(team.getTeam().toString());
 		}
@@ -40,7 +40,7 @@ public class CompetitionTeamCursorAdapter extends CursorAdapter {
 		public CompetitionTeam get(int position) {
 			Cursor cursor = this.getCursor();
 			if(cursor.moveToPosition(position)) {
-				return CompetitionTeamDataSource.cursorToCompetitionTeam(cursor);
+				return CompetitionTeamDataSource.fromCursor(cursor);
 			}
 			return null;
 		}

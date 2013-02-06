@@ -74,11 +74,11 @@ public class SeasonDataSource {
 		return new CursorLoader(context, Season.URI, Season.ALLCOLUMNS, null, null, Season.YEAR+" DESC");
 	}
 	
-	public static Season getSeason(Cursor cursor) throws OurAllianceException {
+	public static Season getSingle(Cursor cursor) throws OurAllianceException {
 		Season season;
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
-			season = cursorToSeason(cursor);
+			season = fromCursor(cursor);
 			Log.d(TAG, "get "+season);
 		} else if(cursor.getCount()<1) {
 			throw new OurAllianceException(TAG,"CompetitionTeam not found in db.",new NoObjectsThrowable());
@@ -89,11 +89,11 @@ public class SeasonDataSource {
 		return season;
 	}
 	
-	public static List<Season> getSeasons(Cursor cursor) throws OurAllianceException {
+	public static List<Season> getList(Cursor cursor) throws OurAllianceException {
 		List<Season> comments = new ArrayList<Season>();
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			Season season = cursorToSeason(cursor);
+			Season season = fromCursor(cursor);
 			Log.d(TAG, "get "+season);
 			comments.add(season);
 			cursor.moveToNext();
@@ -106,7 +106,7 @@ public class SeasonDataSource {
 		return comments;
 	}
 
-	public static Season cursorToSeason(Cursor cursor) {
+	public static Season fromCursor(Cursor cursor) {
 		Season season = new Season();
 		season.setId(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)));
 		season.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Database.MODIFIED))));

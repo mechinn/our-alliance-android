@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import com.mechinn.android.ouralliance.provider.DataProvider;
@@ -9,8 +8,9 @@ import com.mechinn.android.ouralliance.provider.Database;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.text.TextUtils;
 
-public class Team extends AOurAllianceData implements Serializable, Comparable<Team> {
+public class Team extends AOurAllianceData implements Comparable<Team> {
 	public static final String CLASS = "Team";
 	public static final String TABLE = "team";
 	public static final String NUMBER = "number";
@@ -34,18 +34,18 @@ public class Team extends AOurAllianceData implements Serializable, Comparable<T
 	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
 	
 	private int number;
-	private String name;
+	private CharSequence name;
 	public Team() {
 		super();
 	}
-	public Team(int number, String name) {
+	public Team(int number, CharSequence name) {
 		setData(number, name);
 	}
-	public Team(long id, Date mod, int number, String name) {
+	public Team(long id, Date mod, int number, CharSequence name) {
 		super(id, mod);
 		setData(number, name);
 	}
-	private void setData(int number, String name) {
+	private void setData(int number, CharSequence name) {
 		this.setNumber(number);
 		this.setName(name);
 	}
@@ -61,13 +61,20 @@ public class Team extends AOurAllianceData implements Serializable, Comparable<T
 	public int getNumber() {
 		return number;
 	}
+	public void setNumber(CharSequence number) {
+		try {
+			setNumber(Integer.parseInt(number.toString()));
+		} catch (Exception e) {
+			setNumber(0);
+		}
+	}
 	public void setNumber(int number) {
 		this.number = number;
 	}
-	public String getName() {
+	public CharSequence getName() {
 		return name;
 	}
-	public void setName(String name) {
+	public void setName(CharSequence name) {
 		this.name = name;
 	}
 	public String toString() {
@@ -80,7 +87,11 @@ public class Team extends AOurAllianceData implements Serializable, Comparable<T
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
 		values.put(Team.NUMBER, this.getNumber());
-		values.put(Team.NAME, this.getName());
+		if(TextUtils.isEmpty(this.getName())) {
+			values.putNull(Team.NAME);
+		} else {
+			values.put(Team.NAME, this.getName().toString());
+		}
 		return values;
 	}
 }
