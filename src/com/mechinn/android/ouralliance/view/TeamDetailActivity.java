@@ -49,7 +49,7 @@ public class TeamDetailActivity extends Activity {
 			arguments.putLong(TeamDetailFragment.ARG_TEAM, season);
 			switch(year) {
 				case 2013:
-					TeamDetailFragment fragment = new TeamDetail2013();
+					TeamDetailFragment<?,?> fragment = new TeamDetail2013();
 					fragment.setArguments(arguments);
 					this.getFragmentManager().beginTransaction().add(R.id.team_detail_container, fragment).commit();
 			}

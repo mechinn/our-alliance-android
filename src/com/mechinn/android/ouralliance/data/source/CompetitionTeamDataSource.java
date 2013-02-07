@@ -78,7 +78,7 @@ public class CompetitionTeamDataSource {
 	}
 
 	public CursorLoader getAll() {
-		return new CursorLoader(context, CompetitionTeam.URI, CompetitionTeam.VIEWCOLUMNS, null, null, Team.VIEW_NUMBER);
+		return new CursorLoader(context, CompetitionTeam.URI, CompetitionTeam.VIEWCOLUMNS, null, null, CompetitionTeam.RANK+", "+Team.VIEW_NUMBER);
 	}
 	
 	public CursorLoader getAllTeams(Competition comp) {
@@ -86,7 +86,7 @@ public class CompetitionTeamDataSource {
 	}
 	
 	public CursorLoader getAllTeams(long id) {
-		return new CursorLoader(context, CompetitionTeam.uriFromComp(id), CompetitionTeam.VIEWCOLUMNS, null, null, Team.VIEW_NUMBER);
+		return new CursorLoader(context, CompetitionTeam.uriFromComp(id), CompetitionTeam.VIEWCOLUMNS, null, null, CompetitionTeam.RANK+", "+Team.VIEW_NUMBER);
 	}
 	
 	private CompetitionTeam getSingle(Cursor cursor) throws OurAllianceException {
@@ -145,6 +145,7 @@ public class CompetitionTeamDataSource {
 		String compCode = cursor.getString(cursor.getColumnIndexOrThrow(Competition.VIEW_CODE));
 		competitionTeam.setCompetition(new Competition(compId, compMod, season, compName, compCode));
 
+		competitionTeam.setRank(cursor.getInt(cursor.getColumnIndexOrThrow(CompetitionTeam.RANK)));
 		return competitionTeam;
 	}
 }

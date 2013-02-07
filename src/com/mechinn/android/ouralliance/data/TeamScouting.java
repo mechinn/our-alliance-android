@@ -5,11 +5,9 @@ import java.util.Date;
 import org.apache.commons.lang3.ArrayUtils;
 
 import android.content.ContentValues;
-import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
-import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public abstract class TeamScouting extends AOurAllianceData implements Comparable<TeamScouting>  {
@@ -52,7 +50,7 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 	private int width;
 	private int length;
 	private int height;
-	private int autonomous;
+	private float autonomous;
 	private CharSequence notes;
 	public TeamScouting() {
 		super();
@@ -138,17 +136,17 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 	public void setHeight(int height) {
 		this.height = height;
 	}
-	public int getAutonomous() {
+	public float getAutonomous() {
 		return autonomous;
 	}
 	public void setAutonomous(CharSequence autonomous) {
 		try {
-			setAutonomous(Integer.parseInt(autonomous.toString()));
+			setAutonomous(Float.parseFloat(autonomous.toString()));
 		} catch (Exception e) {
 			setAutonomous(0);
 		}
 	}
-	public void setAutonomous(int autonomous) {
+	public void setAutonomous(float autonomous) {
 		this.autonomous = autonomous;
 	}
 	public CharSequence getNotes() {
@@ -178,6 +176,7 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 		values.put(TeamScouting.WIDTH, this.getWidth());
 		values.put(TeamScouting.LENGTH, this.getLength());
 		values.put(TeamScouting.HEIGHT, this.getHeight());
+		values.put(TeamScouting.AUTONOMOUS, this.getAutonomous());
 		if(TextUtils.isEmpty(this.getNotes())){
 			values.putNull(TeamScouting.NOTES);
 		} else {

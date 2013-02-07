@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
  * An activity representing a list of Teams. This activity has different
@@ -45,7 +44,7 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	 */
 	private boolean mTwoPane;
 	private Setup setup;
-	private TeamDetailFragment fragment;
+	private TeamDetailFragment<?,?> fragment;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,7 +82,7 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 		if (mTwoPane) {
 			//update the frag before making a new one
 			if(null!=fragment) {
-				fragment.updateScouting();
+				fragment.finish();
 			}
 			Bundle arguments = new Bundle();
 			arguments.putBoolean(TeamDetailFragment.ARG_TWOPANE, true);
@@ -141,9 +140,9 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		TeamListFragment teamListFrag = (TeamListFragment) getFragmentManager().findFragmentById(R.id.team_list);
-	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    DialogFragment dialog;
+//		TeamListFragment teamListFrag = (TeamListFragment) getFragmentManager().findFragmentById(R.id.team_list);
+//	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+//	    DialogFragment dialog;
 	    switch (item.getItemId()) {
 	        case R.id.edit:
 //	        	dialog = new InsertTeamDialogFragment();

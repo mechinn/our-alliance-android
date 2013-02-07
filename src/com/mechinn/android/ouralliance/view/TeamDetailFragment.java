@@ -3,20 +3,27 @@ package com.mechinn.android.ouralliance.view;
 import java.util.List;
 
 import android.app.Fragment;
+import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
+import com.mechinn.android.ouralliance.data.source.IOurAllianceDataSource;
+import com.mechinn.android.ouralliance.data.source.TeamScoutingDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamScoutingWheelDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
@@ -25,7 +32,7 @@ import com.mechinn.android.ouralliance.error.OurAllianceException;
  * contained in a {@link TeamListActivity} in two-pane mode (on tablets) or a
  * {@link TeamDetailActivity} on handsets.
  */
-public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragment implements LoaderCallbacks<Cursor> {
+public abstract class TeamDetailFragment<A extends TeamScouting, B extends TeamScoutingDataSource<A>> extends Fragment implements LoaderCallbacks<Cursor> {
 	private static final String TAG = "TeamDetailFragment";
 
 	public static final String ARG_TWOPANE = "twoPane";
@@ -35,15 +42,17 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 //	private TeamScoutingDataSource teamScoutingData;
 	private TeamScoutingWheelDataSource teamScoutingWheelData;
 	private A scouting;
+	private B dataSource;
 	private boolean twoPane;
 	private long seasonId;
 	private long teamId;
-	private TextView teamNumber;
-	private TextView teamName;
+	private TextView team;
 	private TextView orientation;
+	private TextView driveTrain;
 	private TextView width;
 	private TextView length;
 	private TextView height;
+	private RatingBar autonomous;
 	private Button addWheel;
 	private LinearLayout wheels;
 	private TextView notes;
@@ -67,6 +76,12 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	public void setScouting(A scouting) {
 		this.scouting = scouting;
 	}
+	public B getDataSource() {
+		return dataSource;
+	}
+	public void setDataSource(B dataSource) {
+		this.dataSource = dataSource;
+	}
 	public boolean isTwoPane() {
 		return twoPane;
 	}
@@ -85,17 +100,11 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	public void setTeamId(long teamId) {
 		this.teamId = teamId;
 	}
-	public TextView getTeamNumber() {
-		return teamNumber;
+	public TextView getTeam() {
+		return team;
 	}
-	public void setTeamNumber(TextView teamNumber) {
-		this.teamNumber = teamNumber;
-	}
-	public TextView getTeamName() {
-		return teamName;
-	}
-	public void setTeamName(TextView teamName) {
-		this.teamName = teamName;
+	public void setTeam(TextView team) {
+		this.team = team;
 	}
 	public TextView getOrientation() {
 		return orientation;
@@ -139,6 +148,24 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	public void setNotes(TextView notes) {
 		this.notes = notes;
 	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		Log.d(TAG,"fragments: "+this.isTwoPane());
+		if(!this.isTwoPane()) {
+			finish();
+		}
+	}
+	
+	public void finish() {
+		updateScouting();
+		try {
+			getDataSource().update(this.getScouting());
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -153,14 +180,24 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 		Log.d(TAG, "team: "+teamId);
 	}
 	
-	public View createBaseView(View rootView) {
-		teamNumber = (TextView) rootView.findViewById(R.id.teamNumber);
-		teamName = (TextView) rootView.findViewById(R.id.teamName);
+	@Override
+	public void onResume() {
+		super.onResume();
+		this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMSCOUTING, null, this);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View rootView = inflater.inflate(R.layout.fragment_team_detail, container, false);
+		team = (TextView) rootView.findViewById(R.id.team);
 		
 		orientation = (TextView) rootView.findViewById(R.id.orientation);
+		driveTrain = (TextView) rootView.findViewById(R.id.driveTrain);
 		width = (TextView) rootView.findViewById(R.id.width);
 		length = (TextView) rootView.findViewById(R.id.length);
 		height = (TextView) rootView.findViewById(R.id.height);
+		autonomous = (RatingBar) rootView.findViewById(R.id.autonomous);
 		addWheel = (Button) rootView.findViewById(R.id.addWheel);
 		addWheel.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -172,6 +209,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 		});
 		wheels = (LinearLayout) rootView.findViewById(R.id.wheels);
 		notes = (TextView) rootView.findViewById(R.id.notes);
+		
 		return rootView;
 	}
 	
@@ -223,7 +261,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	}
 	
 	public void errorRemoveThisFrag() {
-		if(!this.isRemoving() && twoPane) {
+		team.setText("Error");
+		if(this.isVisible()) {
 			//if we get here bail, something went very wrong
 			Log.d(TAG, "removing");
 			Toast.makeText(this.getActivity(), "Error loading team details", Toast.LENGTH_SHORT).show();
@@ -232,9 +271,9 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	}
 	
 	public void setView() {
-		teamNumber.setText(Integer.toString(scouting.getTeam().getNumber()));
-		teamName.setText(scouting.getTeam().getName());
+		team.setText(Integer.toString(scouting.getTeam().getNumber())+": "+scouting.getTeam().getName());
 		orientation.setText(scouting.getOrientation());
+		driveTrain.setText(scouting.getDriveTrain());
 		//check if its 0, if so empty the string so the user doesnt go crazy
 		String num = Integer.toString(scouting.getWidth());
 		width.setText(num.equals("0")?"":num);
@@ -242,6 +281,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 		length.setText(num.equals("0")?"":num);
 		num = Integer.toString(scouting.getHeight());
 		height.setText(num.equals("0")?"":num);
+		autonomous.setRating(scouting.getAutonomous());
 		notes.setText(scouting.getNotes());
 	}
 	
@@ -270,9 +310,59 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 			}
 		}
 		scouting.setOrientation(orientation.getText());
+		scouting.setDriveTrain(driveTrain.getText());
 		scouting.setWidth(width.getText());
 		scouting.setLength(length.getText());
 		scouting.setHeight(height.getText());
+		scouting.setAutonomous(autonomous.getRating());
 		scouting.setNotes(notes.getText());
 	}
+
+	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+		switch(id) {
+			case TeamListActivity.LOADER_TEAMWHEEL:
+				return getTeamScoutingWheelData().getScouting(getSeasonId(), getTeamId());
+			case TeamListActivity.LOADER_TEAMSCOUTING:
+				return dataSource.get(getSeasonId(), getTeamId());
+		}
+		return null;
+	}
+
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		switch(loader.getId()) {
+			case TeamListActivity.LOADER_TEAMSCOUTING:
+				setViewFromCursor(cursor);
+				break;
+			case TeamListActivity.LOADER_TEAMWHEEL:
+				createWheelsFromCursor(cursor);
+				break;
+		}
+	}
+
+	public void onLoaderReset(Loader<Cursor> loader) {
+		switch(loader.getId()) {
+			case TeamListActivity.LOADER_TEAMSCOUTING:
+				setViewFromCursor(null);
+				break;
+			case TeamListActivity.LOADER_TEAMWHEEL:
+				createWheelsFromCursor(null);
+				break;
+		}
+	}
+	
+	public void setViewFromCursor(Cursor cursor) {
+		if(cursor!=null) {
+			try {
+				this.setScouting(setScoutingFromCursor(cursor));
+				//start loading the wheels while we set the view elements
+				this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMWHEEL, null, this);
+				setView();
+				return;
+			} catch (OurAllianceException e) {
+			}
+		}
+		errorRemoveThisFrag();
+	}
+	
+	public abstract A setScoutingFromCursor(Cursor cursor) throws OurAllianceException;
 }

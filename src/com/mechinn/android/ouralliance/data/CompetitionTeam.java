@@ -14,14 +14,15 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	public static final String TABLE = "competitionteam";
 	public static final String COMPETITION = Competition.TABLE;
     public static final String TEAM = Team.TABLE;
-	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM };
+    public static final String RANK = "rank";
+	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM, RANK };
 
 	public static final String VIEW = TABLE+"view";
     public static final String VIEW_ID = TABLE+BaseColumns._ID;
     public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
     public static final String VIEW_COMPETITION = TABLE+COMPETITION;
     public static final String VIEW_TEAM = TABLE+TEAM;
-	public static final String[] VIEWCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM,
+	public static final String[] VIEWCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM, RANK,
 		Competition.VIEW_ID, Competition.VIEW_MODIFIED, Competition.VIEW_SEASON, Competition.VIEW_NAME, Competition.VIEW_CODE,
 		Season.VIEW_ID, Season.VIEW_MODIFIED, Season.VIEW_YEAR, Season.VIEW_TITLE,
 		Team.VIEW_ID, Team.VIEW_MODIFIED, Team.VIEW_NUMBER, Team.VIEW_NAME };
@@ -40,19 +41,25 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	
 	private Competition competition;
 	private Team team;
+	private int rank;
 	public CompetitionTeam() {
 		super();
+		this.setRank(999);
 	}
 	public CompetitionTeam(Competition competition, Team team) {
-		setData(competition, team);
+		setData(competition, team, 999);
 	}
-	public CompetitionTeam(long id, Date mod, Competition competition, Team team) {
+	public CompetitionTeam(Competition competition, Team team, int rank) {
+		setData(competition, team, rank);
+	}
+	public CompetitionTeam(long id, Date mod, Competition competition, Team team, int rank) {
 		super(id, mod);
-		setData(competition, team);
+		setData(competition, team, rank);
 	}
-	private void setData(Competition competition, Team team) {
+	private void setData(Competition competition, Team team, int rank) {
 		this.setCompetition(competition);
 		this.setTeam(team);
+		this.setRank(rank);
 	}
 	public static Uri uriFromId(long id) {
 		return Uri.parse(URI_ID + id);
@@ -84,17 +91,28 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	public void setTeam(Team team) {
 		this.team = team;
 	}
+	public int getRank() {
+		return rank;
+	}
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
 	public String toString() {
-		return this.competition+" - "+this.team;
+		return this.competition+" # "+this.rank+" "+this.team;
 	}
 	public ContentValues toCV() {
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
 		values.put(CompetitionTeam.COMPETITION, this.getCompetition().getId());
 		values.put(CompetitionTeam.TEAM, this.getTeam().getId());
+		values.put(CompetitionTeam.RANK, this.getRank());
 		return values;
 	}
 	public int compareTo(CompetitionTeam another) {
-		return this.getTeam().compareTo(another.getTeam());
+		int diff = this.getRank() - another.getRank();
+		if(diff==0) {
+			return this.getTeam().compareTo(another.getTeam());
+		}
+		return diff;
 	}
 }

@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
-import com.mechinn.android.ouralliance.data.AOurAllianceData;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;

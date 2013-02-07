@@ -5,7 +5,6 @@ import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
 import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 
@@ -70,12 +69,15 @@ public class Database extends SQLiteOpenHelper {
 		switch(currentVersion+1) {
 			case 0:
 				Log.i(tag,"Clear Database");
-				db.execSQL("DROP TABLE IF EXISTS "+Team.TABLE);
-				db.execSQL("DROP TABLE IF EXISTS "+Season.TABLE);
-				db.execSQL("DROP TABLE IF EXISTS "+Competition.TABLE);
-				db.execSQL("DROP TABLE IF EXISTS "+TeamScoutingWheel.TABLE);
-				db.execSQL("DROP TABLE IF EXISTS "+CompetitionTeam.TABLE);
+				db.execSQL("DROP VIEW IF EXISTS "+TeamScouting2013.VIEW);
 				db.execSQL("DROP TABLE IF EXISTS "+TeamScouting2013.TABLE);
+				db.execSQL("DROP VIEW IF EXISTS "+CompetitionTeam.VIEW);
+				db.execSQL("DROP TABLE IF EXISTS "+CompetitionTeam.TABLE);
+				db.execSQL("DROP VIEW IF EXISTS "+TeamScoutingWheel.VIEW);
+				db.execSQL("DROP TABLE IF EXISTS "+TeamScoutingWheel.TABLE);
+				db.execSQL("DROP TABLE IF EXISTS "+Competition.TABLE);
+				db.execSQL("DROP TABLE IF EXISTS "+Season.TABLE);
+				db.execSQL("DROP TABLE IF EXISTS "+Team.TABLE);
 			case 1:
 				Log.i(tag,"Upgrade to version 1");
 				
@@ -135,6 +137,7 @@ public class Database extends SQLiteOpenHelper {
 						MODIFIED+" DATE NOT NULL," +
 						CompetitionTeam.COMPETITION+" INTEGER NOT NULL"+foreignCompetition+"," +
 						CompetitionTeam.TEAM+" INTEGER NOT NULL"+foreignTeam+","+
+						CompetitionTeam.RANK+" INTEGER NOT NULL,"+
 						" UNIQUE ("+CompetitionTeam.COMPETITION+","+CompetitionTeam.TEAM+") ON CONFLICT IGNORE"+
 						" );";
 				Log.i(tag,competitionTeamSchema);
@@ -146,6 +149,7 @@ public class Database extends SQLiteOpenHelper {
 						CompetitionTeam.CLASS+"."+Database.MODIFIED+"," +
 						CompetitionTeam.CLASS+"."+CompetitionTeam.COMPETITION+"," +
 						CompetitionTeam.CLASS+"."+CompetitionTeam.TEAM+"," +
+						CompetitionTeam.CLASS+"."+CompetitionTeam.RANK+"," +
 						Competition.CLASS+"."+BaseColumns._ID+" AS "+Competition.VIEW_ID+"," +
 						Competition.CLASS+"."+Database.MODIFIED+" AS "+Competition.VIEW_MODIFIED+"," +
 						Competition.CLASS+"."+Competition.SEASON+" AS "+Competition.VIEW_SEASON+"," +

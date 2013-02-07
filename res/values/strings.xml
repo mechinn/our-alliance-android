@@ -4,18 +4,17 @@
     <string name="app_name">Our Alliance</string>
     <string name="title_team_list">Team List</string>
     <string name="title_team_detail">Team Detail</string>
-	<string name="provider_name">Our Alliance Data</string>
-	<string name="deleteTeam">Delete Team?</string>
-	<string name="delete">Delete</string>
-	<string name="cancel">Cancel</string>
-	<string name="teamNumber">Team Number</string>
-	<string name="teamName">Team Name</string>
-	<string name="create">Create</string>
-	<string name="update">Update</string>
-	
-	<string name="title_next_screen_toggle_preference">Toggle preference</string>
+    <string name="provider_name">Our Alliance Data</string>
+    <string name="deleteTeam">Delete Team?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="teamNumber">Team Number</string>
+    <string name="teamName">Team Name</string>
+    <string name="create">Create</string>
+    <string name="update">Update</string>
+    <string name="title_next_screen_toggle_preference">Toggle preference</string>
     <string name="summary_next_screen_toggle_preference">Preference that is on the next screen but same hierarchy</string>
-	<string name="inline_preferences">In-line preferences</string>
+    <string name="inline_preferences">In-line preferences</string>
     <string name="dialog_based_preferences">Dialog-based preferences</string>
     <string name="launch_preferences">Launch preferences</string>
     <string name="preference_attributes">Preference attributes</string>
@@ -43,5 +42,12 @@
     <string name="title_advanced_toggle_preference">Haunted preference</string>
     <string name="summary_on_advanced_toggle_preference">I\'m on! :)</string>
     <string name="summary_off_advanced_toggle_preference">I\'m off! :(</string>
+    <string name="title_section3">Section 3</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section1">Section 1</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_team_selection">TeamSelection</string>
 
 </resources>

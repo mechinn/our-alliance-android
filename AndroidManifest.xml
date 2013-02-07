@@ -7,7 +7,8 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="17" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -15,15 +16,17 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".view.TeamListActivity" 
+            android:name="com.mechinn.android.ouralliance.view.TeamListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <!-- <category android:name="android.intent.category.DEFAULT"/> -->
             </intent-filter>
         </activity>
-        <!-- <activity
+        <!--
+        <activity
             android:name=".view.StartupActivity"
             android:label="@string/app_name"
             android:parentActivityName=".view.TeamListActivity" >
@@ -31,25 +34,28 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> -->
+        </activity>
+        -->
         <activity
-            android:name=".view.TeamDetailActivity"
+            android:name="com.mechinn.android.ouralliance.view.TeamDetailActivity"
             android:label="@string/title_team_detail"
             android:parentActivityName=".view.TeamListActivity" >
         </activity>
-        <activity android:name=".view.SettingsActivity"
+        <activity
+            android:name="com.mechinn.android.ouralliance.view.SettingsActivity"
             android:label="@string/title_team_detail"
-            android:parentActivityName=".view.SettingsActivity">
+            android:parentActivityName=".view.SettingsActivity" >
         </activity>
-        <provider 
-            android:name=".provider.DataProvider"
+
+        <provider
+            android:name="com.mechinn.android.ouralliance.provider.DataProvider"
             android:authorities="com.mechinn.android.ouralliance.data"
-            android:logo="@drawable/ic_launcher"
+            android:enabled="true"
+            android:exported="false"
             android:icon="@drawable/ic_launcher"
             android:label="@string/provider_name"
-            android:enabled="true"
-            android:multiprocess="true"
-            android:exported="false">
+            android:logo="@drawable/ic_launcher"
+            android:multiprocess="true" >
         </provider>
     </application>
 

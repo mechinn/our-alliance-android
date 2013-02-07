@@ -16,72 +16,42 @@ import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 import com.mechinn.android.ouralliance.data.source.IOurAllianceDataSource;
+import com.mechinn.android.ouralliance.data.source.TeamScoutingDataSource;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mechinn.android.ouralliance.provider.Database;
 
-public class TeamScouting2013DataSource implements IOurAllianceDataSource<TeamScouting2013> {
-	private static final String TAG = "TeamScouting2013DataSource";
-	private Context context;
-	private ContentResolver data;
-
+public class TeamScouting2013DataSource extends TeamScoutingDataSource<TeamScouting2013> {
 	public TeamScouting2013DataSource(Context context) {
-		this.context = context;
-		data = context.getContentResolver();
+		super(context);
 	}
 
-	public Uri insert(TeamScouting2013 teamScouting) {
-		return data.insert(TeamScouting2013.URI, teamScouting.toCV());
-	}
-	
-	public int update(TeamScouting2013 teamScouting) throws OurAllianceException {
-		int count = data.update(TeamScouting2013.uriFromId(teamScouting), teamScouting.toCV(), null, null);
-		Log.d(TAG, "updated "+count+" from "+teamScouting);
-		if(count>1) {
-			throw new OurAllianceException(TAG,"Updated multiple teams from "+teamScouting+", please contact developer.");
-		} else if(count<1) {
-			throw new OurAllianceException(TAG,"Could not update "+teamScouting);
-		}
-		return count;
+	private static final String TAG = "TeamScouting2013DataSource";
+
+	@Override
+	public Uri getUri() {
+		return TeamScouting2013.URI;
 	}
 
-	public int delete(TeamScouting2013 teamScouting) throws OurAllianceException {
-		int count = data.delete(TeamScouting2013.uriFromId(teamScouting), null, null);
-		Log.d(TAG, "delete "+count+" from "+teamScouting);
-		if(count>1) {
-			throw new OurAllianceException(TAG,"Deleted multiple teams from "+teamScouting+", please contact developer.");
-		} else if(count<1) {
-			throw new OurAllianceException(TAG,"Could not delete "+teamScouting);
-		}
-		return count;
-	}
-	
-	public CursorLoader get(Uri uri) {
-		return new CursorLoader(context, uri, TeamScouting2013.VIEWCOLUMNS, null, null, null);
-	}
-	
-	public CursorLoader get(TeamScouting2013 teamScouting) {
-		return get(teamScouting.getId());
-	}
-	
-	public CursorLoader get(long id) {
-		return new CursorLoader(context, TeamScouting2013.uriFromId(id), TeamScouting2013.VIEWCOLUMNS, null, null, null);
+	@Override
+	public Uri getUriFromId(TeamScouting2013 teamScouting) {
+		return getUriFromId(teamScouting.getId());
 	}
 
-	public CursorLoader get(Season season, Team team) {
-		Log.d(TAG, season+" "+team);
-		Log.d(TAG, season.getId()+" "+team.getId());
-		return get(season.getId(), team.getId());
-	}
-	
-	public CursorLoader get(long season, long team) {
-		Log.d(TAG, season+" "+team);
-		return new CursorLoader(context, TeamScouting2013.uriFromSeasonTeam(season, team), TeamScouting2013.VIEWCOLUMNS, null, null, null);
+	@Override
+	public Uri getUriFromId(long teamScouting) {
+		return TeamScouting2013.uriFromId(teamScouting);
 	}
 
-	public CursorLoader getAll() {
-		return new CursorLoader(context, TeamScouting2013.URI, TeamScouting2013.VIEWCOLUMNS, null, null, Team.VIEW_NUMBER);
+	@Override
+	public Uri getUriFromSeasonTeam(long season, long team) {
+		return TeamScouting2013.uriFromSeasonTeam(season, team);
+	}
+
+	@Override
+	public String[] getViewCols() {
+		return TeamScouting2013.VIEWCOLUMNS;
 	}
 	
 	public static TeamScouting2013 getSingle(Cursor cursor) throws OurAllianceException {
@@ -153,7 +123,7 @@ public class TeamScouting2013DataSource implements IOurAllianceDataSource<TeamSc
 		team.setWidth(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting2013.WIDTH)));
 		team.setLength(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting2013.LENGTH)));
 		team.setHeight(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting2013.HEIGHT)));
-		team.setAutonomous(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting2013.AUTONOMOUS)));
+		team.setAutonomous(cursor.getFloat(cursor.getColumnIndexOrThrow(TeamScouting2013.AUTONOMOUS)));
 		team.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(TeamScouting2013.NOTES)));
 		return team;
 	}

@@ -165,7 +165,6 @@ public class Setup {
 	
 	private void addTestData(Season season, Competition comp) {
 		SparseArray<String> teams = new SparseArray<String>();
-		teams.append(869, "Power Cord");
 		teams.append(1676, "Pioneers");
 		teams.append(3637, "The Daleks");
 		teams.append(25, "Raider Robotix");
@@ -179,5 +178,11 @@ public class Setup {
 			teamScouting2013Data.insert(new TeamScouting2013(season, team));
 			competitionTeamData.insert(new CompetitionTeam(comp, team));
 		}
+		Team team = new Team(869, "Power Cord");
+		Uri teamUri = teamData.insert(team);
+		long teamId = Long.parseLong(teamUri.getLastPathSegment());
+		team.setId(teamId);
+		teamScouting2013Data.insert(new TeamScouting2013(season, team));
+		competitionTeamData.insert(new CompetitionTeam(comp, team, 1));
 	}
 }

@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
