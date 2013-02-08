@@ -20,4 +20,10 @@ public class Utility {
 	    	Log.d(TAG, "deleted: "+fileOrDirectory.getName());
 	    }
 	}
+	public static boolean shortToBool(short val) {
+		return val==0?false:true;
+	}
+	public static short boolToShort(boolean val) {
+		return (short) (val?1:0);
+	}
 }

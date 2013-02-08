@@ -228,16 +228,20 @@ public class Database extends SQLiteOpenHelper {
 						TeamScouting2013.WIDTH+" INTEGER," +
 						TeamScouting2013.LENGTH+" INTEGER," +
 						TeamScouting2013.HEIGHT+" INTEGER," +
-						TeamScouting2013.AUTONOMOUS+" INTEGER," +
+						TeamScouting2013.AUTONOMOUS+" REAL," +
 						TeamScouting2013.NOTES+" TEXT," +
-						TeamScouting2013.SHOOTERTYPE+" TEXT," +
-						TeamScouting2013.CONTINUOUSSHOOTING+" TEXT," +
-						TeamScouting2013.COLORFRISBEE+" TEXT," +
+						TeamScouting2013.SHOOTERTYPE+" INTEGER," +
+						TeamScouting2013.CONTINUOUSSHOOTING+" INTEGER," +
+						TeamScouting2013.COLORFRISBEE+" INTEGER," +
 						TeamScouting2013.MAXCLIMB+" INTEGER," +
-						TeamScouting2013.SHOOTABLEGOALS+" INTEGER," +
-						TeamScouting2013.RELOADSPEED+" INTEGER," +
-						TeamScouting2013.SAFESHOOTER+" TEXT," +
-						TeamScouting2013.LOADSFROM+" TEXT," +
+						TeamScouting2013.LOWGOAL+" INTEGER," +
+						TeamScouting2013.MIDGOAL+" INTEGER," +
+						TeamScouting2013.HIGHGOAL+" INTEGER," +
+						TeamScouting2013.PYRAMIDGOAL+" INTEGER," +
+						TeamScouting2013.RELOADSPEED+" REAL," +
+						TeamScouting2013.SAFESHOOTER+" INTEGER," +
+						TeamScouting2013.SLOT+" INTEGER," +
+						TeamScouting2013.GROUND+" INTEGER," +
 						" UNIQUE ("+TeamScouting2013.SEASON+","+TeamScouting2013.TEAM+") ON CONFLICT IGNORE"+
 						" );";
 				Log.i(tag,teamScouting2013Schema);
@@ -260,10 +264,14 @@ public class Database extends SQLiteOpenHelper {
 						TeamScouting2013.CLASS+"."+TeamScouting2013.CONTINUOUSSHOOTING+"," +
 						TeamScouting2013.CLASS+"."+TeamScouting2013.COLORFRISBEE+"," +
 						TeamScouting2013.CLASS+"."+TeamScouting2013.MAXCLIMB+"," +
-						TeamScouting2013.CLASS+"."+TeamScouting2013.SHOOTABLEGOALS+"," +
+						TeamScouting2013.CLASS+"."+TeamScouting2013.LOWGOAL+"," +
+						TeamScouting2013.CLASS+"."+TeamScouting2013.MIDGOAL+"," +
+						TeamScouting2013.CLASS+"."+TeamScouting2013.HIGHGOAL+"," +
+						TeamScouting2013.CLASS+"."+TeamScouting2013.PYRAMIDGOAL+"," +
 						TeamScouting2013.CLASS+"."+TeamScouting2013.RELOADSPEED+"," +
 						TeamScouting2013.CLASS+"."+TeamScouting2013.SAFESHOOTER+"," +
-						TeamScouting2013.CLASS+"."+TeamScouting2013.LOADSFROM+"," +
+						TeamScouting2013.CLASS+"."+TeamScouting2013.SLOT+"," +
+						TeamScouting2013.CLASS+"."+TeamScouting2013.GROUND+"," +
 						Season.CLASS+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
 						Season.CLASS+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
 						Season.CLASS+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +

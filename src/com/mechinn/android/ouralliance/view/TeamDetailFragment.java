@@ -25,6 +25,7 @@ import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
 import com.mechinn.android.ouralliance.data.source.IOurAllianceDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamScoutingDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamScoutingWheelDataSource;
+import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 /**
@@ -56,6 +57,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends TeamS
 	private Button addWheel;
 	private LinearLayout wheels;
 	private TextView notes;
+	private LinearLayout season;
+
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -100,53 +103,17 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends TeamS
 	public void setTeamId(long teamId) {
 		this.teamId = teamId;
 	}
-	public TextView getTeam() {
-		return team;
-	}
-	public void setTeam(TextView team) {
-		this.team = team;
-	}
-	public TextView getOrientation() {
-		return orientation;
-	}
-	public void setOrientation(TextView orientation) {
-		this.orientation = orientation;
-	}
-	public TextView getWidth() {
-		return width;
-	}
-	public void setWidth(TextView width) {
-		this.width = width;
-	}
-	public TextView getLength() {
-		return length;
-	}
-	public void setLength(TextView length) {
-		this.length = length;
-	}
-	public TextView getHeight() {
-		return height;
-	}
-	public void setHeight(TextView height) {
-		this.height = height;
-	}
-	public Button getAddWheel() {
-		return addWheel;
-	}
-	public void setAddWheel(Button addWheel) {
-		this.addWheel = addWheel;
-	}
 	public LinearLayout getWheels() {
 		return wheels;
 	}
 	public void setWheels(LinearLayout wheels) {
 		this.wheels = wheels;
 	}
-	public TextView getNotes() {
-		return notes;
+	public LinearLayout getSeason() {
+		return season;
 	}
-	public void setNotes(TextView notes) {
-		this.notes = notes;
+	public void setSeason(LinearLayout season) {
+		this.season = season;
 	}
 	
 	@Override
@@ -178,6 +145,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends TeamS
 		teamId = getArguments().getLong(ARG_TEAM, 0);
 		Log.d(TAG, "season: "+seasonId);
 		Log.d(TAG, "team: "+teamId);
+		setDataSource(createDataSouce());
 	}
 	
 	@Override
@@ -209,6 +177,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends TeamS
 		});
 		wheels = (LinearLayout) rootView.findViewById(R.id.wheels);
 		notes = (TextView) rootView.findViewById(R.id.notes);
+		season = (LinearLayout) rootView.findViewById(R.id.season);
 		
 		return rootView;
 	}
@@ -365,4 +334,5 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends TeamS
 	}
 	
 	public abstract A setScoutingFromCursor(Cursor cursor) throws OurAllianceException;
+	public abstract B createDataSouce();
 }

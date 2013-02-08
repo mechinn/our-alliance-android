@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
@@ -125,6 +126,20 @@ public class TeamScouting2013DataSource extends TeamScoutingDataSource<TeamScout
 		team.setHeight(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting2013.HEIGHT)));
 		team.setAutonomous(cursor.getFloat(cursor.getColumnIndexOrThrow(TeamScouting2013.AUTONOMOUS)));
 		team.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(TeamScouting2013.NOTES)));
+
+		team.setMaxClimb(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting2013.MAXCLIMB)));
+		team.setShooterType(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting2013.SHOOTERTYPE)));
+		team.setContinuousShooting(cursor.getInt(cursor.getColumnIndexOrThrow(TeamScouting2013.CONTINUOUSSHOOTING)));
+		team.setLowGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(TeamScouting2013.LOWGOAL))));
+		team.setMidGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(TeamScouting2013.MIDGOAL))));
+		team.setHighGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(TeamScouting2013.HIGHGOAL))));
+		team.setPyramidGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(TeamScouting2013.PYRAMIDGOAL))));
+		team.setSlot(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(TeamScouting2013.SLOT))));
+		team.setGround(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(TeamScouting2013.GROUND))));
+		team.setReloadSpeed(cursor.getFloat(cursor.getColumnIndexOrThrow(TeamScouting2013.RELOADSPEED)));
+		team.setSafeShooter(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(TeamScouting2013.SAFESHOOTER))));
+		team.setColorFrisbee(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(TeamScouting2013.COLORFRISBEE))));
+		
 		return team;
 	}
 }
