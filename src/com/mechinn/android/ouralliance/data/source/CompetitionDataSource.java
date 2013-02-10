@@ -1,15 +1,12 @@
 package com.mechinn.android.ouralliance.data.source;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
-import android.net.Uri;
-import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.mechinn.android.ouralliance.data.Competition;
@@ -17,62 +14,40 @@ import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
-import com.mechinn.android.ouralliance.provider.Database;
 
-public class CompetitionDataSource implements IOurAllianceDataSource<Competition> {
+public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
 	private static final String TAG = "CompetitionDataSource";
-	private Context context;
-	private ContentResolver data;
-
 	public CompetitionDataSource(Context context) {
-		this.context = context;
-		data = context.getContentResolver();
+		super(context);
 	}
 
-	public Uri insert(Competition competition) {
-		return data.insert(Competition.URI, competition.toCV());
-	}
-	
-	public int update(Competition competition) throws OurAllianceException {
-		int count = data.update(Competition.uriFromId(competition), competition.toCV(), null, null);
-		Log.d(TAG, "updated "+count+" from "+competition);
-		if(count>1) {
-			throw new OurAllianceException(TAG,"Updated multiple teams from "+competition+", please contact developer.");
-		} else if(count<1) {
-			throw new OurAllianceException(TAG,"Could not update "+competition);
-		}
-		return count;
+	@Override
+	public Competition insert(Competition competition) throws OurAllianceException, SQLException {
+		return insert(Competition.URI, competition);
 	}
 
-	public int delete(Competition competition) throws OurAllianceException {
-		int count = data.delete(Competition.uriFromId(competition), null, null);
-		Log.d(TAG, "delete "+count+" from "+competition);
-		if(count>1) {
-			throw new OurAllianceException(TAG,"Deleted multiple teams from "+competition+", please contact developer.");
-		} else if(count<1) {
-			throw new OurAllianceException(TAG,"Could not delete "+competition);
-		}
-		return count;
+	@Override
+	public int update(Competition data, String selection) throws OurAllianceException, SQLException {
+		return update(Competition.URI, data, selection);
+	}
+
+	@Override
+	public int delete(String selection) throws OurAllianceException {
+		return delete(Competition.URI, selection);
+	}
+
+	@Override
+	public CursorLoader query(String selection, String order) {
+		return query(Competition.URI,Competition.VIEWCOLUMNS, selection, order);
 	}
 	
-	public CursorLoader get(Uri uri) {
-		return new CursorLoader(context, uri, Competition.VIEWCOLUMNS, null, null, null);
-	}
-	
-	public CursorLoader get(Competition comp) {
-		return get(comp.getId());
-	}
-	
-	public CursorLoader get(long id) {
-		return new CursorLoader(context, Competition.uriFromId(id), Competition.VIEWCOLUMNS, null, null, null);
+	@Override
+	public CursorLoader getAll() {
+		return getAll(Competition.NAME);
 	}
 	
 	public CursorLoader get(String code) {
-		return new CursorLoader(context, Competition.uriFromCode(code), Competition.VIEWCOLUMNS, null, null, null);
-	}
-	
-	public CursorLoader getAll() {
-		return new CursorLoader(context, Competition.URI, Competition.VIEWCOLUMNS, null, null, Competition.NAME);
+		return get(Competition.CODE, code);
 	}
 	
 	public CursorLoader getAllCompetitions(Season season) {
@@ -80,14 +55,14 @@ public class CompetitionDataSource implements IOurAllianceDataSource<Competition
 	}
 	
 	public CursorLoader getAllCompetitions(long season) {
-		return new CursorLoader(context, Competition.uriFromSeason(season), Competition.VIEWCOLUMNS, null, null, Competition.NAME);
+		return get(Competition.SEASON, Long.toString(season), Competition.NAME);
 	}
 	
 	public static Competition getSingle(Cursor cursor) throws OurAllianceException {
 		Competition competition;
 		if(cursor.getCount()==1) {
 			cursor.moveToFirst();
-			competition = fromCursor(cursor);
+			competition = Competition.newFromCursor(cursor);
 			Log.d(TAG, "get "+competition);
 		} else if(cursor.getCount()==0) {
 			throw new OurAllianceException(TAG,"Competition not found in db.",new NoObjectsThrowable());
@@ -102,7 +77,7 @@ public class CompetitionDataSource implements IOurAllianceDataSource<Competition
 		List<Competition> comps = new ArrayList<Competition>();
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			Competition competition = fromCursor(cursor);
+			Competition competition = Competition.newFromCursor(cursor);
 			Log.d(TAG, "get "+competition);
 			comps.add(competition);
 			cursor.moveToNext();
@@ -113,19 +88,5 @@ public class CompetitionDataSource implements IOurAllianceDataSource<Competition
 		// Make sure to close the cursor
 		cursor.close();
 		return comps;
-	}
-
-	public static Competition fromCursor(Cursor cursor) {
-		Competition competition = new Competition();
-		competition.setId(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)));
-		competition.setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Database.MODIFIED))));
-		int seasonId = cursor.getInt(cursor.getColumnIndexOrThrow(Competition.SEASON));
-		Date seasonMod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Season.VIEW_MODIFIED)));
-		int seasonYear = cursor.getInt(cursor.getColumnIndexOrThrow(Season.VIEW_YEAR));
-		String seasonTitle = cursor.getString(cursor.getColumnIndexOrThrow(Season.VIEW_TITLE));
-		competition.setSeason(new Season(seasonId, seasonMod, seasonYear, seasonTitle));
-		competition.setName(cursor.getString(cursor.getColumnIndexOrThrow(Competition.NAME)));
-		competition.setCode(cursor.getString(cursor.getColumnIndexOrThrow(Competition.CODE)));
-		return competition;
 	}
 }

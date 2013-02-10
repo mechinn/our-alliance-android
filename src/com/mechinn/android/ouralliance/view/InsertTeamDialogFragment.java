@@ -22,7 +22,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface Listener {
         public void onInsertDialogPositiveClick(boolean update, Team team);
-        public void onInsertDialogNegativeClick(DialogFragment dialog, int id);
+        public void onInsertDialogNegativeClick(DialogFragment dialog);
     }
     
     Listener listener;
@@ -77,7 +77,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
 				public void onClick(DialogInterface dialog, int id) {
 					Toast.makeText(getActivity(), "cancel", Toast.LENGTH_SHORT).show();
 					// Send the negative button event back to the host activity
-					listener.onInsertDialogNegativeClick(InsertTeamDialogFragment.this, id);
+					listener.onInsertDialogNegativeClick(InsertTeamDialogFragment.this);
 				}
 			});
 		// Create the AlertDialog object and return it

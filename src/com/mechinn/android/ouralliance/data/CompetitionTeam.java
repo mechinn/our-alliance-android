@@ -1,8 +1,11 @@
 package com.mechinn.android.ouralliance.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -10,6 +13,7 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public class CompetitionTeam extends AOurAllianceData implements Comparable<CompetitionTeam> {
+	private static final long serialVersionUID = 1458046534212642950L;
 	public static final String CLASS = "CompetitionTeam";
 	public static final String TABLE = "competitionteam";
 	public static final String COMPETITION = Competition.TABLE;
@@ -22,29 +26,20 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
     public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
     public static final String VIEW_COMPETITION = TABLE+COMPETITION;
     public static final String VIEW_TEAM = TABLE+TEAM;
+    public static final String VIEW_RANK = TABLE+RANK;
 	public static final String[] VIEWCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM, RANK,
 		Competition.VIEW_ID, Competition.VIEW_MODIFIED, Competition.VIEW_SEASON, Competition.VIEW_NAME, Competition.VIEW_CODE,
 		Season.VIEW_ID, Season.VIEW_MODIFIED, Season.VIEW_YEAR, Season.VIEW_TITLE,
 		Team.VIEW_ID, Team.VIEW_MODIFIED, Team.VIEW_NUMBER, Team.VIEW_NAME };
 
-	public static final String PATH = TABLE+"s/";
-	public static final String IDPATH = PATH+"id/";
-	public static final String TEAMPATH = PATH+Team.TABLE+"/";
-	public static final String COMPPATH = PATH+Competition.TABLE+"/";
-	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+PATH);
-	public static final String URI_ID = DataProvider.BASE_URI_STRING+IDPATH;
-	public static final String URI_TEAM = DataProvider.BASE_URI_STRING+TEAMPATH;
-	public static final String URI_COMP = DataProvider.BASE_URI_STRING+COMPPATH;
-
-	public static final String DIRTYPE = DataProvider.BASE_DIR+CLASS;
-	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
+	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
+	public static final String URITYPE = DataProvider.AUTHORITY+"."+CLASS;
 	
 	private Competition competition;
 	private Team team;
 	private int rank;
 	public CompetitionTeam() {
 		super();
-		this.setRank(999);
 	}
 	public CompetitionTeam(Competition competition, Team team) {
 		setData(competition, team, 999);
@@ -60,24 +55,6 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 		this.setCompetition(competition);
 		this.setTeam(team);
 		this.setRank(rank);
-	}
-	public static Uri uriFromId(long id) {
-		return Uri.parse(URI_ID + id);
-	}
-	public static Uri uriFromId(CompetitionTeam id) {
-		return uriFromId(id.getId());
-	}
-	public static Uri uriFromTeam(Team id) {
-		return uriFromTeam(id.getId());
-	}
-	public static Uri uriFromTeam(long id) {
-		return Uri.parse(URI_TEAM + id);
-	}
-	public static Uri uriFromComp(Competition id) {
-		return uriFromComp(id.getId());
-	}
-	public static Uri uriFromComp(long id) {
-		return Uri.parse(URI_COMP + id);
 	}
 	public Competition getCompetition() {
 		return competition;
@@ -100,6 +77,12 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	public String toString() {
 		return this.competition+" # "+this.rank+" "+this.team;
 	}
+	public boolean equals(CompetitionTeam data) {
+		return super.equals(data) &&
+				getCompetition().equals(data.getCompetition()) &&
+				getTeam().equals(data.getTeam()) &&
+				getRank() == data.getRank();
+	}
 	public ContentValues toCV() {
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
@@ -114,5 +97,43 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 			return this.getTeam().compareTo(another.getTeam());
 		}
 		return diff;
+	}
+	
+	@Override
+	public List<String> checkNotNulls() {
+		List<String> error = new ArrayList<String>();
+		if(null==getCompetition()) {
+			error.add(COMPETITION);
+		}
+		if(null==getTeam()) {
+			error.add(TEAM);
+		}
+		if(0==this.getRank()) {
+			error.add(RANK);
+		}
+		return error;
+	}
+
+	@Override
+	public void fromCursor(Cursor cursor) {
+		super.fromCursor(cursor);
+		setCompetition(Competition.newFromViewCursor(cursor));
+		setTeam(Team.newFromViewCursor(cursor));
+		setRank(cursor.getInt(cursor.getColumnIndexOrThrow(RANK)));
+	}
+	
+	public static CompetitionTeam newFromCursor(Cursor cursor) {
+		CompetitionTeam data = new CompetitionTeam();
+		data.fromCursor(cursor);
+		return data;
+	}
+	
+	public static CompetitionTeam newFromViewCursor(Cursor cursor) {
+		long id = cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_ID));
+		Date mod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_MODIFIED)));
+		Competition comp = Competition.newFromViewCursor(cursor);;
+		Team team = Team.newFromViewCursor(cursor);
+		int rank = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_RANK));
+		return new CompetitionTeam(id, mod, comp, team, rank);
 	}
 }

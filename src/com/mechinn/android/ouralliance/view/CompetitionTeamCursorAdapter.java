@@ -2,6 +2,7 @@ package com.mechinn.android.ouralliance.view;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 
 import android.content.Context;
@@ -23,7 +24,7 @@ public class CompetitionTeamCursorAdapter extends CursorAdapter {
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
 			Log.d(TAG, "binding view");
-			CompetitionTeam team = CompetitionTeamDataSource.fromCursor(cursor);
+			CompetitionTeam team = CompetitionTeam.newFromCursor(cursor);
 			TextView summary = (TextView)view.findViewById(R.id.team_list_item);
 			summary.setText(team.getTeam().toString());
 		}
@@ -40,8 +41,16 @@ public class CompetitionTeamCursorAdapter extends CursorAdapter {
 		public CompetitionTeam get(int position) {
 			Cursor cursor = this.getCursor();
 			if(cursor.moveToPosition(position)) {
-				return CompetitionTeamDataSource.fromCursor(cursor);
+				return CompetitionTeam.newFromCursor(cursor);
 			}
 			return null;
+		}
+		
+		public boolean contains(CompetitionTeam team) {
+			return CompetitionTeamDataSource.contains(this.getCursor(), team);
+		}
+		
+		public boolean contains(Team team) {
+			return CompetitionTeamDataSource.contains(this.getCursor(), team);
 		}
 	}

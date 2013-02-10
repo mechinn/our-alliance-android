@@ -1,5 +1,7 @@
 package com.mechinn.android.ouralliance.view;
 
+import java.sql.SQLException;
+
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -9,8 +11,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.Prefs;
+import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
@@ -37,6 +41,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	private TeamDataSource teamData;
 	private CompetitionTeamDataSource competitionTeamData;
 	private CompetitionTeamCursorAdapter adapter;
+	private Competition comp;
 
 	private Listener mCallbacks = sDummyCallbacks;
 	public interface Listener {
@@ -44,18 +49,15 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		 * Callback for when an item has been selected.
 		 */
 		public void onItemSelected(CompetitionTeam team);
-		public void deleteTeam(Team team);
+		public void deleteTeam(CompetitionTeam team);
 		public void insertTeam(Team team);
+		public void updateTeam(Team team);
 	}
 	private static Listener sDummyCallbacks = new Listener() {
-		public void onItemSelected(CompetitionTeam team) {
-		}
-
-		public void deleteTeam(Team team) {
-		}
-
-		public void insertTeam(Team team) {
-		}
+		public void onItemSelected(CompetitionTeam team) {}
+		public void deleteTeam(CompetitionTeam team) {}
+		public void insertTeam(Team team) {}
+		public void updateTeam(Team team) {}
 	};
 	@Override
 	public void onAttach(Activity activity) {
@@ -89,6 +91,9 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
+		comp = new Competition();
+		comp.setId(prefs.getComp());
+		teamData = new TeamDataSource(this.getActivity());
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
 	}
 	
@@ -149,26 +154,36 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		mActivatedPosition = position;
 	}
 	
-	public void deleteTeam(Team team) {
+	public void deleteTeam(CompetitionTeam team) {
 		Log.d(TAG, "id: "+team);
-//		try {
-//			competitionTeamData.delete(competitionTeamData.get(team));
-//		} catch (IllegalArgumentException e) {
-//			e.printStackTrace();
-//		} catch (OurAllianceException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			competitionTeamData.delete(team);
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void compTeamExists(Team team) {
 	}
 	
 	public void insertTeam(Team team) {
 		Log.d(TAG, "id: "+team);
-//		try {
-//			competitionTeamData.insert(new CompetitionTeam(thisComp,team));
-//		} catch (IllegalArgumentException e) {
-//			e.printStackTrace();
-//		} catch (OurAllianceException e) {
-//			e.printStackTrace();
-//		}
+		//try inserting the team first in case it doesnt exist
+		try {
+			team = teamData.insert(team);
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//insert the team into the 
+		try {
+			competitionTeamData.insert(new CompetitionTeam(comp, team));
+		} catch (OurAllianceException e) {
+			Toast.makeText(this.getActivity(), "Cannot create team without "+e.getMessage(), Toast.LENGTH_SHORT).show();
+		} catch (SQLException e) {
+			Toast.makeText(this.getActivity(), "Team already in this competition", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	public void updateTeam(Team team) {
@@ -176,7 +191,10 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		try {
 			teamData.update(team);
 		} catch (OurAllianceException e) {
-			e.printStackTrace();
+			Toast.makeText(this.getActivity(), "Cannot update team without "+e.getMessage(), Toast.LENGTH_SHORT).show();
+		} catch (SQLException e) {
+			Toast.makeText(this.getActivity(), "Team does not exist, creating it and adding to competition", Toast.LENGTH_SHORT).show();
+			insertTeam(team);
 		}
 	}
 	

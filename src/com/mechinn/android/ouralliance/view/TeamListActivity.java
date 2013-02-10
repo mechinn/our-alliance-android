@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
  * An activity representing a list of Teams. This activity has different
@@ -140,23 +141,23 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-//		TeamListFragment teamListFrag = (TeamListFragment) getFragmentManager().findFragmentById(R.id.team_list);
-//	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-//	    DialogFragment dialog;
+		TeamListFragment teamListFrag = (TeamListFragment) getFragmentManager().findFragmentById(R.id.team_list);
+	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    DialogFragment dialog;
 	    switch (item.getItemId()) {
 	        case R.id.edit:
-//	        	dialog = new InsertTeamDialogFragment();
-//	            Bundle updateArgs = new Bundle();
-//	            updateArgs.putSerializable(InsertTeamDialogFragment.TEAM_ARG, teamListFrag.getTeamFromList(info.position));
-//	            dialog.setArguments(updateArgs);
-//	        	dialog.show(this.getFragmentManager(), "Edit Team");
+	        	dialog = new InsertTeamDialogFragment();
+	            Bundle updateArgs = new Bundle();
+	            updateArgs.putSerializable(InsertTeamDialogFragment.TEAM_ARG, teamListFrag.getCompetitionTeamFromList(info.position).getTeam());
+	            dialog.setArguments(updateArgs);
+	        	dialog.show(this.getFragmentManager(), "Edit Team");
 	            return true;
 	        case R.id.delete:
-//	        	dialog = new DeleteTeamDialogFragment();
-//	            Bundle deleteArgs = new Bundle();
-//	            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, teamListFrag.getTeamFromList(info.position));
-//	            dialog.setArguments(deleteArgs);
-//	            dialog.show(this.getFragmentManager(), "Delete Team");
+	        	dialog = new DeleteTeamDialogFragment();
+	            Bundle deleteArgs = new Bundle();
+	            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, teamListFrag.getCompetitionTeamFromList(info.position));
+	            dialog.setArguments(deleteArgs);
+	            dialog.show(this.getFragmentManager(), "Delete Team");
 	            return true;
 	        default:
 	            return super.onContextItemSelected(item);
@@ -182,7 +183,7 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
         }
     }
 	
-	public void deleteTeam(Team team) {
+	public void deleteTeam(CompetitionTeam team) {
         // The user selected the headline of an article from the HeadlinesFragment
         // Do something here to display that article
 
@@ -203,15 +204,15 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 		}
 	}
 
-	public void onInsertDialogNegativeClick(DialogFragment dialog, int id) {
+	public void onInsertDialogNegativeClick(DialogFragment dialog) {
 		dialog.getDialog().cancel();
 	}
 
-	public void onDeleteDialogPositiveClick(Team team) {
+	public void onDeleteDialogPositiveClick(CompetitionTeam team) {
 		this.deleteTeam(team);
 	}
 
-	public void onDeleteDialogNegativeClick(DialogFragment dialog, int id) {
+	public void onDeleteDialogNegativeClick(DialogFragment dialog) {
 		dialog.getDialog().cancel();
 		
 	}

@@ -1,8 +1,11 @@
 package com.mechinn.android.ouralliance.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
@@ -11,6 +14,7 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public class Competition extends AOurAllianceData implements Comparable<Competition> {
+	private static final long serialVersionUID = -5179493838272851750L;
 	public static final String CLASS = "Competition";
 	public static final String TABLE = "competition";
 	public static final String SEASON = Season.TABLE;
@@ -27,17 +31,8 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 	public static final String[] VIEWCOLUMNS = { BaseColumns._ID, Database.MODIFIED, SEASON, NAME, CODE,
 		Season.VIEW_ID, Season.VIEW_MODIFIED, Season.VIEW_YEAR, Season.VIEW_TITLE };
 
-	public static final String PATH = TABLE+"s/";
-	public static final String IDPATH = PATH+"id/";
-	public static final String SEASONPATH = PATH+"season/";
-	public static final String CODEPATH = PATH+"code/";
-	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+PATH);
-	public static final String URI_ID = DataProvider.BASE_URI_STRING+IDPATH;
-	public static final String URI_SEASON = DataProvider.BASE_URI_STRING+SEASONPATH;
-	public static final String URI_CODE = DataProvider.BASE_URI_STRING+CODEPATH;
-
-	public static final String DIRTYPE = DataProvider.BASE_DIR+CLASS;
-	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
+	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
+	public static final String URITYPE = DataProvider.AUTHORITY+"."+CLASS;
 	
 	private Season season;
 	private CharSequence name;
@@ -56,21 +51,6 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 		this.setSeason(season);
 		this.setName(name);
 		this.setCode(code);
-	}
-	public static Uri uriFromId(long id) {
-		return Uri.parse(URI_ID + id);
-	}
-	public static Uri uriFromId(Competition id) {
-		return uriFromId(id.getId());
-	}
-	public static Uri uriFromSeason(long id) {
-		return Uri.parse(URI_SEASON + id);
-	}
-	public static Uri uriFromSeason(Season id) {
-		return uriFromSeason(id.getId());
-	}
-	public static Uri uriFromCode(CharSequence code) {
-		return Uri.parse(URI_CODE + code);
 	}
 	public Season getSeason() {
 		return season;
@@ -93,6 +73,12 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 	public String toString() {
 		return this.season+" - "+this.name;
 	}
+	public boolean equals(Competition data) {
+		return super.equals(data) && 
+				getSeason().equals(data.getSeason()) && 
+				getName().equals(data.getName()) && 
+				getCode().equals(data.getCode());
+	}
 	public ContentValues toCV() {
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
@@ -111,5 +97,43 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 	}
 	public int compareTo(Competition another) {
 		return this.getName().toString().compareTo(another.getName().toString());
+	}
+	
+	@Override
+	public List<String> checkNotNulls() {
+		List<String> error = new ArrayList<String>();
+		if(null==this.getSeason()) {
+			error.add(SEASON);
+		}
+		if(TextUtils.isEmpty(this.getName())) {
+			error.add(NAME);
+		}
+		if(TextUtils.isEmpty(this.getCode())) {
+			error.add(CODE);
+		}
+		return error;
+	}
+
+	@Override
+	public void fromCursor(Cursor cursor) {
+		super.fromCursor(cursor);
+		setSeason(Season.newFromViewCursor(cursor));
+		setName(cursor.getString(cursor.getColumnIndexOrThrow(NAME)));
+		setCode(cursor.getString(cursor.getColumnIndexOrThrow(CODE)));
+	}
+	
+	public static Competition newFromCursor(Cursor cursor) {
+		Competition data = new Competition();
+		data.fromCursor(cursor);
+		return data;
+	}
+	
+	public static Competition newFromViewCursor(Cursor cursor) {
+		long id = cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_ID));
+		Date mod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_MODIFIED)));
+		Season season = Season.newFromViewCursor(cursor);
+		String name = cursor.getString(cursor.getColumnIndexOrThrow(VIEW_NAME));
+		String code = cursor.getString(cursor.getColumnIndexOrThrow(VIEW_CODE));
+		return new Competition(id, mod, season, name, code);
 	}
 }

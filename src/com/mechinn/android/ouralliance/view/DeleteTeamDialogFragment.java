@@ -1,7 +1,7 @@
 package com.mechinn.android.ouralliance.view;
 
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.CompetitionTeam;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,12 +18,12 @@ public class DeleteTeamDialogFragment extends DialogFragment {
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface Listener {
-        public void onDeleteDialogPositiveClick(Team team);
-        public void onDeleteDialogNegativeClick(DialogFragment dialog, int id);
+        public void onDeleteDialogPositiveClick(CompetitionTeam team);
+        public void onDeleteDialogNegativeClick(DialogFragment dialog);
     }
     
     Listener listener;
-    private Team team;
+    private CompetitionTeam team;
     
     @Override
     public void onAttach(Activity activity) {
@@ -40,7 +40,7 @@ public class DeleteTeamDialogFragment extends DialogFragment {
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-    	team = (Team) this.getArguments().getSerializable(TEAM_ARG);
+    	team = (CompetitionTeam) this.getArguments().getSerializable(TEAM_ARG);
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setMessage(R.string.deleteTeam)
@@ -54,7 +54,7 @@ public class DeleteTeamDialogFragment extends DialogFragment {
 				public void onClick(DialogInterface dialog, int id) {
 					Toast.makeText(getActivity(), "cancel", Toast.LENGTH_SHORT).show();
 					// Send the negative button event back to the host activity
-					listener.onDeleteDialogNegativeClick(DeleteTeamDialogFragment.this, id);
+					listener.onDeleteDialogNegativeClick(DeleteTeamDialogFragment.this);
 				}
 			});
 		// Create the AlertDialog object and return it

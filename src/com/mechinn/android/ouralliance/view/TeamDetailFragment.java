@@ -1,9 +1,9 @@
 package com.mechinn.android.ouralliance.view;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import android.app.Fragment;
-import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.database.Cursor;
@@ -22,10 +22,8 @@ import android.widget.Toast;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
-import com.mechinn.android.ouralliance.data.source.IOurAllianceDataSource;
-import com.mechinn.android.ouralliance.data.source.TeamScoutingDataSource;
+import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamScoutingWheelDataSource;
-import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 /**
@@ -33,7 +31,7 @@ import com.mechinn.android.ouralliance.error.OurAllianceException;
  * contained in a {@link TeamListActivity} in two-pane mode (on tablets) or a
  * {@link TeamDetailActivity} on handsets.
  */
-public abstract class TeamDetailFragment<A extends TeamScouting, B extends TeamScoutingDataSource<A>> extends Fragment implements LoaderCallbacks<Cursor> {
+public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurAllianceDataSource<A>> extends Fragment implements LoaderCallbacks<Cursor> {
 	private static final String TAG = "TeamDetailFragment";
 
 	public static final String ARG_TWOPANE = "twoPane";
@@ -130,6 +128,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends TeamS
 		try {
 			getDataSource().update(this.getScouting());
 		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -266,17 +266,25 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends TeamS
 			theWheel.setSize(size);
 			//see if we should update or insert or just tell the user there isnt enough info
 			try {
-				if(theWheel.update()) {
+				try {
 					teamScoutingWheelData.update(theWheel);
-				} else {
-					teamScoutingWheelData.insert(theWheel);
+					System.out.println("Saved "+theWheel);
+				} catch (SQLException e) {
+					try {
+						theWheel = teamScoutingWheelData.insert(theWheel);
+						System.out.println("Saved "+theWheel);
+					} catch (SQLException e1) {
+						String message = "Cannot save because conflicting "+e.getMessage()+" was given.";
+						Log.d(TAG,message);
+						Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
+					}
 				}
-				System.out.println("Saved "+theWheel);
 			} catch (OurAllianceException e) {
 				String message = "Cannot save because no "+e.getMessage()+" was given.";
 				Log.d(TAG,message);
 				Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
 			}
+			
 		}
 		scouting.setOrientation(orientation.getText());
 		scouting.setDriveTrain(driveTrain.getText());
@@ -290,7 +298,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends TeamS
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
 		switch(id) {
 			case TeamListActivity.LOADER_TEAMWHEEL:
-				return getTeamScoutingWheelData().getScouting(getSeasonId(), getTeamId());
+				return getTeamScoutingWheelData().get(getSeasonId(), getTeamId());
 			case TeamListActivity.LOADER_TEAMSCOUTING:
 				return dataSource.get(getSeasonId(), getTeamId());
 		}

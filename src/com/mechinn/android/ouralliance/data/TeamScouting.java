@@ -1,16 +1,20 @@
 package com.mechinn.android.ouralliance.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.mechinn.android.ouralliance.provider.Database;
 
 public abstract class TeamScouting extends AOurAllianceData implements Comparable<TeamScouting>  {
+	private static final long serialVersionUID = 2234995463512680398L;
 	public static final String CLASS = "TeamScouting";
 	public static final String TABLE = "teamscouting";
 	public static final String SEASON = Season.TABLE;
@@ -58,7 +62,7 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 	public TeamScouting(Season season, Team team) {
 		this.setData(season, team);
 	}
-	public TeamScouting(long id, Date mod, Season season, Team team, CharSequence orientation, CharSequence driveTrain, int width, int length, int height, int autonomous, CharSequence notes) {
+	public TeamScouting(long id, Date mod, Season season, Team team, CharSequence orientation, CharSequence driveTrain, int width, int length, int height, float autonomous, CharSequence notes) {
 		super(id, mod);
 		this.setData(season, team);
 		this.setOrientation(orientation);
@@ -158,33 +162,120 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 	public String toString() {
 		return this.season+" - "+this.team;
 	}
+	public boolean equals(TeamScouting data) {
+		return super.equals(data) &&
+				getSeason().equals(data.getSeason()) &&
+				getTeam().equals(data.getTeam()) &&
+				getOrientation().equals(data.getOrientation()) &&
+				getDriveTrain().equals(data.getDriveTrain()) &&
+				getWidth()==data.getWidth() &&
+				getLength()==data.getLength() &&
+				getHeight()==data.getHeight() &&
+				getAutonomous()==data.getAutonomous() &&
+				getNotes().equals(data.getNotes());
+	}
 	public ContentValues toCV() {
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
-		values.put(TeamScouting.SEASON, this.getSeason().getId());
-		values.put(TeamScouting.TEAM, this.getTeam().getId());
+		values.put(SEASON, this.getSeason().getId());
+		values.put(TEAM, this.getTeam().getId());
 		if(TextUtils.isEmpty(this.getOrientation())){
-			values.putNull(TeamScouting.ORIENTATION);
+			values.putNull(ORIENTATION);
 		} else {
-			values.put(TeamScouting.ORIENTATION, this.getOrientation().toString());
+			values.put(ORIENTATION, this.getOrientation().toString());
 		}
 		if(TextUtils.isEmpty(this.getDriveTrain())){
-			values.putNull(TeamScouting.DRIVETRAIN);
+			values.putNull(DRIVETRAIN);
 		} else {
-			values.put(TeamScouting.DRIVETRAIN, this.getDriveTrain().toString());
+			values.put(DRIVETRAIN, this.getDriveTrain().toString());
 		}
-		values.put(TeamScouting.WIDTH, this.getWidth());
-		values.put(TeamScouting.LENGTH, this.getLength());
-		values.put(TeamScouting.HEIGHT, this.getHeight());
-		values.put(TeamScouting.AUTONOMOUS, this.getAutonomous());
+		values.put(WIDTH, this.getWidth());
+		values.put(LENGTH, this.getLength());
+		values.put(HEIGHT, this.getHeight());
+		values.put(AUTONOMOUS, this.getAutonomous());
 		if(TextUtils.isEmpty(this.getNotes())){
-			values.putNull(TeamScouting.NOTES);
+			values.putNull(NOTES);
 		} else {
-			values.put(TeamScouting.NOTES, this.getNotes().toString());
+			values.put(NOTES, this.getNotes().toString());
 		}
 		return values;
 	}
 	public int compareTo(TeamScouting another) {
 		return this.getTeam().compareTo(another.getTeam());
+	}
+	
+	@Override
+	public List<String> checkNotNulls() {
+		List<String> error = new ArrayList<String>();
+		if(null==this.getSeason()) {
+			error.add(SEASON);
+		}
+		if(null==this.getTeam()) {
+			error.add(TEAM);
+		}
+		if(TextUtils.isEmpty(this.getOrientation())) {
+//			error.add(ORIENTATION);
+		}
+		if(TextUtils.isEmpty(this.getDriveTrain())) {
+//			error.add(DRIVETRAIN);
+		}
+		if(0==this.getWidth()) {
+//			error.add(WIDTH);
+		}
+		if(0==this.getLength()) {
+//			error.add(LENGTH);
+		}
+		if(0==this.getHeight()) {
+//			error.add(HEIGHT);
+		}
+		if(0==this.getAutonomous()) {
+//			error.add(AUTONOMOUS);
+		}
+		if(TextUtils.isEmpty(this.getNotes())) {
+//			error.add(NOTES);
+		}
+		return error;
+	}
+
+	@Override
+	public void fromCursor(Cursor cursor) {
+		super.fromCursor(cursor);
+		setSeason(Season.newFromViewCursor(cursor));
+		setTeam(Team.newFromViewCursor(cursor));
+		setOrientation(cursor.getString(cursor.getColumnIndexOrThrow(ORIENTATION)));
+		setDriveTrain(cursor.getString(cursor.getColumnIndexOrThrow(DRIVETRAIN)));
+		setWidth(cursor.getInt(cursor.getColumnIndexOrThrow(WIDTH)));
+		setLength(cursor.getInt(cursor.getColumnIndexOrThrow(LENGTH)));
+		setHeight(cursor.getInt(cursor.getColumnIndexOrThrow(HEIGHT)));
+		setAutonomous(cursor.getFloat(cursor.getColumnIndexOrThrow(AUTONOMOUS)));
+		setNotes(cursor.getString(cursor.getColumnIndexOrThrow(NOTES)));
+	}
+	
+	public static String orientationFromViewCursor(Cursor cursor) {
+		return cursor.getString(cursor.getColumnIndexOrThrow(VIEW_ORIENTATION));
+	}
+	
+	public static String driveTrainFromViewCursor(Cursor cursor) {
+		return cursor.getString(cursor.getColumnIndexOrThrow(VIEW_DRIVETRAIN));
+	}
+	
+	public static int widthFromViewCursor(Cursor cursor) {
+		return cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_WIDTH));
+	}
+	
+	public static int lengthFromViewCursor(Cursor cursor) {
+		return cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_LENGTH));
+	}
+	
+	public static int heightFromViewCursor(Cursor cursor) {
+		return cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_HEIGHT));
+	}
+	
+	public static float autonomousFromViewCursor(Cursor cursor) {
+		return cursor.getFloat(cursor.getColumnIndexOrThrow(VIEW_AUTONOMOUS));
+	}
+	
+	public static String notesFromViewCursor(Cursor cursor) {
+		return cursor.getString(cursor.getColumnIndexOrThrow(VIEW_NOTES));
 	}
 }

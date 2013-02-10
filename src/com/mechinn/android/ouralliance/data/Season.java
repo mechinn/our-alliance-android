@@ -1,8 +1,11 @@
 package com.mechinn.android.ouralliance.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
@@ -11,6 +14,7 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public class Season extends AOurAllianceData implements Comparable<Season> {
+	private static final long serialVersionUID = -7570760453585739510L;
 	public static final String CLASS = "Season";
 	public static final String TABLE = "season";
 	public static final String YEAR = "year";
@@ -23,20 +27,16 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
     public static final String VIEW_YEAR = TABLE+YEAR;
     public static final String VIEW_TITLE = TABLE+TITLE;
 
-	public static final String PATH = TABLE+"s/";
-	public static final String IDPATH = PATH+"id/";
-	public static final String YEARPATH = PATH+"year/";
-	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+PATH);
-	public static final String URI_ID = DataProvider.BASE_URI_STRING+IDPATH;
-	public static final String URI_YEAR = DataProvider.BASE_URI_STRING+YEARPATH;
-
-	public static final String DIRTYPE = DataProvider.BASE_DIR+CLASS;
-	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
+	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
+	public static final String URITYPE = DataProvider.AUTHORITY+"."+CLASS;
 	
 	private int year;
 	private CharSequence title;
 	public Season() {
 		super();
+	}
+	public Season(int year) {
+		this.setYear(year);
 	}
 	public Season(int year, CharSequence title) {
 		setData(year, title);
@@ -48,15 +48,6 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 	private void setData(int year, CharSequence title) {
 		this.setYear(year);
 		this.setTitle(title);
-	}
-	public static Uri uriFromId(long id) {
-		return Uri.parse(URI_ID + id);
-	}
-	public static Uri uriFromId(Season id) {
-		return Uri.parse(URI_ID + id.getId());
-	}
-	public static Uri uriFromYear(int year) {
-		return Uri.parse(URI_YEAR + year);
 	}
 	public int getYear() {
 		return year;
@@ -83,6 +74,11 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 	public int compareTo(Season another) {
 		return this.getYear() - another.getYear();
 	}
+	public boolean equals(Season data) {
+		return super.equals(data) &&
+				getYear()==data.getYear() &&
+				getTitle().equals(data.getTitle());
+	}
 	public ContentValues toCV() {
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
@@ -93,5 +89,38 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 			values.put(Season.TITLE, this.getTitle().toString());
 		}
 		return values;
+	}
+	
+	@Override
+	public List<String> checkNotNulls() {
+		List<String> error = new ArrayList<String>();
+		if(0==this.getYear()) {
+			error.add(YEAR);
+		}
+		if(TextUtils.isEmpty(this.getTitle())) {
+//			error += TITLE;
+		}
+		return error;
+	}
+
+	@Override
+	public void fromCursor(Cursor cursor) {
+		super.fromCursor(cursor);
+		setYear(cursor.getInt(cursor.getColumnIndexOrThrow(YEAR)));
+		setTitle(cursor.getString(cursor.getColumnIndexOrThrow(TITLE)));
+	}
+	
+	public static Season newFromCursor(Cursor cursor) {
+		Season data = new Season();
+		data.fromCursor(cursor);
+		return data;
+	}
+	
+	public static Season newFromViewCursor(Cursor cursor) {
+		long id = cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_ID));
+		Date mod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_MODIFIED)));
+		int year = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_YEAR));
+		String title = cursor.getString(cursor.getColumnIndexOrThrow(VIEW_TITLE));
+		return new Season(id, mod, year, title);
 	}
 }

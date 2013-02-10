@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.provider;
 
-
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
@@ -32,6 +31,7 @@ public class Database extends SQLiteOpenHelper {
 	@Override
 	public void onOpen(SQLiteDatabase db) {
 		super.onOpen(db);
+		//if we open a writable db make sure we enable foreign key constraints
 		if (!db.isReadOnly()) {
 			Log.i(tag,"Enable Foreign Keys");
 			db.execSQL("PRAGMA foreign_keys=ON;");

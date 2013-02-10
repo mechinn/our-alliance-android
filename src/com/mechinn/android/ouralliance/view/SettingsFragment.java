@@ -108,7 +108,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		long seasonID = Long.parseLong(season.getValue());
     	Log.d(TAG,"season: "+seasonID);
 		long compID = Long.parseLong(comp.getValue());
-     	Log.d(TAG,"season: "+compID);
+     	Log.d(TAG,"comp: "+compID);
 		switch(id) {
 			case SettingsActivity.LOADER_SEASON:
 				return seasonData.getAll();

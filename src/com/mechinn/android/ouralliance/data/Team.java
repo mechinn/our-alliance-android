@@ -1,16 +1,20 @@
 package com.mechinn.android.ouralliance.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 public class Team extends AOurAllianceData implements Comparable<Team> {
+	private static final long serialVersionUID = 6981108401294045422L;
 	public static final String CLASS = "Team";
 	public static final String TABLE = "team";
 	public static final String NUMBER = "number";
@@ -23,20 +27,16 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
     public static final String VIEW_NUMBER = TABLE+NUMBER;
     public static final String VIEW_NAME = TABLE+NAME;
 
-	public static final String PATH = TABLE+"s/";
-	public static final String IDPATH = PATH+"id/";
-	public static final String NUMPATH = PATH+"num/";
-	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+PATH);
-	public static final String URI_ID = DataProvider.BASE_URI_STRING+IDPATH;
-	public static final String URI_NUM = DataProvider.BASE_URI_STRING+NUMPATH;
-
-	public static final String DIRTYPE = DataProvider.BASE_DIR+CLASS;
-	public static final String ITEMTYPE = DataProvider.BASE_ITEM+CLASS;
+	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
+	public static final String URITYPE = DataProvider.AUTHORITY+"."+CLASS;
 	
 	private int number;
 	private CharSequence name;
 	public Team() {
 		super();
+	}
+	public Team(int number) {
+		this.setNumber(number);
 	}
 	public Team(int number, CharSequence name) {
 		setData(number, name);
@@ -48,15 +48,6 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 	private void setData(int number, CharSequence name) {
 		this.setNumber(number);
 		this.setName(name);
-	}
-	public static Uri uriFromId(long id) {
-		return Uri.parse(URI_ID + id);
-	}
-	public static Uri uriFromId(Team id) {
-		return Uri.parse(URI_ID + id.getId());
-	}
-	public static Uri uriFromNum(int id) {
-		return Uri.parse(URI_NUM + id);
 	}
 	public int getNumber() {
 		return number;
@@ -83,6 +74,11 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 	public int compareTo(Team another) {
 		return this.getNumber() - another.getNumber();
 	}
+	public boolean equals(Team data) {
+		return super.equals(data) &&
+				getNumber()==data.getNumber() &&
+				getName().equals(getName());
+	}
 	public ContentValues toCV() {
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
@@ -93,5 +89,38 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 			values.put(Team.NAME, this.getName().toString());
 		}
 		return values;
+	}
+	
+	@Override
+	public List<String> checkNotNulls() {
+		List<String> error = new ArrayList<String>();
+		if(0==this.getNumber()) {
+			error.add(NUMBER);
+		}
+		if(TextUtils.isEmpty(this.getName())) {
+//			error += NAME;
+		}
+		return error;
+	}
+
+	@Override
+	public void fromCursor(Cursor cursor) {
+		super.fromCursor(cursor);
+		setNumber(cursor.getInt(cursor.getColumnIndexOrThrow(NUMBER)));
+		setName(cursor.getString(cursor.getColumnIndexOrThrow(NAME)));
+	}
+	
+	public static Team newFromCursor(Cursor cursor) {
+		Team data = new Team();
+		data.fromCursor(cursor);
+		return data;
+	}
+	
+	public static Team newFromViewCursor(Cursor cursor) {
+		long teamId = cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_ID));
+		Date teamMod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_MODIFIED)));
+		int teamNumber = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_NUMBER));
+		String teamName = cursor.getString(cursor.getColumnIndexOrThrow(VIEW_NAME));
+		return new Team(teamId, teamMod, teamNumber, teamName);
 	}
 }
