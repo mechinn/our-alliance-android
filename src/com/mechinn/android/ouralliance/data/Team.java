@@ -63,6 +63,9 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 		this.number = number;
 	}
 	public CharSequence getName() {
+		if(null==name) {
+			return "";
+		}
 		return name;
 	}
 	public void setName(CharSequence name) {

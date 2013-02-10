@@ -35,7 +35,7 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 	}
 	
 	public int update(A data) throws OurAllianceException, SQLException {
-		return update(data, BaseColumns._ID,Long.toString(data.getId()));
+		return update(data, BaseColumns._ID,data.getId());
 	}
 	
 	public int update(A data, String key, Object value) throws OurAllianceException, SQLException {
@@ -88,7 +88,7 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 	}
 	
 	public CursorLoader get(long id) {
-		return get(BaseColumns._ID, Long.toString(id));
+		return get(BaseColumns._ID, id);
 	}
 	
 	public CursorLoader get(String key, Object value) {

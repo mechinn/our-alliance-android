@@ -47,35 +47,38 @@ public class SeasonDataSource extends AOurAllianceDataSource<Season> {
 	}
 	
 	public CursorLoader get(int year) {
-		return get(Season.YEAR,Integer.toString(year));
+		return get(Season.YEAR,year);
 	}
 	
-	public static Season getSingle(Cursor cursor) throws OurAllianceException {
-		Season season;
-		if(cursor.getCount()==1) {
+	public static Season getSingle(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			if(cursor.getCount()==1) {
+				cursor.moveToFirst();
+				return Season.newFromCursor(cursor);
+			} else if(cursor.getCount()<1) {
+				throw new OurAllianceException(TAG,"Season not found in db.",new NoObjectsThrowable());
+			} else {
+				throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+			}
+		}
+		throw new SQLException("Cursor is null");
+	}
+	
+	public static List<Season> getList(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			List<Season> comments = new ArrayList<Season>();
 			cursor.moveToFirst();
-			season = Season.newFromCursor(cursor);
-			Log.d(TAG, "get "+season);
-		} else if(cursor.getCount()<1) {
-			throw new OurAllianceException(TAG,"Season not found in db.",new NoObjectsThrowable());
-		} else {
-			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+			while (!cursor.isAfterLast()) {
+				Season season = Season.newFromCursor(cursor);
+				Log.d(TAG, "get "+season);
+				comments.add(season);
+				cursor.moveToNext();
+			}
+			if(comments.isEmpty()) {
+				throw new OurAllianceException(TAG,"No seasons in db.",new NoObjectsThrowable());
+			}
+			return comments;
 		}
-		return season;
-	}
-	
-	public static List<Season> getList(Cursor cursor) throws OurAllianceException {
-		List<Season> comments = new ArrayList<Season>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			Season season = Season.newFromCursor(cursor);
-			Log.d(TAG, "get "+season);
-			comments.add(season);
-			cursor.moveToNext();
-		}
-		if(comments.isEmpty()) {
-			throw new OurAllianceException(TAG,"No seasons in db.",new NoObjectsThrowable());
-		}
-		return comments;
+		throw new SQLException("Cursor is null");
 	}
 }

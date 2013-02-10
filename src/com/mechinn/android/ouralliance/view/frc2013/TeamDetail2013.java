@@ -1,5 +1,7 @@
 package com.mechinn.android.ouralliance.view.frc2013;
 
+import java.sql.SQLException;
+
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -86,7 +88,7 @@ public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamSco
 	}
 	
 	@Override
-	public TeamScouting2013 setScoutingFromCursor(Cursor cursor) throws OurAllianceException {
+	public TeamScouting2013 setScoutingFromCursor(Cursor cursor) throws OurAllianceException, SQLException {
 		return TeamScouting2013DataSource.getSingle(cursor);
 	}
 

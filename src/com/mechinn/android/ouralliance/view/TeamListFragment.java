@@ -16,9 +16,13 @@ import android.widget.Toast;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
+import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamDataSource;
+import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 /**
@@ -39,9 +43,15 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	private int mActivatedPosition = ListView.INVALID_POSITION;
 	private Prefs prefs;
 	private TeamDataSource teamData;
+	private SeasonDataSource seasonData;
 	private CompetitionTeamDataSource competitionTeamData;
+	private TeamScouting2013DataSource scouting2013;
 	private CompetitionTeamCursorAdapter adapter;
 	private Competition comp;
+	private Season season;
+	private Cursor teamCursor;
+	private Cursor seasonCursor;
+	private Team addTeam;
 
 	private Listener mCallbacks = sDummyCallbacks;
 	public interface Listener {
@@ -92,15 +102,20 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		super.onActivityCreated(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
 		comp = new Competition();
-		comp.setId(prefs.getComp());
+		season = new Season();
 		teamData = new TeamDataSource(this.getActivity());
+		seasonData = new SeasonDataSource(this.getActivity());
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
+		scouting2013 = new TeamScouting2013DataSource(this.getActivity());
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMS, null, this);
+		comp.setId(prefs.getComp());
+		season.setId(prefs.getSeason());
+		this.getLoaderManager().restartLoader(TeamListActivity.LOADER_SEASON, null, this);
+		this.getLoaderManager().restartLoader(TeamListActivity.LOADER_COMPETITIONTEAMS, null, this);
 	}
 
 	@Override
@@ -170,15 +185,47 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		Log.d(TAG, "id: "+team);
 		//try inserting the team first in case it doesnt exist
 		try {
-			team = teamData.insert(team);
+			addTeam = teamData.insert(team);
+			attemptInsertTeamScouting();
+			insertCompetitionTeam(new CompetitionTeam(comp, addTeam));
 		} catch (OurAllianceException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//if we errored out then the team must already exist, we need to get it.
+			addTeam = team;
+			this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMS, null, this);
 		}
+	}
+	
+	public void attemptInsertTeamScouting() {
+		if(seasonCursor==null) {
+			this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMS, null, this);
+		} else {
+			insertTeamScouting();
+		}
+	}
+	
+	public void insertTeamScouting() {
+		if(addTeam!=null) {
+			try {
+				if(2013==season.getYear()) {
+					scouting2013.insert(new TeamScouting2013(season,addTeam));
+				} else {
+					Log.w(TAG, "unknown season");
+				}
+			} catch (OurAllianceException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void insertCompetitionTeam(CompetitionTeam team) {
 		//insert the team into the 
 		try {
-			competitionTeamData.insert(new CompetitionTeam(comp, team));
+			Log.d(TAG, "id: "+comp.getId());
+			competitionTeamData.insert(team);
 		} catch (OurAllianceException e) {
 			Toast.makeText(this.getActivity(), "Cannot create team without "+e.getMessage(), Toast.LENGTH_SHORT).show();
 		} catch (SQLException e) {
@@ -201,11 +248,51 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	public CompetitionTeam getCompetitionTeamFromList(int position) {
 		return adapter.get(position);
 	}
+	
+	public void getTeam(Cursor cursor) {
+		if(teamCursor!=null) {
+			teamCursor.close();
+		}
+		teamCursor = cursor;
+		try {
+			Team team = TeamDataSource.getSingle(teamCursor);
+			team.setName(addTeam.getName());
+			teamData.update(team);
+			insertCompetitionTeam(new CompetitionTeam(comp, team));
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//stop loading!
+		this.getLoaderManager().destroyLoader(TeamListActivity.LOADER_TEAMS);
+	}
+	
+	public void getSeason(Cursor cursor) {
+		if(seasonCursor!=null) {
+			seasonCursor.close();
+		}
+		seasonCursor = cursor;
+		try {
+			season = SeasonDataSource.getSingle(seasonCursor);
+			insertTeamScouting();
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//stop loading!
+		this.getLoaderManager().destroyLoader(TeamListActivity.LOADER_SEASON);
+	}
 
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		switch(id) {
-			case TeamListActivity.LOADER_TEAMS:
+			case TeamListActivity.LOADER_COMPETITIONTEAMS:
 				return competitionTeamData.getAllTeams(prefs.getComp());
+			case TeamListActivity.LOADER_TEAMS:
+				return teamData.get(addTeam.getNumber());
+			case TeamListActivity.LOADER_SEASON:
+				return seasonData.get(season.getId());
 			default:
 				return null;
 		}
@@ -213,16 +300,25 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		switch(loader.getId()) {
-			case TeamListActivity.LOADER_TEAMS:
+			case TeamListActivity.LOADER_COMPETITIONTEAMS:
 				adapter.swapCursor(data);
+				break;
+			case TeamListActivity.LOADER_TEAMS:
+				getTeam(data);
+				break;
+			case TeamListActivity.LOADER_SEASON:
+				getSeason(data);
 				break;
 		}
 	}
 
 	public void onLoaderReset(Loader<Cursor> loader) {
 		switch(loader.getId()) {
-			case TeamListActivity.LOADER_TEAMS:
+			case TeamListActivity.LOADER_COMPETITIONTEAMS:
 				adapter.swapCursor(null);
+				break;
+			case TeamListActivity.LOADER_TEAMS:
+				getTeam(null);
 				break;
 		}
 	}

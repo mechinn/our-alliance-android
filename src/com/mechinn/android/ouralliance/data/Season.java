@@ -63,6 +63,9 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 		this.year = year;
 	}
 	public CharSequence getTitle() {
+		if(null==title) {
+			return "";
+		}
 		return title;
 	}
 	public void setTitle(CharSequence title) {

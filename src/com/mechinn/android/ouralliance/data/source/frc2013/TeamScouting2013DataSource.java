@@ -47,45 +47,52 @@ public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScout
 		return getAll(Team.VIEW_NUMBER);
 	}
 	
-	public static TeamScouting2013 getSingle(Cursor cursor) throws OurAllianceException {
-		TeamScouting2013 scouting;
-		if(cursor.getCount()==1) {
+	public static TeamScouting2013 getSingle(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			if(cursor.getCount()==1) {
+				cursor.moveToFirst();
+				return TeamScouting2013.newFromCursor(cursor);
+			} else if(cursor.getCount()==0) {
+				throw new OurAllianceException(TAG,"Team scouting not found in db.",new NoObjectsThrowable());
+			} else {
+				throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+			}
+		}
+		throw new SQLException("Cursor is null");
+	}
+	
+	public static List<TeamScouting2013> getList(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			List<TeamScouting2013> scoutings = new ArrayList<TeamScouting2013>();
 			cursor.moveToFirst();
-			scouting = TeamScouting2013.newFromCursor(cursor);
-		} else if(cursor.getCount()==0) {
-			throw new OurAllianceException(TAG,"Team scouting not found in db.",new NoObjectsThrowable());
-		} else {
-			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+			while (!cursor.isAfterLast()) {
+				TeamScouting2013 scouting = TeamScouting2013.newFromCursor(cursor);
+				scoutings.add(scouting);
+				cursor.moveToNext();
+			}
+			if(scoutings.isEmpty()) {
+				throw new OurAllianceException(TAG,"No team scouting in db.",new NoObjectsThrowable());
+			}
+			return scoutings;
 		}
-		return scouting;
+		throw new SQLException("Cursor is null");
 	}
 	
-	public static List<TeamScouting2013> getList(Cursor cursor) throws OurAllianceException {
-		List<TeamScouting2013> scoutings = new ArrayList<TeamScouting2013>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			TeamScouting2013 scouting = TeamScouting2013.newFromCursor(cursor);
-			scoutings.add(scouting);
-			cursor.moveToNext();
+	public static List<Team> getAllTeams(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			List<Team> teams = new ArrayList<Team>();
+			cursor.moveToFirst();
+			while (!cursor.isAfterLast()) {
+				TeamScouting2013 scouting = TeamScouting2013.newFromCursor(cursor);
+				Log.d(TAG, "get "+scouting);
+				teams.add(scouting.getTeam());
+				cursor.moveToNext();
+			}
+			if(teams.isEmpty()) {
+				throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
+			}
+			return teams;
 		}
-		if(scoutings.isEmpty()) {
-			throw new OurAllianceException(TAG,"No team scouting in db.",new NoObjectsThrowable());
-		}
-		return scoutings;
-	}
-	
-	public static List<Team> getAllTeams(Cursor cursor) throws OurAllianceException {
-		List<Team> teams = new ArrayList<Team>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			TeamScouting2013 scouting = TeamScouting2013.newFromCursor(cursor);
-			Log.d(TAG, "get "+scouting);
-			teams.add(scouting.getTeam());
-			cursor.moveToNext();
-		}
-		if(teams.isEmpty()) {
-			throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
-		}
-		return teams;
+		throw new SQLException("Cursor is null");
 	}
 }

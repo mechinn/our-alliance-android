@@ -55,35 +55,38 @@ public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
 	}
 	
 	public CursorLoader getAllCompetitions(long season) {
-		return get(Competition.SEASON, Long.toString(season), Competition.NAME);
+		return get(Competition.SEASON, season, Competition.NAME);
 	}
 	
-	public static Competition getSingle(Cursor cursor) throws OurAllianceException {
-		Competition competition;
-		if(cursor.getCount()==1) {
-			cursor.moveToFirst();
-			competition = Competition.newFromCursor(cursor);
-			Log.d(TAG, "get "+competition);
-		} else if(cursor.getCount()==0) {
-			throw new OurAllianceException(TAG,"Competition not found in db.",new NoObjectsThrowable());
-		} else {
-			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+	public static Competition getSingle(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			if(cursor.getCount()==1) {
+				cursor.moveToFirst();
+				return Competition.newFromCursor(cursor);
+			} else if(cursor.getCount()==0) {
+				throw new OurAllianceException(TAG,"Competition not found in db.",new NoObjectsThrowable());
+			} else {
+				throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+			}
 		}
-		return competition;
+		throw new SQLException("Cursor is null");
 	}
 
-	public static List<Competition> getList(Cursor cursor) throws OurAllianceException {
-		List<Competition> comps = new ArrayList<Competition>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			Competition competition = Competition.newFromCursor(cursor);
-			Log.d(TAG, "get "+competition);
-			comps.add(competition);
-			cursor.moveToNext();
+	public static List<Competition> getList(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			List<Competition> comps = new ArrayList<Competition>();
+			cursor.moveToFirst();
+			while (!cursor.isAfterLast()) {
+				Competition competition = Competition.newFromCursor(cursor);
+				Log.d(TAG, "get "+competition);
+				comps.add(competition);
+				cursor.moveToNext();
+			}
+			if(comps.isEmpty()) {
+				throw new OurAllianceException(TAG,"No competitions in db.",new NoObjectsThrowable());
+			}
+			return comps;
 		}
-		if(comps.isEmpty()) {
-			throw new OurAllianceException(TAG,"No competitions in db.",new NoObjectsThrowable());
-		}
-		return comps;
+		throw new SQLException("Cursor is null");
 	}
 }

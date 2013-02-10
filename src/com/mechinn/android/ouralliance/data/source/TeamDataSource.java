@@ -47,35 +47,38 @@ public class TeamDataSource extends AOurAllianceDataSource<Team> {
 	}
 	
 	public CursorLoader get(int num) {
-		return get(Team.NUMBER, Integer.toString(num));
+		return get(Team.NUMBER, num);
 	}
 	
-	public static Team getTeam(Cursor cursor) throws OurAllianceException {
-		Team team;
-		if(cursor.getCount()==1) {
+	public static Team getSingle(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			if(cursor.getCount()==1) {
+				cursor.moveToFirst();
+				return Team.newFromCursor(cursor);
+			} else if(cursor.getCount()<1) {
+				throw new OurAllianceException(TAG,"CompetitionTeam not found in db.",new NoObjectsThrowable());
+			} else {
+				throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+			}
+		}
+		throw new SQLException("Cursor is null");
+	}
+	
+	public static List<Team> getList(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			List<Team> teams = new ArrayList<Team>();
 			cursor.moveToFirst();
-			team = Team.newFromCursor(cursor);
-			Log.d(TAG, "get "+team);
-		} else if(cursor.getCount()<1) {
-			throw new OurAllianceException(TAG,"CompetitionTeam not found in db.",new NoObjectsThrowable());
-		} else {
-			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+			while (!cursor.isAfterLast()) {
+				Team team = Team.newFromCursor(cursor);
+				Log.d(TAG, "get "+team);
+				teams.add(team);
+				cursor.moveToNext();
+			}
+			if(teams.isEmpty()) {
+				throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
+			}
+			return teams;
 		}
-		return team;
-	}
-	
-	public static List<Team> getTeams(Cursor cursor) throws OurAllianceException {
-		List<Team> teams = new ArrayList<Team>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			Team team = Team.newFromCursor(cursor);
-			Log.d(TAG, "get "+team);
-			teams.add(team);
-			cursor.moveToNext();
-		}
-		if(teams.isEmpty()) {
-			throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
-		}
-		return teams;
+		throw new SQLException("Cursor is null");
 	}
 }

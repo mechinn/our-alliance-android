@@ -90,12 +90,18 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 		this.team = team;
 	}
 	public CharSequence getOrientation() {
+		if(null==orientation) {
+			return "";
+		}
 		return orientation;
 	}
 	public void setOrientation(CharSequence orientation) {
 		this.orientation = orientation;
 	}
 	public CharSequence getDriveTrain() {
+		if(null==driveTrain) {
+			return "";
+		}
 		return driveTrain;
 	}
 	public void setDriveTrain(CharSequence driveTrain) {
@@ -154,6 +160,9 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 		this.autonomous = autonomous;
 	}
 	public CharSequence getNotes() {
+		if(null==notes) {
+			return "";
+		}
 		return notes;
 	}
 	public void setNotes(CharSequence notes) {

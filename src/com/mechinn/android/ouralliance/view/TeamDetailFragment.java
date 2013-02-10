@@ -57,19 +57,13 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	private TextView notes;
 	private LinearLayout season;
 	private Cursor currentView;
+	private Cursor wheelCursor;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */
 	public TeamDetailFragment() {
-	}
-
-	public TeamScoutingWheelDataSource getTeamScoutingWheelData() {
-		return teamScoutingWheelData;
-	}
-	public void setTeamScoutingWheelData(TeamScoutingWheelDataSource teamScoutingWheelData) {
-		this.teamScoutingWheelData = teamScoutingWheelData;
 	}
 	public A getScouting() {
 		return scouting;
@@ -100,12 +94,6 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	}
 	public void setTeamId(long teamId) {
 		this.teamId = teamId;
-	}
-	public LinearLayout getWheels() {
-		return wheels;
-	}
-	public void setWheels(LinearLayout wheels) {
-		this.wheels = wheels;
 	}
 	public LinearLayout getSeason() {
 		return season;
@@ -183,16 +171,20 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	}
 	
 	public void createWheelsFromCursor(Cursor cursor) {
-		if(cursor!=null) {
-			try {
-				List<TeamScoutingWheel> teamScoutingWheels = TeamScoutingWheelDataSource.getList(cursor);
-				Log.d(TAG, "Count: "+teamScoutingWheels.size());
-				for(TeamScoutingWheel each : teamScoutingWheels) {
-					createWheel(each);
-				}
-			} catch (OurAllianceException e) {
-				e.printStackTrace();
+		if(wheelCursor!=null) {
+			wheelCursor.close();
+		}
+		wheelCursor = cursor;
+		try {
+			List<TeamScoutingWheel> teamScoutingWheels = TeamScoutingWheelDataSource.getList(wheelCursor);
+			Log.d(TAG, "Count: "+teamScoutingWheels.size());
+			for(TeamScoutingWheel each : teamScoutingWheels) {
+				createWheel(each);
 			}
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -298,7 +290,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
 		switch(id) {
 			case TeamListActivity.LOADER_TEAMWHEEL:
-				return getTeamScoutingWheelData().get(getSeasonId(), getTeamId());
+				return teamScoutingWheelData.get(getSeasonId(), getTeamId());
 			case TeamListActivity.LOADER_TEAMSCOUTING:
 				return dataSource.get(getSeasonId(), getTeamId());
 		}
@@ -332,19 +324,18 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 			currentView.close();
 		}
 		currentView = cursor;
-		if(currentView!=null) {
-			try {
-				this.setScouting(setScoutingFromCursor(currentView));
-				//start loading the wheels while we set the view elements
-				this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMWHEEL, null, this);
-				setView();
-				return;
-			} catch (OurAllianceException e) {
-			}
+		try {
+			this.setScouting(setScoutingFromCursor(currentView));
+			//start loading the wheels while we set the view elements
+			this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMWHEEL, null, this);
+			setView();
+		} catch (OurAllianceException e) {
+			errorRemoveThisFrag();
+		} catch (SQLException e) {
+			errorRemoveThisFrag();
 		}
-		errorRemoveThisFrag();
 	}
 	
-	public abstract A setScoutingFromCursor(Cursor cursor) throws OurAllianceException;
+	public abstract A setScoutingFromCursor(Cursor cursor) throws OurAllianceException, SQLException;
 	public abstract B createDataSouce();
 }

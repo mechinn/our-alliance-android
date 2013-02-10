@@ -46,30 +46,34 @@ public class TeamScoutingWheelDataSource extends AOurAllianceDataSource<TeamScou
 		return getAll(Team.VIEW_NUMBER);
 	}
 	
-	public static TeamScoutingWheel getSingle(Cursor cursor) throws OurAllianceException {
-		TeamScoutingWheel scouting;
-		if(cursor.getCount()==1) {
-			cursor.moveToFirst();
-			scouting = TeamScoutingWheel.newFromCursor(cursor);
-		} else if(cursor.getCount()==0) {
-			throw new OurAllianceException(TAG,"Wheel not found in db.",new NoObjectsThrowable());
-		} else {
-			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+	public static TeamScoutingWheel getSingle(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			if(cursor.getCount()==1) {
+				cursor.moveToFirst();
+				return TeamScoutingWheel.newFromCursor(cursor);
+			} else if(cursor.getCount()==0) {
+				throw new OurAllianceException(TAG,"Wheel not found in db.",new NoObjectsThrowable());
+			} else {
+				throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+			}
 		}
-		return scouting;
+		throw new SQLException("Cursor is null");
 	}
 	
-	public static List<TeamScoutingWheel> getList(Cursor cursor) throws OurAllianceException {
-		List<TeamScoutingWheel> scoutings = new ArrayList<TeamScoutingWheel>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			TeamScoutingWheel team = TeamScoutingWheel.newFromCursor(cursor);
-			scoutings.add(team);
-			cursor.moveToNext();
+	public static List<TeamScoutingWheel> getList(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			List<TeamScoutingWheel> scoutings = new ArrayList<TeamScoutingWheel>();
+			cursor.moveToFirst();
+			while (!cursor.isAfterLast()) {
+				TeamScoutingWheel team = TeamScoutingWheel.newFromCursor(cursor);
+				scoutings.add(team);
+				cursor.moveToNext();
+			}
+			if(scoutings.isEmpty()) {
+				throw new OurAllianceException(TAG,"No wheels in db.",new NoObjectsThrowable());
+			}
+			return scoutings;
 		}
-		if(scoutings.isEmpty()) {
-			throw new OurAllianceException(TAG,"No wheels in db.",new NoObjectsThrowable());
-		}
-		return scoutings;
+		throw new SQLException("Cursor is null");
 	}
 }

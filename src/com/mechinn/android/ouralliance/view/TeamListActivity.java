@@ -36,9 +36,11 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  */
 public class TeamListActivity extends Activity implements TeamListFragment.Listener, DeleteTeamDialogFragment.Listener, InsertTeamDialogFragment.Listener {
 	public static final String TAG = "TeamListActivity";
-	public static final int LOADER_TEAMS = 0;
+	public static final int LOADER_COMPETITIONTEAMS = 0;
 	public static final int LOADER_TEAMSCOUTING = 1;
 	public static final int LOADER_TEAMWHEEL = 2;
+	public static final int LOADER_TEAMS = 3;
+	public static final int LOADER_SEASON = 4;
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
 	 * device.
@@ -116,10 +118,10 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
-//	        case R.id.insert:
-//	            DialogFragment newFragment = new InsertTeamDialogFragment();
-//	    		newFragment.show(this.getFragmentManager(), "Create Team");
-//	            return true;
+	        case R.id.insert:
+	            DialogFragment newFragment = new InsertTeamDialogFragment();
+	    		newFragment.show(this.getFragmentManager(), "Add Team");
+	            return true;
 	        case R.id.settings:
 	        	Intent intent = new Intent(this, SettingsActivity.class);
 //	            EditText editText = (EditText) findViewById(R.id.edit_message);
