@@ -56,7 +56,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	private LinearLayout wheels;
 	private TextView notes;
 	private LinearLayout season;
-
+	private Cursor currentView;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -328,9 +328,13 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	}
 	
 	public void setViewFromCursor(Cursor cursor) {
-		if(cursor!=null) {
+		if(null!=currentView) {
+			currentView.close();
+		}
+		currentView = cursor;
+		if(currentView!=null) {
 			try {
-				this.setScouting(setScoutingFromCursor(cursor));
+				this.setScouting(setScoutingFromCursor(currentView));
 				//start loading the wheels while we set the view elements
 				this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMWHEEL, null, this);
 				setView();

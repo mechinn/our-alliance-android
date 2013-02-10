@@ -74,7 +74,6 @@ public class CompetitionTeamDataSource extends AOurAllianceDataSource<Competitio
 		} else {
 			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
 		}
-		cursor.close();
 		return competitionTeam;
 	}
 	
@@ -90,8 +89,6 @@ public class CompetitionTeamDataSource extends AOurAllianceDataSource<Competitio
 		if(compTeams.isEmpty()) {
 			throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
 		}
-		// Make sure to close the cursor
-		cursor.close();
 		return compTeams;
 	}
 	
@@ -105,8 +102,6 @@ public class CompetitionTeamDataSource extends AOurAllianceDataSource<Competitio
 			}
 			cursor.moveToNext();
 		}
-		// Make sure to close the cursor
-		cursor.close();
 		return exists;
 	}
 	
@@ -120,8 +115,6 @@ public class CompetitionTeamDataSource extends AOurAllianceDataSource<Competitio
 			}
 			cursor.moveToNext();
 		}
-		// Make sure to close the cursor
-		cursor.close();
 		return exists;
 	}
 }

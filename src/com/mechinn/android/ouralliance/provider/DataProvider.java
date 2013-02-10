@@ -131,7 +131,7 @@ public class DataProvider extends ContentProvider {
 		checkColumns(projection, cols);
 		queryBuilder.setTables(table);
 		Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-		// Make sure that potential listeners are getting notified
+		Log.d(TAG, "query: "+uri.toString());
 		cursor.setNotificationUri(getContext().getContentResolver(), uri);
 		return cursor;
 	}
@@ -193,6 +193,7 @@ public class DataProvider extends ContentProvider {
 			default:
 				throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
+		Log.d(TAG, "insert: "+uri.toString());
 		getContext().getContentResolver().notifyChange(uri, null);
 		return newUri;
 	}
@@ -219,7 +220,7 @@ public class DataProvider extends ContentProvider {
 				table = Competition.TABLE;
 				break;
 			case CODE_COMPETITIONTEAM:
-				table = Team.TABLE;
+				table = CompetitionTeam.TABLE;
 				break;
 			case CODE_TEAMSCOUTINGWHEEL:
 				table = TeamScoutingWheel.TABLE;
@@ -233,10 +234,41 @@ public class DataProvider extends ContentProvider {
 		db = database.getWritableDatabase();
 		if(values!=null) {
 			rows = db.update(table, values, selection, selectionArgs);
+			switch (uriType) {
+				case CODE_TEAM:
+					getContext().getContentResolver().notifyChange(Team.URI, null);
+					getContext().getContentResolver().notifyChange(CompetitionTeam.URI, null);
+					getContext().getContentResolver().notifyChange(TeamScoutingWheel.URI, null);
+					getContext().getContentResolver().notifyChange(TeamScouting2013.URI, null);
+					break;
+				case CODE_SEASON:
+					getContext().getContentResolver().notifyChange(Season.URI, null);
+					getContext().getContentResolver().notifyChange(Competition.URI, null);
+					getContext().getContentResolver().notifyChange(CompetitionTeam.URI, null);
+					getContext().getContentResolver().notifyChange(TeamScoutingWheel.URI, null);
+					getContext().getContentResolver().notifyChange(TeamScouting2013.URI, null);
+					break;
+				case CODE_COMPETITION:
+					getContext().getContentResolver().notifyChange(Competition.URI, null);
+					getContext().getContentResolver().notifyChange(CompetitionTeam.URI, null);
+					break;
+				case CODE_COMPETITIONTEAM:
+					getContext().getContentResolver().notifyChange(CompetitionTeam.URI, null);
+					break;
+				case CODE_TEAMSCOUTINGWHEEL:
+					getContext().getContentResolver().notifyChange(TeamScoutingWheel.URI, null);
+					break;
+				case CODE_2013TEAMSCOUTING:
+					getContext().getContentResolver().notifyChange(TeamScouting2013.URI, null);
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown URI: " + uri);
+			}
 		} else {
 			rows = db.delete(table, selection, selectionArgs);
+			getContext().getContentResolver().notifyChange(uri, null);
 		}
-		getContext().getContentResolver().notifyChange(uri, null);
+		Log.d(TAG, "delete/update: "+uri.toString());
 		return rows;
 	}
 }

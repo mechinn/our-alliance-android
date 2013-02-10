@@ -69,7 +69,6 @@ public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
 		} else {
 			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
 		}
-		cursor.close();
 		return competition;
 	}
 
@@ -85,8 +84,6 @@ public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
 		if(comps.isEmpty()) {
 			throw new OurAllianceException(TAG,"No competitions in db.",new NoObjectsThrowable());
 		}
-		// Make sure to close the cursor
-		cursor.close();
 		return comps;
 	}
 }

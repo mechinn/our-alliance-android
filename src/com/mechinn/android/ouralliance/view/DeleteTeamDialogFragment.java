@@ -9,7 +9,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.widget.Toast;
 
 public class DeleteTeamDialogFragment extends DialogFragment {
 	private static final String tag = "DeleteTeamDialog";
@@ -46,13 +45,11 @@ public class DeleteTeamDialogFragment extends DialogFragment {
 		builder.setMessage(R.string.deleteTeam)
 			.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					Toast.makeText(getActivity(), "delete", Toast.LENGTH_SHORT).show();
 					// Send the positive button event back to the host activity
 					listener.onDeleteDialogPositiveClick(team);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					Toast.makeText(getActivity(), "cancel", Toast.LENGTH_SHORT).show();
 					// Send the negative button event back to the host activity
 					listener.onDeleteDialogNegativeClick(DeleteTeamDialogFragment.this);
 				}

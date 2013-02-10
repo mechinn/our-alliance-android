@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Team;
@@ -68,14 +67,12 @@ public class InsertTeamDialogFragment extends DialogFragment {
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					Toast.makeText(getActivity(), "create", Toast.LENGTH_SHORT).show();
 					team.setNumber(teamNumber.getText());
 					team.setName(teamName.getText());
 					listener.onInsertDialogPositiveClick(update, team);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					Toast.makeText(getActivity(), "cancel", Toast.LENGTH_SHORT).show();
 					// Send the negative button event back to the host activity
 					listener.onInsertDialogNegativeClick(InsertTeamDialogFragment.this);
 				}

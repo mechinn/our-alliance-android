@@ -72,8 +72,11 @@ public class Setup {
 		}
 		switch(version+1) {
 			case 1:
-				Season s2013 = new Season(2013, "Ultimate Ascent");
 				try {
+					Season s2012 = new Season(2012, "Rebound Rumble");
+					seasonData.insert(s2012);
+					competitionData.insert(new Competition(s2012, "WORLD CHAMPS", "WORLD"));
+					Season s2013 = new Season(2013, "Ultimate Ascent");
 					s2013 = seasonData.insert(s2013);
 					this.addCompetitions(s2013);
 				} catch (OurAllianceException e) {

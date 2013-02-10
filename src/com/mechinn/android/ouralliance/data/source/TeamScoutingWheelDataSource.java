@@ -56,7 +56,6 @@ public class TeamScoutingWheelDataSource extends AOurAllianceDataSource<TeamScou
 		} else {
 			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
 		}
-		cursor.close();
 		return scouting;
 	}
 	
@@ -71,8 +70,6 @@ public class TeamScoutingWheelDataSource extends AOurAllianceDataSource<TeamScou
 		if(scoutings.isEmpty()) {
 			throw new OurAllianceException(TAG,"No wheels in db.",new NoObjectsThrowable());
 		}
-		// Make sure to close the cursor
-		cursor.close();
 		return scoutings;
 	}
 }

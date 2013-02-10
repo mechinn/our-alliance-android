@@ -61,7 +61,6 @@ public class SeasonDataSource extends AOurAllianceDataSource<Season> {
 		} else {
 			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
 		}
-		cursor.close();
 		return season;
 	}
 	
@@ -77,8 +76,6 @@ public class SeasonDataSource extends AOurAllianceDataSource<Season> {
 		if(comments.isEmpty()) {
 			throw new OurAllianceException(TAG,"No seasons in db.",new NoObjectsThrowable());
 		}
-		// Make sure to close the cursor
-		cursor.close();
 		return comments;
 	}
 }

@@ -61,7 +61,6 @@ public class TeamDataSource extends AOurAllianceDataSource<Team> {
 		} else {
 			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
 		}
-		cursor.close();
 		return team;
 	}
 	
@@ -77,8 +76,6 @@ public class TeamDataSource extends AOurAllianceDataSource<Team> {
 		if(teams.isEmpty()) {
 			throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
 		}
-		// Make sure to close the cursor
-		cursor.close();
 		return teams;
 	}
 }

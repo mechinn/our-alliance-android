@@ -57,7 +57,6 @@ public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScout
 		} else {
 			throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
 		}
-		cursor.close();
 		return scouting;
 	}
 	
@@ -72,8 +71,6 @@ public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScout
 		if(scoutings.isEmpty()) {
 			throw new OurAllianceException(TAG,"No team scouting in db.",new NoObjectsThrowable());
 		}
-		// Make sure to close the cursor
-		cursor.close();
 		return scoutings;
 	}
 	
@@ -89,8 +86,6 @@ public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScout
 		if(teams.isEmpty()) {
 			throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
 		}
-		// Make sure to close the cursor
-		cursor.close();
 		return teams;
 	}
 }

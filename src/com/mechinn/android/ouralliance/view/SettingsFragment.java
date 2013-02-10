@@ -48,6 +48,10 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private Preference changelog;
 	private Preference about;
 	private Setup setup;
+	private Cursor seasonCursor;
+	private Cursor compCursor;
+	private Cursor seasonSummCursor;
+	private Cursor compSummCursor;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -158,8 +162,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	}
 	
 	private void setSeasonList(Cursor cursor) {
+		if(seasonCursor!=null) {
+			seasonCursor.close();
+		}
+		seasonCursor = cursor;
 		try {
-			List<Season> seasons = SeasonDataSource.getList(cursor);
+			List<Season> seasons = SeasonDataSource.getList(seasonCursor);
 			CharSequence[] seasonsViews = new CharSequence[seasons.size()];
 			CharSequence[] seasonsIds = new CharSequence[seasons.size()];
 			for(int i=0;i<seasons.size();++i) {
@@ -179,8 +187,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	}
 	
 	private void setCompList(Cursor cursor) {
+		if(compCursor!=null) {
+			compCursor.close();
+		}
+		compCursor = cursor;
 		try {  
-			List<Competition> comps = CompetitionDataSource.getList(cursor);
+			List<Competition> comps = CompetitionDataSource.getList(compCursor);
 			CharSequence[] compsViews = new CharSequence[comps.size()];
 			CharSequence[] compsIds = new CharSequence[comps.size()];
 			for(int i=0;i<comps.size();++i) {
@@ -199,8 +211,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	}
 	
 	private void setSeasonSummary(Cursor cursor) {
+		if(seasonSummCursor!=null) {
+			seasonSummCursor.close();
+		}
+		seasonSummCursor = cursor;
 		try {
-			Season thisSeason = SeasonDataSource.getSingle(cursor);
+			Season thisSeason = SeasonDataSource.getSingle(seasonSummCursor);
         	season.setSummary(thisSeason.toString());
         	comp.setEnabled(true);
         } catch (Exception e) {
@@ -211,8 +227,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	}
 	
 	private void setCompSummary(Cursor cursor) {
+		if(compSummCursor!=null) {
+			compSummCursor.close();
+		}
+		compSummCursor = cursor;
 		try {
-        	Competition thisComp = CompetitionDataSource.getSingle(cursor);
+        	Competition thisComp = CompetitionDataSource.getSingle(compSummCursor);
         	comp.setSummary(thisComp.toString());
         } catch (Exception e) {
         	e.printStackTrace();
@@ -223,6 +243,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		Log.d(TAG, key);
 		if(key.equals(seasonPrefString)) {
+			comp.setValue("0");
         	this.getLoaderManager().restartLoader(SettingsActivity.LOADER_SEASON_SUMMARY, null, this);
         	this.getLoaderManager().restartLoader(SettingsActivity.LOADER_COMPETITION, null, this);
 		} else if(key.equals(compPrefString)) {

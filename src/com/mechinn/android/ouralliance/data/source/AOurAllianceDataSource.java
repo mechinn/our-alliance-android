@@ -38,7 +38,7 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 		return update(data, BaseColumns._ID,Long.toString(data.getId()));
 	}
 	
-	public int update(A data, String key, String value) throws OurAllianceException, SQLException {
+	public int update(A data, String key, Object value) throws OurAllianceException, SQLException {
 		return update(data, key+" = '"+value+"'");
 	}
 	
@@ -58,10 +58,10 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 	}
 	
 	public int delete(long data) throws OurAllianceException {
-		return delete(BaseColumns._ID, Long.toString(data));
+		return delete(BaseColumns._ID, data);
 	}
 	
-	public int delete(String key, String value) throws OurAllianceException {
+	public int delete(String key, Object value) throws OurAllianceException {
 		return delete(key+" = '"+value+"'");
 	}
 	
@@ -80,7 +80,7 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 	}
 	
 	public CursorLoader get(long season, long team) {
-		return query(TeamScouting.SEASON+" = '"+Long.toString(season)+"' AND "+TeamScouting.TEAM+" = '"+Long.toString(team)+"'");
+		return query(TeamScouting.SEASON+" = '"+season+"' AND "+TeamScouting.TEAM+" = '"+team+"'");
 	}
 	
 	public CursorLoader get(A id) {
@@ -91,11 +91,11 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 		return get(BaseColumns._ID, Long.toString(id));
 	}
 	
-	public CursorLoader get(String key, String value) {
+	public CursorLoader get(String key, Object value) {
 		return get(key, value, null);
 	}
 	
-	public CursorLoader get(String key, String value, String order) {
+	public CursorLoader get(String key, Object value, String order) {
 		return query(key+" = '"+value+"'", order);
 	}
 	
