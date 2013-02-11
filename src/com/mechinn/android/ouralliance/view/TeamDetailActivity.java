@@ -3,7 +3,6 @@ package com.mechinn.android.ouralliance.view;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +16,7 @@ import android.view.MenuItem;
  * This activity is mostly just a 'shell' activity containing nothing more than
  * a {@link TeamDetailFragment}.
  */
-public class TeamDetailActivity extends Activity {
+public class TeamDetailActivity extends AOurAllianceActivity {
 	private static final String TAG = "TeamDetailActivity";
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,13 +55,13 @@ public class TeamDetailActivity extends Activity {
 		}
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				this.navigateUpToFromChild(this, new Intent(this, TeamListActivity.class));
-				return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//			case android.R.id.home:
+//				this.navigateUpToFromChild(this, new Intent(this, TeamListActivity.class));
+//				return true;
+//		}
+//		return super.onOptionsItemSelected(item);
+//	}
 }

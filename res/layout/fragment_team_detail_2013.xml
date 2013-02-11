@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <org.apmem.tools.layouts.FlowLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical" >
@@ -47,9 +47,9 @@
                 android:text="3" />
         </RadioGroup>
 
-    </LinearLayout>
+    </org.apmem.tools.layouts.FlowLayout>
 
-    <LinearLayout
+    <org.apmem.tools.layouts.FlowLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
         android:gravity="center_vertical" >
@@ -90,8 +90,8 @@
                 android:layout_height="wrap_content"
                 android:text="Station" />
         </RadioGroup>
-	</LinearLayout>
-	<LinearLayout
+	</org.apmem.tools.layouts.FlowLayout>
+	<org.apmem.tools.layouts.FlowLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
         android:gravity="center_vertical" >
@@ -119,8 +119,8 @@
                 android:layout_height="wrap_content"
                 android:text="Continuous" />
         </RadioGroup>
-	</LinearLayout>
-	<LinearLayout
+	</org.apmem.tools.layouts.FlowLayout>
+	<org.apmem.tools.layouts.FlowLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
         android:gravity="center_vertical" >
@@ -150,8 +150,8 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="Pyramid" />
-	</LinearLayout>
-	<LinearLayout
+	</org.apmem.tools.layouts.FlowLayout>
+	<org.apmem.tools.layouts.FlowLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
         android:gravity="center_vertical" >
@@ -171,8 +171,8 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="Ground" />
-	</LinearLayout>
-	<LinearLayout
+	</org.apmem.tools.layouts.FlowLayout>
+	<org.apmem.tools.layouts.FlowLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
         android:gravity="center_vertical" >
@@ -185,7 +185,7 @@
 		    android:id="@+id/team2013reloadSpeed"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content" />
-	</LinearLayout>
+	</org.apmem.tools.layouts.FlowLayout>
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

@@ -1,5 +1,7 @@
 package com.mechinn.android.ouralliance.provider;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -17,6 +19,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 public class DataProvider extends ContentProvider {
@@ -69,6 +72,22 @@ public class DataProvider extends ContentProvider {
 		db = database.getWritableDatabase();
 		return db.isDatabaseIntegrityOk();
 	}
+	
+	@Override
+    public ParcelFileDescriptor openFile(Uri uri, String mode) {
+        
+        Log.d(TAG,"fetching: " + uri);
+
+        String path = getContext().getFilesDir().getAbsolutePath() + "/" + uri.getPath();
+        File file = new File(path);
+        ParcelFileDescriptor parcel = null;
+        try {
+            parcel = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+        } catch (FileNotFoundException e) {
+            Log.e("LocalFileContentProvider", "uri " + uri.toString(), e);
+        }
+        return parcel;
+    }
 	
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {

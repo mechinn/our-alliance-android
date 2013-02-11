@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item
-        android:id="@+id/insert"
+	<item
+        android:id="@+id/settings"
         android:showAsAction="ifRoom"
-        android:title="Add Team" android:menuCategory="system" android:orderInCategory="1">
+        android:title="Settings" android:menuCategory="system" android:orderInCategory="999">
     </item>
 </menu>

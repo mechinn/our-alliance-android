@@ -8,6 +8,7 @@ import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,7 +35,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  * This activity also implements the required {@link TeamListFragment.Callbacks}
  * interface to listen for item selections.
  */
-public class TeamListActivity extends Activity implements TeamListFragment.Listener, DeleteTeamDialogFragment.Listener, InsertTeamDialogFragment.Listener {
+public class TeamListActivity extends AOurAllianceActivity implements TeamListFragment.Listener, DeleteTeamDialogFragment.Listener, InsertTeamDialogFragment.Listener {
 	public static final String TAG = "TeamListActivity";
 	public static final int LOADER_COMPETITIONTEAMS = 0;
 	public static final int LOADER_TEAMSCOUTING = 1;
@@ -82,6 +83,7 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 		long seasonId = team.getCompetition().getSeason().getId();
 		int year = team.getCompetition().getSeason().getYear();
 		long teamId = team.getTeam().getId();
+
 		if (mTwoPane) {
 			//update the frag before making a new one
 			if(null!=fragment) {
@@ -96,9 +98,11 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 				case 2013:
 					fragment = new TeamDetail2013();
 					fragment.setArguments(arguments);
-					this.getFragmentManager().beginTransaction().replace(R.id.team_detail_container, fragment, team.toString()).commit();
+					break;
 			}
+			this.getFragmentManager().beginTransaction().replace(R.id.team_detail_container, fragment, team.toString()).commit();
 		} else {
+//			this.getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE).replace(R.id.team_list, fragment, team.toString()).addToBackStack(null).commit();
 			Intent detailIntent = new Intent(this, TeamDetailActivity.class);
 			detailIntent.putExtra(TeamDetailFragment.ARG_SEASON, seasonId);
 			detailIntent.putExtra(TeamDetailFragment.ARG_YEAR, year);
@@ -108,26 +112,17 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		this.getMenuInflater().inflate(R.menu.team_list_menu, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
+//			case android.R.id.home:
+//				if(!this.getFragmentManager().popBackStackImmediate()) {
+//					this.finish();
+//				}
+//				return true;
 	        case R.id.insert:
 	            DialogFragment newFragment = new InsertTeamDialogFragment();
 	    		newFragment.show(this.getFragmentManager(), "Add Team");
-	            return true;
-	        case R.id.settings:
-	        	Intent intent = new Intent(this, SettingsActivity.class);
-//	            EditText editText = (EditText) findViewById(R.id.edit_message);
-//	            CharSequence message = editText.getText();
-//	            intent.putExtra(EXTRA_MESSAGE, message);
-	            startActivity(intent);
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
@@ -165,6 +160,15 @@ public class TeamListActivity extends Activity implements TeamListFragment.Liste
 	            return super.onContextItemSelected(item);
 	    }
 	}
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//			case android.R.id.home:
+//				this.navigateUpToFromChild(this, new Intent(this, TeamListActivity.class));
+//				return true;
+//		}
+//		return super.onOptionsItemSelected(item);
+//	}
 	
 	public void insertTeam(Team team) {
 		TeamListFragment teamListFrag = (TeamListFragment) getFragmentManager().findFragmentById(R.id.team_list);

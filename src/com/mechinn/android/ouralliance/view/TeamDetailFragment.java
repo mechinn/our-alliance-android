@@ -126,6 +126,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 //		LoaderManager.enableDebugLogging(true);
+		this.getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		teamScoutingWheelData = new TeamScoutingWheelDataSource(this.getActivity());
 		twoPane = getArguments().getBoolean(ARG_TWOPANE, false);
@@ -232,6 +233,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	}
 	
 	public void setView() {
+		this.getActivity().setTitle(Integer.toString(scouting.getTeam().getNumber())+": "+scouting.getTeam().getName());
 		team.setText(Integer.toString(scouting.getTeam().getNumber())+": "+scouting.getTeam().getName());
 		orientation.setText(scouting.getOrientation());
 		driveTrain.setText(scouting.getDriveTrain());

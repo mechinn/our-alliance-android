@@ -9,11 +9,14 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.Prefs;
+import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
@@ -100,6 +103,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		setHasOptionsMenu(true);
 		prefs = new Prefs(this.getActivity());
 		comp = new Competition();
 		season = new Season();
@@ -148,6 +152,12 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 			outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
 		}
 	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.team_list_menu, menu);
+	}
 
 	/**
 	 * Turns on activate-on-click mode. When this mode is on, list items will be
@@ -176,9 +186,6 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		} catch (OurAllianceException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public void compTeamExists(Team team) {
 	}
 	
 	public void insertTeam(Team team) {

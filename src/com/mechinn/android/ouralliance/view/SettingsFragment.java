@@ -1,5 +1,7 @@
 package com.mechinn.android.ouralliance.view;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -52,6 +54,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private Cursor compCursor;
 	private Cursor seasonSummCursor;
 	private Cursor compSummCursor;
+	private DialogFragment dialog;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,14 +82,22 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         changelog = (Preference) getPreferenceScreen().findPreference(this.getString(R.string.pref_changeLog));
         changelog.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
-					// dialog code here
+		        	dialog = new HtmlDialog();
+		            Bundle htmlArgs = new Bundle();
+		            htmlArgs.putString(HtmlDialog.HTMLFILE, "file:///android_asset/changelog.html");
+		            dialog.setArguments(htmlArgs);
+		            dialog.show(SettingsFragment.this.getFragmentManager(), "Change Log");
 					return true;
 				}
 			});
         about = (Preference) getPreferenceScreen().findPreference(this.getString(R.string.pref_about));
         about.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
-					// dialog code here
+		        	dialog = new HtmlDialog();
+		            Bundle htmlArgs = new Bundle();
+		            htmlArgs.putString(HtmlDialog.HTMLFILE, "file:///android_asset/about.html");
+		            dialog.setArguments(htmlArgs);
+		            dialog.show(SettingsFragment.this.getFragmentManager(), "Change Log");
 					return true;
 				}
 			});
