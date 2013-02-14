@@ -1,29 +1,18 @@
 package com.mechinn.android.ouralliance.view;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-
 import com.mechinn.android.ouralliance.R;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 
 public class HtmlDialog extends DialogFragment {
-	@SuppressWarnings("unused")
 	private static final String TAG = "HtmlDialog";
 	public static final String HTMLFILE = "htmlFile";
     private View dialog;

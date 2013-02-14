@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.view;
 
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;

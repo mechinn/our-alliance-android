@@ -2,154 +2,131 @@ package com.mechinn.android.ouralliance.view;
 
 import java.sql.SQLException;
 
+import com.mechinn.android.ouralliance.Prefs;
+import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.data.Competition;
+import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
+import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
+import com.mechinn.android.ouralliance.data.source.TeamDataSource;
+import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
+import com.mechinn.android.ouralliance.error.OurAllianceException;
+
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import com.mechinn.android.ouralliance.Prefs;
-import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
-import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
-import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
-import com.mechinn.android.ouralliance.data.source.TeamDataSource;
-import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
-import com.mechinn.android.ouralliance.error.OurAllianceException;
-
-/**
- * A list fragment representing a list of Teams. This fragment also supports
- * tablet devices by allowing list items to be given an 'activated' state upon
- * selection. This helps indicate which item is currently being viewed in a
- * {@link TeamDetailFragment}.
- * <p>
- * Activities containing this fragment MUST implement the {@link Callbacks}
- * interface.
- */
 public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
-	
 	private static final String TAG = "TeamListFragment";
-
+	public static final int LOADER_COMPETITIONTEAMS = 0;
+	public static final int LOADER_TEAMS = 1;
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-
-	private int mActivatedPosition = ListView.INVALID_POSITION;
+    private OnTeamSelectedListener mCallback;
+    private int selectedPosition;
 	private Prefs prefs;
 	private TeamDataSource teamData;
-	private SeasonDataSource seasonData;
 	private CompetitionTeamDataSource competitionTeamData;
 	private TeamScouting2013DataSource scouting2013;
 	private CompetitionTeamCursorAdapter adapter;
 	private Competition comp;
-	private Season season;
-	private Cursor teamCursor;
-	private Cursor seasonCursor;
 	private Team addTeam;
 
-	private Listener mCallbacks = sDummyCallbacks;
-	public interface Listener {
-		/**
-		 * Callback for when an item has been selected.
-		 */
-		public void onItemSelected(CompetitionTeam team);
-		public void deleteTeam(CompetitionTeam team);
-		public void insertTeam(Team team);
-		public void updateTeam(Team team);
-	}
-	private static Listener sDummyCallbacks = new Listener() {
-		public void onItemSelected(CompetitionTeam team) {}
-		public void deleteTeam(CompetitionTeam team) {}
-		public void insertTeam(Team team) {}
-		public void updateTeam(Team team) {}
-	};
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
+    // The container Activity must implement this interface so the frag can deliver messages
+    public interface OnTeamSelectedListener {
+        /** Called by HeadlinesFragment when a list item is selected */
+        public void onTeamSelected(CompetitionTeam team);
+    }
 
-		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof Listener)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
-		}
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
-		mCallbacks = (Listener) activity;
-	}
-	@Override
-	public void onDetach() {
-		super.onDetach();
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception.
+        try {
+            mCallback = (OnTeamSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
+        }
+    }
 
-		// Reset the active callbacks interface to the dummy implementation.
-		mCallbacks = sDummyCallbacks;
-	}
-
-	/**
-	 * Mandatory empty constructor for the fragment manager to instantiate the
-	 * fragment (e.g. upon screen orientation changes).
-	 */
-	public TeamListFragment() {
-		
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 		prefs = new Prefs(this.getActivity());
-		comp = new Competition();
-		season = new Season();
 		teamData = new TeamDataSource(this.getActivity());
-		seasonData = new SeasonDataSource(this.getActivity());
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
 		scouting2013 = new TeamScouting2013DataSource(this.getActivity());
-	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		comp.setId(prefs.getComp());
-		season.setId(prefs.getSeason());
-		this.getLoaderManager().restartLoader(TeamListActivity.LOADER_SEASON, null, this);
-		this.getLoaderManager().restartLoader(TeamListActivity.LOADER_COMPETITIONTEAMS, null, this);
-	}
-
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		
 		// Restore the previously serialized activated item position.
 		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-			setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
+			int position = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);
+			if (position == ListView.INVALID_POSITION) {
+				getListView().setItemChecked(selectedPosition, false);
+			} else {
+				getListView().setItemChecked(position, true);
+			}
+			selectedPosition = position;
 		}
-		this.registerForContextMenu(this.getListView());
 		adapter = new CompetitionTeamCursorAdapter(getActivity(), null);
 		setListAdapter(adapter);
-	}
+    }
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    	View view = super.onCreateView(inflater, container, savedInstanceState);
+    	return view;
+    }
+    
+    @Override
+    public void onActivityCreated (Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
+		this.registerForContextMenu(this.getListView());
+    }
 
-	@Override
-	public void onListItemClick(ListView listView, View view, int position, long id) {
-		super.onListItemClick(listView, view, position, id);
+    @Override
+    public void onStart() {
+        super.onStart();
+//		this.getActivity().registerForContextMenu(this.getListView());
+        // When in two-pane layout, set the listview to highlight the selected list item
+        // (We do this during onStart because at the point the listview is available.)
+        if (getFragmentManager().findFragmentById(R.id.list_fragment) != null) {
+            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        }
+		this.getLoaderManager().restartLoader(LOADER_COMPETITIONTEAMS, null, this);
+    }
 
-		// Notify the active callbacks interface (the activity, if the
-		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(getCompetitionTeamFromList(position));
-	}
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+    	super.onListItemClick(l, v, position, id);
+        // Notify the parent activity of selected item
+        mCallback.onTeamSelected(adapter.get(position));
+        
+        // Set the item as checked to be highlighted when in two-pane layout
+        getListView().setItemChecked(position, true);
+    }
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		if (mActivatedPosition != ListView.INVALID_POSITION) {
+		if (selectedPosition != ListView.INVALID_POSITION) {
 			// Serialize and persist the activated item position.
-			outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
+			outState.putInt(STATE_ACTIVATED_POSITION, selectedPosition);
 		}
 	}
 	
@@ -158,25 +135,42 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.team_list_menu, menu);
 	}
-
-	/**
-	 * Turns on activate-on-click mode. When this mode is on, list items will be
-	 * given the 'activated' state when touched.
-	 */
-	public void setActivateOnItemClick(boolean activateOnItemClick) {
-		// When setting CHOICE_MODE_SINGLE, ListView will automatically
-		// give items the 'activated' state when touched.
-		getListView().setChoiceMode(activateOnItemClick ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.insert:
+	            DialogFragment newFragment = new InsertTeamDialogFragment();
+	    		newFragment.show(this.getFragmentManager(), "Add Team");
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
-
-	private void setActivatedPosition(int position) {
-		if (position == ListView.INVALID_POSITION) {
-			getListView().setItemChecked(mActivatedPosition, false);
-		} else {
-			getListView().setItemChecked(position, true);
-		}
-
-		mActivatedPosition = position;
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	    int position = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
+	    DialogFragment dialog;
+	    switch (item.getItemId()) {
+	        case R.id.edit:
+	        	dialog = new InsertTeamDialogFragment();
+	            Bundle updateArgs = new Bundle();
+	            updateArgs.putSerializable(InsertTeamDialogFragment.TEAM_ARG, adapter.get(position).getTeam());
+	            dialog.setArguments(updateArgs);
+	        	dialog.show(this.getFragmentManager(), "Edit Team");
+	            return true;
+	        case R.id.delete:
+	        	dialog = new DeleteTeamDialogFragment();
+	            Bundle deleteArgs = new Bundle();
+	            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.get(position));
+	            dialog.setArguments(deleteArgs);
+	            dialog.show(this.getFragmentManager(), "Delete Team");
+	            return true;
+	        default:
+	            return super.onContextItemSelected(item);
+	    }
 	}
 	
 	public void deleteTeam(CompetitionTeam team) {
@@ -193,30 +187,22 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		//try inserting the team first in case it doesnt exist
 		try {
 			addTeam = teamData.insert(team);
-			attemptInsertTeamScouting();
+			insertTeamScouting();
 			insertCompetitionTeam(new CompetitionTeam(comp, addTeam));
 		} catch (OurAllianceException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			//if we errored out then the team must already exist, we need to get it.
 			addTeam = team;
-			this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMS, null, this);
-		}
-	}
-	
-	public void attemptInsertTeamScouting() {
-		if(seasonCursor==null) {
-			this.getLoaderManager().restartLoader(TeamListActivity.LOADER_TEAMS, null, this);
-		} else {
-			insertTeamScouting();
+			this.getLoaderManager().restartLoader(LOADER_TEAMS, null, this);
 		}
 	}
 	
 	public void insertTeamScouting() {
 		if(addTeam!=null) {
 			try {
-				if(2013==season.getYear()) {
-					scouting2013.insert(new TeamScouting2013(season,addTeam));
+				if(2013==comp.getSeason().getYear()) {
+					scouting2013.insert(new TeamScouting2013(comp.getSeason(),addTeam));
 				} else {
 					Log.w(TAG, "unknown season");
 				}
@@ -231,7 +217,6 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	public void insertCompetitionTeam(CompetitionTeam team) {
 		//insert the team into the 
 		try {
-			Log.d(TAG, "id: "+comp.getId());
 			competitionTeamData.insert(team);
 		} catch (OurAllianceException e) {
 			Toast.makeText(this.getActivity(), "Cannot create team without "+e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -252,54 +237,29 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		}
 	}
 	
-	public CompetitionTeam getCompetitionTeamFromList(int position) {
-		return adapter.get(position);
-	}
-	
 	public void getTeam(Cursor cursor) {
-		if(teamCursor!=null) {
-			teamCursor.close();
-		}
-		teamCursor = cursor;
 		try {
-			Team team = TeamDataSource.getSingle(teamCursor);
+			Team team = TeamDataSource.getSingle(cursor);
 			team.setName(addTeam.getName());
 			teamData.update(team);
+			insertTeamScouting();
 			insertCompetitionTeam(new CompetitionTeam(comp, team));
 		} catch (OurAllianceException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		cursor.close();
 		//stop loading!
-		this.getLoaderManager().destroyLoader(TeamListActivity.LOADER_TEAMS);
-	}
-	
-	public void getSeason(Cursor cursor) {
-		if(seasonCursor!=null) {
-			seasonCursor.close();
-		}
-		seasonCursor = cursor;
-		try {
-			season = SeasonDataSource.getSingle(seasonCursor);
-			insertTeamScouting();
-		} catch (OurAllianceException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		//stop loading!
-		this.getLoaderManager().destroyLoader(TeamListActivity.LOADER_SEASON);
+		this.getLoaderManager().destroyLoader(LOADER_TEAMS);
 	}
 
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		switch(id) {
-			case TeamListActivity.LOADER_COMPETITIONTEAMS:
+			case LOADER_COMPETITIONTEAMS:
 				return competitionTeamData.getAllTeams(prefs.getComp());
-			case TeamListActivity.LOADER_TEAMS:
+			case LOADER_TEAMS:
 				return teamData.get(addTeam.getNumber());
-			case TeamListActivity.LOADER_SEASON:
-				return seasonData.get(season.getId());
 			default:
 				return null;
 		}
@@ -307,27 +267,26 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		switch(loader.getId()) {
-			case TeamListActivity.LOADER_COMPETITIONTEAMS:
+			case LOADER_COMPETITIONTEAMS:
+				if(null!=comp) {
+					comp = Competition.newFromViewCursor(data);
+				}
 				adapter.swapCursor(data);
 				break;
-			case TeamListActivity.LOADER_TEAMS:
+			case LOADER_TEAMS:
 				getTeam(data);
-				break;
-			case TeamListActivity.LOADER_SEASON:
-				getSeason(data);
 				break;
 		}
 	}
 
 	public void onLoaderReset(Loader<Cursor> loader) {
 		switch(loader.getId()) {
-			case TeamListActivity.LOADER_COMPETITIONTEAMS:
+			case LOADER_COMPETITIONTEAMS:
 				adapter.swapCursor(null);
 				break;
-			case TeamListActivity.LOADER_TEAMS:
+			case LOADER_TEAMS:
 				getTeam(null);
 				break;
 		}
 	}
-
 }

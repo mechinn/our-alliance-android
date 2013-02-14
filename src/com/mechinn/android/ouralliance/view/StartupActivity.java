@@ -40,7 +40,7 @@ public class StartupActivity extends Activity {
                 
                 // Run next activity
                 Intent intent = new Intent();
-                intent.setClass(sPlashScreen, TeamListActivity.class);
+                intent.setClass(sPlashScreen, OurAllianceActivity.class);
                 startActivity(intent);
             }
         };

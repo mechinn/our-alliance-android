@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.mechinn.android.ouralliance.view.TeamListActivity"
+            android:name="com.mechinn.android.ouralliance.view.OurAllianceActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,11 +36,6 @@
             </intent-filter>
         </activity>
         -->
-        <activity
-            android:name="com.mechinn.android.ouralliance.view.TeamDetailActivity"
-            android:label="@string/title_team_detail"
-            android:parentActivityName=".view.TeamListActivity" >
-        </activity>
         <activity
             android:name="com.mechinn.android.ouralliance.view.SettingsActivity"
             android:label="@string/title_team_detail"
