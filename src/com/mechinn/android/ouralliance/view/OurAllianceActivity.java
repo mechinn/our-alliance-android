@@ -16,19 +16,16 @@ import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
-import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
 import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 
-public class OurAllianceActivity extends Activity implements TeamListFragment.OnTeamSelectedListener, OnBackStackChangedListener {
+public class OurAllianceActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener {
 	public static final String TAG = "OurAllianceActivity";
-	private Setup setup;
+	private TeamListFragment teamListFrag;
 	private int detailFrag;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setup = new Setup(this);
-		setup.run();
+		new Setup(this, false).execute();
 		setContentView(R.layout.activity_team_scouting);
 		this.getFragmentManager().addOnBackStackChangedListener(this);
 		detailFrag = R.id.detail_fragment;
@@ -41,12 +38,14 @@ public class OurAllianceActivity extends Activity implements TeamListFragment.On
                 return;
             }
             // Create an instance of ExampleFragment
-        	TeamListFragment firstFragment = new TeamListFragment();
+        	teamListFrag = new TeamListFragment();
             // In case this activity was started with special instructions from an Intent,
             // pass the Intent's extras to the fragment as arguments
-            firstFragment.setArguments(getIntent().getExtras());
+        	teamListFrag.setArguments(getIntent().getExtras());
             // Add the fragment to the 'fragment_container' FrameLayout
-            getFragmentManager().beginTransaction().add(R.id.fragment_container, firstFragment).commit();
+            getFragmentManager().beginTransaction().add(R.id.fragment_container, teamListFrag).commit();
+		} else {
+			teamListFrag = (TeamListFragment) getFragmentManager().findFragmentById(R.id.list_fragment);
 		}
 	}
 	
@@ -113,6 +112,23 @@ public class OurAllianceActivity extends Activity implements TeamListFragment.On
         if (getFragmentManager().getBackStackEntryCount() < 1){
         	this.setTitle(R.string.app_name);
     		this.getActionBar().setDisplayHomeAsUpEnabled(false);
+    		this.getActionBar().setHomeButtonEnabled(false);
         }
+	}
+
+	public void onInsertDialogPositiveClick(boolean update, Team team) {
+		if(update) {
+	    	teamListFrag.updateTeam(team);
+		} else {
+	    	teamListFrag.insertTeam(team);
+		}
+	}
+	
+	public void onDeleteDialogPositiveClick(CompetitionTeam team) {
+    	teamListFrag.deleteTeam(team);
+	}
+
+	public void setupComplete() {
+		
 	}
 }

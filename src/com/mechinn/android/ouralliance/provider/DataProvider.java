@@ -1,10 +1,11 @@
 package com.mechinn.android.ouralliance.provider;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
@@ -19,28 +20,34 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
+import android.os.Bundle;
 import android.util.Log;
 
 public class DataProvider extends ContentProvider {
 	private static final String TAG = "DataProvider";
+	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+	private final Lock read = lock.readLock();
+	private final Lock write = lock.writeLock();
+	
+	public static final String AUTHORITY = "com.mechinn.android.ouralliance.data";
+	public static final String BASE_URI_STRING = "content://" + AUTHORITY + "/";
+	
+	public static final String RESET = "reset";
 	
 	// database
 	private Database database;
 	private SQLiteDatabase db;
-	
-	public static final String AUTHORITY = "com.mechinn.android.ouralliance.data";
-	public static final String BASE_URI_STRING = "content://" + AUTHORITY + "/";
 
+	private static final int CODE_RESET = 0;
 	private static final int CODE_TEAM = 1;
 	private static final int CODE_SEASON = 2;
 	private static final int CODE_COMPETITION = 3;
 	private static final int CODE_COMPETITIONTEAM = 4;
 	private static final int CODE_TEAMSCOUTINGWHEEL = 5;
 	private static final int CODE_2013TEAMSCOUTING = 6;
-	
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
+		sURIMatcher.addURI(AUTHORITY, Setup.TAG, CODE_RESET);
 		sURIMatcher.addURI(AUTHORITY, Team.TABLE, CODE_TEAM);
 		sURIMatcher.addURI(AUTHORITY, Season.TABLE, CODE_SEASON);
 		sURIMatcher.addURI(AUTHORITY, Competition.TABLE, CODE_COMPETITION);
@@ -73,21 +80,21 @@ public class DataProvider extends ContentProvider {
 		return db.isDatabaseIntegrityOk();
 	}
 	
-	@Override
-    public ParcelFileDescriptor openFile(Uri uri, String mode) {
-        
-        Log.d(TAG,"fetching: " + uri);
-
-        String path = getContext().getFilesDir().getAbsolutePath() + "/" + uri.getPath();
-        File file = new File(path);
-        ParcelFileDescriptor parcel = null;
-        try {
-            parcel = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
-        } catch (FileNotFoundException e) {
-            Log.e("LocalFileContentProvider", "uri " + uri.toString(), e);
-        }
-        return parcel;
-    }
+//	@Override
+//    public ParcelFileDescriptor openFile(Uri uri, String mode) {
+//        
+//        Log.d(TAG,"fetching: " + uri);
+//
+//        String path = getContext().getFilesDir().getAbsolutePath() + "/" + uri.getPath();
+//        File file = new File(path);
+//        ParcelFileDescriptor parcel = null;
+//        try {
+//            parcel = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+//        } catch (FileNotFoundException e) {
+//            Log.e("LocalFileContentProvider", "uri " + uri.toString(), e);
+//        }
+//        return parcel;
+//    }
 	
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
@@ -149,9 +156,15 @@ public class DataProvider extends ContentProvider {
 		}
 		checkColumns(projection, cols);
 		queryBuilder.setTables(table);
-		Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+		Cursor cursor = null;
+		read.lock();
+		try {
+			cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+			cursor.setNotificationUri(getContext().getContentResolver(), uri);
+		} finally {
+			read.unlock();
+		}
 		Log.d(TAG, "query: "+uri.toString());
-		cursor.setNotificationUri(getContext().getContentResolver(), uri);
 		return cursor;
 	}
 	
@@ -184,33 +197,38 @@ public class DataProvider extends ContentProvider {
 		db = database.getWritableDatabase();
 		long id = 0;
 		Uri newUri;
-		switch (uriType) {
-			case CODE_TEAM:
-				id = db.insert(Team.TABLE, null, values);
-				newUri = Uri.parse(Team.URI+"/"+id);
-				break;
-			case CODE_SEASON:
-				id = db.insert(Season.TABLE, null, values);
-				newUri = Uri.parse(Season.URI+"/"+id);
-				break;
-			case CODE_COMPETITION:
-				id = db.insert(Competition.TABLE, null, values);
-				newUri = Uri.parse(Competition.URI+"/"+id);
-				break;
-			case CODE_COMPETITIONTEAM:
-				id = db.insert(CompetitionTeam.TABLE, null, values);
-				newUri = Uri.parse(CompetitionTeam.URI+"/"+id);
-				break;
-			case CODE_TEAMSCOUTINGWHEEL:
-				id = db.insert(TeamScoutingWheel.TABLE, null, values);
-				newUri = Uri.parse(TeamScoutingWheel.URI+"/"+id);
-				break;
-			case CODE_2013TEAMSCOUTING:
-				id = db.insert(TeamScouting2013.TABLE, null, values);
-				newUri = Uri.parse(TeamScouting2013.URI+"/"+id);
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown URI: " + uri);
+		write.lock();
+		try {
+			switch (uriType) {
+				case CODE_TEAM:
+					id = db.insert(Team.TABLE, null, values);
+					newUri = Uri.parse(Team.URI+"/"+id);
+					break;
+				case CODE_SEASON:
+					id = db.insert(Season.TABLE, null, values);
+					newUri = Uri.parse(Season.URI+"/"+id);
+					break;
+				case CODE_COMPETITION:
+					id = db.insert(Competition.TABLE, null, values);
+					newUri = Uri.parse(Competition.URI+"/"+id);
+					break;
+				case CODE_COMPETITIONTEAM:
+					id = db.insert(CompetitionTeam.TABLE, null, values);
+					newUri = Uri.parse(CompetitionTeam.URI+"/"+id);
+					break;
+				case CODE_TEAMSCOUTINGWHEEL:
+					id = db.insert(TeamScoutingWheel.TABLE, null, values);
+					newUri = Uri.parse(TeamScoutingWheel.URI+"/"+id);
+					break;
+				case CODE_2013TEAMSCOUTING:
+					id = db.insert(TeamScouting2013.TABLE, null, values);
+					newUri = Uri.parse(TeamScouting2013.URI+"/"+id);
+					break;
+				default:
+					throw new IllegalArgumentException("Unknown URI: " + uri);
+			}
+		} finally {
+			write.unlock();
 		}
 		Log.d(TAG, "insert: "+uri.toString());
 		getContext().getContentResolver().notifyChange(uri, null);
@@ -252,7 +270,12 @@ public class DataProvider extends ContentProvider {
 		}
 		db = database.getWritableDatabase();
 		if(values!=null) {
-			rows = db.update(table, values, selection, selectionArgs);
+			write.lock();
+			try {
+				rows = db.update(table, values, selection, selectionArgs);
+	    	} finally {
+	    		write.unlock();
+	    	}
 			switch (uriType) {
 				case CODE_TEAM:
 					getContext().getContentResolver().notifyChange(Team.URI, null);
@@ -284,10 +307,29 @@ public class DataProvider extends ContentProvider {
 					throw new IllegalArgumentException("Unknown URI: " + uri);
 			}
 		} else {
-			rows = db.delete(table, selection, selectionArgs);
+			write.lock();
+			try {
+				rows = db.delete(table, selection, selectionArgs);
+	    	} finally {
+	    		write.unlock();
+	    	}
 			getContext().getContentResolver().notifyChange(uri, null);
 		}
 		Log.d(TAG, "delete/update: "+uri.toString());
 		return rows;
 	}
+	
+	@Override
+	public Bundle call(String method, String arg, Bundle extras) {
+		//run custom methods declared here
+        if(method.equals(RESET)) {
+        	write.lock();
+        	try {
+        		database.reset(db);
+        	} finally {
+        		write.unlock();
+        	}
+        }
+        return null;
+    }
 }

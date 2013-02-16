@@ -12,7 +12,6 @@ import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamScoutingWheelDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;

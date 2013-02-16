@@ -1,8 +1,5 @@
 package com.mechinn.android.ouralliance.view;
 
-import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,18 +7,22 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-public class DeleteTeamDialogFragment extends DialogFragment {
-	private static final String tag = "DeleteTeamDialog";
-	public static final String TEAM_ARG = "team";
+import com.mechinn.android.ouralliance.R;
+
+public class GenericDialogFragment extends DialogFragment {
+	private static final String TAG = "ConfirmResetDialogFragment";
+	public static final String MESSAGE = "message";
+	public static final String POSITIVE = "positive";
+	public static final String NEGATIVE = "negative";
 	/* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface Listener {
-        public void onDeleteDialogPositiveClick(CompetitionTeam team);
+        public void onGenericDialogPositiveClick(DialogInterface dialog, int id);
+        public void onGenericDialogNegativeClick(DialogInterface dialog, int id);
     }
     
     Listener listener;
-    private CompetitionTeam team;
     
     @Override
     public void onAttach(Activity activity) {
@@ -32,27 +33,27 @@ public class DeleteTeamDialogFragment extends DialogFragment {
         	listener = (Listener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString() + " must implement "+tag+".Listener");
+            throw new ClassCastException(activity.toString() + " must implement "+TAG+".Listener");
         }
     }
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-    	team = (CompetitionTeam) this.getArguments().getSerializable(TEAM_ARG);
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setMessage(R.string.deleteTeam)
-			.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+		builder.setMessage(this.getArguments().getInt(MESSAGE))
+			.setPositiveButton(this.getArguments().getInt(POSITIVE,R.string.yes), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					// Send the positive button event back to the host activity
-					listener.onDeleteDialogPositiveClick(team);
+					listener.onGenericDialogPositiveClick(dialog,id);
 				}
-			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			}).setNegativeButton(this.getArguments().getInt(NEGATIVE,R.string.no), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
+					listener.onGenericDialogNegativeClick(dialog,id);
 				}
 			});
 		// Create the AlertDialog object and return it
 		return builder.create();
 	}
+
 }

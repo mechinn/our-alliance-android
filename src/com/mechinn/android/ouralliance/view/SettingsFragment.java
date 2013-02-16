@@ -37,6 +37,10 @@ import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
  */
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor> {
 	private static final String TAG = "SettingsFragment";
+	public static final int LOADER_SEASON = 0;
+	public static final int LOADER_COMPETITION = 1;
+	public static final int LOADER_SEASON_SUMMARY = 2;
+	public static final int LOADER_COMPETITION_SUMMARY = 3;
 	private Prefs prefs;
 	private SeasonDataSource seasonData;
 	private CompetitionDataSource competitionData;
@@ -53,15 +57,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private Cursor compCursor;
 	private Cursor seasonSummCursor;
 	private Cursor compSummCursor;
-	private DialogFragment dialog;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
         prefs = new Prefs(this.getActivity());
-		setup = new Setup(this.getActivity());
-        //builds list from DB
         seasonData = new SeasonDataSource(this.getActivity());
         competitionData = new CompetitionDataSource(this.getActivity());
         seasonPrefString = this.getString(R.string.pref_season);
@@ -69,21 +70,24 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         resetDBPrefString = this.getString(R.string.pref_resetDB);
         season = (ListPreference) getPreferenceScreen().findPreference(seasonPrefString);
         comp = (ListPreference) getPreferenceScreen().findPreference(compPrefString);
-        resetDB = (Preference) getPreferenceScreen().findPreference(compPrefString);
+        resetDB = (Preference) getPreferenceScreen().findPreference(resetDBPrefString);
         resetDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
-					//setup.reset();
-	            	SettingsFragment.this.getLoaderManager().restartLoader(SettingsActivity.LOADER_SEASON, null, SettingsFragment.this);
-	            	SettingsFragment.this.getLoaderManager().restartLoader(SettingsActivity.LOADER_COMPETITION, null, SettingsFragment.this);
+					Log.d(TAG, "resetDB");
+					DialogFragment dialog = new GenericDialogFragment();
+					Bundle dialogArgs = new Bundle();
+					dialogArgs.putInt(GenericDialogFragment.MESSAGE, R.string.confirmReset);
+					dialog.setArguments(dialogArgs);
+		            dialog.show(SettingsFragment.this.getFragmentManager(), "Reset Data? This is not reversable!");
 					return true;
 				}
 			});
         changelog = (Preference) getPreferenceScreen().findPreference(this.getString(R.string.pref_changeLog));
         changelog.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
-		        	dialog = new HtmlDialog();
+					DialogFragment dialog = new HtmlDialogFragment();
 		            Bundle htmlArgs = new Bundle();
-		            htmlArgs.putString(HtmlDialog.HTMLFILE, "file:///android_asset/changelog.html");
+		            htmlArgs.putString(HtmlDialogFragment.HTMLFILE, "file:///android_asset/changelog.html");
 		            dialog.setArguments(htmlArgs);
 		            dialog.show(SettingsFragment.this.getFragmentManager(), "Change Log");
 					return true;
@@ -92,9 +96,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         about = (Preference) getPreferenceScreen().findPreference(this.getString(R.string.pref_about));
         about.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
-		        	dialog = new HtmlDialog();
+					DialogFragment dialog = new HtmlDialogFragment();
 		            Bundle htmlArgs = new Bundle();
-		            htmlArgs.putString(HtmlDialog.HTMLFILE, "file:///android_asset/about.html");
+		            htmlArgs.putString(HtmlDialogFragment.HTMLFILE, "file:///android_asset/about.html");
 		            dialog.setArguments(htmlArgs);
 		            dialog.show(SettingsFragment.this.getFragmentManager(), "Change Log");
 					return true;
@@ -106,9 +110,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	public void onResume() {
 	    super.onResume();
 	    // Set up a listener whenever a key changes
+        season.setValue(Long.toString(prefs.getSeason()));
+        comp.setValue(Long.toString(prefs.getComp()));
 	    prefs.setChangeListener(this);
-        this.getLoaderManager().initLoader(SettingsActivity.LOADER_SEASON, null, this);
-    	this.getLoaderManager().restartLoader(SettingsActivity.LOADER_COMPETITION, null, this);
+        this.getLoaderManager().restartLoader(LOADER_SEASON, null, this);
+    	this.getLoaderManager().restartLoader(LOADER_COMPETITION, null, this);
 	}
 
 	@Override
@@ -124,13 +130,13 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		long compID = Long.parseLong(comp.getValue());
      	Log.d(TAG,"comp: "+compID);
 		switch(id) {
-			case SettingsActivity.LOADER_SEASON:
+			case LOADER_SEASON:
 				return seasonData.getAll();
-			case SettingsActivity.LOADER_COMPETITION:
+			case LOADER_COMPETITION:
 				return competitionData.getAllCompetitions(seasonID);
-			case SettingsActivity.LOADER_SEASON_SUMMARY:
+			case LOADER_SEASON_SUMMARY:
 				return seasonData.get(seasonID);
-			case SettingsActivity.LOADER_COMPETITION_SUMMARY:
+			case LOADER_COMPETITION_SUMMARY:
 				return competitionData.get(compID);
 			default:
 				return null;
@@ -139,16 +145,16 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		switch(loader.getId()) {
-			case SettingsActivity.LOADER_SEASON:
+			case LOADER_SEASON:
 				setSeasonList(cursor);
 				break;
-			case SettingsActivity.LOADER_COMPETITION:
+			case LOADER_COMPETITION:
 				setCompList(cursor);
 				break;
-			case SettingsActivity.LOADER_SEASON_SUMMARY:
+			case LOADER_SEASON_SUMMARY:
 				setSeasonSummary(cursor);
 				break;
-			case SettingsActivity.LOADER_COMPETITION_SUMMARY:
+			case LOADER_COMPETITION_SUMMARY:
 				setCompSummary(cursor);
 				break;
 		}
@@ -156,16 +162,16 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
 	public void onLoaderReset(Loader<Cursor> loader) {
 		switch(loader.getId()) {
-			case SettingsActivity.LOADER_SEASON:
+			case LOADER_SEASON:
 				setSeasonList(null);
 				break;
-			case SettingsActivity.LOADER_COMPETITION:
+			case LOADER_COMPETITION:
 				setSeasonList(null);
 				break;
-			case SettingsActivity.LOADER_SEASON_SUMMARY:
+			case LOADER_SEASON_SUMMARY:
 				setSeasonSummary(null);
 				break;
-			case SettingsActivity.LOADER_COMPETITION_SUMMARY:
+			case LOADER_COMPETITION_SUMMARY:
 				setCompSummary(null);
 				break;
 		}
@@ -186,7 +192,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			}
 	        season.setEntries(seasonsViews);
 	        season.setEntryValues(seasonsIds);
-        	this.getLoaderManager().restartLoader(SettingsActivity.LOADER_SEASON_SUMMARY, null, this);
+        	this.getLoaderManager().restartLoader(LOADER_SEASON_SUMMARY, null, this);
 		} catch (Exception e) {
 			e.printStackTrace();
 	        season.setEntries(new CharSequence[]{"Loading"});
@@ -211,7 +217,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			}
 	        comp.setEntries(compsViews);
 	        comp.setEntryValues(compsIds);
-        	this.getLoaderManager().restartLoader(SettingsActivity.LOADER_COMPETITION_SUMMARY, null, this);
+        	this.getLoaderManager().restartLoader(LOADER_COMPETITION_SUMMARY, null, this);
 		} catch (Exception e) {
 			e.printStackTrace();
 			comp.setEntries(new CharSequence[]{"Loading"});
@@ -254,12 +260,31 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		Log.d(TAG, key);
 		if(key.equals(seasonPrefString)) {
 			comp.setValue("0");
-        	this.getLoaderManager().restartLoader(SettingsActivity.LOADER_SEASON_SUMMARY, null, this);
-        	this.getLoaderManager().restartLoader(SettingsActivity.LOADER_COMPETITION, null, this);
+        	this.getLoaderManager().restartLoader(LOADER_SEASON_SUMMARY, null, this);
+        	this.getLoaderManager().restartLoader(LOADER_COMPETITION, null, this);
 		} else if(key.equals(compPrefString)) {
-        	this.getLoaderManager().restartLoader(SettingsActivity.LOADER_COMPETITION_SUMMARY, null, this);
-		} else if(key.equals(resetDBPrefString)) {
-			
+        	this.getLoaderManager().restartLoader(LOADER_COMPETITION_SUMMARY, null, this);
 		}
+	}
+	
+	public void resetData() {
+		if(null!=seasonCursor) {
+			seasonCursor.close();
+		}
+		if(null!=compCursor) {
+			compCursor.close();
+		}
+		if(null!=seasonSummCursor) {
+			seasonSummCursor.close();
+		}
+		if(null!=compSummCursor) {
+			compSummCursor.close();
+		}
+	    prefs.unsetChangeListener(this);
+    	SettingsFragment.this.getLoaderManager().destroyLoader(LOADER_SEASON_SUMMARY);
+    	SettingsFragment.this.getLoaderManager().destroyLoader(LOADER_SEASON);
+    	SettingsFragment.this.getLoaderManager().destroyLoader(LOADER_COMPETITION_SUMMARY);
+    	SettingsFragment.this.getLoaderManager().destroyLoader(LOADER_COMPETITION);
+        new Setup(this.getActivity(), true).execute();
 	}
 }

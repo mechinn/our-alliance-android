@@ -1,9 +1,11 @@
 package com.mechinn.android.ouralliance.view;
 
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
+import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -52,5 +54,13 @@ public class CompetitionTeamCursorAdapter extends CursorAdapter {
 		
 		public boolean contains(Team team) {
 			return CompetitionTeamDataSource.contains(this.getCursor(), team);
+		}
+		
+		public Competition getComp() throws OurAllianceException {
+			if(this.getCursor().getCount()>0) {
+				return get(0).getCompetition();
+			} else {
+				throw new OurAllianceException("No compettion");
+			}
 		}
 	}

@@ -8,6 +8,7 @@ import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
+import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamDataSource;
 import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
@@ -34,21 +35,21 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 	private static final String TAG = "TeamListFragment";
 	public static final int LOADER_COMPETITIONTEAMS = 0;
-	public static final int LOADER_TEAMS = 1;
+	public static final int LOADER_COMPETITION = 1;
+	public static final int LOADER_TEAMS = 2;
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-    private OnTeamSelectedListener mCallback;
+    private Listener mCallback;
     private int selectedPosition;
 	private Prefs prefs;
 	private TeamDataSource teamData;
+	private CompetitionDataSource competitionData;
 	private CompetitionTeamDataSource competitionTeamData;
 	private TeamScouting2013DataSource scouting2013;
 	private CompetitionTeamCursorAdapter adapter;
 	private Competition comp;
 	private Team addTeam;
 
-    // The container Activity must implement this interface so the frag can deliver messages
-    public interface OnTeamSelectedListener {
-        /** Called by HeadlinesFragment when a list item is selected */
+    public interface Listener {
         public void onTeamSelected(CompetitionTeam team);
     }
 
@@ -59,7 +60,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception.
         try {
-            mCallback = (OnTeamSelectedListener) activity;
+            mCallback = (Listener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
         }
@@ -68,9 +69,9 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
 		prefs = new Prefs(this.getActivity());
 		teamData = new TeamDataSource(this.getActivity());
+		competitionData = new CompetitionDataSource(this.getActivity());
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
 		scouting2013 = new TeamScouting2013DataSource(this.getActivity());
 		// Restore the previously serialized activated item position.
@@ -85,6 +86,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		}
 		adapter = new CompetitionTeamCursorAdapter(getActivity(), null);
 		setListAdapter(adapter);
+		setHasOptionsMenu(true);
     }
     
     @Override
@@ -141,8 +143,12 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	        case R.id.insert:
-	            DialogFragment newFragment = new InsertTeamDialogFragment();
-	    		newFragment.show(this.getFragmentManager(), "Add Team");
+	        	if(null!=comp) {
+		            DialogFragment newFragment = new InsertTeamDialogFragment();
+		    		newFragment.show(this.getFragmentManager(), "Add Team");
+	        	} else {
+	        		Toast.makeText(this.getActivity(), "Select a competition in settings first", Toast.LENGTH_SHORT).show();
+	        	}
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
@@ -155,18 +161,26 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	    DialogFragment dialog;
 	    switch (item.getItemId()) {
 	        case R.id.edit:
-	        	dialog = new InsertTeamDialogFragment();
-	            Bundle updateArgs = new Bundle();
-	            updateArgs.putSerializable(InsertTeamDialogFragment.TEAM_ARG, adapter.get(position).getTeam());
-	            dialog.setArguments(updateArgs);
-	        	dialog.show(this.getFragmentManager(), "Edit Team");
+	        	if(null!=comp) {
+		        	dialog = new InsertTeamDialogFragment();
+		            Bundle updateArgs = new Bundle();
+		            updateArgs.putSerializable(InsertTeamDialogFragment.TEAM_ARG, adapter.get(position).getTeam());
+		            dialog.setArguments(updateArgs);
+		        	dialog.show(this.getFragmentManager(), "Edit Team");
+		    	} else {
+		    		Toast.makeText(this.getActivity(), "Select a competition in settings first", Toast.LENGTH_SHORT).show();
+		    	}
 	            return true;
 	        case R.id.delete:
-	        	dialog = new DeleteTeamDialogFragment();
-	            Bundle deleteArgs = new Bundle();
-	            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.get(position));
-	            dialog.setArguments(deleteArgs);
-	            dialog.show(this.getFragmentManager(), "Delete Team");
+	        	if(null!=comp) {
+		        	dialog = new DeleteTeamDialogFragment();
+		            Bundle deleteArgs = new Bundle();
+		            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.get(position));
+		            dialog.setArguments(deleteArgs);
+		            dialog.show(this.getFragmentManager(), "Delete Team");
+				} else {
+					Toast.makeText(this.getActivity(), "Select a competition in settings first", Toast.LENGTH_SHORT).show();
+				}
 	            return true;
 	        default:
 	            return super.onContextItemSelected(item);
@@ -194,7 +208,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		} catch (SQLException e) {
 			//if we errored out then the team must already exist, we need to get it.
 			addTeam = team;
-			this.getLoaderManager().restartLoader(LOADER_TEAMS, null, this);
+			this.getLoaderManager().initLoader(LOADER_TEAMS, null, this);
 		}
 	}
 	
@@ -237,6 +251,20 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		}
 	}
 	
+	public void getComp(Cursor cursor) {
+		try {
+			comp = CompetitionDataSource.getSingle(cursor);
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+			//sucks to be us, we dont have a competition
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		cursor.close();
+		//stop loading!
+		this.getLoaderManager().destroyLoader(LOADER_COMPETITION);
+	}
+	
 	public void getTeam(Cursor cursor) {
 		try {
 			Team team = TeamDataSource.getSingle(cursor);
@@ -258,6 +286,8 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		switch(id) {
 			case LOADER_COMPETITIONTEAMS:
 				return competitionTeamData.getAllTeams(prefs.getComp());
+			case LOADER_COMPETITION:
+				return competitionData.get(prefs.getComp());
 			case LOADER_TEAMS:
 				return teamData.get(addTeam.getNumber());
 			default:
@@ -268,10 +298,16 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		switch(loader.getId()) {
 			case LOADER_COMPETITIONTEAMS:
-				if(null!=comp) {
-					comp = Competition.newFromViewCursor(data);
-				}
 				adapter.swapCursor(data);
+				try {
+					comp = adapter.getComp();
+				} catch (OurAllianceException e) {
+					//we need that competition!
+					this.getLoaderManager().initLoader(LOADER_COMPETITION, null, this);
+				}
+				break;
+			case LOADER_COMPETITION:
+				getComp(data);
 				break;
 			case LOADER_TEAMS:
 				getTeam(data);
@@ -283,9 +319,6 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		switch(loader.getId()) {
 			case LOADER_COMPETITIONTEAMS:
 				adapter.swapCursor(null);
-				break;
-			case LOADER_TEAMS:
-				getTeam(null);
 				break;
 		}
 	}

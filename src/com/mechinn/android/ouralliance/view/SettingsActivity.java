@@ -1,22 +1,22 @@
 package com.mechinn.android.ouralliance.view;
 
+import com.mechinn.android.ouralliance.*;
+
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-public class SettingsActivity extends PreferenceActivity {
-//	final static String ACTION_PREFS_ONE = "com.example.prefs.PREFS_ONE";
-	public static final int LOADER_SEASON = 0;
-	public static final int LOADER_COMPETITION = 1;
-	public static final int LOADER_SEASON_SUMMARY = 2;
-	public static final int LOADER_COMPETITION_SUMMARY = 3;
+public class SettingsActivity extends PreferenceActivity implements Setup.Listener, GenericDialogFragment.Listener {
+	private SettingsFragment frag;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		frag = new SettingsFragment();
         // Display the fragment as the main content.
-        getFragmentManager().beginTransaction() .replace(android.R.id.content, new SettingsFragment()).commit();
+        getFragmentManager().beginTransaction().replace(android.R.id.content, frag).commit();
         
 //        String action = getIntent().getAction();
 //        if (action != null && action.equals(ACTION_PREFS_ONE)) {
@@ -28,6 +28,18 @@ public class SettingsActivity extends PreferenceActivity {
 //            addPreferencesFromResource(R.xml.preference_headers_legacy);
 //        }
     }
+
+	public void setupComplete() {
+		frag.onResume();
+	}
+	
+	public void onGenericDialogPositiveClick(DialogInterface dialog, int id) {
+		frag.resetData();
+	}
+
+	public void onGenericDialogNegativeClick(DialogInterface dialog, int id) {
+		dialog.dismiss();
+	}
 	
 //	public void onBuildHeaders(List<PreferenceActivity.Header> target) {
 //		this.loadHeadersFromResource(R.xml.preference_headers, target);
