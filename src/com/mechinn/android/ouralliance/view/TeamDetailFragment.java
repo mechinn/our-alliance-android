@@ -17,6 +17,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -37,6 +39,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
     int mCurrentPosition = -1;
     
     private View rootView;
+    private PagerContainer galleryContainer;
+	private GalleryViewPager gallery;
 	private TextView notes;
 	private TextView orientation;
 	private TextView driveTrain;
@@ -48,6 +52,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	private LinearLayout wheels;
 	private Cursor currentView;
 	private Cursor wheelCursor;
+	private MultimediaAdapter multimedia;
 
 	private LinearLayout season;
 	private long seasonId;
@@ -122,6 +127,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
         
         rootView = inflater.inflate(R.layout.fragment_team_detail, container, false);
 		rootView.setVisibility(View.GONE);
+		galleryContainer = (PagerContainer) rootView.findViewById(R.id.pager_container);
+		gallery = galleryContainer.getViewPager();
 		orientation = (TextView) rootView.findViewById(R.id.orientation);
 		driveTrain = (TextView) rootView.findViewById(R.id.driveTrain);
 		width = (TextView) rootView.findViewById(R.id.width);
@@ -195,6 +202,13 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	
 	public void setView() {
 		this.getActivity().setTitle(Integer.toString(scouting.getTeam().getNumber())+": "+scouting.getTeam().getName());
+		multimedia = new MultimediaAdapter(this.getActivity(),scouting);
+		Log.d(TAG,"thumbs: "+multimedia.getCount());
+		gallery.setAdapter(multimedia);
+		gallery.setOffscreenPageLimit(multimedia.getCount());
+		gallery.setPageMargin(15);
+		gallery.setClipChildren(false);
+		Log.d(TAG,"imageviews: "+gallery.getChildCount());
 		orientation.setText(scouting.getOrientation());
 		driveTrain.setText(scouting.getDriveTrain());
 		//check if its 0, if so empty the string so the user doesnt go crazy

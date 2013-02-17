@@ -1,19 +1,28 @@
 package com.mechinn.android.ouralliance;
 
 import java.io.File;
+import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
+import android.widget.ImageView;
 
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
@@ -124,10 +133,6 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 			        File externalPath = Environment.getExternalStorageDirectory();
 			        File picDir = new File(externalPath.getAbsolutePath() +  "/Android/data/" + packageName + "/files");
 			        Utility.deleteRecursive(picDir);
-//			        picDir = new File(picDir.getAbsolutePath()+"/teamPic/2012/"+Integer.toString(team)+"/");
-			        if(!picDir.exists()) {
-			        	picDir.mkdirs();
-			        }
 		        }
 				setStatus("Adding 2013 data");
 				try {
