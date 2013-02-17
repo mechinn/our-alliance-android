@@ -84,7 +84,7 @@ public abstract class AOurAllianceData implements Serializable {
 			for(i=0;i<error.size()-1;++i) {
 				throwing += error.get(i)+", ";
 			}
-			throw new OurAllianceException(throwing+error.get(++i));
+			throw new OurAllianceException(throwing+error.get(i));
 		}
 	}
 	public abstract ContentValues toCV();

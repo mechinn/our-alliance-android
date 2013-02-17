@@ -22,6 +22,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -96,11 +98,11 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
     }
     
     @Override
-    public void onActivityCreated (Bundle savedInstanceState) {
-    	super.onActivityCreated(savedInstanceState);
-		this.registerForContextMenu(this.getListView());
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+    	super.onViewCreated(view, savedInstanceState);
+		registerForContextMenu(getListView());
     }
-
+    
     @Override
     public void onStart() {
         super.onStart();
@@ -147,12 +149,19 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		            DialogFragment newFragment = new InsertTeamDialogFragment();
 		    		newFragment.show(this.getFragmentManager(), "Add Team");
 	        	} else {
-	        		Toast.makeText(this.getActivity(), "Select a competition in settings first", Toast.LENGTH_SHORT).show();
+	        		noCompetition();
 	        	}
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	    super.onCreateContextMenu(menu, v, menuInfo);
+	    MenuInflater inflater = this.getActivity().getMenuInflater();
+	    inflater.inflate(R.menu.team_context_menu, menu);
 	}
 	
 	@Override
@@ -168,7 +177,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		            dialog.setArguments(updateArgs);
 		        	dialog.show(this.getFragmentManager(), "Edit Team");
 		    	} else {
-		    		Toast.makeText(this.getActivity(), "Select a competition in settings first", Toast.LENGTH_SHORT).show();
+	        		noCompetition();
 		    	}
 	            return true;
 	        case R.id.delete:
@@ -179,7 +188,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		            dialog.setArguments(deleteArgs);
 		            dialog.show(this.getFragmentManager(), "Delete Team");
 				} else {
-					Toast.makeText(this.getActivity(), "Select a competition in settings first", Toast.LENGTH_SHORT).show();
+	        		noCompetition();
 				}
 	            return true;
 	        default:
@@ -255,10 +264,9 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		try {
 			comp = CompetitionDataSource.getSingle(cursor);
 		} catch (OurAllianceException e) {
-			e.printStackTrace();
-			//sucks to be us, we dont have a competition
+    		noCompetition();
 		} catch (SQLException e) {
-			e.printStackTrace();
+    		noCompetition();
 		}
 		cursor.close();
 		//stop loading!
@@ -268,7 +276,10 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	public void getTeam(Cursor cursor) {
 		try {
 			Team team = TeamDataSource.getSingle(cursor);
-			team.setName(addTeam.getName());
+			Log.d(TAG, "team len: "+addTeam.getName().length());
+			if(addTeam.getName().length()>0) {
+				team.setName(addTeam.getName());
+			}
 			teamData.update(team);
 			insertTeamScouting();
 			insertCompetitionTeam(new CompetitionTeam(comp, team));
@@ -321,5 +332,11 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 				adapter.swapCursor(null);
 				break;
 		}
+	}
+	
+	private void noCompetition() {
+		String message = "Select a competition in settings first";
+		Log.i(TAG, message);
+		Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
 	}
 }
