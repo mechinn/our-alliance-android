@@ -27,14 +27,23 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener {
 	private static final String TAG = "MultimediaAdapter";
 	private String[] multimedia;
     private ImageFetcher imageFetcher;
+    private File teamFileDirectory;
 	
+	public File getTeamFileDirectory() {
+		return teamFileDirectory;
+	}
+
+	public void setTeamFileDirectory(File teamFileDirectory) {
+		this.teamFileDirectory = teamFileDirectory;
+	}
+
 	public MultimediaAdapter(Context context, TeamScouting team) {
 		Log.d(TAG, team.toString());
 		if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			File teamScoutingFile = new File(context.getExternalFilesDir(null).getAbsoluteFile() + "/" + team.getSeason().getYear() + "/" + team.getTeam().getNumber());
-			Log.d(TAG, teamScoutingFile.getAbsolutePath());
-			if(!teamScoutingFile.mkdirs()) {
-				File[] files = teamScoutingFile.listFiles();
+			teamFileDirectory = new File(context.getExternalFilesDir(null).getAbsoluteFile() + "/" + team.getSeason().getYear() + "/" + team.getTeam().getNumber());
+			Log.d(TAG, teamFileDirectory.getAbsolutePath());
+			if(!teamFileDirectory.mkdirs()) {
+				File[] files = teamFileDirectory.listFiles();
 				multimedia = new String[files.length];
 				for(int i=0;i<files.length;++i) {
 					multimedia[i] = "file://"+files[i].getAbsolutePath();

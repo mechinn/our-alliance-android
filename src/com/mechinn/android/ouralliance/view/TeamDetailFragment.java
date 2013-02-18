@@ -1,10 +1,15 @@
 package com.mechinn.android.ouralliance.view;
 
+import java.io.File;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.devsmart.android.ui.HorizontalListView;
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
@@ -13,15 +18,21 @@ import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamScoutingWheelDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -35,9 +46,14 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	public static final int LOADER_TEAMSCOUTING = 0;
 	public static final int LOADER_TEAMWHEEL = 1;
 	final static String ARG_POSITION = "position";
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+	private final static int PICTURE_CAPTURE_CODE = 100;
+	private final static int VIDEO_CAPTURE_CODE = 101;
     int mCurrentPosition = -1;
     
     private View rootView;
+	private Button picture;
+	private Button video;
 	private HorizontalListView gallery;
 	private TextView notes;
 	private TextView orientation;
@@ -136,6 +152,56 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
         
         rootView = inflater.inflate(R.layout.fragment_team_detail, container, false);
 		rootView.setVisibility(View.GONE);
+		picture = (Button) rootView.findViewById(R.id.picture);
+		video = (Button) rootView.findViewById(R.id.video);
+		if (this.getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+			if(Utility.isIntentAvailable(this.getActivity(),MediaStore.ACTION_IMAGE_CAPTURE)) {
+				picture.setOnClickListener(new OnClickListener() {
+					public void onClick(View v) {
+						// Create a media file name
+						if(null!=multimedia && null!=multimedia.getTeamFileDirectory()) {
+						    String timeStamp = dateFormat.format(new Date());
+						    File mediaFile = new File(multimedia.getTeamFileDirectory().getPath().replaceFirst("file://", "") + File.separator + "IMG_"+ timeStamp + ".jpg");
+							Log.d(TAG,mediaFile.getAbsolutePath());
+							// create Intent to take a picture and return control to the calling application
+						    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			
+						    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediaFile)); // set the image file name
+			
+						    // start the image capture Intent
+						    startActivityForResult(intent, PICTURE_CAPTURE_CODE);
+						}
+					}
+				});
+			} else {
+		        picture.setVisibility(View.GONE);
+			}
+			if(Utility.isIntentAvailable(this.getActivity(),MediaStore.ACTION_VIDEO_CAPTURE)) {
+				video.setOnClickListener(new OnClickListener() {
+					public void onClick(View v) {
+						// Create a media file name
+						if(null!=multimedia && null!=multimedia.getTeamFileDirectory()) {
+						    String timeStamp = dateFormat.format(new Date());
+						    File mediaFile = new File(multimedia.getTeamFileDirectory().getPath().replaceFirst("file://", "") + File.separator + "VID_"+ timeStamp + ".mp4");
+							Log.d(TAG,mediaFile.getAbsolutePath());
+							// create Intent to take a picture and return control to the calling application
+						    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+			
+						    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediaFile)); // set the image file name
+						    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
+			
+						    // start the image capture Intent
+						    startActivityForResult(intent, VIDEO_CAPTURE_CODE);
+						}
+					}
+				});
+			} else {
+		        video.setVisibility(View.GONE);
+			}
+	    } else {
+	        picture.setVisibility(View.GONE);
+	        video.setVisibility(View.GONE);
+	    }
 		gallery = (HorizontalListView) rootView.findViewById(R.id.gallery);
 //		gallery.setOnScrollListener(new AbsListView.OnScrollListener() {
 //            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
@@ -171,6 +237,38 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 		notes = (TextView) rootView.findViewById(R.id.notes);
 		season = (LinearLayout) rootView.findViewById(R.id.season);
 		return rootView;
+    }
+    
+    @Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICTURE_CAPTURE_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                // Image captured and saved to fileUri specified in the Intent
+            	if(null!=data && null!=data.getData()) {
+            		Toast.makeText(this.getActivity(), "Image saved to:\n" + data.getData(), Toast.LENGTH_LONG).show();
+            	} else {
+            		Toast.makeText(this.getActivity(), "Image saved", Toast.LENGTH_LONG).show();
+            	}
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // User cancelled the image capture
+            } else {
+                // Image capture failed, advise user
+            }
+        } else if (requestCode == VIDEO_CAPTURE_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                // Video captured and saved to fileUri specified in the Intent
+            	if(null!=data && null!=data.getData()) {
+	                Toast.makeText(this.getActivity(), "Video saved to:\n" + data.getData(), Toast.LENGTH_LONG).show();
+	        	} else {
+	        		Toast.makeText(this.getActivity(), "Video saved", Toast.LENGTH_LONG).show();
+	        	}
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // User cancelled the video capture
+            } else {
+                // Video capture failed, advise user
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
