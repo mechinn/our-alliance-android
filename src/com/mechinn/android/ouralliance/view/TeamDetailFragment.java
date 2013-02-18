@@ -3,6 +3,7 @@ package com.mechinn.android.ouralliance.view;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.devsmart.android.ui.HorizontalListView;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
@@ -17,7 +18,6 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -39,8 +38,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
     int mCurrentPosition = -1;
     
     private View rootView;
-    private PagerContainer galleryContainer;
-	private GalleryViewPager gallery;
+	private HorizontalListView gallery;
 	private TextView notes;
 	private TextView orientation;
 	private TextView driveTrain;
@@ -109,6 +107,17 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 		this.getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 		teamScoutingWheelData = new TeamScoutingWheelDataSource(this.getActivity());
 		setDataSource(createDataSouce());
+
+//        mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
+//        mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
+//        ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
+//
+//        cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
+//
+//        // The ImageFetcher takes care of loading images into our ImageView children asynchronously
+//        mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
+//        mImageFetcher.setLoadingImage(R.drawable.empty_photo);
+//        mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
 	}
 
     @Override
@@ -127,8 +136,22 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
         
         rootView = inflater.inflate(R.layout.fragment_team_detail, container, false);
 		rootView.setVisibility(View.GONE);
-		galleryContainer = (PagerContainer) rootView.findViewById(R.id.pager_container);
-		gallery = galleryContainer.getViewPager();
+		gallery = (HorizontalListView) rootView.findViewById(R.id.gallery);
+//		gallery.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+//                // Pause fetcher to ensure smoother scrolling when flinging
+//                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+//                    imageFetcher.setPauseWork(true);
+//                } else {
+//                	imageFetcher.setPauseWork(false);
+//                }
+//            }
+//
+//            public void onScroll(AbsListView absListView, int firstVisibleItem,
+//                    int visibleItemCount, int totalItemCount) {
+//            }
+//        });
+
 		orientation = (TextView) rootView.findViewById(R.id.orientation);
 		driveTrain = (TextView) rootView.findViewById(R.id.driveTrain);
 		width = (TextView) rootView.findViewById(R.id.width);
@@ -205,9 +228,6 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 		multimedia = new MultimediaAdapter(this.getActivity(),scouting);
 		Log.d(TAG,"thumbs: "+multimedia.getCount());
 		gallery.setAdapter(multimedia);
-		gallery.setOffscreenPageLimit(multimedia.getCount());
-		gallery.setPageMargin(15);
-		gallery.setClipChildren(false);
 		Log.d(TAG,"imageviews: "+gallery.getChildCount());
 		orientation.setText(scouting.getOrientation());
 		driveTrain.setText(scouting.getDriveTrain());

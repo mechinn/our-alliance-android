@@ -77,15 +77,6 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
 		scouting2013 = new TeamScouting2013DataSource(this.getActivity());
 		// Restore the previously serialized activated item position.
-		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-			int position = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);
-			if (position == ListView.INVALID_POSITION) {
-				getListView().setItemChecked(selectedPosition, false);
-			} else {
-				getListView().setItemChecked(position, true);
-			}
-			selectedPosition = position;
-		}
 		adapter = new CompetitionTeamCursorAdapter(getActivity(), null);
 		setListAdapter(adapter);
 		setHasOptionsMenu(true);
@@ -101,6 +92,15 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
     public void onViewCreated(View view, Bundle savedInstanceState) {
     	super.onViewCreated(view, savedInstanceState);
 		registerForContextMenu(getListView());
+		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+			int position = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);
+			if (position == ListView.INVALID_POSITION) {
+				getListView().setItemChecked(selectedPosition, false);
+			} else {
+				getListView().setItemChecked(position, true);
+			}
+			selectedPosition = position;
+		}
     }
     
     @Override

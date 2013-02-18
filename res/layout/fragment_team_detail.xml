@@ -6,20 +6,37 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical" >
+	    
+	    <LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+			
+	        <LinearLayout
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:gravity="center_horizontal|center_vertical"
+	            android:orientation="vertical" >
 
-	    <com.mechinn.android.ouralliance.view.PagerContainer
-	        android:id="@+id/pager_container"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:background="#CCC" >
+                <Button
+                    android:id="@+id/picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Picture" />
+                
+                <Button
+                    android:id="@+id/video"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Video" />
 
-		    <com.mechinn.android.ouralliance.view.GalleryViewPager
+	        </LinearLayout>
+
+			<com.devsmart.android.ui.HorizontalListView
 		        android:id="@+id/gallery"
-		        android:layout_width="96dp"
+		        android:layout_width="fill_parent"
 		        android:layout_height="96dp"
-		        android:layout_gravity="center_horizontal|left" />
-
-	    </com.mechinn.android.ouralliance.view.PagerContainer>
+		        android:background="#ddd" />
+		</LinearLayout>
 		
 		<LinearLayout
 			android:layout_width="match_parent"
