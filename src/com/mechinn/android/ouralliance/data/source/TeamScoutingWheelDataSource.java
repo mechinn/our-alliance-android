@@ -37,13 +37,23 @@ public class TeamScoutingWheelDataSource extends AOurAllianceDataSource<TeamScou
 	}
 
 	@Override
-	public CursorLoader query(String selection, String order) {
+	public CursorLoader get(String selection, String order) {
+		return get(TeamScoutingWheel.URI,TeamScoutingWheel.VIEWCOLUMNS, selection, order);
+	}
+
+	@Override
+	public Cursor query(String selection, String order) {
 		return query(TeamScoutingWheel.URI,TeamScoutingWheel.VIEWCOLUMNS, selection, order);
 	}
 
 	@Override
 	public CursorLoader getAll() {
 		return getAll(Team.VIEW_NUMBER);
+	}
+
+	@Override
+	public Cursor queryAll() {
+		return queryAll(Team.VIEW_NUMBER);
 	}
 	
 	public static TeamScoutingWheel getSingle(Cursor cursor) throws OurAllianceException, SQLException {

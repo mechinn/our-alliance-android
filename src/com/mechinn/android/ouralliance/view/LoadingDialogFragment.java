@@ -10,6 +10,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,14 +29,21 @@ public class LoadingDialogFragment extends DialogFragment {
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	this.setCancelable(false);
+		setRetainInstance(true);
     	super.onCreate(savedInstanceState);
+    }
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null && getRetainInstance()) {
+            getDialog().setDismissMessage(null);
+        }
+        super.onDestroyView();
     }
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
-		setRetainInstance(true);
 		dialog = inflater.inflate(R.layout.loading, container, false);
 		progress = (ProgressBar) dialog.findViewById(R.id.progressBar);
-		progress.setMax(this.getArguments().getInt(MAX,100));
         status = (TextView) dialog.findViewById(R.id.status);
 		return dialog;
 	}
@@ -44,7 +52,6 @@ public class LoadingDialogFragment extends DialogFragment {
 	public void onStart () {
 		super.onStart();
 		this.getDialog().setTitle(this.getArguments().getCharSequence(TITLE,""));
-		this.getDialog().setCancelable(false);
 		// Disable the back button
 		OnKeyListener keyListener = new OnKeyListener() {
 			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
@@ -62,9 +69,11 @@ public class LoadingDialogFragment extends DialogFragment {
 	public void setProgressIndeterminate() {
 		progress.setIndeterminate(true);
 	}
-	public void setProgressPercent(int primary) {
+	public void setProgressPercent(int primary, int total) {
 		progress.setIndeterminate(false);
     	progress.setProgress(primary);
+    	progress.setMax(total);
+    	Log.d(TAG, "percent: "+progress.getProgress()+"/"+progress.getMax());
     }
 	public void setProgressStatus(CharSequence statusText) {
 		status.setText(statusText);

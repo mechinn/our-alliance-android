@@ -39,7 +39,12 @@ public class CompetitionTeamDataSource extends AOurAllianceDataSource<Competitio
 	}
 
 	@Override
-	public CursorLoader query(String selection, String order) {
+	public CursorLoader get(String selection, String order) {
+		return get(CompetitionTeam.URI,CompetitionTeam.VIEWCOLUMNS, selection, order);
+	}
+
+	@Override
+	public Cursor query(String selection, String order) {
 		return query(CompetitionTeam.URI,CompetitionTeam.VIEWCOLUMNS, selection, order);
 	}
 
@@ -47,21 +52,42 @@ public class CompetitionTeamDataSource extends AOurAllianceDataSource<Competitio
 	public CursorLoader getAll() {
 		return getAll(CompetitionTeam.RANK+", "+Team.VIEW_NUMBER);
 	}
+
+	@Override
+	public Cursor queryAll() {
+		return queryAll(CompetitionTeam.RANK+", "+Team.VIEW_NUMBER);
+	}
 	
 	public CursorLoader getTeam(Team team) {
 		return getTeam(team.getId());
+	}
+	
+	public Cursor queryTeam(Team team) {
+		return queryTeam(team.getId());
 	}
 	
 	public CursorLoader getTeam(long team) {
 		return get(CompetitionTeam.TEAM, team);
 	}
 	
+	public Cursor queryTeam(long team) {
+		return query(CompetitionTeam.TEAM, team);
+	}
+	
 	public CursorLoader getAllTeams(Competition comp) {
 		return getAllTeams(comp.getId());
 	}
 	
+	public Cursor queryAllTeams(Competition comp) {
+		return queryAllTeams(comp.getId());
+	}
+	
 	public CursorLoader getAllTeams(long comp) {
 		return get(CompetitionTeam.COMPETITION, comp, CompetitionTeam.RANK+", "+Team.VIEW_NUMBER);
+	}
+	
+	public Cursor queryAllTeams(long comp) {
+		return query(CompetitionTeam.COMPETITION, comp, CompetitionTeam.RANK+", "+Team.VIEW_NUMBER);
 	}
 	
 	public static CompetitionTeam getSingle(Cursor cursor) throws OurAllianceException, SQLException {

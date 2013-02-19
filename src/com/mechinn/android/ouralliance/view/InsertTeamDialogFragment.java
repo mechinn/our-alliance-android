@@ -26,7 +26,6 @@ public class InsertTeamDialogFragment extends DialogFragment {
     Listener listener;
     private View dialog;
     private TextView teamNumber;
-    private TextView teamName;
     private Team team;
     private boolean update;
     
@@ -51,12 +50,10 @@ public class InsertTeamDialogFragment extends DialogFragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		dialog = inflater.inflate(R.layout.dialog_team_insert, null);
 		teamNumber = (TextView) dialog.findViewById(R.id.editTeamNumber);
-		teamName = (TextView) dialog.findViewById(R.id.editTeamName);
 		int yes;
 		try {
 			team = (Team) this.getArguments().getSerializable(TEAM_ARG);
     		teamNumber.setText(Integer.toString(team.getNumber()));
-    		teamName.setText(team.getName());
     		yes = R.string.update;
     		update = true;
 		} catch(NullPointerException e) {
@@ -67,8 +64,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					team.setNumber(teamNumber.getText());
-					team.setName(teamName.getText());
+					team.setNumberString(teamNumber.getText());
 					listener.onInsertDialogPositiveClick(update, team);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

@@ -37,7 +37,12 @@ public class SeasonDataSource extends AOurAllianceDataSource<Season> {
 	}
 
 	@Override
-	public CursorLoader query(String selection, String order) {
+	public CursorLoader get(String selection, String order) {
+		return get(Season.URI,Season.ALLCOLUMNS, selection, order);
+	}
+
+	@Override
+	public Cursor query(String selection, String order) {
 		return query(Season.URI,Season.ALLCOLUMNS, selection, order);
 	}
 
@@ -45,9 +50,18 @@ public class SeasonDataSource extends AOurAllianceDataSource<Season> {
 	public CursorLoader getAll() {
 		return getAll(Season.YEAR+" DESC");
 	}
+
+	@Override
+	public Cursor queryAll() {
+		return queryAll(Season.YEAR+" DESC");
+	}
 	
 	public CursorLoader get(int year) {
 		return get(Season.YEAR,year);
+	}
+	
+	public Cursor query(int year) {
+		return query(Season.YEAR,year);
 	}
 	
 	public static Season getSingle(Cursor cursor) throws OurAllianceException, SQLException {

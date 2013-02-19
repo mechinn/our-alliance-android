@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
@@ -13,6 +14,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
+@JsonIgnoreProperties({"id","mod"})
 public class Team extends AOurAllianceData implements Comparable<Team> {
 	private static final long serialVersionUID = 6981108401294045422L;
 	public static final String CLASS = "Team";
@@ -52,7 +54,7 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 	public int getNumber() {
 		return number;
 	}
-	public void setNumber(CharSequence number) {
+	public void setNumberString(CharSequence number) {
 		try {
 			setNumber(Integer.parseInt(number.toString()));
 		} catch (Exception e) {

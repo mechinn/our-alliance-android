@@ -13,12 +13,4 @@
         android:hint="@string/teamNumber">
     </EditText>
 
-    <EditText
-        android:id="@+id/editTeamName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/teamName"
-        android:inputType="text" />
-
 </LinearLayout>

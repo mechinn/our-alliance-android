@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import android.content.Context;
 import android.content.CursorLoader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
@@ -26,7 +27,7 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 		if(data.insert()) {
 			Uri newUri = context.getContentResolver().insert(uri, data.toCV());
 			Log.d(TAG, newUri.toString());
-			data.setId(newUri);
+			data.setIdUri(newUri);
 			if(!data.insert()){
 				return data;
 			}
@@ -79,7 +80,15 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 		return get(season.getId(), team.getId());
 	}
 	
+	public Cursor query(Season season, Team team) {
+		return query(season.getId(), team.getId());
+	}
+	
 	public CursorLoader get(long season, long team) {
+		return get(TeamScouting.SEASON+" = '"+season+"' AND "+TeamScouting.TEAM+" = '"+team+"'");
+	}
+	
+	public Cursor query(long season, long team) {
 		return query(TeamScouting.SEASON+" = '"+season+"' AND "+TeamScouting.TEAM+" = '"+team+"'");
 	}
 	
@@ -87,15 +96,31 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 		return get(id.getId());
 	}
 	
+	public Cursor query(A id) {
+		return query(id.getId());
+	}
+	
 	public CursorLoader get(long id) {
 		return get(BaseColumns._ID, id);
+	}
+	
+	public Cursor query(long id) {
+		return query(BaseColumns._ID, id);
 	}
 	
 	public CursorLoader get(String key, Object value) {
 		return get(key, value, null);
 	}
 	
+	public Cursor query(String key, Object value) {
+		return query(key, value, null);
+	}
+	
 	public CursorLoader get(String key, Object value, String order) {
+		return get(key+" = '"+value+"'", order);
+	}
+	
+	public Cursor query(String key, Object value, String order) {
 		return query(key+" = '"+value+"'", order);
 	}
 	
@@ -103,20 +128,37 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 		return getAll(null);
 	}
 	
+	public Cursor queryAll() {
+		return queryAll(null);
+	}
+	
 	public CursorLoader getAll(String order) {
+		return get(null, order);
+	}
+	
+	public Cursor queryAll(String order) {
 		return query(null, order);
 	}
 	
-	public CursorLoader query(String selection) {
+	public CursorLoader get(String selection) {
+		return get(selection, null);
+	}
+	
+	public Cursor query(String selection) {
 		return query(selection, null);
 	}
 	
-	public CursorLoader query(Uri uri, String[] projection, String selection, String order) {
+	public CursorLoader get(Uri uri, String[] projection, String selection, String order) {
 		return new CursorLoader(context, uri, projection, selection, null, order);
+	}
+	
+	public Cursor query(Uri uri, String[] projection, String selection, String order) {
+		return context.getContentResolver().query(uri, projection, selection, null, order);
 	}
 
 	public abstract A insert(A data) throws OurAllianceException, SQLException;
 	public abstract int update(A data, String selection) throws OurAllianceException, SQLException;
 	public abstract int delete(String selection) throws OurAllianceException;
-	public abstract CursorLoader query(String selection, String order);
+	public abstract CursorLoader get(String selection, String order);
+	public abstract Cursor query(String selection, String order);
 }

@@ -37,7 +37,12 @@ public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
 	}
 
 	@Override
-	public CursorLoader query(String selection, String order) {
+	public CursorLoader get(String selection, String order) {
+		return get(Competition.URI,Competition.VIEWCOLUMNS, selection, order);
+	}
+
+	@Override
+	public Cursor query(String selection, String order) {
 		return query(Competition.URI,Competition.VIEWCOLUMNS, selection, order);
 	}
 	
@@ -46,16 +51,33 @@ public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
 		return getAll(Competition.NAME);
 	}
 	
+	@Override
+	public Cursor queryAll() {
+		return queryAll(Competition.NAME);
+	}
+	
 	public CursorLoader get(String code) {
 		return get(Competition.CODE, code);
+	}
+	
+	public Cursor query(String code) {
+		return query(Competition.CODE, code);
 	}
 	
 	public CursorLoader getAllCompetitions(Season season) {
 		return getAllCompetitions(season.getId());
 	}
 	
+	public Cursor queryAllCompetitions(Season season) {
+		return queryAllCompetitions(season.getId());
+	}
+	
 	public CursorLoader getAllCompetitions(long season) {
 		return get(Competition.SEASON, season, Competition.NAME);
+	}
+	
+	public Cursor queryAllCompetitions(long season) {
+		return query(Competition.SEASON, season, Competition.NAME);
 	}
 	
 	public static Competition getSingle(Cursor cursor) throws OurAllianceException, SQLException {

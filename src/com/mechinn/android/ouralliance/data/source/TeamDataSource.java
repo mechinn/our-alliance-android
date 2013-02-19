@@ -37,7 +37,12 @@ public class TeamDataSource extends AOurAllianceDataSource<Team> {
 	}
 
 	@Override
-	public CursorLoader query(String selection, String order) {
+	public CursorLoader get(String selection, String order) {
+		return get(Team.URI,Team.ALLCOLUMNS, selection, order);
+	}
+
+	@Override
+	public Cursor query(String selection, String order) {
 		return query(Team.URI,Team.ALLCOLUMNS, selection, order);
 	}
 
@@ -45,9 +50,18 @@ public class TeamDataSource extends AOurAllianceDataSource<Team> {
 	public CursorLoader getAll() {
 		return getAll(Team.NUMBER);
 	}
+
+	@Override
+	public Cursor queryAll() {
+		return queryAll(Team.NUMBER);
+	}
 	
 	public CursorLoader get(int num) {
 		return get(Team.NUMBER, num);
+	}
+	
+	public Cursor query(int num) {
+		return query(Team.NUMBER, num);
 	}
 	
 	public static Team getSingle(Cursor cursor) throws OurAllianceException, SQLException {

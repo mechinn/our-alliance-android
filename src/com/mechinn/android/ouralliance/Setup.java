@@ -1,8 +1,10 @@
 package com.mechinn.android.ouralliance;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URLConnection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +12,10 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,9 +29,14 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.GetTeams;
 import com.mechinn.android.ouralliance.data.Season;
+import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
@@ -38,11 +48,11 @@ import com.mechinn.android.ouralliance.view.LoadingDialogFragment;
 import com.mechinn.android.ouralliance.view.TeamListFragment.Listener;
 
 public class Setup extends AsyncTask<Void, Object, Boolean> {
-	public static final int PRIMARY = 148;
 	public static final int VERSION = 1;
 	public static final String TAG = "Setup";
 	private static final int INDETERMINATE = -1;
 	private static final int NORMAL = 0;
+	private ObjectMapper jsonMapper;
 	private Prefs prefs;
 	private TeamDataSource teamData;
 	private SeasonDataSource seasonData;
@@ -53,11 +63,13 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 	private File dbPath;
 	private Integer flag;
 	private Integer primary;
+    private Integer progressTotal;
 	private Integer version;
 	private CharSequence status;
 	private Map<String, String> comps;
 	private LoadingDialogFragment dialog;
 	private ContentResolver data;
+	private AssetManager assets;
 	private boolean reset;
 	private FragmentManager fragmentManager;
     private Listener listener;
@@ -74,7 +86,9 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
         }
 		this.reset = reset;
 		this.fragmentManager = activity.getFragmentManager();
+		assets = activity.getAssets();
 		this.data = activity.getContentResolver();
+		jsonMapper = new ObjectMapper();
 		prefs = new Prefs(activity);
 		teamData = new TeamDataSource(activity);
 		seasonData = new SeasonDataSource(activity);
@@ -99,7 +113,6 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 			dialog = new LoadingDialogFragment();
 			Bundle dialogArgs = new Bundle();
 			dialogArgs.putCharSequence(LoadingDialogFragment.TITLE, title);
-			dialogArgs.putInt(LoadingDialogFragment.MAX, PRIMARY);
 			dialog.setArguments(dialogArgs);
             dialog.show(fragmentManager, "Setup Our Alliance");
 		} else {
@@ -113,6 +126,8 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 		Log.d(TAG, "version: "+version);
 		flag = 0;
 		primary = 0;
+		progressTotal = 0;
+		status = "Loading...";
 		switch(version+1) {
 			case 0:
 				increaseVersion();
@@ -123,7 +138,6 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 //				}
 				setStatus("Resetting database");
 		        data.call(Uri.parse(DataProvider.BASE_URI_STRING+TAG), DataProvider.RESET, null, null);
-	        	setFlag(NORMAL);
 			case 1:
 				increaseVersion();
 	        	setFlag(INDETERMINATE);
@@ -134,12 +148,11 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 			        File picDir = new File(externalPath.getAbsolutePath() +  "/Android/data/" + packageName + "/files");
 			        Utility.deleteRecursive(picDir);
 		        }
-				setStatus("Adding 2013 data");
+				setStatus("Setting up 2013 competitions");
 				try {
 					Season s2013 = new Season(2013, "Ultimate Ascent");
 					Log.d(TAG,s2013.toString());
 					s2013 = seasonData.insert(s2013);
-		        	increasePrimary();
 					if(!addCompetitions(s2013)) {
 						return false;
 					}
@@ -150,8 +163,43 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 					e.printStackTrace();
 					return false;
 				}
+				setStatus("Adding 2013 teams");
+				try {
+					GetTeams getter = jsonMapper.readValue(assets.open("teams.json"),GetTeams.class);
+					Log.d(TAG, "teams: "+getter.getData().size());
+					this.setTotal(getter.getData().size());
+					for(Team team : getter.getData()) {
+						Log.d(TAG, team.toString());
+						try {
+							teamData.insert(team);
+					    	this.increasePrimary();
+							continue;
+						} catch (OurAllianceException e) {
+							//just go to the update part then
+						} catch (SQLException e) {
+							//just go to the update part then
+						}
+						Cursor cusor = teamData.query(team.getNumber());
+						try {
+							Team fromDb = TeamDataSource.getSingle(cusor);
+							fromDb.setName(team.getName());
+							fromDb.setNumber(team.getNumber());
+							teamData.update(fromDb);
+						} catch (OurAllianceException e1) {
+							e1.printStackTrace();
+						} catch (SQLException e1) {
+							e1.printStackTrace();
+						}
+				    	this.increasePrimary();
+					}
+				} catch (JsonParseException e) {
+					e.printStackTrace();
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 //			case 2:
-//
 //				increaseVersion();
 		}
 		setStatus("Finished");
@@ -163,13 +211,14 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 	protected void onProgressUpdate(Object... progress) {
 		int flag = (Integer)progress[0];
 		int primary = (Integer)progress[1];
-		dialog.setProgressStatus((String)progress[2]);
+		int total = (Integer)progress[2];
+		dialog.setProgressStatus((String)progress[3]);
 		switch(flag) {
 			case INDETERMINATE:
 				dialog.setProgressIndeterminate();
 			case NORMAL:
 			default:
-				dialog.setProgressPercent(primary);
+				dialog.setProgressPercent(primary,total);
 		}
     }
 
@@ -182,81 +231,90 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 	private boolean addCompetitions(Season season) {
 		comps = new HashMap<String,String>();
     	increasePrimary();
-		putComp("STX", "Alamo Regional");
-		putComp("NH", "BAE Systems Granite State Regional");
-		putComp("KC", "Greater Kansas City Regional");
-		putComp("PAH", "Hatboro-Horsham FIRST Robotics District Competition");
-		putComp("GG", "Kettering University FIRST Robotics District Competition");
-		putComp("MIGL", "Gull Lake FIRST Robotics District Competition");
-		putComp("TN", "Smoky Mountains Regional");
-		putComp("SDC", "San Diego Regional");
-		putComp("IS", "Israel Regional");
-		putComp("OR", "Autodesk Oregon Regional");
-		putComp("MD", "Chesapeake Regional");
-		putComp("PHL", "Chestnut Hill FIRST Robotics District Competition");
-		putComp("ROC", "Finger Lakes Regional");
-		putComp("ON", "Greater Toronto East Regional");
-		putComp("DMN", "Lake Superior Regional");
-		putComp("FL", "Orlando Regional");
-		putComp("PIT", "Pittsburgh Regional");
-		putComp("GT", "Traverse City FIRST Robotics District Competition");
-		putComp("OC1", "Waterford FIRST Robotics District Competition");
-		putComp("WOR", "WPI Regional");
-		putComp("NJ", "Rutgers University FIRST Robotics District Competition");
-		putComp("LA", "Bayou Regional");
-		putComp("IN", "Boilermaker Regional");
-		putComp("DT", "Detroit FIRST Robotics District Competition");
-		putComp("QC", "Festival de Robotique FRC a Montreal Regional");
-		putComp("CA", "Los Angeles Regional");
-		putComp("GA", "Peachtree Regional");
-		putComp("SAC", "Sacramento Regional");
-		putComp("UT", "Utah Regional co-sponsored by NASA and Platt");
-		putComp("VA", "Virginia Regional");
-		putComp("MI", "West Michigan FIRST Robotics District Competition");
-		putComp("NY", "New York City Regional");
-		putComp("AZ", "Arizona Regional");
-		putComp("MA", "Boston Regional");
-		putComp("HI", "Hawaii Regional sponsored by BAE Systems");
-		putComp("OH", "Buckeye Regional");
-		putComp("CO", "Colorado Regional");
-		putComp("NJT", "Lenape FIRST Robotics District Competition");
-		putComp("IL", "Midwest Regional");
-		putComp("SWM", "Niles FIRST Robotics District Competition");
-		putComp("WCA", "Northville FIRST Robotics District Competition");
-		putComp("SC", "Palmetto Regional");
-		putComp("WA2", "Seattle Cascade Regional");
-		putComp("WA", "Seattle Olympic Regional");
-		putComp("MO", "St. Louis Regional");
-		putComp("WAT", "Waterloo Regional");
-		putComp("WI", "Wisconsin Regional");
-		putComp("DA", "Dallas East Regional sponsored by jcpenney");
-		putComp("DA2", "Dallas West Regional sponsored by jcpenney");
-		putComp("ON2", "Greater Toronto West Regional");
-		putComp("WW", "Livonia FIRST Robotics District Competition");
-		putComp("MN", "Minnesota 10000 Lakes Regional");
-		putComp("MN2", "Minnesota North Star Regional");
-		putComp("NJF", "Mount Olive FIRST Robotics District Competition");
-		putComp("CT", "Northeast Utilities FIRST Connecticut Regional");
-		putComp("OK", "Oklahoma Regional");
-		putComp("LI", "SBPLI Long Island Regional");
-		putComp("SJ", "Silicon Valley Regional");
-		putComp("SFL", "South Florida Regional");
-		putComp("OC", "Troy FIRST Robotics District Competition");
-		putComp("DC", "Washington DC  Regional");
-		putComp("CAF", "Central Valley Regional");
-		putComp("NV", "Las Vegas Regional");
-		putComp("TX", "Lone Star Regional");
-		putComp("NC", "North Carolina Regional");
-		putComp("OHC", "Queen City Regional");
-		putComp("WAS", "Spokane Regional");
-		putComp("PA", "Mid-Atlantic Robotics FRC Region Championship");
-		putComp("GL", "Michigan FRC State Championship");
-		putComp("Archimedes", "FIRST Championship - Archimedes Division");
-		putComp("Curie", "FIRST Championship - Curie Division");
-		putComp("Galileo", "FIRST Championship - Galileo Division");
-		putComp("Newton", "FIRST Championship - Newton Division");
-		putComp("CMP", "FIRST Championship");
+		putComp("txsa", "Alamo Regional sponsored by Rackspace Hosting");
+		putComp("nhma", "BAE Systems Granite State Regional");
+		putComp("txlu", "Hub City Regional");
+		putComp("azch", "Phoenix Regional");
+		putComp("njewn", "TCNJ FIRST Robotics District Competition");
+		putComp("misjo", "St Joseph FIRST Robotics District Competition");
+		putComp("mokc", "Greater Kansas City Regional");
+		putComp("pahat", "Hatboro-Horsham FIRST Robotics District Competition");
+		putComp("miket", "Kettering University FIRST Robotics District Competition");
+		putComp("migul", "Gull Lake FIRST Robotics District Competition");
+		putComp("tnkn", "Smoky Mountains Regional");
+		putComp("casd", "San Diego Regional");
+		putComp("ista", "Israel Regional");
+		putComp("orpo", "Autodesk Oregon Regional");
+		putComp("mdba", "Chesapeake Regional");
+		putComp("paphi", "Springside - Chestnut Hill FIRST Robotics District Competition");
+		putComp("nyro", "Finger Lakes Regional");
+		putComp("onto", "Greater Toronto East Regional");
+		putComp("onto2", "Greater Toronto West Regional");
+		putComp("mndu", "Lake Superior Regional");
+		putComp("mndu2", "Northern Lights Regional");
+		putComp("flor", "Orlando Regional");
+		putComp("papi", "Pittsburgh Regional");
+		putComp("mitvc", "Traverse City FIRST Robotics District Competition");
+		putComp("miwfd", "Waterford FIRST Robotics District Competition");
+		putComp("mawo", "WPI Regional");
+		putComp("lake", "Bayou Regional");
+		putComp("inwl", "Boilermaker Regional");
+		putComp("midet", "Detroit FIRST Robotics District Competition");
+		putComp("qcmo", "Festival de Robotique FRC a Montreal Regional");
+		putComp("calb", "Los Angeles Regional");
+		putComp("gadu", "Peachtree Regional");
+		putComp("casa", "Sacramento Regional");
+		putComp("utwv", "Utah Regional sponsored by NASA");
+		putComp("vari", "Virginia Regional");
+		putComp("miwmi", "West Michigan FIRST Robotics District Competition");
+		putComp("nyny", "New York City Regional");
+		putComp("mabo", "Boston Regional");
+		putComp("hiho", "Hawaii Regional sponsored by BAE Systems");
+		putComp("ohcl", "Buckeye Regional");
+		putComp("code", "Colorado Regional");
+		putComp("mele", "Pine Tree Regional");
+		putComp("inth", "Crossroads Regional");
+		putComp("njlen", "Lenape Seneca FIRST Robotics District Competition");
+		putComp("casb", "Inland Empire Regional");
+		putComp("ilch", "Midwest Regional");
+		putComp("scmb", "Palmetto Regional");
+		putComp("wase", "Seattle Regional");
+		putComp("wase2", "Central Washington Regional");
+		putComp("mosl", "St. Louis Regional");
+		putComp("onwa", "Waterloo Regional");
+		putComp("wimi", "Wisconsin Regional");
+		putComp("txda", "Dallas Regional");
+		putComp("miliv", "Livonia FIRST Robotics District Competition");
+		putComp("arfa", "Razorback Regional");
+		putComp("mnmi", "Minnesota 10000 Lakes Regional");
+		putComp("mnmi2", "Minnesota North Star Regional");
+		putComp("njfla", "Mount Olive FIRST Robotics District Competition");
+		putComp("abca", "Western Canadian FRC Regional");
+		putComp("ctha", "Connecticut Regional sponsored by UTC");
+		putComp("okok", "Oklahoma Regional");
+		putComp("nyli", "SBPLI Long Island Regional");
+		putComp("casj", "Silicon Valley Regional");
+		putComp("flbr", "South Florida Regional");
+		putComp("mitry", "Troy FIRST Robotics District Competition");
+		putComp("dcwa", "Washington DC  Regional");
+		putComp("cama", "Central Valley Regional");
+		putComp("nvlv", "Las Vegas Regional");
+		putComp("txho", "Lone Star Regional");
+		putComp("ncre", "North Carolina Regional");
+		putComp("ohic", "Queen City Regional");
+		putComp("mibed", "Bedford FIRST Robotics District Competition");
+		putComp("migbl", "Grand Blanc FIRST Robotics District Competition");
+		putComp("wach", "Spokane Regional");
+		putComp("njbrg", "Bridgewater-Raritan FIRST Robotics District Competition");
+		putComp("mrcmp", "Mid-Atlantic Robotics FRC Region Championship");
+		putComp("micmp", "Michigan FRC State Championship");
+		putComp("archimedes", "FIRST Championship - Archimedes Division");
+		putComp("curie", "FIRST Championship - Curie Division");
+		putComp("galileo", "FIRST Championship - Galileo Division");
+		putComp("newton", "FIRST Championship - Newton Division");
+		putComp("cmp", "FIRST Championship");
 		Competition thisComp;
+		this.setTotal(comps.size());
 		for (Map.Entry<String, String> each : comps.entrySet()) {
 			try {
 				thisComp = new Competition(season, each.getValue(), each.getKey());
@@ -281,20 +339,28 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 	
 	private void setFlag(int flag) {
 		this.flag = flag;
-        publishProgress(new Object[]{flag, primary, version+": "+status});
+        publishProgress(new Object[]{flag, primary, progressTotal, version+": "+status});
 	}
 	
 	private void increasePrimary() {
-        publishProgress(new Object[]{flag, ++primary, version+": "+status});
+    	setFlag(NORMAL);
+        publishProgress(new Object[]{flag, ++primary, progressTotal, version+": "+status});
 	}
 	
 	private void increaseVersion() {
-        publishProgress(new Object[]{flag, primary, (++version)+": "+status});
+        publishProgress(new Object[]{flag, primary, progressTotal, (++version)+": "+status});
+	}
+	
+	private void setTotal(int total) {
+    	setFlag(NORMAL);
+		this.primary = 0;
+		this.progressTotal = total;
+        publishProgress(new Object[]{flag, primary, progressTotal, version+": "+status});
 	}
 	
 	private void setStatus(CharSequence status) {
 		this.status = status;
 		Log.d(TAG, status.toString());
-        publishProgress(new Object[]{flag, primary, version+": "+status});
+        publishProgress(new Object[]{flag, primary, progressTotal, version+": "+status});
 	}
 }

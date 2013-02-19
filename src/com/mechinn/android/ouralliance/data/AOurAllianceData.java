@@ -49,7 +49,7 @@ public abstract class AOurAllianceData implements Serializable {
 	public long getId() {
 		return id;
 	}
-	public void setId(Uri uri) {
+	public void setIdUri(Uri uri) {
 		String id = uri.getLastPathSegment();
 		Log.d(TAG, id);
 		long num = Long.parseLong(id);

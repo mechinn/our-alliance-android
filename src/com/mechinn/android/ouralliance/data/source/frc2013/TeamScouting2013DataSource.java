@@ -38,13 +38,23 @@ public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScout
 	}
 
 	@Override
-	public CursorLoader query(String selection, String order) {
+	public CursorLoader get(String selection, String order) {
+		return get(TeamScouting2013.URI,TeamScouting2013.VIEWCOLUMNS, selection, order);
+	}
+
+	@Override
+	public Cursor query(String selection, String order) {
 		return query(TeamScouting2013.URI,TeamScouting2013.VIEWCOLUMNS, selection, order);
 	}
 
 	@Override
 	public CursorLoader getAll() {
 		return getAll(Team.VIEW_NUMBER);
+	}
+
+	@Override
+	public Cursor queryAll() {
+		return queryAll(Team.VIEW_NUMBER);
 	}
 	
 	public static TeamScouting2013 getSingle(Cursor cursor) throws OurAllianceException, SQLException {
