@@ -22,6 +22,7 @@ public class OurAllianceActivity extends Activity implements TeamListFragment.Li
 	public static final String TAG = "OurAllianceActivity";
 	private TeamListFragment teamListFrag;
 	private TeamDetailFragment<?, ?> teamDetailFragment;
+	private int listFrag;
 	private int detailFrag;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,25 +30,20 @@ public class OurAllianceActivity extends Activity implements TeamListFragment.Li
 		new Setup(this, false).execute();
 		setContentView(R.layout.activity_team_scouting);
 		this.getFragmentManager().addOnBackStackChangedListener(this);
-		detailFrag = R.id.detail_fragment;
+        // Create an instance of ExampleFragment
+    	teamListFrag = new TeamListFragment();
+        // In case this activity was started with special instructions from an Intent,
+        // pass the Intent's extras to the fragment as arguments
+    	teamListFrag.setArguments(getIntent().getExtras());
+        // Add the fragment to the 'fragment_container' FrameLayout
         if (this.findViewById(R.id.fragment_container) != null) {
+        	listFrag = R.id.fragment_container;
     		detailFrag = R.id.fragment_container;
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
-        	if (savedInstanceState != null) {
-                return;
-            }
-            // Create an instance of ExampleFragment
-        	teamListFrag = new TeamListFragment();
-            // In case this activity was started with special instructions from an Intent,
-            // pass the Intent's extras to the fragment as arguments
-        	teamListFrag.setArguments(getIntent().getExtras());
-            // Add the fragment to the 'fragment_container' FrameLayout
-            getFragmentManager().beginTransaction().add(R.id.fragment_container, teamListFrag).commit();
 		} else {
-			teamListFrag = (TeamListFragment) getFragmentManager().findFragmentById(R.id.list_fragment);
+        	listFrag = R.id.list_fragment;
+			detailFrag = R.id.detail_fragment;
 		}
+        getFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
 	}
 	
 	@Override

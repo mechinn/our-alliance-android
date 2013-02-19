@@ -3,25 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-	android:layout_marginLeft="5dp"
+    android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
+    android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle" >
 
-    <fragment
-        class="com.mechinn.android.ouralliance.view.TeamListFragment"
+    <FrameLayout
         android:id="@+id/list_fragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:layout="@layout/fragment_team_list" />
-
-    <fragment
-        class="com.mechinn.android.ouralliance.view.Empty"
+        android:layout_weight="1" />
+    
+    
+    <FrameLayout
         android:id="@+id/detail_fragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
-        tools:layout="@layout/fragment_team_detail" />
+        android:layout_weight="2" />
 </LinearLayout>

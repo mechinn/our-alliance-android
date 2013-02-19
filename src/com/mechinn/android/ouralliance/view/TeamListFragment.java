@@ -91,6 +91,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
     	super.onViewCreated(view, savedInstanceState);
+    	setRetainInstance(true);
 		registerForContextMenu(getListView());
 		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			int position = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);

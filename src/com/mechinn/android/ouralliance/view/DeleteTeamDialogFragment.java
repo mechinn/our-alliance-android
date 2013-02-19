@@ -38,6 +38,7 @@ public class DeleteTeamDialogFragment extends DialogFragment {
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		setRetainInstance(true);
     	team = (CompetitionTeam) this.getArguments().getSerializable(TEAM_ARG);
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

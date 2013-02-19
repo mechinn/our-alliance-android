@@ -46,7 +46,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurAllianceDataSource<A>> extends Fragment implements LoaderCallbacks<Cursor> {
-	private static final String TAG = "TeamDetailFragment";
+	public static final String TAG = "TeamDetailFragment";
 	public static final int LOADER_TEAMSCOUTING = 0;
 	public static final int LOADER_TEAMWHEEL = 1;
 	final static String ARG_POSITION = "position";
@@ -143,6 +143,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+    	setRetainInstance(true);
         // If activity recreated (such as from screen rotate), restore
         // the previous article selection set by onSaveInstanceState().
         // This is primarily necessary when in the two-pane layout.
