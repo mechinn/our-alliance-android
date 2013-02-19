@@ -118,6 +118,10 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
     	super.onListItemClick(l, v, position, id);
+    	selectItem(position);
+    }
+    
+    private void selectItem(int position) {
         // Notify the parent activity of selected item
         mCallback.onTeamSelected(adapter.get(position));
         
@@ -169,6 +173,9 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	    int position = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
 	    DialogFragment dialog;
 	    switch (item.getItemId()) {
+	        case R.id.open:
+	        	selectItem(position);
+	            return true;
 	        case R.id.edit:
 	        	if(null!=comp) {
 		        	dialog = new InsertTeamDialogFragment();

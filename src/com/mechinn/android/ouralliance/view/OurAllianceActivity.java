@@ -18,9 +18,10 @@ import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 
-public class OurAllianceActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener {
+public class OurAllianceActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener {
 	public static final String TAG = "OurAllianceActivity";
 	private TeamListFragment teamListFrag;
+	private TeamDetailFragment<?, ?> teamDetailFragment;
 	private int detailFrag;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -91,18 +92,17 @@ public class OurAllianceActivity extends Activity implements TeamListFragment.Li
         args.putLong(Team.CLASS, teamId);
         
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        Fragment fragment;
 		switch(year) {
 			case 2013:
-				fragment = new TeamDetail2013();
+				teamDetailFragment = new TeamDetail2013();
 	            break;
 	        default:
 	        	Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();
 	            transaction.commit();
 	            return;
 		}
-		fragment.setArguments(args);
-        transaction.replace(detailFrag, fragment);
+		teamDetailFragment.setArguments(args);
+        transaction.replace(detailFrag, teamDetailFragment);
         transaction.addToBackStack(null);
         transaction.commit();
 	}
@@ -130,5 +130,9 @@ public class OurAllianceActivity extends Activity implements TeamListFragment.Li
 
 	public void setupComplete() {
 		
+	}
+
+	public void onDeletedImage() {
+		teamDetailFragment.resetMultimediaAdapter();
 	}
 }

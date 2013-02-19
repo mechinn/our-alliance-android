@@ -29,12 +29,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -339,6 +343,12 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 		autonomous.setRating(scouting.getAutonomous());
 		notes.setText(scouting.getNotes());
 		rootView.setVisibility(View.VISIBLE);
+	}
+	
+	public void resetMultimediaAdapter() {
+		if(null!=multimedia) {
+			multimedia.notifyDataSetChanged();
+		}
 	}
 	
 	public LinearLayout createWheel(TeamScoutingWheel thisWheel) {
