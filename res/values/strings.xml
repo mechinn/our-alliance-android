@@ -53,5 +53,13 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="no_network_connection_toast">No network connection found</string>
+    <string-array name="list_measurements">
+        <item >in</item>
+        <item >cm</item>
+    </string-array>
+    <string-array name="list_measurements_display">
+        <item >Inches (in)</item>
+        <item >Centimeters (cm)</item>
+    </string-array>
 
 </resources>

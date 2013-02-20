@@ -16,6 +16,8 @@ public class Prefs {
 	private String seasonDefault;
 	private String compPref;
 	private String compDefault;
+	private String measurePref;
+	private String measureDefault;
 	private String versionPref;
 	private String versionDefault;
 	
@@ -26,6 +28,8 @@ public class Prefs {
 		this.seasonDefault = context.getString(R.string.pref_season_default);
 		this.compPref = context.getString(R.string.pref_comp);
 		this.compDefault = context.getString(R.string.pref_comp_default);
+		this.measurePref = context.getString(R.string.pref_measure);
+		this.measureDefault = context.getString(R.string.pref_measure_default);
 		this.versionPref = context.getString(R.string.pref_about);
 		this.versionDefault = context.getString(R.string.pref_about_default);
 		try {
@@ -61,6 +65,12 @@ public class Prefs {
 	}
 	public long getComp() {
 		return Long.parseLong(prefs.getString(compPref, compDefault));
+	}
+	public String getMeasure() {
+		return prefs.getString(measurePref, measureDefault);
+	}
+	public boolean isInches() {
+		return getMeasure().equals(measureDefault);
 	}
 	public int getVersion() {
 		return Integer.parseInt(prefs.getString(versionPref, versionDefault));

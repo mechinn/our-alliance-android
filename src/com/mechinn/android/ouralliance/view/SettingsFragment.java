@@ -2,7 +2,6 @@ package com.mechinn.android.ouralliance.view;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -47,13 +46,14 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private CompetitionDataSource competitionData;
 	private String seasonPrefString;
 	private String compPrefString;
+	private String measurePrefString;
 	private String resetDBPrefString;
 	private ListPreference season;
 	private ListPreference comp;
+	private ListPreference measure;
 	private Preference resetDB;
 	private Preference changelog;
 	private Preference about;
-	private Setup setup;
 	private Cursor seasonCursor;
 	private Cursor compCursor;
 	private Cursor seasonSummCursor;
@@ -68,9 +68,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         competitionData = new CompetitionDataSource(this.getActivity());
         seasonPrefString = this.getString(R.string.pref_season);
         compPrefString = this.getString(R.string.pref_comp);
+        measurePrefString = this.getString(R.string.pref_measure);
         resetDBPrefString = this.getString(R.string.pref_resetDB);
         season = (ListPreference) getPreferenceScreen().findPreference(seasonPrefString);
         comp = (ListPreference) getPreferenceScreen().findPreference(compPrefString);
+        measure = (ListPreference) getPreferenceScreen().findPreference(measurePrefString);
+		setMeasureSummary();
         resetDB = (Preference) getPreferenceScreen().findPreference(resetDBPrefString);
         resetDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
@@ -257,6 +260,19 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	        comp.setSummary(getActivity().getString(R.string.pref_comp_summary));
         }
 	}
+	
+	private void setMeasureSummary() {
+        int measurePosition;
+        String[] measureListVals = this.getResources().getStringArray(R.array.list_measurements);
+        String measureVal = prefs.getMeasure();
+        for(measurePosition=0;measurePosition<measureListVals.length;++measurePosition) {
+        	if(measureVal.equals(measureListVals[measurePosition])) {
+        		break;
+        	}
+        }
+        String[] measureList = this.getResources().getStringArray(R.array.list_measurements_display);
+        measure.setSummary(measureList[measurePosition]);
+	}
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		Log.d(TAG, key);
@@ -266,6 +282,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         	this.getLoaderManager().restartLoader(LOADER_COMPETITION, null, this);
 		} else if(key.equals(compPrefString)) {
         	this.getLoaderManager().restartLoader(LOADER_COMPETITION_SUMMARY, null, this);
+		} else if(key.equals(measurePrefString)) {
+			setMeasureSummary();
 		}
 	}
 	
