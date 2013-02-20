@@ -30,7 +30,7 @@ public class SettingsActivity extends PreferenceActivity implements Setup.Listen
     }
 
 	public void setupComplete() {
-		frag.onResume();
+		Utility.restartApp(this);
 	}
 	
 	public void onGenericDialogPositiveClick(DialogInterface dialog, int id) {

@@ -1,6 +1,10 @@
 package com.mechinn.android.ouralliance.data.source;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import android.content.Context;
 import android.content.CursorLoader;
@@ -10,9 +14,11 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.mechinn.android.ouralliance.data.AOurAllianceData;
+import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
+import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
@@ -148,6 +154,30 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 		return query(selection, null);
 	}
 	
+	public CursorLoader getAllDistinct(String column) {
+		return getAllDistinct(new String[]{column}, null);
+	}
+	
+	public Cursor queryAllDistinct(String column) {
+		return queryAllDistinct(new String[]{column}, null);
+	}
+	
+	public CursorLoader getAllDistinct(String[] projection) {
+		return getAllDistinct(projection, null);
+	}
+	
+	public Cursor queryAllDistinct(String[] projection) {
+		return queryAllDistinct(projection, null);
+	}
+	
+	public CursorLoader getAllDistinct(String[] projection, String order) {
+		return getDistinct(projection, null, order);
+	}
+	
+	public Cursor queryAllDistinct(String[] projection, String order) {
+		return queryDistinct(projection, null, order);
+	}
+	
 	public CursorLoader get(Uri uri, String[] projection, String selection, String order) {
 		return new CursorLoader(context, uri, projection, selection, null, order);
 	}
@@ -160,5 +190,27 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 	public abstract int update(A data, String selection) throws OurAllianceException, SQLException;
 	public abstract int delete(String selection) throws OurAllianceException;
 	public abstract CursorLoader get(String selection, String order);
+	public abstract CursorLoader getDistinct(String[] projection, String selection, String order);
 	public abstract Cursor query(String selection, String order);
+	public abstract Cursor queryDistinct(String[] projection, String selection, String order);
+
+	public static List<String> getStringList(Cursor cursor) throws OurAllianceException, SQLException {
+		if(null!=cursor) {
+			List<String> set = new ArrayList<String>();
+			cursor.moveToFirst();
+			while (!cursor.isAfterLast()) {
+				String value = cursor.getString(0);
+				if(null!=value) {
+					Log.d(TAG, "get "+value);
+					set.add(value);
+				}
+				cursor.moveToNext();
+			}
+			if(set.isEmpty()) {
+				throw new OurAllianceException(TAG,"None in db.",new NoObjectsThrowable());
+			}
+			return set;
+		}
+		throw new SQLException("Cursor is null");
+	}
 }

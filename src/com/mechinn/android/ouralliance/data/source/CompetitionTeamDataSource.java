@@ -49,6 +49,16 @@ public class CompetitionTeamDataSource extends AOurAllianceDataSource<Competitio
 	}
 
 	@Override
+	public CursorLoader getDistinct(String[] projection, String selection, String order) {
+		return get(CompetitionTeam.DISTINCTURI, projection, selection, order);
+	}
+
+	@Override
+	public Cursor queryDistinct(String[] projection, String selection, String order) {
+		return query(CompetitionTeam.DISTINCTURI, projection, selection, order);
+	}
+
+	@Override
 	public CursorLoader getAll() {
 		return getAll(CompetitionTeam.RANK+", "+Team.VIEW_NUMBER);
 	}

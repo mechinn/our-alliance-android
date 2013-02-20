@@ -8,22 +8,19 @@
         android:layout_height="wrap_content"
         android:text="Type: " />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/wheelType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:ems="10" >
-
-        <requestFocus />
-    </EditText>
+        android:ems="10" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Size: " />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/wheelSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

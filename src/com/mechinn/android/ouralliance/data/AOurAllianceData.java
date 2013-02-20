@@ -51,13 +51,13 @@ public abstract class AOurAllianceData implements Serializable {
 	}
 	public void setIdUri(Uri uri) {
 		String id = uri.getLastPathSegment();
-		Log.d(TAG, id);
+//		Log.d(TAG, id);
 		long num = Long.parseLong(id);
-		Log.d(TAG, "ID: "+num);
+//		Log.d(TAG, "ID: "+num);
 		setId(num);
 	}
 	public void setId(long id) {
-		Log.d(TAG, "ID: "+id);
+//		Log.d(TAG, "ID: "+id);
 		this.id = id;
 	}
 	public Date getModified() {

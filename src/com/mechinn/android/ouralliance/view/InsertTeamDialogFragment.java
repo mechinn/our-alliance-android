@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -14,7 +15,7 @@ import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Team;
 
 public class InsertTeamDialogFragment extends DialogFragment {
-	public static final String tag = "InsertTeamDialog";
+	public static final String TAG = "InsertTeamDialog";
 	public static final String TEAM_ARG = "team";
 	/* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
@@ -38,7 +39,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
         	listener = (Listener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString() + " must implement "+tag+".Listener");
+            throw new ClassCastException(activity.toString() + " must implement "+TAG+".Listener");
         }
     }
 	
@@ -56,10 +57,12 @@ public class InsertTeamDialogFragment extends DialogFragment {
     		teamNumber.setText(Integer.toString(team.getNumber()));
     		yes = R.string.update;
     		update = true;
+    		Log.d(TAG, "update");
 		} catch(NullPointerException e) {
 			team = new Team();
 			yes = R.string.create;
 			update = false;
+    		Log.d(TAG, "insert");
 		}
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {

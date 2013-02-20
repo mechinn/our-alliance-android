@@ -2,6 +2,7 @@ package com.mechinn.android.ouralliance.view;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -90,6 +91,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		            htmlArgs.putString(HtmlDialogFragment.HTMLFILE, "file:///android_asset/changelog.html");
 		            dialog.setArguments(htmlArgs);
 		            dialog.show(SettingsFragment.this.getFragmentManager(), "Change Log");
+		            Log.d(TAG, "count: "+SettingsFragment.this.getFragmentManager().getBackStackEntryCount());
 					return true;
 				}
 			});

@@ -28,6 +28,11 @@ public class Utility {
 	    	Log.d(TAG, "deleted: "+fileOrDirectory.getName());
 	    }
 	}
+	public static void restartApp(Context context) {
+		Intent i = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.startActivity(i);
+	}
 	public static boolean shortToBool(short val) {
 		return val==0?false:true;
 	}

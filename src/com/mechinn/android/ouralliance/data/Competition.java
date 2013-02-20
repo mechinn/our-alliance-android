@@ -34,6 +34,9 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
 	public static final String URITYPE = DataProvider.AUTHORITY+"."+CLASS;
 	
+	public static final String DISTINCT = "d/"+TABLE;
+	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
+	
 	private Season season;
 	private CharSequence name;
 	private CharSequence code;

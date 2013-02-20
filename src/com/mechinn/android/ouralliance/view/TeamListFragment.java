@@ -49,6 +49,11 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	private TeamScouting2013DataSource scouting2013;
 	private CompetitionTeamCursorAdapter adapter;
 	private Competition comp;
+	public void setComp(Competition comp) {
+		this.comp = comp;
+		setHasOptionsMenu(null!=comp);
+	}
+
 	private Team addTeam;
 
     public interface Listener {
@@ -79,7 +84,6 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		// Restore the previously serialized activated item position.
 		adapter = new CompetitionTeamCursorAdapter(getActivity(), null);
 		setListAdapter(adapter);
-		setHasOptionsMenu(true);
     }
     
     @Override
@@ -114,6 +118,12 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
 		this.getLoaderManager().restartLoader(LOADER_COMPETITIONTEAMS, null, this);
+    }
+    
+    @Override
+    public void onResume() {
+    	super.onResume();
+		setHasOptionsMenu(null!=comp);
     }
 
     @Override
@@ -219,7 +229,6 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		try {
 			addTeam = teamData.insert(team);
 			insertTeamScouting();
-			insertCompetitionTeam(new CompetitionTeam(comp, addTeam));
 		} catch (OurAllianceException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -242,6 +251,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+			insertCompetitionTeam(new CompetitionTeam(comp, addTeam));
 		}
 	}
 	
@@ -270,7 +280,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	
 	public void getComp(Cursor cursor) {
 		try {
-			comp = CompetitionDataSource.getSingle(cursor);
+			setComp(CompetitionDataSource.getSingle(cursor));
 		} catch (OurAllianceException e) {
     		noCompetition();
 		} catch (SQLException e) {
@@ -283,14 +293,8 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	
 	public void getTeam(Cursor cursor) {
 		try {
-			Team team = TeamDataSource.getSingle(cursor);
-			Log.d(TAG, "team len: "+addTeam.getName().length());
-			if(addTeam.getName().length()>0) {
-				team.setName(addTeam.getName());
-			}
-			teamData.update(team);
+			addTeam = TeamDataSource.getSingle(cursor);
 			insertTeamScouting();
-			insertCompetitionTeam(new CompetitionTeam(comp, team));
 		} catch (OurAllianceException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -319,7 +323,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 			case LOADER_COMPETITIONTEAMS:
 				adapter.swapCursor(data);
 				try {
-					comp = adapter.getComp();
+					setComp(adapter.getComp());
 				} catch (OurAllianceException e) {
 					//we need that competition!
 					this.getLoaderManager().initLoader(LOADER_COMPETITION, null, this);

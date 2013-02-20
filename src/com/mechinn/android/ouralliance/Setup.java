@@ -126,7 +126,7 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 		Log.d(TAG, "version: "+version);
 		flag = 0;
 		primary = 0;
-		progressTotal = 0;
+		progressTotal = 100;
 		status = "Loading...";
 		switch(version+1) {
 			case 0:

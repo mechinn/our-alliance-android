@@ -3,9 +3,11 @@ package com.mechinn.android.ouralliance.view;
 import java.io.File;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import com.devsmart.android.ui.HorizontalListView;
 import com.mechinn.android.ouralliance.R;
@@ -35,11 +37,15 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -49,6 +55,9 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	public static final String TAG = "TeamDetailFragment";
 	public static final int LOADER_TEAMSCOUTING = 0;
 	public static final int LOADER_TEAMWHEEL = 1;
+	public static final int LOADER_WHEELTYPES = 2;
+	public static final int LOADER_ORIENTATIONS = 3;
+	public static final int LOADER_DRIVETRAINS = 4;
 	final static String ARG_POSITION = "position";
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
 	private final static int PICTURE_CAPTURE_CODE = 100;
@@ -60,8 +69,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	private Button video;
 	private HorizontalListView gallery;
 	private TextView notes;
-	private TextView orientation;
-	private TextView driveTrain;
+	private AutoCompleteTextView orientation;
+	private AutoCompleteTextView driveTrain;
 	private TextView width;
 	private TextView length;
 	private TextView height;
@@ -71,6 +80,16 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	private Cursor currentView;
 	private Cursor wheelCursor;
 	private MultimediaAdapter multimedia;
+
+	private Cursor currentWheelTypes;
+	private List<String> wheelTypes;
+	private ArrayAdapter<String> wheelTypesAdapter;
+	private Cursor currentOrientations;
+	private List<String> orientations;
+	private ArrayAdapter<String> orientationsAdapter;
+	private Cursor currentDriveTrains;
+	private List<String> driveTrains;
+	private ArrayAdapter<String> driveTrainsAdapter;
 
 	private LinearLayout season;
 	private long seasonId;
@@ -223,8 +242,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 //            }
 //        });
 
-		orientation = (TextView) rootView.findViewById(R.id.orientation);
-		driveTrain = (TextView) rootView.findViewById(R.id.driveTrain);
+		orientation = (AutoCompleteTextView) rootView.findViewById(R.id.orientation);
+		driveTrain = (AutoCompleteTextView) rootView.findViewById(R.id.driveTrain);
 		width = (TextView) rootView.findViewById(R.id.width);
 		length = (TextView) rootView.findViewById(R.id.length);
 		height = (TextView) rootView.findViewById(R.id.height);
@@ -294,6 +313,9 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
         }
         if (seasonId != 0 && teamId != 0) {
     		this.getLoaderManager().restartLoader(LOADER_TEAMSCOUTING, null, this);
+    		this.getLoaderManager().restartLoader(LOADER_WHEELTYPES, null, this);
+    		this.getLoaderManager().restartLoader(LOADER_ORIENTATIONS, null, this);
+    		this.getLoaderManager().restartLoader(LOADER_DRIVETRAINS, null, this);
         }
     }
 	
@@ -301,13 +323,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	public void onPause() {
 		super.onPause();
 		updateScouting();
-		try {
-			getDataSource().update(this.getScouting());
-		} catch (OurAllianceException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		commitUpdatedScouting();
 	}
 
     @Override
@@ -343,7 +359,6 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 		height.setText(num.equals("0")?"":num);
 		autonomous.setRating(scouting.getAutonomous());
 		notes.setText(scouting.getNotes());
-		rootView.setVisibility(View.VISIBLE);
 	}
 	
 	public void resetMultimediaAdapter() {
@@ -356,8 +371,27 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 		LinearLayout view = (LinearLayout) this.getActivity().getLayoutInflater().inflate(R.layout.fragment_team_detail_wheel, wheels, false);
 		view.setTag(thisWheel);
 		//1 is the type field
-		TextView type = (TextView)view.getChildAt(1);
+		AutoCompleteTextView type = (AutoCompleteTextView)view.getChildAt(1);
 		type.setText(thisWheel.getType());
+		type.setThreshold(1);
+		type.setAdapter(wheelTypesAdapter);
+		type.setOnFocusChangeListener(new OnFocusChangeListener() {
+			public void onFocusChange(View v, boolean hasFocus) {
+				AutoCompleteTextView textView = (AutoCompleteTextView) v; 
+				if(hasFocus) {
+					v.setTag(textView.getText().toString());
+				} else {
+					String oldString = (String) textView.getTag();
+					if(null!=oldString && !wheelTypes.contains(oldString)) {
+						wheelTypesAdapter.remove(oldString);
+					}
+					String newString = textView.getText().toString();
+					if(null!=newString && !newString.isEmpty()) {
+						wheelTypesAdapter.add(newString);
+					}
+				}
+			}
+		});
 		//get the number
 		String num = Integer.toString(thisWheel.getSize());
 		//3 is the size field, if the size is currently 0 dont show it for the user's sake
@@ -425,6 +459,75 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 		scouting.setNotes(notes.getText());
 	}
 	
+	public void commitUpdatedScouting() {
+		try {
+			getDataSource().update(this.getScouting());
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void setWheelTypesFromCursor(Cursor cursor) {
+		if(null!=currentWheelTypes) {
+			currentWheelTypes.close();
+		}
+		currentWheelTypes = cursor;
+		try {
+			wheelTypes = AOurAllianceDataSource.getStringList(currentWheelTypes);
+		} catch (OurAllianceException e) {
+			wheelTypes = new ArrayList<String>();
+		} catch (SQLException e) {
+			wheelTypes = new ArrayList<String>();
+		}
+		wheelTypesAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, wheelTypes);
+		this.getLoaderManager().restartLoader(LOADER_TEAMWHEEL, null, this);
+//		this.getLoaderManager().destroyLoader(LOADER_WHEELTYPES);
+	}
+	
+	public void setOrientationsFromCursor(Cursor cursor) {
+		if(null!=currentOrientations) {
+			currentOrientations.close();
+		}
+		currentOrientations = cursor;
+		try {
+			orientations = AOurAllianceDataSource.getStringList(currentOrientations);
+			orientationsAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, orientations);
+			orientation.setAdapter(orientationsAdapter);
+			orientation.setThreshold(1);
+			for(int i=0; i<orientation.getAdapter().getCount();++i) {
+				Log.d(TAG, "orientation: "+orientation.getAdapter().getItem(i));
+			}
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+//		this.getLoaderManager().destroyLoader(LOADER_ORIENTATIONS);
+	}
+	
+	public void setDriveTrainsFromCursor(Cursor cursor) {
+		if(null!=currentDriveTrains) {
+			currentDriveTrains.close();
+		}
+		currentDriveTrains = cursor;
+		try {
+			driveTrains = AOurAllianceDataSource.getStringList(currentDriveTrains);
+			driveTrainsAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_dropdown_item_1line, driveTrains);
+			driveTrain.setAdapter(driveTrainsAdapter);
+			driveTrain.setThreshold(1);
+			for(int i=0; i<driveTrain.getAdapter().getCount();++i) {
+				Log.d(TAG, "driveTrain: "+driveTrain.getAdapter().getItem(i));
+			}
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+//		this.getLoaderManager().destroyLoader(LOADER_DRIVETRAINS);
+	}
+	
 	public void setViewFromCursor(Cursor cursor) {
 		if(null!=currentView) {
 			currentView.close();
@@ -432,14 +535,14 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 		currentView = cursor;
 		try {
 			this.setScouting(setScoutingFromCursor(currentView));
-			//start loading the wheels while we set the view elements
-			this.getLoaderManager().restartLoader(LOADER_TEAMWHEEL, null, this);
 			setView();
+			rootView.setVisibility(View.VISIBLE);
 			return;
 		} catch (OurAllianceException e) {
+			e.printStackTrace();
 		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		rootView.setVisibility(View.VISIBLE);
 	}
 	
 	public void createWheelsFromCursor(Cursor cursor) {
@@ -462,6 +565,12 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
 		switch(id) {
+			case LOADER_WHEELTYPES:
+				return teamScoutingWheelData.getAllDistinct(TeamScoutingWheel.TYPE);
+			case LOADER_ORIENTATIONS:
+				return dataSource.getAllDistinct(TeamScouting.ORIENTATION);
+			case LOADER_DRIVETRAINS:
+				return dataSource.getAllDistinct(TeamScouting.DRIVETRAIN);
 			case LOADER_TEAMWHEEL:
 				return teamScoutingWheelData.get(getSeasonId(), getTeamId());
 			case LOADER_TEAMSCOUTING:
@@ -471,7 +580,17 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	}
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		Log.d(TAG, "loader finished");
 		switch(loader.getId()) {
+			case LOADER_WHEELTYPES:
+				setWheelTypesFromCursor(cursor);
+				break;
+			case LOADER_ORIENTATIONS:
+				setOrientationsFromCursor(cursor);
+				break;
+			case LOADER_DRIVETRAINS:
+				setDriveTrainsFromCursor(cursor);
+				break;
 			case LOADER_TEAMSCOUTING:
 				setViewFromCursor(cursor);
 				break;
@@ -482,6 +601,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	}
 
 	public void onLoaderReset(Loader<Cursor> loader) {
+		Log.d(TAG, "loader reset");
 		switch(loader.getId()) {
 			case LOADER_TEAMSCOUTING:
 				setViewFromCursor(null);

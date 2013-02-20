@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pref_category_ourAlliance">Our Alliance</string>
+    <string name="pref_category_location">Location</string>
     <string name="pref_season">season</string>
     <string name="pref_season_title">FRC Season</string>
     <string name="pref_season_summary">Select the season to scout.</string>
@@ -11,6 +11,13 @@
     <string name="pref_comp_summary">Select the competition to scout.</string>
     <string name="pref_comp_dialogTitle">FRC Competition</string>
     <string name="pref_comp_default">0</string>
+    
+    <string name="pref_category_units">Units</string>
+    <string name="pref_measure">measure</string>
+    <string name="pref_measure_title">Measurement</string>
+    <string name="pref_measure_summary">Select your unit of measurement.</string>
+    <string name="pref_measure_dialogTitle">Measurement</string>
+    <string name="pref_measure_default">in</string>
     
     <string name="pref_category_about">About</string>
     <string name="pref_resetDB">resetDB</string>

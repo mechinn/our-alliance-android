@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
 import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
@@ -44,6 +45,16 @@ public class SeasonDataSource extends AOurAllianceDataSource<Season> {
 	@Override
 	public Cursor query(String selection, String order) {
 		return query(Season.URI,Season.ALLCOLUMNS, selection, order);
+	}
+
+	@Override
+	public CursorLoader getDistinct(String[] projection, String selection, String order) {
+		return get(Season.DISTINCTURI, projection, selection, order);
+	}
+
+	@Override
+	public Cursor queryDistinct(String[] projection, String selection, String order) {
+		return query(Season.DISTINCTURI, projection, selection, order);
 	}
 
 	@Override

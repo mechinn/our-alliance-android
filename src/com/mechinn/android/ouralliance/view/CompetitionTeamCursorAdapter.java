@@ -25,7 +25,6 @@ public class CompetitionTeamCursorAdapter extends CursorAdapter {
 
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
-			Log.d(TAG, "binding view");
 			CompetitionTeam team = CompetitionTeam.newFromCursor(cursor);
 			TextView summary = (TextView)view.findViewById(R.id.team_list_item);
 			summary.setText(team.getTeam().toString());
@@ -33,7 +32,6 @@ public class CompetitionTeamCursorAdapter extends CursorAdapter {
 
 		@Override
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
-			Log.d(TAG, "creating view");
 			LayoutInflater inflater = LayoutInflater.from(context);
 			View v = inflater.inflate(R.layout.fragment_team_list, parent, false);
 			bindView(v, context, cursor);

@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
 import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
 import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
@@ -45,6 +46,16 @@ public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScout
 	@Override
 	public Cursor query(String selection, String order) {
 		return query(TeamScouting2013.URI,TeamScouting2013.VIEWCOLUMNS, selection, order);
+	}
+
+	@Override
+	public CursorLoader getDistinct(String[] projection, String selection, String order) {
+		return get(TeamScouting2013.DISTINCTURI, projection, selection, order);
+	}
+
+	@Override
+	public Cursor queryDistinct(String[] projection, String selection, String order) {
+		return query(TeamScouting2013.DISTINCTURI, projection, selection, order);
 	}
 
 	@Override

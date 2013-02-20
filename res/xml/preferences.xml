@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="@string/pref_category_ourAlliance">
+	<PreferenceCategory android:title="@string/pref_category_location">
 		<ListPreference
 			android:key="@string/pref_season"
 			android:title="@string/pref_season_title"
@@ -11,6 +11,13 @@
 			android:title="@string/pref_comp_title"
 			android:summary="@string/pref_comp_summary"
 			android:dialogTitle="@string/pref_comp_dialogTitle" android:defaultValue="@string/pref_comp_default"/>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/pref_category_units">
+		<ListPreference
+			android:key="@string/pref_measure"
+			android:title="@string/pref_measure_title"
+			android:summary="@string/pref_measure_summary"
+			android:dialogTitle="@string/pref_measure_dialogTitle" android:defaultValue="@string/pref_measure_default"/>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_category_about">
 		<Preference

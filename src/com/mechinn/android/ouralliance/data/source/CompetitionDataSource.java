@@ -43,7 +43,17 @@ public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
 
 	@Override
 	public Cursor query(String selection, String order) {
-		return query(Competition.URI,Competition.VIEWCOLUMNS, selection, order);
+		return query(Competition.URI, Competition.VIEWCOLUMNS, selection, order);
+	}
+
+	@Override
+	public CursorLoader getDistinct(String[] projection, String selection, String order) {
+		return get(Competition.DISTINCTURI, projection, selection, order);
+	}
+
+	@Override
+	public Cursor queryDistinct(String[] projection, String selection, String order) {
+		return query(Competition.DISTINCTURI, projection, selection, order);
 	}
 	
 	@Override

@@ -74,6 +74,10 @@ public class OurAllianceActivity extends Activity implements TeamListFragment.Li
 	}
 
 	public void onTeamSelected(CompetitionTeam team) {
+//		if(null!=teamDetailFragment) {
+//			teamDetailFragment.updateScouting();
+//			teamDetailFragment.commitUpdatedScouting();
+//		}
 		Log.d(TAG, team.toString());
 		Log.d(TAG, team.getCompetition().getSeason()+" "+team.getTeam());
 		Log.d(TAG, team.getCompetition().getSeason().getId()+" "+team.getTeam().getId());

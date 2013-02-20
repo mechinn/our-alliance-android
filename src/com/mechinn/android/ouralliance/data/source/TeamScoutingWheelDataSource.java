@@ -47,6 +47,16 @@ public class TeamScoutingWheelDataSource extends AOurAllianceDataSource<TeamScou
 	}
 
 	@Override
+	public CursorLoader getDistinct(String[] projection, String selection, String order) {
+		return get(TeamScoutingWheel.DISTINCTURI, projection, selection, order);
+	}
+
+	@Override
+	public Cursor queryDistinct(String[] projection, String selection, String order) {
+		return query(TeamScoutingWheel.DISTINCTURI, projection, selection, order);
+	}
+
+	@Override
 	public CursorLoader getAll() {
 		return getAll(Team.VIEW_NUMBER);
 	}
