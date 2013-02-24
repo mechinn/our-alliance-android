@@ -8,6 +8,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 
 public class Prefs {
+	public static final String TAG = Prefs.class.getName();
 	private SharedPreferences prefs;
 	private int currentVersion;
 	private String dbSetupPref;

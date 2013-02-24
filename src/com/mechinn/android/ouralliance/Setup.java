@@ -2,119 +2,74 @@ package com.mechinn.android.ouralliance;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLConnection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
-import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
-import android.widget.ImageView;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.GetTeams;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
-import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamDataSource;
-import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mechinn.android.ouralliance.provider.DataProvider;
-import com.mechinn.android.ouralliance.view.LoadingDialogFragment;
-import com.mechinn.android.ouralliance.view.TeamListFragment.Listener;
 
-public class Setup extends AsyncTask<Void, Object, Boolean> {
+public class Setup extends BackgroundProgress {
+	public static final String TAG = Setup.class.getName();
 	public static final int VERSION = 1;
-	public static final String TAG = "Setup";
-	private static final int INDETERMINATE = -1;
-	private static final int NORMAL = 0;
 	private ObjectMapper jsonMapper;
+	private AssetManager assets;
 	private Prefs prefs;
 	private TeamDataSource teamData;
 	private SeasonDataSource seasonData;
 	private CompetitionDataSource competitionData;
-	private TeamScouting2013DataSource teamScouting2013Data;
-	private CompetitionTeamDataSource competitionTeamData;
 	private String packageName;
 	private File dbPath;
-	private Integer flag;
-	private Integer primary;
-    private Integer progressTotal;
-	private Integer version;
-	private CharSequence status;
 	private Map<String, String> comps;
-	private LoadingDialogFragment dialog;
 	private ContentResolver data;
-	private AssetManager assets;
 	private boolean reset;
-	private FragmentManager fragmentManager;
-    private Listener listener;
-
-    public interface Listener {
-        public void setupComplete();
-    }
 	
 	public Setup(Activity activity, boolean reset) {
-        try {
-        	listener = (Listener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement "+TAG+".Listener");
-        }
+		super(activity, FLAG_SETUP);
 		this.reset = reset;
-		this.fragmentManager = activity.getFragmentManager();
-		assets = activity.getAssets();
 		this.data = activity.getContentResolver();
+		assets = activity.getAssets();
 		jsonMapper = new ObjectMapper();
 		prefs = new Prefs(activity);
 		teamData = new TeamDataSource(activity);
 		seasonData = new SeasonDataSource(activity);
 		competitionData = new CompetitionDataSource(activity);
-		teamScouting2013Data = new TeamScouting2013DataSource(activity);
-		competitionTeamData = new CompetitionTeamDataSource(activity);
 		packageName = activity.getPackageName();
 		dbPath = activity.getDatabasePath("ourAlliance.sqlite");
 	}
 	
 	@Override
 	protected void onPreExecute() {
-		CharSequence title = "Setup data";
 		if(reset) {
 			prefs.clear();
 			prefs.setVersion(-1);
-			title = "Reset data";
+			setTitle("Reset data");
+		} else {
+			setTitle("Setup data");
 		}
 		Log.d(TAG,"curent version: "+prefs.getVersion());
 		Log.d(TAG,"new version: "+VERSION);
 		if(prefs.getVersion() < VERSION) {
-			dialog = new LoadingDialogFragment();
-			Bundle dialogArgs = new Bundle();
-			dialogArgs.putCharSequence(LoadingDialogFragment.TITLE, title);
-			dialog.setArguments(dialogArgs);
-            dialog.show(fragmentManager, "Setup Our Alliance");
+			super.onPreExecute();
 		} else {
 			this.cancel(true);
 		}
@@ -122,24 +77,29 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 
 	@Override
 	protected Boolean doInBackground(Void... params) {
-		version = prefs.getVersion();
-		Log.d(TAG, "version: "+version);
-		flag = 0;
-		primary = 0;
-		progressTotal = 100;
-		status = "Loading...";
-		switch(version+1) {
+		setVersion(prefs.getVersion());
+		Log.d(TAG, "version: "+getVersion());
+		switch(getVersion()+1) {
 			case 0:
 				increaseVersion();
-//		        if(SQLiteDatabase.deleteDatabase(dbPath)) {
-//					Log.d(TAG,"deleted db");
-//				} else {
-//					Log.d(TAG,"did not delete db");
-//				}
+				if(this.isCancelled()) {
+					return false;
+				}
 				setStatus("Resetting database");
+		        if(SQLiteDatabase.deleteDatabase(dbPath)) {
+					Log.d(TAG,"deleted db");
+				} else {
+					Log.d(TAG,"did not delete db");
+				}
+				if(this.isCancelled()) {
+					return false;
+				}
 		        data.call(Uri.parse(DataProvider.BASE_URI_STRING+TAG), DataProvider.RESET, null, null);
 			case 1:
 				increaseVersion();
+				if(this.isCancelled()) {
+					return false;
+				}
 	        	setFlag(INDETERMINATE);
 		        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 		        	setFlag(INDETERMINATE);
@@ -148,6 +108,9 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 			        File picDir = new File(externalPath.getAbsolutePath() +  "/Android/data/" + packageName + "/files");
 			        Utility.deleteRecursive(picDir);
 		        }
+				if(this.isCancelled()) {
+					return false;
+				}
 				setStatus("Setting up 2013 competitions");
 				try {
 					Season s2013 = new Season(2013, "Ultimate Ascent");
@@ -163,70 +126,65 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 					e.printStackTrace();
 					return false;
 				}
-				setStatus("Adding 2013 teams");
-				try {
-					GetTeams getter = jsonMapper.readValue(assets.open("teams.json"),GetTeams.class);
-					Log.d(TAG, "teams: "+getter.getData().size());
-					this.setTotal(getter.getData().size());
-					for(Team team : getter.getData()) {
-						Log.d(TAG, team.toString());
-						try {
-							teamData.insert(team);
-					    	this.increasePrimary();
-							continue;
-						} catch (OurAllianceException e) {
-							//just go to the update part then
-						} catch (SQLException e) {
-							//just go to the update part then
-						}
-						Cursor cusor = teamData.query(team.getNumber());
-						try {
-							Team fromDb = TeamDataSource.getSingle(cusor);
-							fromDb.setName(team.getName());
-							fromDb.setNumber(team.getNumber());
-							teamData.update(fromDb);
-						} catch (OurAllianceException e1) {
-							e1.printStackTrace();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
-				    	this.increasePrimary();
-					}
-				} catch (JsonParseException e) {
-					e.printStackTrace();
-				} catch (JsonMappingException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+				if(this.isCancelled()) {
+					return false;
 				}
+				setStatus("Adding 2013 teams");
+				Log.wtf(TAG,"uncomment the code and renable teams!");
+//				try {
+//					GetTeams getter = jsonMapper.readValue(assets.open("teams.json"),GetTeams.class);
+//					Log.d(TAG, "teams: "+getter.getData().size());
+//					this.setTotal(getter.getData().size());
+//					if(this.isCancelled()) {
+//						return false;
+//					}
+//					for(Team team : getter.getData()) {
+//						Log.d(TAG, team.toString());
+//						try {
+//							if(this.isCancelled()) {
+//								return false;
+//							}
+//							teamData.insert(team);
+//					    	this.increasePrimary();
+//							continue;
+//						} catch (OurAllianceException e) {
+//							//just go to the update part then
+//						} catch (SQLException e) {
+//							//just go to the update part then
+//						}
+//						Cursor cusor = teamData.query(team.getNumber());
+//						try {
+							if(this.isCancelled()) {
+								return false;
+							}
+//							Team fromDb = TeamDataSource.getSingle(cusor);
+//							fromDb.setName(team.getName());
+//							fromDb.setNumber(team.getNumber());
+//							teamData.update(fromDb);
+//						} catch (OurAllianceException e1) {
+//							e1.printStackTrace();
+//						} catch (SQLException e1) {
+//							e1.printStackTrace();
+//						}
+//				    	this.increasePrimary();
+//					}
+//				} catch (JsonParseException e) {
+//					e.printStackTrace();
+//				} catch (JsonMappingException e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
 //			case 2:
 //				increaseVersion();
+//				if(this.isCancelled()) {
+//					return false;
+//				}
 		}
 		setStatus("Finished");
-		prefs.setVersion(version);
+		prefs.setVersion(getVersion());
 		return true;
 	}
-	
-	@Override
-	protected void onProgressUpdate(Object... progress) {
-		int flag = (Integer)progress[0];
-		int primary = (Integer)progress[1];
-		int total = (Integer)progress[2];
-		dialog.setProgressStatus((String)progress[3]);
-		switch(flag) {
-			case INDETERMINATE:
-				dialog.setProgressIndeterminate();
-			case NORMAL:
-			default:
-				dialog.setProgressPercent(primary,total);
-		}
-    }
-
-	@Override
-    protected void onPostExecute(Boolean result) {
-		dialog.dismiss();
-		listener.setupComplete();
-    }
 	
 	private boolean addCompetitions(Season season) {
 		comps = new HashMap<String,String>();
@@ -335,32 +293,5 @@ public class Setup extends AsyncTask<Void, Object, Boolean> {
 	public void putComp(String code, String name) {
 		comps.put(code, name);
     	increasePrimary();
-	}
-	
-	private void setFlag(int flag) {
-		this.flag = flag;
-        publishProgress(new Object[]{flag, primary, progressTotal, version+": "+status});
-	}
-	
-	private void increasePrimary() {
-    	setFlag(NORMAL);
-        publishProgress(new Object[]{flag, ++primary, progressTotal, version+": "+status});
-	}
-	
-	private void increaseVersion() {
-        publishProgress(new Object[]{flag, primary, progressTotal, (++version)+": "+status});
-	}
-	
-	private void setTotal(int total) {
-    	setFlag(NORMAL);
-		this.primary = 0;
-		this.progressTotal = total;
-        publishProgress(new Object[]{flag, primary, progressTotal, version+": "+status});
-	}
-	
-	private void setStatus(CharSequence status) {
-		this.status = status;
-		Log.d(TAG, status.toString());
-        publishProgress(new Object[]{flag, primary, progressTotal, version+": "+status});
 	}
 }

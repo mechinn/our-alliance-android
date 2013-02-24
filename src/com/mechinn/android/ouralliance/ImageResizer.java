@@ -30,7 +30,7 @@ import java.io.FileDescriptor;
  * memory.
  */
 public class ImageResizer extends ImageWorker {
-    private static final String TAG = "ImageResizer";
+	public static final String TAG = ImageResizer.class.toString();
     protected int mImageWidth;
     protected int mImageHeight;
 

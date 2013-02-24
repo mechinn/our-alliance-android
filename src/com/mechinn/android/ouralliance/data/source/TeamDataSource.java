@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
-import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 import android.content.Context;
@@ -16,7 +14,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 public class TeamDataSource extends AOurAllianceDataSource<Team> {
-	private static final String TAG = "TeamDataSource";
+	public static final String TAG = TeamDataSource.class.getName();
 
 	public TeamDataSource(Context context) {
 		super(context);
@@ -81,9 +79,9 @@ public class TeamDataSource extends AOurAllianceDataSource<Team> {
 				cursor.moveToFirst();
 				return Team.newFromCursor(cursor);
 			} else if(cursor.getCount()<1) {
-				throw new OurAllianceException(TAG,"CompetitionTeam not found in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"CompetitionTeam not found in db.");
 			} else {
-				throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+				throw new OurAllianceException(TAG,"More than 1 result please contact developer.");
 			}
 		}
 		throw new SQLException("Cursor is null");
@@ -100,7 +98,7 @@ public class TeamDataSource extends AOurAllianceDataSource<Team> {
 				cursor.moveToNext();
 			}
 			if(teams.isEmpty()) {
-				throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"No competitionTeams in db.");
 			}
 			return teams;
 		}

@@ -12,23 +12,25 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.Utility;
-import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.Competition;
+import com.mechinn.android.ouralliance.data.Season;
 
-public class InsertTeamDialogFragment extends DialogFragment {
-	public static final String TAG = InsertTeamDialogFragment.class.getName();
-	public static final String TEAM_ARG = "team";
+public class InsertCompDialogFragment extends DialogFragment {
+	public static final String TAG = InsertCompDialogFragment.class.getName();
+	public static final String SEASON_ARG = "season";
+	public static final String COMP_ARG = "compeition";
 	/* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface Listener {
-        public void onInsertTeamDialogPositiveClick(boolean update, Team team);
+        public void onInsertCompDialogPositiveClick(boolean update, Competition competition);
     }
     
     Listener listener;
     private View dialog;
-    private TextView teamNumber;
-    private Team team;
+    private TextView compName;
+    private TextView compCode;
+    private Competition competition;
     private boolean update;
     
     @Override
@@ -50,26 +52,31 @@ public class InsertTeamDialogFragment extends DialogFragment {
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
-		dialog = inflater.inflate(R.layout.dialog_team_insert, null);
-		teamNumber = (TextView) dialog.findViewById(R.id.editTeamNumber);
+		dialog = inflater.inflate(R.layout.dialog_comp_insert, null);
+		compName = (TextView) dialog.findViewById(R.id.editCompName);
+		compCode = (TextView) dialog.findViewById(R.id.editCompCode);
 		int yes;
 		try {
-			team = (Team) this.getArguments().getSerializable(TEAM_ARG);
-    		teamNumber.setText(Integer.toString(team.getNumber()));
+			competition = (Competition) this.getArguments().getSerializable(COMP_ARG);
+			compName.setText(competition.getName());
+			compCode.setText(competition.getCode());
     		yes = R.string.update;
     		update = true;
     		Log.d(TAG, "update");
 		} catch(NullPointerException e) {
-			team = new Team();
+			competition = new Competition();
 			yes = R.string.create;
 			update = false;
     		Log.d(TAG, "insert");
 		}
+		Season season = (Season) this.getArguments().getSerializable(SEASON_ARG);
+		competition.setSeason(season);
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					team.setNumber(Utility.getIntFromText(teamNumber.getText()));
-					listener.onInsertTeamDialogPositiveClick(update, team);
+					competition.setName(compName.getText());
+					competition.setCode(compCode.getText());
+					listener.onInsertCompDialogPositiveClick(update, competition);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {

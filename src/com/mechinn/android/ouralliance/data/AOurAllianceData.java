@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mechinn.android.ouralliance.provider.Database;
 
@@ -16,7 +19,11 @@ import android.util.Log;
 
 public abstract class AOurAllianceData implements Serializable {
 	private static final long serialVersionUID = 5836558650246119841L;
-	private static final String TAG = "AOurAllianceData";
+	public static final String TAG = AOurAllianceData.class.getName();
+	
+	public static final String TITLE_ID = "ID";
+	public static final String TITLE_MODIFIED = "Last Modified";
+	
 	private long id;
 	private Date modified;
 	public AOurAllianceData() {
@@ -75,6 +82,14 @@ public abstract class AOurAllianceData implements Serializable {
 	public void fromCursor(Cursor cursor) {
 		setId(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)));
 		setModified(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(Database.MODIFIED))));
+	}
+	public String[] getStringArrayHeaders() {
+		return new String[] {BaseColumns._ID,
+				Database.MODIFIED};
+	}
+	public String[] toStringArray() {
+		return new String[] {Long.toString(getId()),
+				getModified().toString()};
 	}
 	public void throwNulls() throws OurAllianceException {
 		List<String> error = checkNotNulls();

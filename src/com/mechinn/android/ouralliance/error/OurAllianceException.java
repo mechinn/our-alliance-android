@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.error;
 
 public class OurAllianceException extends Exception {
+	public static final String TAG = OurAllianceException.class.getName();
 	private static final long serialVersionUID = -3613891161907051575L;
 	
 	public OurAllianceException() {

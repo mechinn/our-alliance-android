@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public class Competition extends AOurAllianceData implements Comparable<Competition> {
+	public static final String TAG = Competition.class.getName();
 	private static final long serialVersionUID = -5179493838272851750L;
 	public static final String CLASS = "Competition";
 	public static final String TABLE = "competition";
@@ -36,6 +39,9 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 	
 	public static final String DISTINCT = "d/"+TABLE;
 	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
+
+	public static final String TITLE_NAME = "Competition Name";
+	public static final String TITLE_CODE = "Competition Code";
 	
 	private Season season;
 	private CharSequence name;
@@ -112,7 +118,7 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 			error.add(NAME);
 		}
 		if(TextUtils.isEmpty(this.getCode())) {
-			error.add(CODE);
+//			error.add(CODE);
 		}
 		return error;
 	}
@@ -123,6 +129,13 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 		setSeason(Season.newFromViewCursor(cursor));
 		setName(cursor.getString(cursor.getColumnIndexOrThrow(NAME)));
 		setCode(cursor.getString(cursor.getColumnIndexOrThrow(CODE)));
+	}
+
+	@Override
+	public String[] toStringArray() {
+		return ArrayUtils.addAll(getSeason().toStringArray(),
+				getName().toString(),
+				getCode().toString());
 	}
 	
 	public static Competition newFromCursor(Cursor cursor) {

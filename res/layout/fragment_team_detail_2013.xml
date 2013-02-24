@@ -3,6 +3,156 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+		 
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Orientation: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<AutoCompleteTextView
+			    android:id="@+id/orientation"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="text" />
+
+		</LinearLayout>
+		 
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Drive Train: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<AutoCompleteTextView
+			    android:id="@+id/driveTrain"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="text" />
+
+		</LinearLayout>
+		<org.apmem.tools.layouts.FlowLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+
+			<TextView
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="Human Player: "
+			    android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+			<RatingBar
+			    android:id="@+id/humanPlayer"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:numStars="5"
+			    android:stepSize=".5" />
+		</org.apmem.tools.layouts.FlowLayout>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Width: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<EditText
+			    android:id="@+id/width"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:inputType="number"
+		     	android:imeOptions="flagNoExtractUi" />
+			<TextView
+			    android:id="@+id/widthUnit"
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:textAppearance="?android:attr/textAppearanceSmall" />
+			
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Length: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<EditText
+			    android:id="@+id/length"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:inputType="number"
+			    android:imeOptions="flagNoExtractUi" />
+
+			<TextView
+			    android:id="@+id/lengthUnit"
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:textAppearance="?android:attr/textAppearanceSmall" />
+
+		</LinearLayout>
+
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="Heights"
+		    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+
+			<TextView
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="Shooter : "
+			    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<EditText
+			    android:id="@+id/heightShooter"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="number" />
+			
+			<TextView
+			    android:id="@+id/shooterHeightUnit"
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:textAppearance="?android:attr/textAppearanceSmall" />
+			
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Max: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<EditText
+			    android:id="@+id/heightMax"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="number" />
+			
+			<TextView
+			    android:id="@+id/maxHeightUnit"
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:textAppearance="?android:attr/textAppearanceSmall" />
+
+		</LinearLayout>
 
     <org.apmem.tools.layouts.FlowLayout
         android:layout_width="match_parent"
@@ -15,39 +165,69 @@
             android:text="Max Climb Level: "
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <RadioGroup
-            android:id="@+id/team2013climbLevels"
+        <com.mechinn.android.ouralliance.widget.UncheckableRadioGroup
+            android:id="@+id/climbLevels"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
-            <RadioButton
-                android:id="@+id/team2013level0"
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/level0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="0" />
 
-            <RadioButton
-                android:id="@+id/team2013level1"
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/level1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1" />
 
-            <RadioButton
-                android:id="@+id/team2013level2"
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/level2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2" />
 
-            <RadioButton
-                android:id="@+id/team2013level3"
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/level3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3" />
-        </RadioGroup>
+        </com.mechinn.android.ouralliance.widget.UncheckableRadioGroup>
 
     </org.apmem.tools.layouts.FlowLayout>
+
+    <LinearLayout
+        android:id="@+id/climbTimeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Climb Time: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/climbTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="numberDecimal" >
+
+        </EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sec"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </LinearLayout>
 
     <org.apmem.tools.layouts.FlowLayout
 		android:layout_width="match_parent"
@@ -59,71 +239,71 @@
 			android:text="Shooter Type: "
 			android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <RadioGroup
-            android:id="@+id/team2013shooterTypes"
+        <com.mechinn.android.ouralliance.widget.UncheckableRadioGroup
+            android:id="@+id/shooterTypes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
-            <RadioButton
-                android:id="@+id/team2013none"
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/none"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="None" />
 
-            <RadioButton
-                android:id="@+id/team2013dumper"
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/dumper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dumper" />
 
-            <RadioButton
-                android:id="@+id/team2013turret"
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/shooter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Turret" />
-
-            <RadioButton
-                android:id="@+id/team2013station"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Station" />
-        </RadioGroup>
+                android:text="Shooter" />
+        </com.mechinn.android.ouralliance.widget.UncheckableRadioGroup>
 	</org.apmem.tools.layouts.FlowLayout>
+
 	<org.apmem.tools.layouts.FlowLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-        android:gravity="center_vertical" >
+        android:id="@+id/continuousShootingContainer"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_vertical"
+	    android:visibility="gone" >
+
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="Continuous Shooting: "
 			android:textAppearance="?android:attr/textAppearanceMedium" />
-		<RadioGroup
-            android:id="@+id/team2013continuousShooting"
+		<com.mechinn.android.ouralliance.widget.UncheckableRadioGroup
+            android:id="@+id/continuousShooting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
-            <RadioButton
-                android:id="@+id/team2013semi"
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/semi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="Semi-Automatic" />
 
-            <RadioButton
-                android:id="@+id/team2013continuous"
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/continuous"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Continuous" />
-        </RadioGroup>
+        </com.mechinn.android.ouralliance.widget.UncheckableRadioGroup>
 	</org.apmem.tools.layouts.FlowLayout>
+
 	<org.apmem.tools.layouts.FlowLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-        android:gravity="center_vertical" >
+	    android:id="@+id/shootableGoals"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_vertical"
+	    android:visibility="gone" >
+
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -131,25 +311,71 @@
 			android:textAppearance="?android:attr/textAppearanceMedium" />
 
 		<CheckBox
-		    android:id="@+id/team2013lowGoal"
+		    android:id="@+id/lowGoal"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="Low" />
 		<CheckBox
-		    android:id="@+id/team2013midGoal"
+		    android:id="@+id/midGoal"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="Middle" />
 		<CheckBox
-		    android:id="@+id/team2013highGoal"
+		    android:id="@+id/highGoal"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="High" />
 		<CheckBox
-		    android:id="@+id/team2013pyramidGoal"
+		    android:id="@+id/pyramidGoal"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="Pyramid" />
+	</org.apmem.tools.layouts.FlowLayout>
+	<org.apmem.tools.layouts.FlowLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+        android:gravity="center_vertical" >
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Autonomous: "
+			android:textAppearance="?android:attr/textAppearanceMedium" />
+
+		<com.mechinn.android.ouralliance.widget.UncheckableRadioGroup
+		    android:id="@+id/autoMode"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal" >
+
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/noAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No" />
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/driveAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drive" />
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/lowAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Low"
+        		android:visibility="gone" />
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/midAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mid"
+        		android:visibility="gone" />
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/highAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="High"
+        		android:visibility="gone" />
+        </com.mechinn.android.ouralliance.widget.UncheckableRadioGroup>
 	</org.apmem.tools.layouts.FlowLayout>
 	<org.apmem.tools.layouts.FlowLayout
 		android:layout_width="match_parent"
@@ -162,61 +388,116 @@
 			android:textAppearance="?android:attr/textAppearanceMedium" />
 
 		<CheckBox
-		    android:id="@+id/team2013slot"
+		    android:id="@+id/slot"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="Slot" />
 		<CheckBox
-		    android:id="@+id/team2013ground"
+		    android:id="@+id/ground"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="Ground" />
 	</org.apmem.tools.layouts.FlowLayout>
+
+	<LinearLayout
+        android:id="@+id/autoPickupContainer"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_vertical"
+	    android:visibility="gone" >
+
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Autonomous Pickup: "
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	    <Switch
+	        android:id="@+id/autoPickup"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textOff="No"
+	        android:textOn="Yes" />
+	</LinearLayout>
+
 	<org.apmem.tools.layouts.FlowLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-        android:gravity="center_vertical" >
+        android:id="@+id/reloadSpeedContainer"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_vertical"
+	    android:visibility="gone" >
+
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="Reload Speed: "
 			android:textAppearance="?android:attr/textAppearanceMedium" />
 		<RatingBar
-		    android:id="@+id/team2013reloadSpeed"
+		    android:id="@+id/reloadSpeed"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content" />
 	</org.apmem.tools.layouts.FlowLayout>
+
 	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-        android:gravity="center_vertical" >
+	    android:id="@+id/safeShooterContainer"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_vertical"
+	    android:visibility="gone" >
+
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="Shoot from safe zone: "
 			android:textAppearance="?android:attr/textAppearanceMedium" />
 		<Switch
-		    android:id="@+id/team2013safeShooter"
+		    android:id="@+id/safeShooter"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:textOff="No"
 		    android:textOn="Yes" />
 		
 	</LinearLayout>
+
 	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-        android:gravity="center_vertical" >
+	    android:id="@+id/loaderShooterContainer"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_vertical"
+	    android:visibility="gone" >
+
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Scores Colored Frisbees: "
+			android:text="Shoots from loading station: "
 			android:textAppearance="?android:attr/textAppearanceMedium" />
+
 		<Switch
-		    android:id="@+id/team2013scoreColor"
+		    android:id="@+id/loaderShooter"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:textOff="No"
 		    android:textOn="Yes" />
+
+	</LinearLayout>
+
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_vertical" >
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Blocker: "
+			android:textAppearance="?android:attr/textAppearanceMedium" />
+
+		<Switch
+		    android:id="@+id/blocker"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:textOff="No"
+		    android:textOn="Yes" />
+
 	</LinearLayout>
 </LinearLayout>

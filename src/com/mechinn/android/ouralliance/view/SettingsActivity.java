@@ -1,12 +1,16 @@
 package com.mechinn.android.ouralliance.view;
 
 import com.mechinn.android.ouralliance.*;
+import com.mechinn.android.ouralliance.data.Competition;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.util.Log;
+import android.widget.Toast;
 
-public class SettingsActivity extends PreferenceActivity implements Setup.Listener, GenericDialogFragment.Listener {
+public class SettingsActivity extends PreferenceActivity implements Setup.Listener, GenericDialogFragment.Listener, InsertCompDialogFragment.Listener {
+	public static final String TAG = SettingsActivity.class.getName();
 	private SettingsFragment frag;
 	
 	@Override
@@ -29,16 +33,35 @@ public class SettingsActivity extends PreferenceActivity implements Setup.Listen
 //        }
     }
 
-	public void setupComplete() {
-		Utility.restartApp(this);
-	}
-	
-	public void onGenericDialogPositiveClick(DialogInterface dialog, int id) {
-		frag.resetData();
+	public void cancelled(int flag) {
+		switch(flag) {
+			case Setup.FLAG_SETUP:
+				Log.wtf(TAG,"reset cancelled");
+				Toast.makeText(this, "Reset was cancelled please contact the developer", Toast.LENGTH_LONG).show();
+		}
 	}
 
-	public void onGenericDialogNegativeClick(DialogInterface dialog, int id) {
-		dialog.dismiss();
+	public void complete(int flag) {
+		switch(flag) {
+			case Setup.FLAG_SETUP:
+				Utility.restartApp(this);
+		}
+	}
+	
+	public void onGenericDialogPositiveClick(int flag, DialogInterface dialog, int id) {
+		frag.onGenericDialogPositiveClick(flag, dialog, id);
+	}
+
+	public void onGenericDialogNegativeClick(int flag, DialogInterface dialog, int id) {
+		frag.onGenericDialogNegativeClick(flag, dialog, id);
+	}
+
+	public void onInsertCompDialogPositiveClick(boolean update, Competition competition) {
+		if(update) {
+//			frag.updateCompetition(competition);
+		} else {
+			frag.insertCompetition(competition);
+		}
 	}
 	
 //	public void onBuildHeaders(List<PreferenceActivity.Header> target) {

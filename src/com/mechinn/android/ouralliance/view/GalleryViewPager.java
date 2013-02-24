@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 public class GalleryViewPager extends ViewPager {
-	private static final String TAG = "GalleryViewPager";
+	public static final String TAG = GalleryViewPager.class.getName();
 
 	public GalleryViewPager(Context context) {
 		super(context);

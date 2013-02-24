@@ -10,7 +10,8 @@ import android.os.Bundle;
 import com.mechinn.android.ouralliance.R;
 
 public class GenericDialogFragment extends DialogFragment {
-	private static final String TAG = "ConfirmResetDialogFragment";
+	public static final String TAG = GenericDialogFragment.class.getName();
+	public static final String FLAG = "flag";
 	public static final String MESSAGE = "message";
 	public static final String POSITIVE = "positive";
 	public static final String NEGATIVE = "negative";
@@ -18,11 +19,12 @@ public class GenericDialogFragment extends DialogFragment {
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface Listener {
-        public void onGenericDialogPositiveClick(DialogInterface dialog, int id);
-        public void onGenericDialogNegativeClick(DialogInterface dialog, int id);
+        public void onGenericDialogPositiveClick(int flag, DialogInterface dialog, int id);
+        public void onGenericDialogNegativeClick(int flag, DialogInterface dialog, int id);
     }
     
-    Listener listener;
+    private Listener listener;
+    private int flag;
     
     @Override
     public void onAttach(Activity activity) {
@@ -40,17 +42,18 @@ public class GenericDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		setRetainInstance(true);
+		flag = this.getArguments().getInt(FLAG, -1);
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setMessage(this.getArguments().getInt(MESSAGE))
 			.setPositiveButton(this.getArguments().getInt(POSITIVE,R.string.yes), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					// Send the positive button event back to the host activity
-					listener.onGenericDialogPositiveClick(dialog,id);
+					listener.onGenericDialogPositiveClick(flag, dialog,id);
 				}
 			}).setNegativeButton(this.getArguments().getInt(NEGATIVE,R.string.no), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					listener.onGenericDialogNegativeClick(dialog,id);
+					listener.onGenericDialogNegativeClick(flag, dialog,id);
 				}
 			});
 		// Create the AlertDialog object and return it

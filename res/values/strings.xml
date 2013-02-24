@@ -6,6 +6,7 @@
     <string name="title_team_detail">Team Detail</string>
     <string name="provider_name">Our Alliance Data</string>
     <string name="deleteTeam">Delete Team?</string>
+    <string name="deleteComp">Delete Compeition?</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="teamNumber">Team Number</string>

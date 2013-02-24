@@ -10,15 +10,12 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
 import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
-import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
-import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScouting2013> {
-	private static final String TAG = "TeamScouting2013DataSource";
+	public static final String TAG = TeamScouting2013DataSource.class.getName();
 	public TeamScouting2013DataSource(Context context) {
 		super(context);
 	}
@@ -67,6 +64,14 @@ public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScout
 	public Cursor queryAll() {
 		return queryAll(Team.VIEW_NUMBER);
 	}
+
+	public CursorLoader getAllTeams(String teams) {
+		return this.get(Team.VIEW_ID+" IN ("+teams+")", Team.VIEW_NUMBER);
+	}
+
+	public Cursor queryAllTeams(String teams) {
+		return this.query(Team.VIEW_ID+" IN ("+teams+")", Team.VIEW_NUMBER);
+	}
 	
 	public static TeamScouting2013 getSingle(Cursor cursor) throws OurAllianceException, SQLException {
 		if(null!=cursor) {
@@ -74,9 +79,9 @@ public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScout
 				cursor.moveToFirst();
 				return TeamScouting2013.newFromCursor(cursor);
 			} else if(cursor.getCount()==0) {
-				throw new OurAllianceException(TAG,"Team scouting not found in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"Team scouting not found in db.");
 			} else {
-				throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+				throw new OurAllianceException(TAG,"More than 1 result please contact developer.");
 			}
 		}
 		throw new SQLException("Cursor is null");
@@ -92,7 +97,7 @@ public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScout
 				cursor.moveToNext();
 			}
 			if(scoutings.isEmpty()) {
-				throw new OurAllianceException(TAG,"No team scouting in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"No team scouting in db.");
 			}
 			return scoutings;
 		}
@@ -110,7 +115,7 @@ public class TeamScouting2013DataSource extends AOurAllianceDataSource<TeamScout
 				cursor.moveToNext();
 			}
 			if(teams.isEmpty()) {
-				throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"No competitionTeams in db.");
 			}
 			return teams;
 		}

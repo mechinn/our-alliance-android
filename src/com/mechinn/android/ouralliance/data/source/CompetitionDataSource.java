@@ -11,12 +11,10 @@ import android.util.Log;
 
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
-import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
-	private static final String TAG = "CompetitionDataSource";
+	public static final String TAG = CompetitionDataSource.class.getName();
 	public CompetitionDataSource(Context context) {
 		super(context);
 	}
@@ -96,9 +94,9 @@ public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
 				cursor.moveToFirst();
 				return Competition.newFromCursor(cursor);
 			} else if(cursor.getCount()==0) {
-				throw new OurAllianceException(TAG,"Competition not found in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"Competition not found in db.");
 			} else {
-				throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+				throw new OurAllianceException(TAG,"More than 1 result please contact developer.");
 			}
 		}
 		throw new SQLException("Cursor is null");
@@ -115,7 +113,7 @@ public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
 				cursor.moveToNext();
 			}
 			if(comps.isEmpty()) {
-				throw new OurAllianceException(TAG,"No competitions in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"No competitions in db.");
 			}
 			return comps;
 		}

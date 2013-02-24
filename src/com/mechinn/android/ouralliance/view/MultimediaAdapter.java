@@ -29,7 +29,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class MultimediaAdapter extends BaseAdapter implements OnClickListener, OnLongClickListener {
-	private static final String TAG = "MultimediaAdapter";
+	public static final String TAG = MultimediaAdapter.class.getName();
 	private String[] multimedia;
     private ImageFetcher imageFetcher;
     private File teamFileDirectory;

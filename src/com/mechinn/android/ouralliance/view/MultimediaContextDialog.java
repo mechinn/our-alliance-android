@@ -19,7 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class MultimediaContextDialog extends DialogFragment {
-	private static final String TAG = "MultimediaContextDialog";
+	public static final String TAG = MultimediaContextDialog.class.getName();
 	public static final String IMAGE = "image";
 	private String file;
     private View dialog;

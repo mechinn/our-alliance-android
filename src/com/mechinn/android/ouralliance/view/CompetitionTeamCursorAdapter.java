@@ -6,6 +6,7 @@ import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
+import com.mechinn.android.ouralliance.provider.DataProvider;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -17,7 +18,7 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 public class CompetitionTeamCursorAdapter extends CursorAdapter {
-		private static final String TAG = "TeamCursorAdapter";
+	public static final String TAG = CompetitionTeamCursorAdapter.class.getName();
 	 
 		public CompetitionTeamCursorAdapter(Context context, Cursor cursor) {
 			super(context, cursor, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);

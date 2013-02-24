@@ -24,7 +24,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class DataProvider extends ContentProvider {
-	private static final String TAG = "DataProvider";
+	public static final String TAG = DataProvider.class.getName();
 	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Lock read = lock.readLock();
 	private final Lock write = lock.writeLock();

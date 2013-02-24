@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 
 public class StartupActivity extends Activity {
+	public static final String TAG = StartupActivity.class.getName();
 	/**
      * The thread to process splash screen events
      */

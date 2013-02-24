@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public class Season extends AOurAllianceData implements Comparable<Season> {
+	public static final String TAG = Season.class.getName();
 	private static final long serialVersionUID = -7570760453585739510L;
 	public static final String CLASS = "Season";
 	public static final String TABLE = "season";
@@ -32,6 +35,9 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 
 	public static final String DISTINCT = "d/"+TABLE;
 	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
+
+	public static final String TITLE_YEAR = "Season Year";
+	public static final String TITLE_TITLE = "Season Title";
 	
 	private int year;
 	private CharSequence title;
@@ -54,13 +60,6 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 	}
 	public int getYear() {
 		return year;
-	}
-	public void setYear(CharSequence year) {
-		try {
-			setYear(Integer.parseInt(year.toString()));
-		} catch (Exception e) {
-			setYear(0);
-		}
 	}
 	public void setYear(int year) {
 		this.year = year;
@@ -114,6 +113,12 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 		super.fromCursor(cursor);
 		setYear(cursor.getInt(cursor.getColumnIndexOrThrow(YEAR)));
 		setTitle(cursor.getString(cursor.getColumnIndexOrThrow(TITLE)));
+	}
+
+	@Override
+	public String[] toStringArray() {
+		return new String[] {Integer.toString(getYear()),
+				getTitle().toString()};
 	}
 	
 	public static Season newFromCursor(Cursor cursor) {

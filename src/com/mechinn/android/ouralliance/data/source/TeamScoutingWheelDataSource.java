@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
-import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
-import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 import android.content.Context;
@@ -15,7 +13,7 @@ import android.content.CursorLoader;
 import android.database.Cursor;
 
 public class TeamScoutingWheelDataSource extends AOurAllianceDataSource<TeamScoutingWheel> {
-	private static final String TAG = "TeamScoutingWheelDataSource";
+	public static final String TAG = TeamScoutingWheelDataSource.class.getName();
 
 	public TeamScoutingWheelDataSource(Context context) {
 		super(context);
@@ -72,9 +70,9 @@ public class TeamScoutingWheelDataSource extends AOurAllianceDataSource<TeamScou
 				cursor.moveToFirst();
 				return TeamScoutingWheel.newFromCursor(cursor);
 			} else if(cursor.getCount()==0) {
-				throw new OurAllianceException(TAG,"Wheel not found in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"Wheel not found in db.");
 			} else {
-				throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+				throw new OurAllianceException(TAG,"More than 1 result please contact developer.");
 			}
 		}
 		throw new SQLException("Cursor is null");
@@ -90,7 +88,7 @@ public class TeamScoutingWheelDataSource extends AOurAllianceDataSource<TeamScou
 				cursor.moveToNext();
 			}
 			if(scoutings.isEmpty()) {
-				throw new OurAllianceException(TAG,"No wheels in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"No wheels in db.");
 			}
 			return scoutings;
 		}

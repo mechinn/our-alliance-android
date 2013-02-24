@@ -2,8 +2,10 @@ package com.mechinn.android.ouralliance.view;
 
 import java.sql.SQLException;
 
+import com.mechinn.android.ouralliance.Export;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
@@ -35,7 +37,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
-	private static final String TAG = "TeamListFragment";
+	public static final String TAG = TeamListFragment.class.getName();
 	public static final int LOADER_COMPETITIONTEAMS = 0;
 	public static final int LOADER_COMPETITION = 1;
 	public static final int LOADER_TEAMS = 2;
@@ -81,7 +83,6 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		competitionData = new CompetitionDataSource(this.getActivity());
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
 		scouting2013 = new TeamScouting2013DataSource(this.getActivity());
-		// Restore the previously serialized activated item position.
 		adapter = new CompetitionTeamCursorAdapter(getActivity(), null);
 		setListAdapter(adapter);
     }
@@ -152,7 +153,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
-		inflater.inflate(R.menu.team_list_menu, menu);
+		inflater.inflate(R.menu.team_list, menu);
 	}
 	
 	@Override
@@ -167,6 +168,13 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	        		noCompetition();
 	        	}
 	            return true;
+	        case R.id.export:
+	        	if(null!=comp) {
+	        		new Export(this.getActivity()).execute();
+	        	} else {
+	        		noCompetition();
+	        	}
+	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -176,7 +184,7 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 	    super.onCreateContextMenu(menu, v, menuInfo);
 	    MenuInflater inflater = this.getActivity().getMenuInflater();
-	    inflater.inflate(R.menu.team_context_menu, menu);
+	    inflater.inflate(R.menu.team_context, menu);
 	}
 	
 	@Override

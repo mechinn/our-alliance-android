@@ -19,7 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoadingDialogFragment extends DialogFragment {
-	private static final String TAG = "LoadingDialogFragment";
+	public static final String TAG = LoadingDialogFragment.class.getName();
 	public static final String TITLE = "title";
 	public static final String MAX = "max";
     private View dialog;

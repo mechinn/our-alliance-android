@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
@@ -16,6 +18,7 @@ import android.text.TextUtils;
 
 @JsonIgnoreProperties({"id","mod"})
 public class Team extends AOurAllianceData implements Comparable<Team> {
+	public static final String TAG = Team.class.getName();
 	private static final long serialVersionUID = 6981108401294045422L;
 	public static final String CLASS = "Team";
 	public static final String TABLE = "team";
@@ -34,6 +37,9 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 
 	public static final String DISTINCT = "d/"+TABLE;
 	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
+	
+	public static final String TITLE_NUMBER = "Team Number";
+	public static final String TITLE_NAME = "Team Name";
 	
 	private int number;
 	private CharSequence name;
@@ -56,13 +62,6 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 	}
 	public int getNumber() {
 		return number;
-	}
-	public void setNumberString(CharSequence number) {
-		try {
-			setNumber(Integer.parseInt(number.toString()));
-		} catch (Exception e) {
-			setNumber(0);
-		}
 	}
 	public void setNumber(int number) {
 		this.number = number;
@@ -116,6 +115,18 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 		super.fromCursor(cursor);
 		setNumber(cursor.getInt(cursor.getColumnIndexOrThrow(NUMBER)));
 		setName(cursor.getString(cursor.getColumnIndexOrThrow(NAME)));
+	}
+
+	@Override
+	public String[] getStringArrayHeaders() {
+		return new String[] {BaseColumns._ID,
+				Database.MODIFIED};
+	}
+
+	@Override
+	public String[] toStringArray() {
+		return new String[] {Integer.toString(getNumber()),
+				getName().toString()};
 	}
 	
 	public static Team newFromCursor(Cursor cursor) {

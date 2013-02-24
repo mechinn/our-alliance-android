@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public class CompetitionTeam extends AOurAllianceData implements Comparable<CompetitionTeam> {
+	public static final String TAG = CompetitionTeam.class.getName();
 	private static final long serialVersionUID = 1458046534212642950L;
 	public static final String CLASS = "CompetitionTeam";
 	public static final String TABLE = "competitionteam";
@@ -37,6 +40,8 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 
 	public static final String DISTINCT = "d/"+TABLE;
 	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
+
+	public static final String TITLE_RANK = "Competition Team Rank";
 	
 	private Competition competition;
 	private Team team;
@@ -123,6 +128,15 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 		setCompetition(Competition.newFromViewCursor(cursor));
 		setTeam(Team.newFromViewCursor(cursor));
 		setRank(cursor.getInt(cursor.getColumnIndexOrThrow(RANK)));
+	}
+
+	@Override
+	public String[] toStringArray() {
+		String[] links = ArrayUtils.addAll(
+				getCompetition().toStringArray(),
+				getTeam().toStringArray());
+		return ArrayUtils.addAll(links,
+				Integer.toString(getRank()));
 	}
 	
 	public static CompetitionTeam newFromCursor(Cursor cursor) {

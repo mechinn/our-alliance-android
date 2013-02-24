@@ -13,7 +13,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 public class Utility {
-	public static final String TAG = "Utility";
+	public static final String TAG = Utility.class.getName();
 	//utility functions for specific uses throughout the app
 	public static void deleteRecursive(File fileOrDirectory) {
 	    if (fileOrDirectory.isDirectory()) {
@@ -44,5 +44,26 @@ public class Utility {
 	    final Intent intent = new Intent(action);
 	    List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 	    return list.size() > 0;
+	}
+	public static int getIntFromText(CharSequence text) {
+		try {
+			return Integer.parseInt(text.toString());
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	public static float getFloatFromText(CharSequence text) {
+		try {
+			return Float.parseFloat(text.toString());
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	public static double getDoubleFromText(CharSequence text) {
+		try {
+			return Double.parseDouble(text.toString());
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 }

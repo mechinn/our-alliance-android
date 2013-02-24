@@ -13,13 +13,14 @@ import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
+import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 
 public class OurAllianceActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener {
-	public static final String TAG = "OurAllianceActivity";
+	public static final String TAG = OurAllianceActivity.class.getName();
 	private TeamListFragment teamListFrag;
 	private TeamDetailFragment<?, ?> teamDetailFragment;
 	private int listFrag;
@@ -116,7 +117,7 @@ public class OurAllianceActivity extends Activity implements TeamListFragment.Li
         }
 	}
 
-	public void onInsertDialogPositiveClick(boolean update, Team team) {
+	public void onInsertTeamDialogPositiveClick(boolean update, Team team) {
 		if(update) {
 	    	teamListFrag.updateTeam(team);
 		} else {
@@ -128,11 +129,19 @@ public class OurAllianceActivity extends Activity implements TeamListFragment.Li
     	teamListFrag.deleteTeam(team);
 	}
 
-	public void setupComplete() {
-		
-	}
-
 	public void onDeletedImage() {
 		teamDetailFragment.resetMultimediaAdapter();
+	}
+
+	public void cancelled(int flag) {
+		switch(flag) {
+			
+		}
+	}
+
+	public void complete(int flag) {
+		switch(flag) {
+			
+		}
 	}
 }

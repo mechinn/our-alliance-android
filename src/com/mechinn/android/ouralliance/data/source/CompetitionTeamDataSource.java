@@ -12,12 +12,10 @@ import android.util.Log;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.error.MoreThanOneObjectThrowable;
-import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public class CompetitionTeamDataSource extends AOurAllianceDataSource<CompetitionTeam>  {
-	private static final String TAG = "CompetitionTeamDataSource";
+	public static final String TAG = CompetitionTeamDataSource.class.getName();
 	public CompetitionTeamDataSource(Context context) {
 		super(context);
 	}
@@ -106,9 +104,9 @@ public class CompetitionTeamDataSource extends AOurAllianceDataSource<Competitio
 				cursor.moveToFirst();
 				return CompetitionTeam.newFromCursor(cursor);
 			} else if(cursor.getCount()<1) {
-				throw new OurAllianceException(TAG,"CompetitionTeam not found in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"CompetitionTeam not found in db.");
 			} else {
-				throw new OurAllianceException(TAG,"More than 1 result please contact developer.", new MoreThanOneObjectThrowable());
+				throw new OurAllianceException(TAG,"More than 1 result please contact developer.");
 			}
 		}
 		throw new SQLException("Cursor is null");
@@ -122,9 +120,10 @@ public class CompetitionTeamDataSource extends AOurAllianceDataSource<Competitio
 				CompetitionTeam competitionTeam = CompetitionTeam.newFromCursor(cursor);
 				Log.d(TAG, "get "+competitionTeam);
 				compTeams.add(competitionTeam);
+				cursor.moveToNext();
 			}
 			if(compTeams.isEmpty()) {
-				throw new OurAllianceException(TAG,"No competitionTeams in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"No competitionTeams in db.");
 			}
 			return compTeams;
 		}

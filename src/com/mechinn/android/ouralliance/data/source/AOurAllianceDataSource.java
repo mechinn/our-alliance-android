@@ -18,11 +18,11 @@ import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.error.NoObjectsThrowable;
+import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
-	private static final String TAG = "AOurAllianceDataSource";
+	public static final String TAG = AOurAllianceDataSource.class.getName();
 	private Context context;
 	
 	public AOurAllianceDataSource(Context context) {
@@ -207,7 +207,7 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 				cursor.moveToNext();
 			}
 			if(set.isEmpty()) {
-				throw new OurAllianceException(TAG,"None in db.",new NoObjectsThrowable());
+				throw new OurAllianceException(TAG,"None in db.");
 			}
 			return set;
 		}

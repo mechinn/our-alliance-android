@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+	    android:imeOptions="flagNoExtractUi"
         android:ems="10" />
 
     <TextView
@@ -20,12 +21,33 @@
         android:layout_height="wrap_content"
         android:text="Size: " />
 
-    <AutoCompleteTextView
+    <EditText
         android:id="@+id/wheelSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
+	    android:imeOptions="flagNoExtractUi"
+        android:inputType="numberDecimal" />
+	<TextView
+	    android:id="@+id/sizeUnit"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="in " />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Count: " />
+
+    <EditText
+        android:id="@+id/wheelCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"
+	    android:imeOptions="flagNoExtractUi"
         android:inputType="numberDecimal" />
 
     <Button

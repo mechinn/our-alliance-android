@@ -2,6 +2,7 @@ package com.mechinn.android.ouralliance.view;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -13,16 +14,24 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.Competition;
+import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
+import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
 import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
+import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -35,12 +44,14 @@ import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on devdeloping a Settings UI.
  */
-public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor> {
-	private static final String TAG = "SettingsFragment";
+public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor>, GenericDialogFragment.Listener {
+	public static final String TAG = SettingsFragment.class.getName();
 	public static final int LOADER_SEASON = 0;
 	public static final int LOADER_COMPETITION = 1;
 	public static final int LOADER_SEASON_SUMMARY = 2;
 	public static final int LOADER_COMPETITION_SUMMARY = 3;
+	public static final int DIALOG_RESET = 0;
+	public static final int DIALOG_DELETECOMP = 1;
 	private Prefs prefs;
 	private SeasonDataSource seasonData;
 	private CompetitionDataSource competitionData;
@@ -58,6 +69,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private Cursor compCursor;
 	private Cursor seasonSummCursor;
 	private Cursor compSummCursor;
+	private Season selectedSeason;
+	private Competition selectedComp;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,6 +93,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 					Log.d(TAG, "resetDB");
 					DialogFragment dialog = new GenericDialogFragment();
 					Bundle dialogArgs = new Bundle();
+					dialogArgs.putInt(GenericDialogFragment.FLAG, DIALOG_RESET);
 					dialogArgs.putInt(GenericDialogFragment.MESSAGE, R.string.confirmReset);
 					dialog.setArguments(dialogArgs);
 		            dialog.show(SettingsFragment.this.getFragmentManager(), "Reset Data? This is not reversable!");
@@ -127,6 +141,101 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	    super.onPause();
 	    // Unregister the listener whenever a key changes
 	    prefs.unsetChangeListener(this);
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.settings, menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.newComp:
+	        	if(null!=selectedSeason) {
+		            DialogFragment dialog = new InsertCompDialogFragment();
+					Bundle dialogArgs = new Bundle();
+					dialogArgs.putSerializable(InsertCompDialogFragment.SEASON_ARG, selectedSeason);
+					dialog.setArguments(dialogArgs);
+					dialog.show(this.getFragmentManager(), "Add Competition");
+	        	} else {
+	        		noSeason();
+	        	}
+	            return true;
+	        case R.id.deleteComp:
+	        	if(null!=selectedComp) {
+					DialogFragment dialog = new GenericDialogFragment();
+					Bundle dialogArgs = new Bundle();
+					dialogArgs.putInt(GenericDialogFragment.FLAG, DIALOG_DELETECOMP);
+					dialogArgs.putInt(GenericDialogFragment.MESSAGE, R.string.deleteComp);
+					dialog.setArguments(dialogArgs);
+		            dialog.show(SettingsFragment.this.getFragmentManager(), "Delete selected compeittion?");
+	        	} else {
+	        		noCompetition();
+	        	}
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+
+	public void onGenericDialogPositiveClick(int flag, DialogInterface dialog, int id) {
+		switch(flag) {
+			case DIALOG_RESET:
+				resetData();
+				break;
+			case DIALOG_DELETECOMP:
+				deleteCompetition();
+				break;
+		}
+	}
+
+	public void onGenericDialogNegativeClick(int flag, DialogInterface dialog, int id) {
+		switch(flag) {
+			default:
+				dialog.dismiss();
+		}
+	}
+	
+	private void noSeason() {
+		String message = "Select a season first";
+		Log.i(TAG, message);
+		Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
+	}
+	
+	private void noCompetition() {
+		String message = "Select a competition first";
+		Log.i(TAG, message);
+		Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
+	}
+
+	public void insertCompetition(Competition competition) {
+		Log.d(TAG, "id: "+competition);
+		//try inserting the team first in case it doesnt exist
+		try {
+			competition = competitionData.insert(competition);
+			return;
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		Toast.makeText(this.getActivity(), "Competition already exists", Toast.LENGTH_SHORT).show();
+	}
+
+	public void deleteCompetition() {
+		Log.d(TAG, "id: "+selectedComp);
+		//try inserting the team first in case it doesnt exist
+		try {
+			int count = competitionData.delete(selectedComp);
+			Log.d(TAG, "deleted: "+count);
+			return;
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		}
+		Toast.makeText(this.getActivity(), "Competition could not be deleted", Toast.LENGTH_SHORT).show();
 	}
 
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
@@ -217,7 +326,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			CharSequence[] compsViews = new CharSequence[comps.size()];
 			CharSequence[] compsIds = new CharSequence[comps.size()];
 			for(int i=0;i<comps.size();++i) {
-				compsViews[i] = comps.get(i).toString();
+				compsViews[i] = comps.get(i).getName().toString();
 				compsIds[i] = Long.toString(comps.get(i).getId());
 			}
 	        comp.setEntries(compsViews);
@@ -237,13 +346,15 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		}
 		seasonSummCursor = cursor;
 		try {
-			Season thisSeason = SeasonDataSource.getSingle(seasonSummCursor);
-        	season.setSummary(thisSeason.toString());
+			selectedSeason = SeasonDataSource.getSingle(seasonSummCursor);
+        	season.setSummary(selectedSeason.toString());
         	comp.setEnabled(true);
+    		setHasOptionsMenu(true);
         } catch (Exception e) {
         	e.printStackTrace();
 			season.setSummary(getActivity().getString(R.string.pref_season_summary));
 			comp.setEnabled(false);
+    		setHasOptionsMenu(false);
         }
 	}
 	
@@ -253,8 +364,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		}
 		compSummCursor = cursor;
 		try {
-        	Competition thisComp = CompetitionDataSource.getSingle(compSummCursor);
-        	comp.setSummary(thisComp.toString());
+        	selectedComp = CompetitionDataSource.getSingle(compSummCursor);
+        	comp.setSummary(selectedComp.toString());
         } catch (Exception e) {
         	e.printStackTrace();
 	        comp.setSummary(getActivity().getString(R.string.pref_comp_summary));

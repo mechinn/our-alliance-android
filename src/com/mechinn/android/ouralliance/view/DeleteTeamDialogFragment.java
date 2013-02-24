@@ -11,7 +11,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 public class DeleteTeamDialogFragment extends DialogFragment {
-	private static final String tag = "DeleteTeamDialog";
+	public static final String TAG = DeleteTeamDialogFragment.class.getName();
 	public static final String TEAM_ARG = "team";
 	/* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
@@ -32,7 +32,7 @@ public class DeleteTeamDialogFragment extends DialogFragment {
         	listener = (Listener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString() + " must implement "+tag+".Listener");
+            throw new ClassCastException(activity.toString() + " must implement "+TAG+".Listener");
         }
     }
 	
