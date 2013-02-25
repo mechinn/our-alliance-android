@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.view;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.mechinn.android.ouralliance.Export;
 import com.mechinn.android.ouralliance.Prefs;
@@ -15,9 +16,11 @@ import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamDataSource;
 import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
+import com.mobeta.android.dslv.DragSortListView;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
@@ -32,17 +35,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
+public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor> {
 	public static final String TAG = TeamListFragment.class.getName();
 	public static final int LOADER_COMPETITIONTEAMS = 0;
 	public static final int LOADER_COMPETITION = 1;
 	public static final int LOADER_TEAMS = 2;
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
+    private DragSortListView dslv;
     private int selectedPosition;
 	private Prefs prefs;
 	private TeamDataSource teamData;
@@ -84,26 +90,34 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
 		scouting2013 = new TeamScouting2013DataSource(this.getActivity());
 		adapter = new CompetitionTeamCursorAdapter(getActivity(), null);
-		setListAdapter(adapter);
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	View view = super.onCreateView(inflater, container, savedInstanceState);
-    	return view;
+    	super.onCreateView(inflater, container, savedInstanceState);
+        View rootView = inflater.inflate(R.layout.fragment_team_list, container, false);
+        dslv = (DragSortListView) rootView.findViewById(android.R.id.list);
+        dslv.setAdapter(adapter);
+    	return rootView;
     }
     
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
     	super.onViewCreated(view, savedInstanceState);
     	setRetainInstance(true);
-		registerForContextMenu(getListView());
+		registerForContextMenu(dslv);
+		dslv.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		    	selectItem(position);
+			}
+		});
 		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			int position = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);
 			if (position == ListView.INVALID_POSITION) {
-				getListView().setItemChecked(selectedPosition, false);
+				dslv.setItemChecked(selectedPosition, false);
 			} else {
-				getListView().setItemChecked(position, true);
+				dslv.setItemChecked(position, true);
 			}
 			selectedPosition = position;
 		}
@@ -116,9 +130,31 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
         // When in two-pane layout, set the listview to highlight the selected list item
         // (We do this during onStart because at the point the listview is available.)
         if (getFragmentManager().findFragmentById(R.id.list_fragment) != null) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        	dslv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
 		this.getLoaderManager().restartLoader(LOADER_COMPETITIONTEAMS, null, this);
+    }
+    
+    @Override
+    public void onPause() {
+    	ArrayList<Integer> mapping = adapter.getCursorPositions();
+    	for(int i=0;i<mapping.size();++i) {
+    		Log.d(TAG, "map: "+mapping.get(i));
+    		if(null!=mapping.get(i)) {
+        		CompetitionTeam team = adapter.get(mapping.get(i));
+        		team.setRank(i);
+        		try {
+					competitionTeamData.update(team);
+					continue;
+				} catch (OurAllianceException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+        		Toast.makeText(this.getActivity(), "Could not save rank of "+team, Toast.LENGTH_SHORT).show();
+    		}
+    	}
+    	super.onPause();
     }
     
     @Override
@@ -126,19 +162,13 @@ public class TeamListFragment extends ListFragment implements LoaderCallbacks<Cu
     	super.onResume();
 		setHasOptionsMenu(null!=comp);
     }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-    	super.onListItemClick(l, v, position, id);
-    	selectItem(position);
-    }
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
         mCallback.onTeamSelected(adapter.get(position));
         
         // Set the item as checked to be highlighted when in two-pane layout
-        getListView().setItemChecked(position, true);
+        dslv.setItemChecked(position, true);
     }
 
 	@Override

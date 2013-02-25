@@ -1,11 +1,31 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<com.mobeta.android.dslv.DragSortListView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dslv="http://schemas.android.com/apk/res-auto"
+    android:id="@android:id/list"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="3dp"
+    android:layout_margin="3dp"
+    android:dividerHeight="1dp"
+    dslv:drag_enabled="true"
+    dslv:collapsed_height="1dp"
+    dslv:drag_scroll_start="0.33"
+    dslv:float_alpha="0.6"
+    dslv:slide_shuffle_speed="0.3"
+    dslv:drag_start_mode="onDown"
+    dslv:drag_handle_id="@id/drag_handle" />
+
+<!-- <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/team_list_item"
     style="?android:attr/textAppearanceLarge"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:drawableLeft="@drawable/ic_launcher"
+    android:drawableLeft="@drawable/drag"
+    android:drawablePadding="10dp"
     android:gravity="center_vertical"
-    android:padding="16dp"
-    tools:context=".view.TeamDetailFragment" />
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp"
+    tools:context=".view.TeamDetailFragment" /> -->
 

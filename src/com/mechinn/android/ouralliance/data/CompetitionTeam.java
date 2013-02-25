@@ -117,7 +117,7 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 			error.add(TEAM);
 		}
 		if(0==this.getRank()) {
-			error.add(RANK);
+//			error.add(RANK);
 		}
 		return error;
 	}

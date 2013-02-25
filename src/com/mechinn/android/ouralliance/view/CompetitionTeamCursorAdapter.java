@@ -7,6 +7,7 @@ import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mechinn.android.ouralliance.provider.DataProvider;
+import com.mobeta.android.dslv.DragSortCursorAdapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -17,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-public class CompetitionTeamCursorAdapter extends CursorAdapter {
+public class CompetitionTeamCursorAdapter extends DragSortCursorAdapter {
 	public static final String TAG = CompetitionTeamCursorAdapter.class.getName();
 	 
 		public CompetitionTeamCursorAdapter(Context context, Cursor cursor) {
@@ -27,14 +28,14 @@ public class CompetitionTeamCursorAdapter extends CursorAdapter {
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
 			CompetitionTeam team = CompetitionTeam.newFromCursor(cursor);
-			TextView summary = (TextView)view.findViewById(R.id.team_list_item);
+			TextView summary = (TextView)view.findViewById(R.id.text);
 			summary.setText(team.getTeam().toString());
 		}
 
 		@Override
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
 			LayoutInflater inflater = LayoutInflater.from(context);
-			View v = inflater.inflate(R.layout.fragment_team_list, parent, false);
+			View v = inflater.inflate(R.layout.list_item, parent, false);
 			bindView(v, context, cursor);
 			return v;
 		}
