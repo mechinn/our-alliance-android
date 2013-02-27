@@ -14,7 +14,7 @@ import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
-	public static final String TAG = CompetitionDataSource.class.getName();
+	public static final String TAG = CompetitionDataSource.class.getSimpleName();
 	public CompetitionDataSource(Context context) {
 		super(context);
 	}

@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.RadioGroup;
 
 public class UncheckableRadioGroup extends RadioGroup {
-	public final static String TAG = UncheckableRadioGroup.class.getName();
+	public final static String TAG = UncheckableRadioGroup.class.getSimpleName();
 
 	public UncheckableRadioGroup(Context context) {
 		super(context);

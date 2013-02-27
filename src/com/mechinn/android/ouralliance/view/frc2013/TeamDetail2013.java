@@ -43,7 +43,7 @@ import com.mechinn.android.ouralliance.widget.UncheckableRadioGroup;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroupOnCheckedChangeListener;
 
 public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamScouting2013DataSource> {
-	public final static String TAG = TeamDetail2013.class.getName();
+	public final static String TAG = TeamDetail2013.class.getSimpleName();
 	public static final int LOADER_ORIENTATIONS = 20130;
 	public static final int LOADER_DRIVETRAINS = 20131;
 

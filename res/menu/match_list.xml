@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/insert" android:showAsAction="ifRoom" android:title="Add Match" android:menuCategory="system" android:orderInCategory="2" />
+    <item android:id="@+id/practice" android:orderInCategory="1" android:menuCategory="system" android:checkable="true" android:checked="false" android:title="Practice Matches" android:showAsAction="never"></item>
+</menu>

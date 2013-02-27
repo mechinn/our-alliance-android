@@ -19,7 +19,7 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 public class CompetitionTeamCursorAdapter extends DragSortCursorAdapter {
-	public static final String TAG = CompetitionTeamCursorAdapter.class.getName();
+	public static final String TAG = CompetitionTeamCursorAdapter.class.getSimpleName();
 	 
 		public CompetitionTeamCursorAdapter(Context context, Cursor cursor) {
 			super(context, cursor, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);

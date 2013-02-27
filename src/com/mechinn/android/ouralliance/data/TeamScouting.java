@@ -14,7 +14,7 @@ import android.text.TextUtils;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public abstract class TeamScouting extends AOurAllianceData implements Comparable<TeamScouting>  {
-	public static final String TAG = TeamScouting.class.getName();
+	public static final String TAG = TeamScouting.class.getSimpleName();
 	private static final long serialVersionUID = 2234995463512680398L;
 	public static final String CLASS = "TeamScouting";
 	public static final String TABLE = "teamscouting";

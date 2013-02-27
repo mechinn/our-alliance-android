@@ -45,7 +45,7 @@ import com.mechinn.android.ouralliance.error.OurAllianceException;
  * API Guide</a> for more information on devdeloping a Settings UI.
  */
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener, LoaderCallbacks<Cursor>, GenericDialogFragment.Listener {
-	public static final String TAG = SettingsFragment.class.getName();
+	public static final String TAG = SettingsFragment.class.getSimpleName();
 	public static final int LOADER_SEASON = 0;
 	public static final int LOADER_COMPETITION = 1;
 	public static final int LOADER_SEASON_SUMMARY = 2;
@@ -373,16 +373,16 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	}
 	
 	private void setMeasureSummary() {
-        int measurePosition;
-        String[] measureListVals = this.getResources().getStringArray(R.array.list_measurements);
-        String measureVal = prefs.getMeasure();
-        for(measurePosition=0;measurePosition<measureListVals.length;++measurePosition) {
-        	if(measureVal.equals(measureListVals[measurePosition])) {
-        		break;
-        	}
-        }
-        String[] measureList = this.getResources().getStringArray(R.array.list_measurements_display);
-        measure.setSummary(measureList[measurePosition]);
+//        int measurePosition;
+//        String[] measureListVals = this.getResources().getStringArray(R.array.list_measurements);
+//        String measureVal = prefs.getMeasure();
+//        for(measurePosition=0;measurePosition<measureListVals.length;++measurePosition) {
+//        	if(measureVal.equals(measureListVals[measurePosition])) {
+//        		break;
+//        	}
+//        }
+//        String[] measureList = this.getResources().getStringArray(R.array.list_measurements_display);
+//        measure.setSummary(measureList[measurePosition]);
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

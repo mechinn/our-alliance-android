@@ -16,9 +16,8 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public class Competition extends AOurAllianceData implements Comparable<Competition> {
-	public static final String TAG = Competition.class.getName();
+	public static final String TAG = Competition.class.getSimpleName();
 	private static final long serialVersionUID = -5179493838272851750L;
-	public static final String CLASS = "Competition";
 	public static final String TABLE = "competition";
 	public static final String SEASON = Season.TABLE;
     public static final String NAME = "name";
@@ -35,7 +34,7 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 		Season.VIEW_ID, Season.VIEW_MODIFIED, Season.VIEW_YEAR, Season.VIEW_TITLE };
 
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
-	public static final String URITYPE = DataProvider.AUTHORITY+"."+CLASS;
+	public static final String URITYPE = DataProvider.AUTHORITY+"."+TAG;
 	
 	public static final String DISTINCT = "d/"+TABLE;
 	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);

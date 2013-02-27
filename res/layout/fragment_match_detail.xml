@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="5" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Red: "
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/redScore"
+            android:layout_gravity="left"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/red1"
+            android:layout_gravity="left" />
+
+        <Button
+            android:id="@+id/red2"
+            android:layout_gravity="left" />
+
+        <Button
+            android:id="@+id/red3"
+            android:layout_gravity="left" />
+
+        <TextView
+            android:layout_gravity="left"
+            android:text="Blue: "
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/blueScore"
+            android:layout_gravity="left"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/blue1"
+            android:layout_gravity="left" />
+
+        <Button
+            android:id="@+id/blue2"
+            android:layout_gravity="left" />
+
+        <Button
+            android:id="@+id/blue3"
+            android:layout_gravity="left" />
+
+    </GridLayout>
+
+    <LinearLayout
+        android:id="@+id/scouting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+</LinearLayout>

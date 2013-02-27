@@ -20,9 +20,8 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public class TeamScouting2013 extends TeamScouting implements Comparable<TeamScouting>  {
-	public static final String TAG = TeamScouting2013.class.getName();
+	public static final String TAG = TeamScouting2013.class.getSimpleName();
 	private static final long serialVersionUID = 675330724134779728L;
-	public static final String CLASS = TeamScouting.CLASS+"2013";
 	public static final String TABLE = TeamScouting.TABLE+"2013";
     public static final String ORIENTATION = "orientation";
     public static final String DRIVETRAIN = "driveTrain";
@@ -53,31 +52,6 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 	public static final String[] ALLCOLUMNS = ArrayUtils.addAll(TeamScouting.ALLCOLUMNS, ALLCOLUMNS2013);
     
 	public static final String VIEW = TABLE+"view";
-//    public static final String VIEW_ID = TABLE+BaseColumns._ID;
-//    public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
-//    public static final String VIEW_ORIENTATION = TABLE+ORIENTATION;
-//    public static final String VIEW_DRIVETRAIN = TABLE+DRIVETRAIN;
-//    public static final String VIEW_HUMANPLAYER = TABLE+HUMANPLAYER;
-//    public static final String VIEW_WIDTH = TABLE+WIDTH;
-//    public static final String VIEW_LENGTH = TABLE+LENGTH;
-//    public static final String VIEW_HEIGHTSHOOTER = TABLE+HEIGHTSHOOTER;
-//    public static final String VIEW_HEIGHTMAX = TABLE+HEIGHTMAX;
-//    public static final String VIEW_MAXCLIMB = TABLE+MAXCLIMB;
-//    public static final String VIEW_CLIMBTIME = TABLE+CLIMBTIME;
-//    public static final String VIEW_SHOOTERTYPE = TABLE+SHOOTERTYPE;
-//    public static final String VIEW_CONTINUOUSSHOOTING = TABLE+CONTINUOUSSHOOTING;
-//    public static final String VIEW_LOWGOAL = TABLE+LOWGOAL;
-//    public static final String VIEW_MIDGOAL = TABLE+MIDGOAL;
-//    public static final String VIEW_HIGHGOAL = TABLE+HIGHGOAL;
-//    public static final String VIEW_PYRAMIDGOAL = TABLE+PYRAMIDGOAL;
-//    public static final String VIEW_AUTOMODE = TABLE+AUTOMODE;
-//    public static final String VIEW_SLOT = TABLE+SLOT;
-//    public static final String VIEW_GROUND = TABLE+GROUND;
-//    public static final String VIEW_AUTOPICKUP = TABLE+AUTOPICKUP;
-//    public static final String VIEW_RELOADSPEED = TABLE+RELOADSPEED;
-//    public static final String VIEW_SAFESHOOTER = TABLE+SAFESHOOTER;
-//    public static final String VIEW_LOADERSHOOTER = TABLE+LOADERSHOOTER;
-//    public static final String VIEW_BLOCKER = TABLE+LOADERSHOOTER;
 	public static final String[] VIEWCOLUMNS = ArrayUtils.addAll(TeamScouting.VIEWCOLUMNS, ALLCOLUMNS2013);
 
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
@@ -430,80 +404,6 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 		values.put(BLOCKER, Utility.boolToShort(this.isBlocker()));
 		return values;
 	}
-	@Override
-	public List<String> checkNotNulls() {
-		List<String> error = super.checkNotNulls();
-		if(TextUtils.isEmpty(this.getOrientation())) {
-//			error.add(ORIENTATION);
-		}
-		if(TextUtils.isEmpty(this.getDriveTrain())) {
-//			error.add(DRIVETRAIN);
-		}
-		if(0==this.getHumanPlayer()) {
-//			error.add(HUMANPLAYER);
-		}
-		if(0==this.getWidth()) {
-//			error.add(WIDTH);
-		}
-		if(0==this.getLength()) {
-//			error.add(LENGTH);
-		}
-		if(0==this.getHeightShooter()) {
-//			error.add(HEIGHTSHOOTER);
-		}
-		if(0==this.getHeightMax()) {
-//			error.add(HEIGHTMAX);
-		}
-		if(0==this.getMaxClimb()) {
-//			error.add(MAXCLIMB);
-		}
-		if(0==this.getClimbTime()) {
-//			error.add(CLIMBTIME);
-		}
-		if(0==this.getShooterType()) {
-//			error.add(SHOOTERTYPE);
-		}
-		if(0==this.getContinuousShooting()) {
-//			error.add(CONTINUOUSSHOOTING);
-		}
-		if(!this.isLowGoal()) {
-//			error.add(LOWGOAL);
-		}
-		if(!this.isMidGoal()) {
-//			error.add(MIDGOAL);
-		}
-		if(!this.isHighGoal()) {
-//			error.add(HIGHGOAL);
-		}
-		if(!this.isPyramidGoal()) {
-//			error.add(PYRAMIDGOAL);
-		}
-		if(0==this.getAutoMode()) {
-//			error.add(AUTOMODE);
-		}
-		if(!this.isSlot()) {
-//			error.add(SLOT);
-		}
-		if(!this.isGround()) {
-//			error.add(GROUND);
-		}
-		if(!this.isAutoPickup()) {
-//			error.add(AUTOPICKUP);
-		}
-		if(0==this.getReloadSpeed()) {
-//			error.add(RELOADSPEED);
-		}
-		if(!this.isSafeShooter()) {
-//			error.add(SAFESHOOTER);
-		}
-		if(!this.isLoaderShooter()) {
-//			error.add(LOADERSHOOTER);
-		}
-		if(!this.isBlocker()) {
-//			error.add(BLOCKER);
-		}
-		return error;
-	}
 
 	public void fromCursor(Cursor cursor) {
 		super.fromCursor(cursor);
@@ -565,36 +465,4 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 		data.fromCursor(cursor);
 		return data;
 	}
-	
-//	public static TeamScouting2013 newFromViewCursor(Cursor cursor) {
-//		long id = cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_ID));
-//		Date mod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_MODIFIED)));
-//		Season season = Season.newFromViewCursor(cursor);
-//		Team team = Team.newFromViewCursor(cursor);
-//		String notes = TeamScouting.notesFromViewCursor(cursor);
-//		String orientation = cursor.getString(cursor.getColumnIndexOrThrow(VIEW_ORIENTATION));
-//		String driveTrain = cursor.getString(cursor.getColumnIndexOrThrow(VIEW_DRIVETRAIN));
-//		float humanplayer = cursor.getFloat(cursor.getColumnIndexOrThrow(VIEW_HUMANPLAYER));
-//		int width = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_WIDTH));
-//		int length = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_LENGTH));
-//		int heightShooter = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_HEIGHTSHOOTER));
-//		int heightMax = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_HEIGHTMAX));
-//		int maxClimb = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_MAXCLIMB));
-//		float climbTime = cursor.getFloat(cursor.getColumnIndexOrThrow(VIEW_CLIMBTIME));
-//		int shooterType = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_SHOOTERTYPE));
-//		int continuousShooting = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_CONTINUOUSSHOOTING));
-//		boolean lowGoal = Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(VIEW_LOWGOAL)));
-//		boolean midGoal = Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(VIEW_MIDGOAL)));
-//		boolean highGoal = Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(VIEW_HIGHGOAL)));
-//		boolean pyramidGoal = Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(VIEW_PYRAMIDGOAL)));
-//		int autoMode = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_AUTOMODE));
-//		boolean slot = Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(VIEW_SLOT)));
-//		boolean ground = Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(VIEW_GROUND)));
-//		boolean autoPickup = Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(VIEW_AUTOPICKUP)));
-//		float reloadSpeed = cursor.getFloat(cursor.getColumnIndexOrThrow(VIEW_RELOADSPEED));
-//		boolean safeShooter = Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(VIEW_SAFESHOOTER)));
-//		boolean loaderShooter = Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(VIEW_LOADERSHOOTER)));
-//		return new TeamScouting2013(id, mod, season, team, notes, orientation, driveTrain, humanplayer, width, length,
-//				heightShooter, heightMax, maxClimb, climbTime, shooterType, continuousShooting, lowGoal, midGoal, highGoal, pyramidGoal, autoMode, slot, ground, autoPickup, reloadSpeed, safeShooter, loaderShooter);
-//	}
 }

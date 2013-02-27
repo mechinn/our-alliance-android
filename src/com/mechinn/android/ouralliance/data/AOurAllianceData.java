@@ -5,9 +5,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mechinn.android.ouralliance.provider.Database;
 
@@ -15,11 +12,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 public abstract class AOurAllianceData implements Serializable {
-	private static final long serialVersionUID = 5836558650246119841L;
-	public static final String TAG = AOurAllianceData.class.getName();
+	private static final long serialVersionUID = -3683063632828709652L;
+
+	public static final String TAG = AOurAllianceData.class.getSimpleName();
 	
 	public static final String TITLE_ID = "ID";
 	public static final String TITLE_MODIFIED = "Last Modified";

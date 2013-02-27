@@ -9,11 +9,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean> {
-	public static final String TAG = BackgroundProgress.class.getName();
+	public static final String TAG = BackgroundProgress.class.getSimpleName();
 	public static final int INDETERMINATE = -1;
 	public static final int NORMAL = 0;
 	public static final int FLAG_SETUP = 0;
-	public static final int FLAG_EXPORT = 0;
+	public static final int FLAG_EXPORT = 1;
 	private String title;
 	private int flag;
 

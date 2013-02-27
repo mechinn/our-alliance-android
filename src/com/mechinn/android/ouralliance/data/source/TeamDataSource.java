@@ -14,7 +14,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 public class TeamDataSource extends AOurAllianceDataSource<Team> {
-	public static final String TAG = TeamDataSource.class.getName();
+	public static final String TAG = TeamDataSource.class.getSimpleName();
 
 	public TeamDataSource(Context context) {
 		super(context);

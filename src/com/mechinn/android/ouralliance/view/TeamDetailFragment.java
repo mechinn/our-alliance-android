@@ -44,7 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurAllianceDataSource<A>> extends Fragment implements LoaderCallbacks<Cursor> {
-	public static final String TAG = TeamDetailFragment.class.getName();
+	public static final String TAG = TeamDetailFragment.class.getSimpleName();
 	public static final int LOADER_TEAMSCOUTING = 0;
 	public static final int LOADER_TEAMWHEEL = 1;
 	public static final int LOADER_WHEELTYPES = 2;
@@ -146,8 +146,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
         // This is primarily necessary when in the two-pane layout.
         if (savedInstanceState != null) {
             mCurrentPosition = savedInstanceState.getInt(ARG_POSITION);
-    		seasonId = savedInstanceState.getLong(Season.CLASS, 0);
-    		teamId = savedInstanceState.getLong(Team.CLASS, 0);
+    		seasonId = savedInstanceState.getLong(Season.TAG, 0);
+    		teamId = savedInstanceState.getLong(Team.TAG, 0);
     		Log.d(TAG, "season: "+seasonId);
     		Log.d(TAG, "team: "+teamId);
         }
@@ -278,8 +278,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
         Bundle args = getArguments();
         if (args != null) {
             // Set article based on argument passed in
-    		seasonId = getArguments().getLong(Season.CLASS, 0);
-    		teamId = getArguments().getLong(Team.CLASS, 0);
+    		seasonId = getArguments().getLong(Season.TAG, 0);
+    		teamId = getArguments().getLong(Team.TAG, 0);
     		Log.d(TAG, "season: "+seasonId);
     		Log.d(TAG, "team: "+teamId);
         }
@@ -299,8 +299,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(Season.CLASS, seasonId);
-        outState.putLong(Team.CLASS, teamId);
+        outState.putLong(Season.TAG, seasonId);
+        outState.putLong(Team.TAG, teamId);
     }
 	
 	@Override

@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="@string/pref_category_general">
+    	<CheckBoxPreference
+	        android:key="@string/pref_practice"
+			android:title="@string/pref_practice_title"
+			android:summary="@string/pref_practice_summary"
+			android:defaultValue="@string/pref_practice_default" />
+	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_category_location">
 		<ListPreference
 			android:key="@string/pref_season"
@@ -14,7 +21,7 @@
 			android:dialogTitle="@string/pref_comp_dialogTitle"
 			android:defaultValue="@string/pref_comp_default" />
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/pref_category_units">
+	<!-- <PreferenceCategory android:title="@string/pref_category_units">
 		<ListPreference
 			android:key="@string/pref_measure"
 			android:title="@string/pref_measure_title"
@@ -23,7 +30,7 @@
 			android:defaultValue="@string/pref_measure_default"
 			android:entries="@array/list_measurements_display"
 			android:entryValues="@array/list_measurements" />
-	</PreferenceCategory>
+	</PreferenceCategory>-->
 	<PreferenceCategory android:title="@string/pref_category_about">
 		<Preference
 			android:key="@string/pref_resetDB"

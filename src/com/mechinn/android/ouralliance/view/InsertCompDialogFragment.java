@@ -16,7 +16,7 @@ import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.Season;
 
 public class InsertCompDialogFragment extends DialogFragment {
-	public static final String TAG = InsertCompDialogFragment.class.getName();
+	public static final String TAG = InsertCompDialogFragment.class.getSimpleName();
 	public static final String SEASON_ARG = "season";
 	public static final String COMP_ARG = "compeition";
 	/* The activity that creates an instance of this dialog fragment must

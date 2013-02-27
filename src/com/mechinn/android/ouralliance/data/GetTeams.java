@@ -2,7 +2,7 @@ package com.mechinn.android.ouralliance.data;
 import java.util.ArrayList;
 
 public class GetTeams {
-	public static final String TAG = GetTeams.class.getName();
+	public static final String TAG = GetTeams.class.getSimpleName();
 	private boolean result;
 	private ArrayList<Team> data;
 	public GetTeams() {

@@ -2,9 +2,7 @@ package com.mechinn.android.ouralliance.data.source;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import android.content.Context;
 import android.content.CursorLoader;
@@ -14,15 +12,13 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.mechinn.android.ouralliance.data.AOurAllianceData;
-import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
-	public static final String TAG = AOurAllianceDataSource.class.getName();
+	public static final String TAG = AOurAllianceDataSource.class.getSimpleName();
 	private Context context;
 	
 	public AOurAllianceDataSource(Context context) {

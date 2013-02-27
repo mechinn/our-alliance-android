@@ -13,7 +13,7 @@ import android.content.CursorLoader;
 import android.database.Cursor;
 
 public class TeamScoutingWheelDataSource extends AOurAllianceDataSource<TeamScoutingWheel> {
-	public static final String TAG = TeamScoutingWheelDataSource.class.getName();
+	public static final String TAG = TeamScoutingWheelDataSource.class.getSimpleName();
 
 	public TeamScoutingWheelDataSource(Context context) {
 		super(context);

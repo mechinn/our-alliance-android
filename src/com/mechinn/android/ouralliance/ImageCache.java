@@ -43,7 +43,7 @@ import com.jakewharton.DiskLruCache;
  * This class holds our bitmap caches (memory and disk).
  */
 public class ImageCache {
-	public static final String TAG = ImageCache.class.getName();
+	public static final String TAG = ImageCache.class.getSimpleName();
 
     // Default memory cache size in kilobytes
     private static final int DEFAULT_MEM_CACHE_SIZE = 1024 * 5; // 5MB

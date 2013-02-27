@@ -26,7 +26,7 @@ import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataS
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public class Export extends BackgroundProgress {
-	public static final String TAG = Export.class.getName();
+	public static final String TAG = Export.class.getSimpleName();
 	private String filename;
 	private CSVWriter writer;
 	private Context context;

@@ -15,7 +15,7 @@ import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public class CompetitionTeamDataSource extends AOurAllianceDataSource<CompetitionTeam>  {
-	public static final String TAG = CompetitionTeamDataSource.class.getName();
+	public static final String TAG = CompetitionTeamDataSource.class.getSimpleName();
 	public CompetitionTeamDataSource(Context context) {
 		super(context);
 	}

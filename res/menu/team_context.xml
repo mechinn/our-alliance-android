@@ -5,15 +5,17 @@
         android:showAsAction="always"
         android:title="Open">
     </item>
+    <!--
     <item
         android:id="@+id/edit"
         android:showAsAction="always"
         android:title="Edit">
     </item>
+    -->
     <item
         android:id="@+id/delete"
         android:showAsAction="always"
-        android:title="Delete">
+        android:title="Remove">
     </item>
 
 </menu>

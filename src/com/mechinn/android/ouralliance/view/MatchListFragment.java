@@ -1,29 +1,28 @@
 package com.mechinn.android.ouralliance.view;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.mechinn.android.ouralliance.Export;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
+import com.mechinn.android.ouralliance.data.frc2013.Match2013;
+import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
 import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamDataSource;
-import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
-import com.mobeta.android.dslv.DragSortListView;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -42,31 +41,74 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor> {
-	public static final String TAG = TeamListFragment.class.getSimpleName();
-	public static final int LOADER_COMPETITIONTEAMS = 0;
+public abstract class MatchListFragment<A extends Match, B extends AOurAllianceDataSource<A>> extends ListFragment implements LoaderCallbacks<Cursor> {
+	public static final String TAG = MatchListFragment.class.getSimpleName();
+	public static final int LOADER_MATCHES = 0;
 	public static final int LOADER_COMPETITION = 1;
 	public static final int LOADER_TEAMS = 2;
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
-    private DragSortListView dslv;
     private int selectedPosition;
 	private Prefs prefs;
-	private TeamDataSource teamData;
-	private CompetitionDataSource competitionData;
 	private CompetitionTeamDataSource competitionTeamData;
-	private TeamScouting2013DataSource scouting2013;
-	private CompetitionTeamCursorAdapter adapter;
+	private CompetitionDataSource compeititonData;
+	private B scouting;
+	private MatchCursorAdapter adapter;
 	private Competition comp;
+	private long compId;
+	private ArrayList<Integer> teams;
+	private boolean matchesLoaded;
+	private boolean teamsLoaded;
 	public void setComp(Competition comp) {
 		this.comp = comp;
 		setHasOptionsMenu(null!=comp);
 	}
-
-	private Team addTeam;
+	public abstract B createDataSouce();
+	public abstract void insertMatch(Match match);
+	public abstract void updateMatch(Match match);
+	
+	public void deleteMatch(Match match) {
+		Log.d(TAG, "id: "+match);
+		try {
+			this.getScouting().delete(match.getId());
+		} catch (OurAllianceException e) {
+			Toast.makeText(this.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	public B getScouting() {
+		return scouting;
+	}
+	public void setScouting(B scouting) {
+		this.scouting = scouting;
+	}
+	public Prefs getPrefs() {
+		return prefs;
+	}
+	public void setPrefs(Prefs prefs) {
+		this.prefs = prefs;
+	}
+	public MatchCursorAdapter getAdapter() {
+		return adapter;
+	}
+	public void setAdapter(MatchCursorAdapter adapter) {
+		this.adapter = adapter;
+	}
+	public long getCompId() {
+		return compId;
+	}
+	public void setCompId(long compId) {
+		this.compId = compId;
+	}
+	public CompetitionDataSource getCompeititonData() {
+		return compeititonData;
+	}
+	public void setCompeititonData(CompetitionDataSource compeititonData) {
+		this.compeititonData = compeititonData;
+	}
 
     public interface Listener {
-        public void onTeamSelected(CompetitionTeam team);
+        public void onMatchSelected(Match team);
     }
 
     @Override
@@ -85,20 +127,21 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        matchesLoaded = false;
+        teamsLoaded = false;
 		prefs = new Prefs(this.getActivity());
-		teamData = new TeamDataSource(this.getActivity());
-		competitionData = new CompetitionDataSource(this.getActivity());
+		compId = this.getPrefs().getComp();
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
-		scouting2013 = new TeamScouting2013DataSource(this.getActivity());
-		adapter = new CompetitionTeamCursorAdapter(getActivity(), null);
+		compeititonData = new CompetitionDataSource(this.getActivity());
+		scouting = createDataSouce();
+		adapter = new MatchCursorAdapter(getActivity(), null);
+		this.setListAdapter(adapter);
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_team_list, container, false);
-        dslv = (DragSortListView) rootView.findViewById(android.R.id.list);
-        dslv.setAdapter(adapter);
     	return rootView;
     }
     
@@ -106,8 +149,8 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
     public void onViewCreated(View view, Bundle savedInstanceState) {
     	super.onViewCreated(view, savedInstanceState);
     	setRetainInstance(true);
-		registerForContextMenu(dslv);
-		dslv.setOnItemClickListener(new OnItemClickListener() {
+		registerForContextMenu(getListView());
+		getListView().setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		    	selectItem(position);
@@ -116,9 +159,9 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			int position = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);
 			if (position == ListView.INVALID_POSITION) {
-				dslv.setItemChecked(selectedPosition, false);
+				getListView().setItemChecked(selectedPosition, false);
 			} else {
-				dslv.setItemChecked(position, true);
+				getListView().setItemChecked(position, true);
 			}
 			selectedPosition = position;
 		}
@@ -131,31 +174,10 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
         // When in two-pane layout, set the listview to highlight the selected list item
         // (We do this during onStart because at the point the listview is available.)
         if (getFragmentManager().findFragmentById(R.id.list_fragment) != null) {
-        	dslv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
-		this.getLoaderManager().restartLoader(LOADER_COMPETITIONTEAMS, null, this);
-    }
-    
-    @Override
-    public void onPause() {
-    	ArrayList<Integer> mapping = adapter.getCursorPositions();
-    	for(int i=0;i<mapping.size();++i) {
-    		Log.d(TAG, "map: "+mapping.get(i));
-    		if(null!=mapping.get(i)) {
-        		CompetitionTeam team = adapter.get(mapping.get(i));
-        		team.setRank(i);
-        		try {
-					competitionTeamData.update(team);
-					continue;
-				} catch (OurAllianceException e) {
-					e.printStackTrace();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-        		Toast.makeText(this.getActivity(), "Could not save rank of "+team, Toast.LENGTH_SHORT).show();
-    		}
-    	}
-    	super.onPause();
+		this.getLoaderManager().restartLoader(LOADER_TEAMS, null, this);
+		this.getLoaderManager().restartLoader(LOADER_MATCHES, null, this);
     }
     
     @Override
@@ -166,10 +188,10 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        mCallback.onTeamSelected(adapter.get(position));
+        mCallback.onMatchSelected(adapter.get(position));
         
         // Set the item as checked to be highlighted when in two-pane layout
-        dslv.setItemChecked(position, true);
+        getListView().setItemChecked(position, true);
     }
 
 	@Override
@@ -184,39 +206,49 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
-		inflater.inflate(R.menu.team_list, menu);
+		inflater.inflate(R.menu.match_list, menu);
+	    menu.findItem(R.id.practice).setChecked(prefs.getPractice());
+	}
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+	    menu.findItem(R.id.practice).setChecked(prefs.getPractice());
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
-	        case R.id.matchList:
-	        	if(null!=comp) {
-		        	Intent intent = new Intent(this.getActivity(), MatchScoutingActivity.class);
-		            Bundle updateArgs = new Bundle();
-		            updateArgs.putInt(MatchScoutingActivity.ARG_YEAR, comp.getSeason().getYear());
-		            intent.putExtras(updateArgs);
-		            startActivity(intent);
-	        	} else {
-	        		noCompetition();
-	        	}
+		    case R.id.practice:
+	            if (item.isChecked()) {
+	            	item.setChecked(false);
+	            } else {
+	            	item.setChecked(true);
+	            }
+            	prefs.setPractice(item.isChecked());
 	            return true;
 	        case R.id.insert:
 	        	if(null!=comp) {
-		            DialogFragment newFragment = new InsertTeamDialogFragment();
-		    		newFragment.show(this.getFragmentManager(), "Add Team");
+	        		if(null!=teams && teams.size()>5) {
+			            DialogFragment newFragment = new InsertMatchDialogFragment();
+			            Bundle args = new Bundle();
+			            args.putIntegerArrayList(InsertMatchDialogFragment.TEAMS_ARG, teams);
+			            newFragment.setArguments(args);
+			    		newFragment.show(this.getFragmentManager(), "Add Match");
+	        		} else {
+	        			notEnoughTeams();
+	        		}
 	        	} else {
 	        		noCompetition();
 	        	}
 	            return true;
-	        case R.id.export:
-	        	if(null!=comp) {
-	        		new Export(this.getActivity()).execute();
-	        	} else {
-	        		noCompetition();
-	        	}
-	            return true;
+//	        case R.id.export:
+//	        	if(null!=comp) {
+//	        		new Export(this.getActivity()).execute();
+//	        	} else {
+//	        		noCompetition();
+//	        	}
+//	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -248,84 +280,20 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 //	        		noCompetition();
 //		    	}
 //	            return true;
-	        case R.id.delete:
-	        	if(null!=comp) {
-		        	dialog = new DeleteTeamDialogFragment();
-		            Bundle deleteArgs = new Bundle();
-		            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.get(position));
-		            dialog.setArguments(deleteArgs);
-		            dialog.show(this.getFragmentManager(), "Delete Team");
-				} else {
-	        		noCompetition();
-				}
-	            return true;
+//	        case R.id.delete:
+//	        	if(null!=comp) {
+//		        	dialog = new DeleteTeamDialogFragment();
+//		            Bundle deleteArgs = new Bundle();
+//		            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.get(position));
+//		            dialog.setArguments(deleteArgs);
+//		            dialog.show(this.getFragmentManager(), "Delete Team");
+//				} else {
+//	        		noCompetition();
+//				}
+//	            return true;
 	        default:
 	            return super.onContextItemSelected(item);
 	    }
-	}
-	
-	public void deleteTeam(CompetitionTeam team) {
-		Log.d(TAG, "id: "+team);
-		try {
-			competitionTeamData.delete(team);
-		} catch (OurAllianceException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void insertTeam(Team team) {
-		Log.d(TAG, "id: "+team);
-		//try inserting the team first in case it doesnt exist
-		try {
-			addTeam = teamData.insert(team);
-			insertTeamScouting();
-		} catch (OurAllianceException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			//if we errored out then the team must already exist, we need to get it.
-			addTeam = team;
-			this.getLoaderManager().initLoader(LOADER_TEAMS, null, this);
-		}
-	}
-	
-	public void insertTeamScouting() {
-		if(addTeam!=null) {
-			try {
-				if(2013==comp.getSeason().getYear()) {
-					scouting2013.insert(new TeamScouting2013(comp.getSeason(),addTeam));
-				} else {
-					Log.w(TAG, "unknown season");
-				}
-			} catch (OurAllianceException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			insertCompetitionTeam(new CompetitionTeam(comp, addTeam));
-		}
-	}
-	
-	public void insertCompetitionTeam(CompetitionTeam team) {
-		//insert the team into the 
-		try {
-			competitionTeamData.insert(team);
-		} catch (OurAllianceException e) {
-			Toast.makeText(this.getActivity(), "Cannot create team without "+e.getMessage(), Toast.LENGTH_SHORT).show();
-		} catch (SQLException e) {
-			Toast.makeText(this.getActivity(), "Team already in this competition", Toast.LENGTH_SHORT).show();
-		}
-	}
-	
-	public void updateTeam(Team team) {
-		Log.d(TAG, "id: "+team);
-		try {
-			teamData.update(team);
-		} catch (OurAllianceException e) {
-			Toast.makeText(this.getActivity(), "Cannot update team without "+e.getMessage(), Toast.LENGTH_SHORT).show();
-		} catch (SQLException e) {
-			Toast.makeText(this.getActivity(), "Team does not exist, creating it and adding to competition", Toast.LENGTH_SHORT).show();
-			insertTeam(team);
-		}
 	}
 	
 	public void getComp(Cursor cursor) {
@@ -341,10 +309,16 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 		this.getLoaderManager().destroyLoader(LOADER_COMPETITION);
 	}
 	
-	public void getTeam(Cursor cursor) {
+	public void getTeams(Cursor cursor) {
 		try {
-			addTeam = TeamDataSource.getSingle(cursor);
-			insertTeamScouting();
+			List<CompetitionTeam> teamList = CompetitionTeamDataSource.getList(cursor);
+			if(!teamList.isEmpty()) {
+				teams = new ArrayList<Integer>();
+				for(CompetitionTeam team : teamList) {
+					teams.add(team.getTeam().getNumber());
+				}
+				setComp(teamList.get(0).getCompetition());
+			}
 		} catch (OurAllianceException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -353,16 +327,18 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 		cursor.close();
 		//stop loading!
 		this.getLoaderManager().destroyLoader(LOADER_TEAMS);
+        teamsLoaded = true;
+        if(matchesLoaded && null==comp) {
+			this.getLoaderManager().initLoader(LOADER_COMPETITION, null, this);
+		}
 	}
-
+	
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		switch(id) {
-			case LOADER_COMPETITIONTEAMS:
-				return competitionTeamData.getAllTeams(prefs.getComp());
-			case LOADER_COMPETITION:
-				return competitionData.get(prefs.getComp());
 			case LOADER_TEAMS:
-				return teamData.get(addTeam.getNumber());
+				return competitionTeamData.getAllTeams(getCompId());
+			case LOADER_COMPETITION:
+				return getCompeititonData().get(getCompId());
 			default:
 				return null;
 		}
@@ -370,30 +346,40 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		switch(loader.getId()) {
-			case LOADER_COMPETITIONTEAMS:
-				adapter.swapCursor(data);
-				try {
-					setComp(adapter.getComp());
-				} catch (OurAllianceException e) {
-					//we need that competition!
-					this.getLoaderManager().initLoader(LOADER_COMPETITION, null, this);
+			case LOADER_TEAMS:
+				getTeams(data);
+			case LOADER_MATCHES:
+				this.getAdapter().swapCursor(data);
+				matchesLoaded = true;
+				if(null==comp) {
+					try {
+						setComp(this.getAdapter().getComp());
+					} catch (OurAllianceException e) {
+						//we need that competition!
+						if(teamsLoaded) {
+							this.getLoaderManager().initLoader(LOADER_COMPETITION, null, this);
+						}
+					}
 				}
 				break;
 			case LOADER_COMPETITION:
 				getComp(data);
-				break;
-			case LOADER_TEAMS:
-				getTeam(data);
 				break;
 		}
 	}
 
 	public void onLoaderReset(Loader<Cursor> loader) {
 		switch(loader.getId()) {
-			case LOADER_COMPETITIONTEAMS:
-				adapter.swapCursor(null);
+			case LOADER_MATCHES:
+				this.getAdapter().swapCursor(null);
 				break;
 		}
+	}
+	
+	private void notEnoughTeams() {
+		String message = "Please add at least 6 teams to the competition first.";
+		Log.i(TAG, message);
+		Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
 	}
 	
 	private void noCompetition() {

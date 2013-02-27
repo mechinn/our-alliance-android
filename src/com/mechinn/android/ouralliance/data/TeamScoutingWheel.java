@@ -16,7 +16,7 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 public class TeamScoutingWheel extends AOurAllianceData {
-	public static final String TAG = TeamScoutingWheel.class.getName();
+	public static final String TAG = TeamScoutingWheel.class.getSimpleName();
 	private static final long serialVersionUID = -8710760990028670121L;
 	public static final String CLASS = "TeamScoutingWheel";
 	public static final String TABLE = "teamscoutingwheel";

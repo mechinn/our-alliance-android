@@ -14,7 +14,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 public class SeasonDataSource extends AOurAllianceDataSource<Season> {
-	public static final String TAG = SeasonDataSource.class.getName();
+	public static final String TAG = SeasonDataSource.class.getSimpleName();
 
 	public SeasonDataSource(Context context) {
 		super(context);

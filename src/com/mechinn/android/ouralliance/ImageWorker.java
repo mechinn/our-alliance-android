@@ -38,7 +38,7 @@ import java.lang.ref.WeakReference;
  * thread and setting a placeholder image.
  */
 public abstract class ImageWorker {
-	public static final String TAG = ImageWorker.class.getName();
+	public static final String TAG = ImageWorker.class.getSimpleName();
     private static final int FADE_IN_TIME = 200;
 
     private ImageCache mImageCache;

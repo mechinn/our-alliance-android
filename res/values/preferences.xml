@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="pref_category_general">General</string>
+    <string name="pref_practice">practice</string>
+    <string name="pref_practice_title">Practice</string>
+    <string name="pref_practice_summary">Check to display practice matches.</string>
+    <string name="pref_practice_default">false</string>
+    
     <string name="pref_category_location">Location</string>
     <string name="pref_season">season</string>
     <string name="pref_season_title">FRC Season</string>

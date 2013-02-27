@@ -29,7 +29,7 @@ import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mechinn.android.ouralliance.provider.DataProvider;
 
 public class Setup extends BackgroundProgress {
-	public static final String TAG = Setup.class.getName();
+	public static final String TAG = Setup.class.getSimpleName();
 	public static final int VERSION = 1;
 	private ObjectMapper jsonMapper;
 	private AssetManager assets;
@@ -100,9 +100,9 @@ public class Setup extends BackgroundProgress {
 				if(this.isCancelled()) {
 					return false;
 				}
-	        	setFlag(INDETERMINATE);
+	        	setProgressFlag(INDETERMINATE);
 		        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-		        	setFlag(INDETERMINATE);
+		        	setProgressFlag(INDETERMINATE);
 					setStatus("Deleting old picture directory");
 			        File externalPath = Environment.getExternalStorageDirectory();
 			        File picDir = new File(externalPath.getAbsolutePath() +  "/Android/data/" + packageName + "/files");
@@ -175,6 +175,7 @@ public class Setup extends BackgroundProgress {
 //				} catch (IOException e) {
 //					e.printStackTrace();
 //				}
+				
 //			case 2:
 //				increaseVersion();
 //				if(this.isCancelled()) {

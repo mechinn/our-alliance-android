@@ -15,9 +15,8 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
 public class CompetitionTeam extends AOurAllianceData implements Comparable<CompetitionTeam> {
-	public static final String TAG = CompetitionTeam.class.getName();
+	public static final String TAG = CompetitionTeam.class.getSimpleName();
 	private static final long serialVersionUID = 1458046534212642950L;
-	public static final String CLASS = "CompetitionTeam";
 	public static final String TABLE = "competitionteam";
 	public static final String COMPETITION = Competition.TABLE;
     public static final String TEAM = Team.TABLE;
@@ -36,7 +35,7 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 		Team.VIEW_ID, Team.VIEW_MODIFIED, Team.VIEW_NUMBER, Team.VIEW_NAME };
 
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
-	public static final String URITYPE = DataProvider.AUTHORITY+"."+CLASS;
+	public static final String URITYPE = DataProvider.AUTHORITY+"."+TAG;
 
 	public static final String DISTINCT = "d/"+TABLE;
 	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
@@ -94,9 +93,9 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	public ContentValues toCV() {
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
-		values.put(CompetitionTeam.COMPETITION, this.getCompetition().getId());
-		values.put(CompetitionTeam.TEAM, this.getTeam().getId());
-		values.put(CompetitionTeam.RANK, this.getRank());
+		values.put(COMPETITION, this.getCompetition().getId());
+		values.put(TEAM, this.getTeam().getId());
+		values.put(RANK, this.getRank());
 		return values;
 	}
 	public int compareTo(CompetitionTeam another) {

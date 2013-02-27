@@ -16,7 +16,7 @@ import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Team;
 
 public class InsertTeamDialogFragment extends DialogFragment {
-	public static final String TAG = InsertTeamDialogFragment.class.getName();
+	public static final String TAG = InsertTeamDialogFragment.class.getSimpleName();
 	public static final String TEAM_ARG = "team";
 	/* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.

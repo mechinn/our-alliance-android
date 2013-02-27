@@ -4,13 +4,15 @@ import com.mechinn.android.ouralliance.*;
 import com.mechinn.android.ouralliance.data.Competition;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class SettingsActivity extends PreferenceActivity implements Setup.Listener, GenericDialogFragment.Listener, InsertCompDialogFragment.Listener {
-	public static final String TAG = SettingsActivity.class.getName();
+	public static final String TAG = SettingsActivity.class.getSimpleName();
 	private SettingsFragment frag;
 	
 	@Override
@@ -42,10 +44,27 @@ public class SettingsActivity extends PreferenceActivity implements Setup.Listen
 	}
 
 	public void complete(int flag) {
+		Log.d(TAG,"flag: "+flag);
 		switch(flag) {
 			case Setup.FLAG_SETUP:
 				Utility.restartApp(this);
 		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case android.R.id.home:
+	        	if(this.getFragmentManager().getBackStackEntryCount()>0) {
+	        		this.getFragmentManager().popBackStack();
+	        	} else {
+	        		this.finish();
+	        	}
+	        	return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 	
 	public void onGenericDialogPositiveClick(int flag, DialogInterface dialog, int id) {

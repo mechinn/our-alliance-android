@@ -19,8 +19,8 @@ import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 
-public class OurAllianceActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener {
-	public static final String TAG = OurAllianceActivity.class.getName();
+public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener {
+	public static final String TAG = TeamScoutingActivity.class.getSimpleName();
 	private TeamListFragment teamListFrag;
 	private TeamDetailFragment<?, ?> teamDetailFragment;
 	private int listFrag;
@@ -88,9 +88,9 @@ public class OurAllianceActivity extends Activity implements TeamListFragment.Li
 		// The user selected the headline of an article from the HeadlinesFragment
 
         Bundle args = new Bundle();
-        args.putLong(Season.CLASS, compId);
+        args.putLong(Season.TAG, compId);
         args.putInt(Season.YEAR, year);
-        args.putLong(Team.CLASS, teamId);
+        args.putLong(Team.TAG, teamId);
         
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		switch(year) {

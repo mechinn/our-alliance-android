@@ -18,9 +18,8 @@ import android.text.TextUtils;
 
 @JsonIgnoreProperties({"id","mod"})
 public class Team extends AOurAllianceData implements Comparable<Team> {
-	public static final String TAG = Team.class.getName();
+	public static final String TAG = Team.class.getSimpleName();
 	private static final long serialVersionUID = 6981108401294045422L;
-	public static final String CLASS = "Team";
 	public static final String TABLE = "team";
 	public static final String NUMBER = "number";
 	public static final String NAME = "name";
@@ -33,7 +32,7 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
     public static final String VIEW_NAME = TABLE+NAME;
 
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
-	public static final String URITYPE = DataProvider.AUTHORITY+"."+CLASS;
+	public static final String URITYPE = DataProvider.AUTHORITY+"."+TAG;
 
 	public static final String DISTINCT = "d/"+TABLE;
 	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
@@ -136,10 +135,14 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 	}
 	
 	public static Team newFromViewCursor(Cursor cursor) {
-		long teamId = cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_ID));
-		Date teamMod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_MODIFIED)));
-		int teamNumber = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_NUMBER));
-		String teamName = cursor.getString(cursor.getColumnIndexOrThrow(VIEW_NAME));
+		return newFromViewCursor(cursor, "");
+	}
+	
+	public static Team newFromViewCursor(Cursor cursor, String prefix) {
+		long teamId = cursor.getLong(cursor.getColumnIndexOrThrow(prefix+VIEW_ID));
+		Date teamMod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(prefix+VIEW_MODIFIED)));
+		int teamNumber = cursor.getInt(cursor.getColumnIndexOrThrow(prefix+VIEW_NUMBER));
+		String teamName = cursor.getString(cursor.getColumnIndexOrThrow(prefix+VIEW_NAME));
 		return new Team(teamId, teamMod, teamNumber, teamName);
 	}
 }

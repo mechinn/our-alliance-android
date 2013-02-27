@@ -2,51 +2,36 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mechinn.android.ouralliance"
     android:versionCode="11"
-    android:versionName="2013.1" >
-
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="17" />
-
+    android:versionName="2013.1" android:installLocation="auto">
+    <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="17" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
     <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" android:logo="@drawable/ic_launcher" android:allowClearUserData="true">
         <activity
-            android:name="com.mechinn.android.ouralliance.view.OurAllianceActivity"
+            android:name="com.mechinn.android.ouralliance.view.TeamScoutingActivity"
             android:label="@string/app_name" android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-                <!-- <category android:name="android.intent.category.DEFAULT"/> -->
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <!--
         <activity
-            android:name=".view.StartupActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".view.TeamListActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name="com.mechinn.android.ouralliance.view.MatchScoutingActivity"
+            android:label="@string/matches" android:configChanges="orientation">
         </activity>
-        -->
         <activity
             android:name="com.mechinn.android.ouralliance.view.SettingsActivity"
-            android:label="@string/title_team_detail"
-            android:parentActivityName=".view.SettingsActivity" android:configChanges="orientation">
+            android:label="@string/settings" android:configChanges="orientation">
         </activity>
-
         <provider
             android:name="com.mechinn.android.ouralliance.provider.DataProvider"
             android:authorities="com.mechinn.android.ouralliance.data"
@@ -58,5 +43,4 @@
             android:multiprocess="true" >
         </provider>
     </application>
-
 </manifest>

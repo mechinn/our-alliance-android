@@ -13,7 +13,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 public class Utility {
-	public static final String TAG = Utility.class.getName();
+	public static final String TAG = Utility.class.getSimpleName();
 	//utility functions for specific uses throughout the app
 	public static void deleteRecursive(File fileOrDirectory) {
 	    if (fileOrDirectory.isDirectory()) {
@@ -29,7 +29,9 @@ public class Utility {
 	    }
 	}
 	public static void restartApp(Context context) {
-		Intent i = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+		String pack = context.getPackageName();
+		Log.d(TAG,pack);
+		Intent i = context.getPackageManager().getLaunchIntentForPackage(pack);
 		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(i);
 	}

@@ -8,7 +8,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 
 public class Prefs {
-	public static final String TAG = Prefs.class.getName();
+	public static final String TAG = Prefs.class.getSimpleName();
 	private SharedPreferences prefs;
 	private int currentVersion;
 	private String dbSetupPref;
@@ -21,6 +21,8 @@ public class Prefs {
 	private String measureDefault;
 	private String versionPref;
 	private String versionDefault;
+	private String practicePref;
+	private String practiceDefault;
 	
 	public Prefs(Context context) {
 		this.dbSetupPref = context.getString(R.string.pref_resetDB);
@@ -33,6 +35,8 @@ public class Prefs {
 		this.measureDefault = context.getString(R.string.pref_measure_default);
 		this.versionPref = context.getString(R.string.pref_about);
 		this.versionDefault = context.getString(R.string.pref_about_default);
+		this.practicePref = context.getString(R.string.pref_practice);
+		this.practiceDefault = context.getString(R.string.pref_practice_default);
 		try {
 			this.currentVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
 		} catch (NameNotFoundException e) {
@@ -72,6 +76,14 @@ public class Prefs {
 	}
 	public boolean isInches() {
 		return getMeasure().equals(measureDefault);
+	}
+	public boolean getPractice() {
+		return prefs.getBoolean(practicePref, Boolean.parseBoolean(practiceDefault));
+	}
+	public void setPractice(boolean practice) {
+		Editor editor = prefs.edit();
+		editor.putBoolean(practicePref, practice);
+		editor.apply();
 	}
 	public int getVersion() {
 		return Integer.parseInt(prefs.getString(versionPref, versionDefault));
