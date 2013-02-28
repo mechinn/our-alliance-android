@@ -9,6 +9,7 @@ import android.content.CursorLoader;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.frc2013.Match2013;
@@ -17,8 +18,10 @@ import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public class Match2013DataSource extends AOurAllianceDataSource<Match2013>  {
 	public static final String TAG = Match2013DataSource.class.getSimpleName();
+	public Prefs prefs;
 	public Match2013DataSource(Context context) {
 		super(context);
+		prefs = new Prefs(context);
 	}
 
 	@Override
@@ -49,6 +52,16 @@ public class Match2013DataSource extends AOurAllianceDataSource<Match2013>  {
 
 	@Override
 	public CursorLoader get(String selection, String order) {
+		if(selection==null || selection.isEmpty()) {
+			selection = "";
+		} else {
+			selection += " AND ";
+		}
+		if(prefs.getPractice()) {
+			selection += Match.SELECTPRACTICE;
+		} else {
+			selection += Match.SELECTNOTPRACTICE;
+		}
 		return get(Match2013.URI,Match2013.VIEWCOLUMNS, selection, order);
 	}
 

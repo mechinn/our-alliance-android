@@ -11,6 +11,7 @@ import com.mechinn.android.ouralliance.provider.Database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 public class Match extends AOurAllianceData implements Comparable<Match>{
 	public static final String TAG = Match.class.getSimpleName();
@@ -51,6 +52,9 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	public static final int QUARTERFINAL = 1;
 	public static final int SEMIFINAL = 2;
 	public static final int FINAL = 3;
+	
+	public static final String SELECTPRACTICE = TYPE+" = "+PRACTICE;
+	public static final String SELECTNOTPRACTICE = TYPE+" != "+PRACTICE;
 	
 	private Competition competition;
 	private int number;
@@ -105,13 +109,11 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	public void setCompetition(Competition competition) {
 		this.competition = competition;
 	}
+	public int getSQLNumber() {
+		return number;
+	}
 	public int getNumber() {
-		//negative all our practices so we dont get conflicts
-		if(type==-1) {
-			return -number;
-		} else {
-			return number;
-		}
+		return Math.abs(number);
 	}
 	public void setNumber(int number) {
 
@@ -256,6 +258,7 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	}
 	@Override
 	public String toString() {
+		Log.d(TAG,"type: "+type);
 		if(PRACTICE==type) {
 			return "Practice: "+this.getNumber();
 		} else if(QUARTERFINAL==type) {
@@ -271,7 +274,7 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	public boolean equals(Match data) {
 		return super.equals(data) &&
 				getCompetition().equals(data.getCompetition()) &&
-				getNumber()==data.getNumber() &&
+				getSQLNumber()==data.getSQLNumber() &&
 				getRed1().equals(data.getRed1()) &&
 				getRed2().equals(data.getRed2()) &&
 				getRed3().equals(data.getRed3()) &&
@@ -293,7 +296,7 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 		ContentValues values = new ContentValues();
 		values.put(Database.MODIFIED, new Date().getTime());
 		values.put(COMPETITION, this.getCompetition().getId());
-		values.put(NUMBER, this.getNumber());
+		values.put(NUMBER, this.getSQLNumber());
 		values.put(RED1, this.getRed1().getId());
 		values.put(RED2, this.getRed2().getId());
 		values.put(RED3, this.getRed3().getId());

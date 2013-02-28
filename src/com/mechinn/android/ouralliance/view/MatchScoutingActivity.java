@@ -24,6 +24,8 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +33,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MatchScoutingActivity extends Activity implements OnBackStackChangedListener, MatchListFragment.Listener, InsertMatchDialogFragment.Listener, DeleteMatchDialogFragment.Listener {
+public class MatchScoutingActivity extends Activity implements OnBackStackChangedListener, MatchListFragment.Listener, InsertMatchDialogFragment.Listener, DeleteMatchDialogFragment.Listener, OnSharedPreferenceChangeListener {
 	public static final String TAG = MatchScoutingActivity.class.getSimpleName();
 	private Prefs prefs;
 	private MatchListFragment<?, ?> matchListFrag;
@@ -53,6 +55,12 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
 		// Inflate the menu; this adds items to the action bar if it is present.
 		this.getMenuInflater().inflate(R.menu.ouralliance, menu);
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public void onResume() {
+	    super.onResume();
+	    prefs.setChangeListener(this);
 	}
 	
 	@Override
@@ -127,6 +135,13 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
         if (getFragmentManager().getBackStackEntryCount() < 1){
         	this.setTitle(R.string.matches);
         }
+	}
+	
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		Log.d(TAG, key);
+		if(key.equals(this.getString(R.string.pref_practice))) {
+			this.recreate();
+		}
 	}
 
 	public void onInsertMatchDialogPositiveClick(boolean update, Match match) {
