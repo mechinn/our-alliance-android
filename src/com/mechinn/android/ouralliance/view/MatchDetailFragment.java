@@ -7,11 +7,13 @@ import java.util.Locale;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.Season;
+import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -27,10 +29,8 @@ import android.widget.TextView;
 
 public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianceDataSource<A>> extends Fragment implements LoaderCallbacks<Cursor> {
 	public static final String TAG = MatchDetailFragment.class.getSimpleName();
-	final static String ARG_POSITION = "position";
 	public static final int LOADER_MATCH = 0;
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-    int mCurrentPosition = -1;
     
     private long matchId;
 
@@ -116,14 +116,19 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
         // the previous article selection set by onSaveInstanceState().
         // This is primarily necessary when in the two-pane layout.
         if (savedInstanceState != null) {
-            mCurrentPosition = savedInstanceState.getInt(ARG_POSITION);
             matchId = savedInstanceState.getLong(Match.TAG, 0);
     		Log.d(TAG, "match: "+matchId);
         }
     	
     	OnClickListener teamButton = new OnClickListener() {
 			public void onClick(View v) {
-				
+				Team team = (Team) v.getTag();
+	        	Intent intent = new Intent(MatchDetailFragment.this.getActivity(), TeamScoutingActivity.class);
+	        	Bundle args = new Bundle();
+	        	args.putLong(TeamScoutingActivity.TEAM_ARG,team.getId());
+	        	args.putLong(TeamScoutingActivity.MATCH_ARG,match.getId());
+	        	intent.putExtras(args);
+	            startActivity(intent);
 		    }
 		};
         
@@ -195,6 +200,12 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
 		blue1.setText(Integer.toString(match.getBlue1().getNumber()));
 		blue2.setText(Integer.toString(match.getBlue2().getNumber()));
 		blue3.setText(Integer.toString(match.getBlue3().getNumber()));
+		red1.setTag(match.getRed1());
+		red2.setTag(match.getRed2());
+		red3.setTag(match.getRed3());
+		blue1.setTag(match.getBlue1());
+		blue2.setTag(match.getBlue2());
+		blue3.setTag(match.getBlue3());
 		if(-1!=match.getRedScore()) {
 			redScore.setText(Integer.toString(match.getRedScore()));
 		}

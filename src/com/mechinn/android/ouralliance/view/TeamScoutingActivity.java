@@ -23,6 +23,7 @@ import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener {
 	public static final String TAG = TeamScoutingActivity.class.getSimpleName();
 	public static final String TEAM_ARG = "team";
+	public static final String MATCH_ARG = "match";
 	private TeamListFragment teamListFrag;
 	private TeamDetailFragment<?, ?> teamDetailFragment;
 	private int listFrag;
@@ -52,9 +53,10 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
         loadTeam = this.getIntent().getLongExtra(TEAM_ARG, 0);
         if(0!=loadTeam) {
         	if(listFrag==detailFrag) {
-        		
+        		onTeamSelected(loadTeam);
         	} else {
-        		
+                getFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
+        		onTeamSelected(loadTeam);
         	}
         } else {
             getFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
