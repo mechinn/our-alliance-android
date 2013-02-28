@@ -48,7 +48,6 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 	public static final int LOADER_TEAMS = 2;
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
-    private int selectedPosition;
 	private Prefs prefs;
 	private CompetitionTeamDataSource competitionTeamData;
 	private CompetitionDataSource compeititonData;
@@ -112,7 +111,7 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 	}
 
     public interface Listener {
-        public void onMatchSelected(Match team);
+        public void onMatchSelected(long match);
     }
 
     @Override
@@ -143,13 +142,6 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
     }
     
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	super.onCreateView(inflater, container, savedInstanceState);
-        View rootView = inflater.inflate(R.layout.fragment_team_list, container, false);
-    	return rootView;
-    }
-    
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
     	super.onViewCreated(view, savedInstanceState);
     	setRetainInstance(true);
@@ -163,11 +155,11 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			int position = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);
 			if (position == ListView.INVALID_POSITION) {
-				getListView().setItemChecked(selectedPosition, false);
+				getListView().setItemChecked(this.getSelectedItemPosition(), false);
 			} else {
 				getListView().setItemChecked(position, true);
+				this.setSelection(position);
 			}
-			selectedPosition = position;
 		}
     }
     
@@ -192,7 +184,7 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        mCallback.onMatchSelected(adapter.get(position));
+        mCallback.onMatchSelected(adapter.get(position).getId());
         
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);
@@ -201,9 +193,9 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		if (selectedPosition != ListView.INVALID_POSITION) {
+		if (this.getSelectedItemPosition() != ListView.INVALID_POSITION) {
 			// Serialize and persist the activated item position.
-			outState.putInt(STATE_ACTIVATED_POSITION, selectedPosition);
+			outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
 		}
 	}
 	

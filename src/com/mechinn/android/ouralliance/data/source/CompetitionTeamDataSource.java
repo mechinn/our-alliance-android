@@ -66,22 +66,6 @@ public class CompetitionTeamDataSource extends AOurAllianceDataSource<Competitio
 		return queryAll(CompetitionTeam.RANK+", "+Team.VIEW_NUMBER);
 	}
 	
-	public CursorLoader getTeam(Team team) {
-		return getTeam(team.getId());
-	}
-	
-	public Cursor queryTeam(Team team) {
-		return queryTeam(team.getId());
-	}
-	
-	public CursorLoader getTeam(long team) {
-		return get(CompetitionTeam.TEAM, team);
-	}
-	
-	public Cursor queryTeam(long team) {
-		return query(CompetitionTeam.TEAM, team);
-	}
-	
 	public CursorLoader getAllTeams(Competition comp) {
 		return getAllTeams(comp.getId());
 	}

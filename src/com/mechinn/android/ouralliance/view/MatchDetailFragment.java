@@ -125,6 +125,7 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
 				Team team = (Team) v.getTag();
 	        	Intent intent = new Intent(MatchDetailFragment.this.getActivity(), TeamScoutingActivity.class);
 	        	Bundle args = new Bundle();
+	        	args.putString(TeamScoutingActivity.MATCHNAME_ARG, match.toString());
 	        	args.putLong(TeamScoutingActivity.TEAM_ARG,team.getId());
 	        	args.putLong(TeamScoutingActivity.MATCH_ARG,match.getId());
 	        	intent.putExtras(args);

@@ -20,16 +20,20 @@ import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 
-public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener {
+public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener, MatchTeamListFragment.Listener {
 	public static final String TAG = TeamScoutingActivity.class.getSimpleName();
 	public static final String TEAM_ARG = "team";
 	public static final String MATCH_ARG = "match";
+	public static final String MATCHNAME_ARG = "matchname";
 	private TeamListFragment teamListFrag;
+	private MatchTeamListFragment matchTeamListFrag;
 	private TeamDetailFragment<?, ?> teamDetailFragment;
 	private int listFrag;
 	private int detailFrag;
 	private long loadTeam;
+	private long loadMatch;
 	private Prefs prefs;
+	private String matchName;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,11 +41,6 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 		setContentView(R.layout.activity_team_scouting);
 		this.getFragmentManager().addOnBackStackChangedListener(this);
 		prefs = new Prefs(this);
-        // Create an instance of ExampleFragment
-    	teamListFrag = new TeamListFragment();
-        // In case this activity was started with special instructions from an Intent,
-        // pass the Intent's extras to the fragment as arguments
-    	teamListFrag.setArguments(getIntent().getExtras());
         // Add the fragment to the 'fragment_container' FrameLayout
         if (this.findViewById(R.id.fragment_container) != null) {
         	listFrag = R.id.fragment_container;
@@ -50,15 +49,23 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
         	listFrag = R.id.list_fragment;
 			detailFrag = R.id.detail_fragment;
 		}
+        matchName = this.getIntent().getStringExtra(MATCHNAME_ARG);
         loadTeam = this.getIntent().getLongExtra(TEAM_ARG, 0);
+        loadMatch = this.getIntent().getLongExtra(MATCH_ARG, 0);
         if(0!=loadTeam) {
         	if(listFrag==detailFrag) {
         		onTeamSelected(loadTeam);
         	} else {
-                getFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
+            	matchTeamListFrag = new MatchTeamListFragment();
+            	Bundle bundle = new Bundle();
+            	bundle.putLong(MatchTeamListFragment.MATCH_ARG, loadMatch);
+            	matchTeamListFrag.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(listFrag, matchTeamListFrag).commit();
         		onTeamSelected(loadTeam);
         	}
         } else {
+        	teamListFrag = new TeamListFragment();
+        	teamListFrag.setArguments(getIntent().getExtras());
             getFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
         }
 	}
@@ -113,9 +120,13 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 	public void onBackStackChanged() {
 		Log.i(TAG, "back stack changed ");
         if (getFragmentManager().getBackStackEntryCount() < 1){
-        	this.setTitle(R.string.app_name);
-    		this.getActionBar().setDisplayHomeAsUpEnabled(false);
-    		this.getActionBar().setHomeButtonEnabled(false);
+        	if(null!=matchName) {
+            	this.setTitle(matchName);
+        	} else {
+            	this.setTitle(R.string.app_name);
+        		this.getActionBar().setDisplayHomeAsUpEnabled(false);
+        		this.getActionBar().setHomeButtonEnabled(false);
+        	}
         }
 	}
 

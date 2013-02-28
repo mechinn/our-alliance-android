@@ -96,16 +96,16 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
         getFragmentManager().beginTransaction().replace(listFrag, matchListFrag).commitAllowingStateLoss();
 	}
 
-	public void onMatchSelected(Match match) {
+	public void onMatchSelected(long match) {
 //		if(null!=teamDetailFragment) {
 //			teamDetailFragment.updateScouting();
 //			teamDetailFragment.commitUpdatedScouting();
 //		}
-		Log.d(TAG, match.toString());
+		Log.d(TAG, "match: "+match);
 		// The user selected the headline of an article from the HeadlinesFragment
 
         Bundle args = new Bundle();
-        args.putLong(Match.TAG, match.getId());
+        args.putLong(Match.TAG, match);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		switch(prefs.getYear()) {
 			case 2013:

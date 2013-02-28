@@ -130,52 +130,50 @@ public class Setup extends BackgroundProgress {
 					return false;
 				}
 				setStatus("Adding 2013 teams");
-				Log.wtf(TAG,"uncomment the code and renable teams!");
-//				try {
-//					GetTeams getter = jsonMapper.readValue(assets.open("teams.json"),GetTeams.class);
-//					Log.d(TAG, "teams: "+getter.getData().size());
-//					this.setTotal(getter.getData().size());
-//					if(this.isCancelled()) {
-//						return false;
-//					}
-//					for(Team team : getter.getData()) {
-//						Log.d(TAG, team.toString());
-//						try {
-//							if(this.isCancelled()) {
-//								return false;
-//							}
-//							teamData.insert(team);
-//					    	this.increasePrimary();
-//							continue;
-//						} catch (OurAllianceException e) {
-//							//just go to the update part then
-//						} catch (SQLException e) {
-//							//just go to the update part then
-//						}
-//						Cursor cusor = teamData.query(team.getNumber());
-//						try {
+				try {
+					GetTeams getter = jsonMapper.readValue(assets.open("teams.json"),GetTeams.class);
+					Log.d(TAG, "teams: "+getter.getData().size());
+					this.setTotal(getter.getData().size());
+					if(this.isCancelled()) {
+						return false;
+					}
+					for(Team team : getter.getData()) {
+						Log.d(TAG, team.toString());
+						try {
 							if(this.isCancelled()) {
 								return false;
 							}
-//							Team fromDb = TeamDataSource.getSingle(cusor);
-//							fromDb.setName(team.getName());
-//							fromDb.setNumber(team.getNumber());
-//							teamData.update(fromDb);
-//						} catch (OurAllianceException e1) {
-//							e1.printStackTrace();
-//						} catch (SQLException e1) {
-//							e1.printStackTrace();
-//						}
-//				    	this.increasePrimary();
-//					}
-//				} catch (JsonParseException e) {
-//					e.printStackTrace();
-//				} catch (JsonMappingException e) {
-//					e.printStackTrace();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-				
+							teamData.insert(team);
+					    	this.increasePrimary();
+							continue;
+						} catch (OurAllianceException e) {
+							//just go to the update part then
+						} catch (SQLException e) {
+							//just go to the update part then
+						}
+						Cursor cusor = teamData.query(team.getNumber());
+						try {
+							if(this.isCancelled()) {
+								return false;
+							}
+							Team fromDb = TeamDataSource.getSingle(cusor);
+							fromDb.setName(team.getName());
+							fromDb.setNumber(team.getNumber());
+							teamData.update(fromDb);
+						} catch (OurAllianceException e1) {
+							e1.printStackTrace();
+						} catch (SQLException e1) {
+							e1.printStackTrace();
+						}
+				    	this.increasePrimary();
+					}
+				} catch (JsonParseException e) {
+					e.printStackTrace();
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 //			case 2:
 //				increaseVersion();
 //				if(this.isCancelled()) {

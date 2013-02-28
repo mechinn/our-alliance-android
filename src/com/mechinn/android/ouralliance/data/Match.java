@@ -229,6 +229,23 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 		}
 		this.number = level+of*10+set;
 	}
+	public Team selectTeam(int position) {
+		switch(position) {
+			case 0:
+				return getRed1();
+			case 1:
+				return getRed2();
+			case 2:
+				return getRed3();
+			case 3:
+				return getBlue1();
+			case 4:
+				return getBlue2();
+			case 5:
+				return getBlue3();
+		}
+		return null;
+	}
 	public String getTeams() {
 		return getRed1().getNumber()+" "+
 				getRed2().getNumber()+" "+
