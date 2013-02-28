@@ -2,6 +2,7 @@ package com.mechinn.android.ouralliance.view;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.Match;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,18 +11,18 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-public class DeleteTeamDialogFragment extends DialogFragment {
-	public static final String TAG = DeleteTeamDialogFragment.class.getSimpleName();
-	public static final String TEAM_ARG = "team";
+public class DeleteMatchDialogFragment extends DialogFragment {
+	public static final String TAG = DeleteMatchDialogFragment.class.getSimpleName();
+	public static final String MATCH_ARG = "match";
 	/* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface Listener {
-        public void onDeleteDialogPositiveClick(long team);
+        public void onDeleteDialogPositiveClick(long match);
     }
     
     Listener listener;
-    private long team;
+    private long match;
     
     @Override
     public void onAttach(Activity activity) {
@@ -39,14 +40,14 @@ public class DeleteTeamDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		setRetainInstance(true);
-    	team = this.getArguments().getLong(TEAM_ARG);
+		match = this.getArguments().getLong(MATCH_ARG);
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setMessage(R.string.deleteTeam)
+		builder.setMessage(R.string.deleteMatch)
 			.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					// Send the positive button event back to the host activity
-					listener.onDeleteDialogPositiveClick(team);
+					listener.onDeleteDialogPositiveClick(match);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {

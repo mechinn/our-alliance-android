@@ -22,6 +22,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -35,6 +36,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
 	public static final String TAG = InsertMatchDialogFragment.class.getSimpleName();
 	public static final String MATCH_ARG = "match";
 	public static final String TEAMS_ARG = "teams";
+	public static final String TEAMIDS_ARG = "teamIds";
 	/* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
@@ -55,6 +57,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
     private TextView practice;
     private Spinner type;
     private Spinner set;
+    private LinearLayout numberContainer;
     private EditText number;
     private Spinner red1;
     private Spinner red2;
@@ -65,6 +68,9 @@ public class InsertMatchDialogFragment extends DialogFragment {
     private Match match;
     private boolean update;
     private Comparator<Integer> intCompare;
+    private long[] teamIds;
+    private ArrayList<Integer> teamNumbers;
+    private SparseArray<Long> teamMap;
     private ArrayList<Integer> teams;
     private ArrayList<Integer> red1Teams;
     private ArrayList<Integer> red2Teams;
@@ -82,7 +88,8 @@ public class InsertMatchDialogFragment extends DialogFragment {
     private SparseArray<ArrayList<Integer>> arrayLists;
     private SparseArray<ArrayAdapter<Integer>> arrayAdapters;
     private SparseArray<Spinner> teamSpinners;
-    
+    private ArrayAdapter<Integer> quarterfinals;
+    private ArrayAdapter<Integer> semifinals;
     @Override
     public void onAttach(Activity activity) {
     	super.onAttach(activity);
@@ -106,12 +113,21 @@ public class InsertMatchDialogFragment extends DialogFragment {
         teams.add(BLUE1);
         teams.add(BLUE2);
         teams.add(BLUE3);
-        red1Teams = this.getArguments().getIntegerArrayList(TEAMS_ARG);
-        red2Teams = new ArrayList<Integer>(red1Teams);
-        red3Teams = new ArrayList<Integer>(red1Teams);
-        blue1Teams = new ArrayList<Integer>(red1Teams);
-        blue2Teams = new ArrayList<Integer>(red1Teams);
-        blue3Teams = new ArrayList<Integer>(red1Teams);
+        teamIds = this.getArguments().getLongArray(TEAMIDS_ARG);
+        teamNumbers = this.getArguments().getIntegerArrayList(TEAMS_ARG);
+        teamMap = new SparseArray<Long>(); 
+        if(teamIds.length!=teamNumbers.size()) {
+            throw new ClassCastException(activity.toString() + " has different teams?");
+        }
+        for(int i=0;i<teamIds.length;++i) {
+        	teamMap.append(teamNumbers.get(i), teamIds[i]);
+        }
+        red1Teams = new ArrayList<Integer>(teamNumbers);
+        red2Teams = new ArrayList<Integer>(teamNumbers);
+        red3Teams = new ArrayList<Integer>(teamNumbers);
+        blue1Teams = new ArrayList<Integer>(teamNumbers);
+        blue2Teams = new ArrayList<Integer>(teamNumbers);
+        blue3Teams = new ArrayList<Integer>(teamNumbers);
         arrayLists = new SparseArray<ArrayList<Integer>>();
         arrayLists.put(RED1, red1Teams);
         arrayLists.put(RED2, red2Teams);
@@ -133,6 +149,8 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		arrayAdapters.put(BLUE2, blue2Adapter);
 		arrayAdapters.put(BLUE3, blue3Adapter);
         prefs = new Prefs(activity);
+        quarterfinals = new ArrayAdapter<Integer>(InsertMatchDialogFragment.this.getActivity(),android.R.layout.simple_list_item_1, new Integer[]{1,2,3,4});
+    	semifinals = new ArrayAdapter<Integer>(InsertMatchDialogFragment.this.getActivity(),android.R.layout.simple_list_item_1, new Integer[]{1,2});
     }
 	
 	@Override
@@ -145,6 +163,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		practice = (TextView) dialog.findViewById(R.id.practice);
 		type = (Spinner) dialog.findViewById(R.id.type);
 		set = (Spinner) dialog.findViewById(R.id.set);
+		numberContainer = (LinearLayout) dialog.findViewById(R.id.numberContainer);
 		number = (EditText) dialog.findViewById(R.id.number);
 		red1 = (Spinner) dialog.findViewById(R.id.red1);
 		red2 = (Spinner) dialog.findViewById(R.id.red2);
@@ -164,20 +183,25 @@ public class InsertMatchDialogFragment extends DialogFragment {
 			type.setVisibility(View.GONE);
 			set.setVisibility(View.GONE);
 		} else {
+			practice.setVisibility(View.GONE);
+			type.setVisibility(View.VISIBLE);
 			type.setOnItemSelectedListener(new OnItemSelectedListener() {
 				@Override
 				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 					if(Match.QUARTERFINAL==position) {
 						set.setVisibility(View.VISIBLE);
-						ArrayAdapter<String> quarterfinals = new ArrayAdapter<String>(InsertMatchDialogFragment.this.getActivity(),android.R.layout.simple_list_item_1, R.array.quarterfinals);
 						set.setAdapter(quarterfinals);
 					} else if(Match.SEMIFINAL==position) {
 						set.setVisibility(View.VISIBLE);
-						ArrayAdapter<String> semifinals = new ArrayAdapter<String>(InsertMatchDialogFragment.this.getActivity(),android.R.layout.simple_list_item_1, R.array.semifinals);
 						set.setAdapter(semifinals);
 					} else {
 						set.setVisibility(View.INVISIBLE);
 						set.setSelection(0);
+					}
+					if(Match.QUALIFIER==position) {
+						numberContainer.setVisibility(View.VISIBLE);
+					} else {
+						numberContainer.setVisibility(View.GONE);
 					}
 				}
 				@Override
@@ -249,9 +273,24 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-//					team.setNumber(Utility.getIntFromText(teamNumber.getText()));
-//					listener.onInsertTeamDialogPositiveClick(update, team);
-					dialog.cancel();
+					if(prefs.getPractice()) {
+						match.setType(Match.PRACTICE);
+					} else {
+						match.setType(type.getSelectedItemPosition());
+						if(View.VISIBLE==set.getVisibility()) {
+							match.setSet(set.getSelectedItemPosition()+1);
+						}
+					}
+					match.setRed1(teamMap.get((Integer) red1.getSelectedItem()));
+					match.setRed2(teamMap.get((Integer) red2.getSelectedItem()));
+					match.setRed3(teamMap.get((Integer) red3.getSelectedItem()));
+					match.setBlue1(teamMap.get((Integer) blue1.getSelectedItem()));
+					match.setBlue2(teamMap.get((Integer) blue2.getSelectedItem()));
+					match.setBlue3(teamMap.get((Integer) blue3.getSelectedItem()));
+					match.setNumber(Utility.getIntFromText(number.getText()));
+					match.setRedScore(-1);
+					match.setBlueScore(-1);
+					listener.onInsertMatchDialogPositiveClick(update, match);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {

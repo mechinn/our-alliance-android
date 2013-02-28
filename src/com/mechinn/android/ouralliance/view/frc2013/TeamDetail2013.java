@@ -358,7 +358,7 @@ public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamSco
 	@Override
 	public void onStart() {
 		super.onStart();
-        if (getSeasonId() != 0 && getTeamId() != 0) {
+        if (this.getPrefs().getSeason() != 0 && getTeamId() != 0) {
     		this.getLoaderManager().restartLoader(LOADER_ORIENTATIONS, null, this);
     		this.getLoaderManager().restartLoader(LOADER_DRIVETRAINS, null, this);
         }

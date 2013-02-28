@@ -57,8 +57,12 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 	private Competition comp;
 	private long compId;
 	private ArrayList<Integer> teams;
+	private long[] teamIds;
 	private boolean matchesLoaded;
 	private boolean teamsLoaded;
+	public Competition getComp() {
+		return comp;
+	}
 	public void setComp(Competition comp) {
 		this.comp = comp;
 		setHasOptionsMenu(null!=comp);
@@ -67,10 +71,10 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 	public abstract void insertMatch(Match match);
 	public abstract void updateMatch(Match match);
 	
-	public void deleteMatch(Match match) {
+	public void deleteMatch(long match) {
 		Log.d(TAG, "id: "+match);
 		try {
-			this.getScouting().delete(match.getId());
+			this.getScouting().delete(match);
 		} catch (OurAllianceException e) {
 			Toast.makeText(this.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
 		}
@@ -232,6 +236,7 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 	        		if(null!=teams && teams.size()>5) {
 			            DialogFragment newFragment = new InsertMatchDialogFragment();
 			            Bundle args = new Bundle();
+			            args.putLongArray(InsertMatchDialogFragment.TEAMIDS_ARG, teamIds);
 			            args.putIntegerArrayList(InsertMatchDialogFragment.TEAMS_ARG, teams);
 			            newFragment.setArguments(args);
 			    		newFragment.show(this.getFragmentManager(), "Add Match");
@@ -280,17 +285,17 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 //	        		noCompetition();
 //		    	}
 //	            return true;
-//	        case R.id.delete:
-//	        	if(null!=comp) {
-//		        	dialog = new DeleteTeamDialogFragment();
-//		            Bundle deleteArgs = new Bundle();
-//		            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.get(position));
-//		            dialog.setArguments(deleteArgs);
-//		            dialog.show(this.getFragmentManager(), "Delete Team");
-//				} else {
-//	        		noCompetition();
-//				}
-//	            return true;
+	        case R.id.delete:
+	        	if(null!=comp) {
+		        	dialog = new DeleteMatchDialogFragment();
+		            Bundle deleteArgs = new Bundle();
+		            deleteArgs.putLong(DeleteMatchDialogFragment.MATCH_ARG, adapter.get(position).getId());
+		            dialog.setArguments(deleteArgs);
+		            dialog.show(this.getFragmentManager(), "Delete Team");
+				} else {
+	        		noCompetition();
+				}
+	            return true;
 	        default:
 	            return super.onContextItemSelected(item);
 	    }
@@ -313,9 +318,17 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 		try {
 			List<CompetitionTeam> teamList = CompetitionTeamDataSource.getList(cursor);
 			if(!teamList.isEmpty()) {
+				ArrayList<Long> teamIdArray = new ArrayList<Long>();
 				teams = new ArrayList<Integer>();
 				for(CompetitionTeam team : teamList) {
+					teamIdArray.add(team.getTeam().getId());
 					teams.add(team.getTeam().getNumber());
+				}
+				teamIds = new long[teamIdArray.size()];
+				for(int i=0;i<teamIdArray.size();++i) {
+					if(null!=teamIdArray.get(i)) {
+						teamIds[i] = teamIdArray.get(i);
+					}
 				}
 				setComp(teamList.get(0).getCompetition());
 			}
@@ -348,6 +361,7 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 		switch(loader.getId()) {
 			case LOADER_TEAMS:
 				getTeams(data);
+				break;
 			case LOADER_MATCHES:
 				this.getAdapter().swapCursor(data);
 				matchesLoaded = true;

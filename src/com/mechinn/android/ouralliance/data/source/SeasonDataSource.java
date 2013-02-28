@@ -45,6 +45,14 @@ public class SeasonDataSource extends AOurAllianceDataSource<Season> {
 		return query(Season.URI,Season.ALLCOLUMNS, selection, order);
 	}
 
+	public CursorLoader getYear(int year) {
+		return get(Season.YEAR+"="+year, null);
+	}
+
+	public Cursor queryYear(int year) {
+		return query(Season.YEAR+"="+year, null);
+	}
+
 	@Override
 	public CursorLoader getDistinct(String[] projection, String selection, String order) {
 		return get(Season.DISTINCTURI, projection, selection, order);

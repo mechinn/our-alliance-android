@@ -114,21 +114,10 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 		}
 	}
 	public void setNumber(int number) {
-		//set the match number stupid high
-		int level = 0;
-		if(type==1) {
-			level = 1000;
-		} else if(type==2) {
-			level = 10000;
-		} else if(type==3) { //Finals
-			level = 100000;
-		}
 
 		//negative all our practices so we dont get conflicts
 		if(type==PRACTICE) {
 			this.number = -number;
-		} else if(0==number) {
-			this.number = level+of*10+set;
 		} else {
 			this.number = number;
 		}
@@ -139,11 +128,21 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	public void setRed1(Team red1) {
 		this.red1 = red1;
 	}
+	public void setRed1(long team) {
+		Team thisTeam = new Team();
+		thisTeam.setId(team);
+		this.red1 = thisTeam;
+	}
 	public Team getRed2() {
 		return red2;
 	}
 	public void setRed2(Team red2) {
 		this.red2 = red2;
+	}
+	public void setRed2(long team) {
+		Team thisTeam = new Team();
+		thisTeam.setId(team);
+		this.red2 = thisTeam;
 	}
 	public Team getRed3() {
 		return red3;
@@ -151,11 +150,21 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	public void setRed3(Team red3) {
 		this.red3 = red3;
 	}
+	public void setRed3(long team) {
+		Team thisTeam = new Team();
+		thisTeam.setId(team);
+		this.red3 = thisTeam;
+	}
 	public Team getBlue1() {
 		return blue1;
 	}
 	public void setBlue1(Team blue1) {
 		this.blue1 = blue1;
+	}
+	public void setBlue1(long team) {
+		Team thisTeam = new Team();
+		thisTeam.setId(team);
+		this.blue1 = thisTeam;
 	}
 	public Team getBlue2() {
 		return blue2;
@@ -163,11 +172,21 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	public void setBlue2(Team blue2) {
 		this.blue2 = blue2;
 	}
+	public void setBlue2(long team) {
+		Team thisTeam = new Team();
+		thisTeam.setId(team);
+		this.blue2 = thisTeam;
+	}
 	public Team getBlue3() {
 		return blue3;
 	}
 	public void setBlue3(Team blue3) {
 		this.blue3 = blue3;
+	}
+	public void setBlue3(long team) {
+		Team thisTeam = new Team();
+		thisTeam.setId(team);
+		this.blue3 = thisTeam;
 	}
 	public int getRedScore() {
 		return redScore;
@@ -198,19 +217,38 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	}
 	public void setOf(int of) {
 		this.of = of;
+
+		//set the match number stupid high
+		int level = 0;
+		if(type==1) {
+			level = 1000;
+		} else if(type==2) {
+			level = 10000;
+		} else if(type==3) { //Finals
+			level = 100000;
+		}
+		this.number = level+of*10+set;
+	}
+	public String getTeams() {
+		return getRed1().getNumber()+" "+
+				getRed2().getNumber()+" "+
+				getRed3().getNumber()+" | "+
+				getBlue1().getNumber()+" "+
+				getBlue2().getNumber()+" "+
+				getBlue3().getNumber();
 	}
 	@Override
 	public String toString() {
 		if(PRACTICE==type) {
-			return "Practice: "+number;
+			return "Practice: "+this.getNumber();
 		} else if(QUARTERFINAL==type) {
-			return "Quarterfinal: "+number;
+			return "Quarterfinal: "+getSet()+"-"+getOf();
 		} else if(SEMIFINAL==type) {
-			return "Semifinal: "+set+"-"+of;
+			return "Semifinal: "+getSet()+"-"+getOf();
 		} else if(FINAL==type) {
-			return "Final: "+set+"-"+of;
+			return "Final: "+getOf();
 		} else {
-			return "Qualifier: "+set+"-"+of;
+			return "Qualifier: "+this.getNumber();
 		}
 	}
 	public boolean equals(Match data) {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URLConnection;
 
 import com.mechinn.android.ouralliance.ImageFetcher;
+import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 
@@ -34,6 +35,7 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
     private ImageFetcher imageFetcher;
     private File teamFileDirectory;
     private Activity activity;
+    private Prefs prefs;
 	
 	public File getTeamFileDirectory() {
 		return teamFileDirectory;
@@ -45,9 +47,10 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
 
 	public MultimediaAdapter(Activity activity, TeamScouting team) {
 		this.activity = activity;
+		prefs = new Prefs(activity);
 		Log.d(TAG, team.toString());
 		if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			teamFileDirectory = new File(activity.getExternalFilesDir(null).getAbsoluteFile() + "/" + team.getSeason().getYear() + "/" + team.getTeam().getNumber());
+			teamFileDirectory = new File(activity.getExternalFilesDir(null).getAbsoluteFile() + "/" + prefs.getYear() + "/" + team.getTeam().getNumber());
 			Log.d(TAG, teamFileDirectory.getAbsolutePath());
 			if(!teamFileDirectory.mkdirs()) {
 				File[] files = teamFileDirectory.listFiles();

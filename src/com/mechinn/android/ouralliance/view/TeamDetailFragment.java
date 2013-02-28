@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.devsmart.android.ui.HorizontalListView;
+import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Season;
@@ -52,8 +53,8 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
 	private final static int PICTURE_CAPTURE_CODE = 100;
 	private final static int VIDEO_CAPTURE_CODE = 101;
-    int mCurrentPosition = -1;
 
+	private Prefs prefs;
 	private View rootView;
 	private Button picture;
 	private Button video;
@@ -70,7 +71,6 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	private ArrayAdapter<String> wheelTypesAdapter;
 
 	private LinearLayout season;
-	private long seasonId;
 	private long teamId;
 	private A scouting;
 	private B dataSource;
@@ -78,12 +78,12 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	
 	public abstract A setScoutingFromCursor(Cursor cursor) throws OurAllianceException, SQLException;
 	public abstract B createDataSouce();
-	
-	public long getSeasonId() {
-		return seasonId;
+
+	public Prefs getPrefs() {
+		return prefs;
 	}
-	public void setSeasonId(long seasonId) {
-		this.seasonId = seasonId;
+	public void setPrefs(Prefs prefs) {
+		this.prefs = prefs;
 	}
 	public long getTeamId() {
 		return teamId;
@@ -124,6 +124,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 		this.getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 		teamScoutingWheelData = new TeamScoutingWheelDataSource(this.getActivity());
 		setDataSource(createDataSouce());
+		prefs = new Prefs(this.getActivity());
 
 //        mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
 //        mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
@@ -145,10 +146,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
         // the previous article selection set by onSaveInstanceState().
         // This is primarily necessary when in the two-pane layout.
         if (savedInstanceState != null) {
-            mCurrentPosition = savedInstanceState.getInt(ARG_POSITION);
-    		seasonId = savedInstanceState.getLong(Season.TAG, 0);
     		teamId = savedInstanceState.getLong(Team.TAG, 0);
-    		Log.d(TAG, "season: "+seasonId);
     		Log.d(TAG, "team: "+teamId);
         }
         
@@ -278,12 +276,10 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
         Bundle args = getArguments();
         if (args != null) {
             // Set article based on argument passed in
-    		seasonId = getArguments().getLong(Season.TAG, 0);
     		teamId = getArguments().getLong(Team.TAG, 0);
-    		Log.d(TAG, "season: "+seasonId);
     		Log.d(TAG, "team: "+teamId);
         }
-        if (seasonId != 0 && teamId != 0) {
+        if (prefs.getSeason() != 0 && teamId != 0) {
     		this.getLoaderManager().restartLoader(LOADER_TEAMSCOUTING, null, this);
     		this.getLoaderManager().restartLoader(LOADER_WHEELTYPES, null, this);
         }
@@ -299,7 +295,6 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(Season.TAG, seasonId);
         outState.putLong(Team.TAG, teamId);
     }
 	
@@ -491,9 +486,9 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 			case LOADER_WHEELTYPES:
 				return teamScoutingWheelData.getAllDistinct(TeamScoutingWheel.TYPE);
 			case LOADER_TEAMWHEEL:
-				return teamScoutingWheelData.get(getSeasonId(), getTeamId());
+				return teamScoutingWheelData.get(prefs.getSeason(), getTeamId());
 			case LOADER_TEAMSCOUTING:
-				return dataSource.get(getSeasonId(), getTeamId());
+				return dataSource.get(prefs.getSeason(), getTeamId());
 		}
 		return null;
 	}

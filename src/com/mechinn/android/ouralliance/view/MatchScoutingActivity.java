@@ -31,13 +31,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MatchScoutingActivity extends Activity implements OnBackStackChangedListener, LoaderCallbacks<Cursor>, MatchListFragment.Listener, InsertMatchDialogFragment.Listener {
+public class MatchScoutingActivity extends Activity implements OnBackStackChangedListener, MatchListFragment.Listener, InsertMatchDialogFragment.Listener, DeleteMatchDialogFragment.Listener {
 	public static final String TAG = MatchScoutingActivity.class.getSimpleName();
-	public static final String ARG_YEAR = "year";
-	private static final int LOADER_COMPETITION = 0;
-	private CompetitionDataSource competitionData;
 	private Prefs prefs;
-	private Competition competition;
 	private MatchListFragment<?, ?> matchListFrag;
 	private MatchDetailFragment<?, ?> matchDetailFragment;
 	private int listFrag;
@@ -48,9 +44,8 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
 		setContentView(R.layout.activity_team_scouting);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		this.getFragmentManager().addOnBackStackChangedListener(this);
-		competitionData = new CompetitionDataSource(this);
 		prefs = new Prefs(this);
-		this.getLoaderManager().restartLoader(LOADER_COMPETITION, null, this);
+		setListFrag();
 	}
 	
 	@Override
@@ -83,7 +78,7 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
 	
 	private void setListFrag() {
         // Create an instance of ExampleFragment
-		switch(competition.getSeason().getYear()) {
+		switch(prefs.getYear()) {
 			case 2013:
 				matchListFrag = new MatchList2013();
 				break;
@@ -112,7 +107,7 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
         Bundle args = new Bundle();
         args.putLong(Match.TAG, match.getId());
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		switch(competition.getSeason().getYear()) {
+		switch(prefs.getYear()) {
 			case 2013:
 				matchDetailFragment = new MatchDetail2013();
 	            break;
@@ -130,9 +125,7 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
 	public void onBackStackChanged() {
 		Log.i(TAG, "back stack changed ");
         if (getFragmentManager().getBackStackEntryCount() < 1){
-        	this.setTitle(R.string.app_name);
-    		this.getActionBar().setDisplayHomeAsUpEnabled(false);
-    		this.getActionBar().setHomeButtonEnabled(false);
+        	this.setTitle(R.string.matches);
         }
 	}
 
@@ -143,48 +136,9 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
 			matchListFrag.insertMatch(match);
 		}
 	}
-	
-	public void getComp(Cursor cursor) {
-		try {
-			competition = CompetitionDataSource.getSingle(cursor);
-			setListFrag();
-		} catch (OurAllianceException e) {
-			noCompetition();
-		} catch (SQLException e) {
-    		noCompetition();
-		} finally {
-			cursor.close();
-		}
-		//stop loading!
-		this.getLoaderManager().destroyLoader(LOADER_COMPETITION);
-	}
-	
-	private void noCompetition() {
-		String message = "Select a competition in settings first";
-		Log.i(TAG, message);
-		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-	}
 
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		switch(id) {
-			case LOADER_COMPETITION:
-				return competitionData.get(prefs.getSeason());
-			default:
-				return null;
-		}
-	}
-
-	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		switch(loader.getId()) {
-			case LOADER_COMPETITION:
-				getComp(data);
-				break;
-		}
-	}
-
-	public void onLoaderReset(Loader<Cursor> loader) {
-		switch(loader.getId()) {
-			
-		}
+	@Override
+	public void onDeleteDialogPositiveClick(long match) {
+		matchListFrag.deleteMatch(match);
 	}
 }

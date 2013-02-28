@@ -1,10 +1,8 @@
 package com.mechinn.android.ouralliance.view;
 
-import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
-import com.mobeta.android.dslv.DragSortCursorAdapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -23,15 +21,17 @@ public class MatchCursorAdapter extends CursorAdapter {
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		Match team = Match.newFromCursor(cursor);
-		TextView summary = (TextView)view.findViewById(R.id.text);
-		summary.setText(team.toString());
+		Match match = Match.newFromCursor(cursor);
+		TextView summary = (TextView)view.findViewById(android.R.id.text1);
+		TextView subText = (TextView)view.findViewById(android.R.id.text2);
+		summary.setText(match.toString());
+		subText.setText(match.getTeams());
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 		LayoutInflater inflater = LayoutInflater.from(context);
-		View v = inflater.inflate(R.layout.list_item, parent, false);
+		View v = inflater.inflate(android.R.layout.simple_list_item_2, parent, false);
 		bindView(v, context, cursor);
 		return v;
 	}

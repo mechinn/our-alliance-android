@@ -66,7 +66,7 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 	private Team addTeam;
 
     public interface Listener {
-        public void onTeamSelected(CompetitionTeam team);
+        public void onTeamSelected(long team);
     }
 
     @Override
@@ -166,7 +166,7 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        mCallback.onTeamSelected(adapter.get(position));
+        mCallback.onTeamSelected(adapter.get(position).getId());
         
         // Set the item as checked to be highlighted when in two-pane layout
         dslv.setItemChecked(position, true);
@@ -194,9 +194,6 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 	        case R.id.matchList:
 	        	if(null!=comp) {
 		        	Intent intent = new Intent(this.getActivity(), MatchScoutingActivity.class);
-		            Bundle updateArgs = new Bundle();
-		            updateArgs.putInt(MatchScoutingActivity.ARG_YEAR, comp.getSeason().getYear());
-		            intent.putExtras(updateArgs);
 		            startActivity(intent);
 	        	} else {
 	        		noCompetition();
@@ -264,7 +261,7 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 	    }
 	}
 	
-	public void deleteTeam(CompetitionTeam team) {
+	public void deleteTeam(long team) {
 		Log.d(TAG, "id: "+team);
 		try {
 			competitionTeamData.delete(team);
@@ -291,10 +288,11 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 	public void insertTeamScouting() {
 		if(addTeam!=null) {
 			try {
-				if(2013==comp.getSeason().getYear()) {
-					scouting2013.insert(new TeamScouting2013(comp.getSeason(),addTeam));
-				} else {
-					Log.w(TAG, "unknown season");
+				switch(prefs.getYear()) {
+					case 2013:
+						scouting2013.insert(new TeamScouting2013(comp.getSeason(),addTeam));
+					default:
+						Log.w(TAG, "unknown season");
 				}
 			} catch (OurAllianceException e) {
 				e.printStackTrace();

@@ -74,7 +74,7 @@ public class Export extends BackgroundProgress {
 			}
 			list += teams.get(i).getTeam().getId();
 			Log.d(TAG, list);
-			int year = teams.get(i).getCompetition().getSeason().getYear();
+			int year = prefs.getYear();
 			switch(year) {
 				case 2013:
 					get2013Data(list);

@@ -23,6 +23,8 @@ public class Prefs {
 	private String versionDefault;
 	private String practicePref;
 	private String practiceDefault;
+	private String yearPref;
+	private String yearDefault;
 	
 	public Prefs(Context context) {
 		this.dbSetupPref = context.getString(R.string.pref_resetDB);
@@ -37,6 +39,8 @@ public class Prefs {
 		this.versionDefault = context.getString(R.string.pref_about_default);
 		this.practicePref = context.getString(R.string.pref_practice);
 		this.practiceDefault = context.getString(R.string.pref_practice_default);
+		this.yearPref = context.getString(R.string.pref_year);
+		this.yearDefault = context.getString(R.string.pref_year_default);
 		try {
 			this.currentVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
 		} catch (NameNotFoundException e) {
@@ -62,11 +66,19 @@ public class Prefs {
 	}
 	public void setSeason(String season) {
 		Editor editor = prefs.edit();
-		editor.putString(dbSetupPref, season);
+		editor.putString(seasonPref, season);
 		editor.apply();
 	}
 	public long getSeason() {
 		return Long.parseLong(prefs.getString(seasonPref, seasonDefault));
+	}
+	public void setYear(String year) {
+		Editor editor = prefs.edit();
+		editor.putString(yearPref, year);
+		editor.apply();
+	}
+	public int getYear() {
+		return Integer.parseInt(prefs.getString(yearPref, yearDefault));
 	}
 	public long getComp() {
 		return Long.parseLong(prefs.getString(compPref, compDefault));

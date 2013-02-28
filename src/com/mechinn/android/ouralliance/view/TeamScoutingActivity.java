@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.Utility;
@@ -21,16 +22,20 @@ import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 
 public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener {
 	public static final String TAG = TeamScoutingActivity.class.getSimpleName();
+	public static final String TEAM_ARG = "team";
 	private TeamListFragment teamListFrag;
 	private TeamDetailFragment<?, ?> teamDetailFragment;
 	private int listFrag;
 	private int detailFrag;
+	private long loadTeam;
+	private Prefs prefs;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		new Setup(this, false).execute();
 		setContentView(R.layout.activity_team_scouting);
 		this.getFragmentManager().addOnBackStackChangedListener(this);
+		prefs = new Prefs(this);
         // Create an instance of ExampleFragment
     	teamListFrag = new TeamListFragment();
         // In case this activity was started with special instructions from an Intent,
@@ -44,7 +49,16 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
         	listFrag = R.id.list_fragment;
 			detailFrag = R.id.detail_fragment;
 		}
-        getFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
+        loadTeam = this.getIntent().getLongExtra(TEAM_ARG, 0);
+        if(0!=loadTeam) {
+        	if(listFrag==detailFrag) {
+        		
+        	} else {
+        		
+        	}
+        } else {
+            getFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
+        }
 	}
 	
 	@Override
@@ -74,26 +88,12 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 	    }
 	}
 
-	public void onTeamSelected(CompetitionTeam team) {
-//		if(null!=teamDetailFragment) {
-//			teamDetailFragment.updateScouting();
-//			teamDetailFragment.commitUpdatedScouting();
-//		}
-		Log.d(TAG, team.toString());
-		Log.d(TAG, team.getCompetition().getSeason()+" "+team.getTeam());
-		Log.d(TAG, team.getCompetition().getSeason().getId()+" "+team.getTeam().getId());
-		long compId = team.getCompetition().getSeason().getId();
-		int year = team.getCompetition().getSeason().getYear();
-		long teamId = team.getTeam().getId();
-		// The user selected the headline of an article from the HeadlinesFragment
-
+	public void onTeamSelected(long team) {
         Bundle args = new Bundle();
-        args.putLong(Season.TAG, compId);
-        args.putInt(Season.YEAR, year);
-        args.putLong(Team.TAG, teamId);
+        args.putLong(Team.TAG, team);
         
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		switch(year) {
+		switch(prefs.getYear()) {
 			case 2013:
 				teamDetailFragment = new TeamDetail2013();
 	            break;
@@ -125,7 +125,7 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 		}
 	}
 	
-	public void onDeleteDialogPositiveClick(CompetitionTeam team) {
+	public void onDeleteDialogPositiveClick(long team) {
     	teamListFrag.deleteTeam(team);
 	}
 

@@ -20,7 +20,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
@@ -71,11 +73,13 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private Cursor compSummCursor;
 	private Season selectedSeason;
 	private Competition selectedComp;
+	private Map<String, String> seasonYear;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+        seasonYear = new HashMap<String,String>();
         prefs = new Prefs(this.getActivity());
         seasonData = new SeasonDataSource(this.getActivity());
         competitionData = new CompetitionDataSource(this.getActivity());
@@ -303,6 +307,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			for(int i=0;i<seasons.size();++i) {
 				seasonsViews[i] = seasons.get(i).toString();
 				seasonsIds[i] = Long.toString(seasons.get(i).getId());
+				seasonYear.put(seasonsIds[i].toString(), Integer.toString(seasons.get(i).getYear()));
 			}
 	        season.setEntries(seasonsViews);
 	        season.setEntryValues(seasonsIds);
@@ -388,6 +393,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		Log.d(TAG, key);
 		if(key.equals(seasonPrefString)) {
+			prefs.setYear(seasonYear.get(season.getValue()));
 			comp.setValue("0");
         	this.getLoaderManager().restartLoader(LOADER_SEASON_SUMMARY, null, this);
         	this.getLoaderManager().restartLoader(LOADER_COMPETITION, null, this);

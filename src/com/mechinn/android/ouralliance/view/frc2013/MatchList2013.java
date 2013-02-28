@@ -24,7 +24,17 @@ public class MatchList2013 extends MatchListFragment<Match2013, Match2013DataSou
 		Log.d(TAG, "id: "+match);
 		//try inserting the team first in case it doesnt exist
 		try {
-			this.getScouting().insertBase(match);
+			match.setCompetition(this.getComp());
+			if(match.getType()>0) {
+				match.setOf(1);
+				this.getScouting().insertBase(match);
+				match.setOf(2);
+				this.getScouting().insertBase(match);
+				match.setOf(3);
+				this.getScouting().insertBase(match);
+			} else {
+				this.getScouting().insertBase(match);
+			}
 		} catch (OurAllianceException e) {
 			Log.d(TAG, e.getMessage());
 			Toast.makeText(this.getActivity(), "Cannot create match without "+e.getMessage(), Toast.LENGTH_SHORT).show();

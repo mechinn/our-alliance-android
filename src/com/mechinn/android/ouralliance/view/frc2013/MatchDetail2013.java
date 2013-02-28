@@ -34,6 +34,7 @@ import com.mechinn.android.ouralliance.ImageWorker;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Match;
+import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
 import com.mechinn.android.ouralliance.data.frc2013.Match2013;
 import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
@@ -72,12 +73,20 @@ public class MatchDetail2013 extends MatchDetailFragment<Match2013, Match2013Dat
 	}
 	
 	@Override
-	public Match2013 setScoutingFromCursor(Cursor cursor) throws OurAllianceException, SQLException {
+	public Match2013 setMatchFromCursor(Cursor cursor) throws OurAllianceException, SQLException {
 		return Match2013DataSource.getSingle(cursor);
 	}
 
 	@Override
 	public Match2013DataSource createDataSouce() {
 		return new Match2013DataSource(this.getActivity());
+	}
+
+	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+		switch(id) {
+			case LOADER_MATCH:
+				return this.getDataSource().get(this.getMatchId());
+		}
+		return null;
 	}
 }

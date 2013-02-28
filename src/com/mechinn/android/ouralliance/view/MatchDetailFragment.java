@@ -11,6 +11,8 @@ import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 import android.app.Fragment;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,14 +25,15 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianceDataSource<A>> extends Fragment {
+public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianceDataSource<A>> extends Fragment implements LoaderCallbacks<Cursor> {
 	public static final String TAG = MatchDetailFragment.class.getSimpleName();
 	final static String ARG_POSITION = "position";
+	public static final int LOADER_MATCH = 0;
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
     int mCurrentPosition = -1;
     
     private long matchId;
-	
+
 	private View rootView;
 	private Button red1;
 	private Button red2;
@@ -41,13 +44,20 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
 	private TextView redScore;
 	private TextView blueScore;
 	private LinearLayout scouting;
+	private Cursor currentView;
 
 	private A match;
 	private B dataSource;
 	
-	public abstract A setScoutingFromCursor(Cursor cursor) throws OurAllianceException, SQLException;
+	public abstract A setMatchFromCursor(Cursor cursor) throws OurAllianceException, SQLException;
 	public abstract B createDataSouce();
 
+	public long getMatchId() {
+		return matchId;
+	}
+	public void setMatchId(long matchId) {
+		this.matchId = matchId;
+	}
 	public TextView getRedScore() {
 		return redScore;
 	}
@@ -150,9 +160,9 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
     		matchId = getArguments().getLong(Match.TAG, 0);
     		Log.d(TAG, "match: "+matchId);
         }
-//        if (matchId != 0) {
-//    		this.getLoaderManager().restartLoader(LOADER_MATCH, null, this);
-//        }
+        if (matchId != 0) {
+    		this.getLoaderManager().restartLoader(LOADER_MATCH, null, this);
+        }
     }
 	
 	@Override
@@ -179,12 +189,12 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
 	
 	public void setView() {
 		this.getActivity().setTitle(match.toString());
-		red1.setText(match.getRed1().toString());
-		red2.setText(match.getRed2().toString());
-		red3.setText(match.getRed3().toString());
-		blue1.setText(match.getBlue1().toString());
-		blue2.setText(match.getBlue2().toString());
-		blue3.setText(match.getBlue3().toString());
+		red1.setText(Integer.toString(match.getRed1().getNumber()));
+		red2.setText(Integer.toString(match.getRed2().getNumber()));
+		red3.setText(Integer.toString(match.getRed3().getNumber()));
+		blue1.setText(Integer.toString(match.getBlue1().getNumber()));
+		blue2.setText(Integer.toString(match.getBlue2().getNumber()));
+		blue3.setText(Integer.toString(match.getBlue3().getNumber()));
 		if(-1!=match.getRedScore()) {
 			redScore.setText(Integer.toString(match.getRedScore()));
 		}
@@ -204,6 +214,41 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void setViewFromCursor(Cursor cursor) {
+		if(null!=currentView) {
+			currentView.close();
+		}
+		currentView = cursor;
+		try {
+			this.setMatch(setMatchFromCursor(currentView));
+			setView();
+			rootView.setVisibility(View.VISIBLE);
+			return;
+		} catch (OurAllianceException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		Log.d(TAG, "loader finished");
+		switch(loader.getId()) {
+			case LOADER_MATCH:
+				setViewFromCursor(cursor);
+				break;
+		}
+	}
+	
+	public void onLoaderReset(Loader<Cursor> loader) {
+		Log.d(TAG, "loader reset");
+		switch(loader.getId()) {
+		case LOADER_MATCH:
+			setViewFromCursor(null);
+			break;
 		}
 	}
 }
