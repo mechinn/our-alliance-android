@@ -1,32 +1,17 @@
 package com.mechinn.android.ouralliance.view;
 
-import java.sql.SQLException;
-
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.Setup;
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2013.Match2013;
-import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
-import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
-import com.mechinn.android.ouralliance.data.source.frc2013.Match2013DataSource;
-import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mechinn.android.ouralliance.view.frc2013.MatchDetail2013;
 import com.mechinn.android.ouralliance.view.frc2013.MatchList2013;
 
 import android.app.Activity;
 import android.app.FragmentManager.OnBackStackChangedListener;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -113,7 +98,7 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
 		// The user selected the headline of an article from the HeadlinesFragment
 
         Bundle args = new Bundle();
-        args.putLong(Match.TAG, match);
+        args.putLong(MatchDetailFragment.MATCH_ARG, match);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		switch(prefs.getYear()) {
 			case 2013:
@@ -126,7 +111,9 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
 		}
 		matchDetailFragment.setArguments(args);
         transaction.replace(detailFrag, matchDetailFragment);
-        transaction.addToBackStack(null);
+        if(listFrag==detailFrag) {
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
 	}
 

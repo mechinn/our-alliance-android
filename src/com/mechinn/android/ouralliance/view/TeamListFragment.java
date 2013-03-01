@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import com.mechinn.android.ouralliance.Export;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
@@ -21,7 +20,6 @@ import com.mobeta.android.dslv.DragSortListView;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
@@ -103,8 +101,8 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
     }
     
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-    	super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
     	setRetainInstance(true);
 		registerForContextMenu(dslv);
 		dslv.setOnItemClickListener(new OnItemClickListener() {
@@ -166,7 +164,7 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        mCallback.onTeamSelected(adapter.get(position).getId());
+        mCallback.onTeamSelected(adapter.get(position).getTeam().getId());
         
         // Set the item as checked to be highlighted when in two-pane layout
         dslv.setItemChecked(position, true);
@@ -249,7 +247,7 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 	        	if(null!=comp) {
 		        	dialog = new DeleteTeamDialogFragment();
 		            Bundle deleteArgs = new Bundle();
-		            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.get(position));
+		            deleteArgs.putLong(DeleteTeamDialogFragment.TEAM_ARG, adapter.get(position).getId());
 		            dialog.setArguments(deleteArgs);
 		            dialog.show(this.getFragmentManager(), "Delete Team");
 				} else {

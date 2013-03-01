@@ -28,9 +28,7 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
 import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
@@ -63,7 +61,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private String resetDBPrefString;
 	private ListPreference season;
 	private ListPreference comp;
-	private ListPreference measure;
+//	private ListPreference measure;
 	private Preference resetDB;
 	private Preference changelog;
 	private Preference about;
@@ -89,7 +87,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         resetDBPrefString = this.getString(R.string.pref_resetDB);
         season = (ListPreference) getPreferenceScreen().findPreference(seasonPrefString);
         comp = (ListPreference) getPreferenceScreen().findPreference(compPrefString);
-        measure = (ListPreference) getPreferenceScreen().findPreference(measurePrefString);
+//        measure = (ListPreference) getPreferenceScreen().findPreference(measurePrefString);
 		setMeasureSummary();
         resetDB = (Preference) getPreferenceScreen().findPreference(resetDBPrefString);
         resetDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -161,7 +159,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	        	if(null!=selectedSeason) {
 		            DialogFragment dialog = new InsertCompDialogFragment();
 					Bundle dialogArgs = new Bundle();
-					dialogArgs.putSerializable(InsertCompDialogFragment.SEASON_ARG, selectedSeason);
+					dialogArgs.putLong(InsertCompDialogFragment.SEASON_ARG, selectedSeason.getId());
 					dialog.setArguments(dialogArgs);
 					dialog.show(this.getFragmentManager(), "Add Competition");
 	        	} else {

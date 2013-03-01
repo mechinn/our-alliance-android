@@ -1,22 +1,17 @@
 package com.mechinn.android.ouralliance.view;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mechinn.android.ouralliance.Export;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2013.Match2013;
 import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
 import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
-import com.mechinn.android.ouralliance.data.source.TeamDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 import android.app.Activity;
@@ -29,12 +24,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -142,8 +135,8 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
     }
     
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-    	super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
     	setRetainInstance(true);
 		registerForContextMenu(getListView());
 		getListView().setOnItemClickListener(new OnItemClickListener() {
@@ -193,10 +186,10 @@ public abstract class MatchListFragment<A extends Match, B extends AOurAllianceD
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		if (this.getSelectedItemPosition() != ListView.INVALID_POSITION) {
-			// Serialize and persist the activated item position.
-			outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
-		}
+//		if (this.getSelectedItemPosition() != ListView.INVALID_POSITION) {
+//			// Serialize and persist the activated item position.
+//			outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
+//		}
 	}
 	
 	@Override

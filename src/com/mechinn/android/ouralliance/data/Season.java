@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;

@@ -66,6 +66,10 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 	public void setSeason(Season season) {
 		this.season = season;
 	}
+	public void setSeason(long season) {
+		this.season = new Season();
+		this.season.setId(season);
+	}
 	public CharSequence getName() {
 		return name;
 	}

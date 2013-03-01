@@ -6,12 +6,10 @@ import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
-import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mobeta.android.dslv.DragSortCursorAdapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

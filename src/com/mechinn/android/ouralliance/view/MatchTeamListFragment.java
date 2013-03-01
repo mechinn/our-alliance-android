@@ -1,48 +1,23 @@
 package com.mechinn.android.ouralliance.view;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import com.mechinn.android.ouralliance.Export;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.AOurAllianceData;
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
-import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
-import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
-import com.mechinn.android.ouralliance.data.source.TeamDataSource;
 import com.mechinn.android.ouralliance.data.source.frc2013.Match2013DataSource;
-import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
-import com.mechinn.android.ouralliance.view.TeamListFragment.Listener;
-import com.mobeta.android.dslv.DragSortListView;
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MatchTeamListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
@@ -55,7 +30,6 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
 	private Match2013DataSource match2013Data;
 	private MatchTeamCursorAdapter adapter;
 	private long matchId;
-	private Match match;
 
 	public interface Listener {
         public void onTeamSelected(long team);
@@ -77,6 +51,7 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 		prefs = new Prefs(this.getActivity());
 		match2013Data = new Match2013DataSource(this.getActivity());
 		adapter = new MatchTeamCursorAdapter(getActivity(), null);
@@ -85,8 +60,8 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
     }
     
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-    	super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
     	setRetainInstance(true);
 		registerForContextMenu(getListView());
 		getListView().setOnItemClickListener(new OnItemClickListener() {

@@ -16,6 +16,7 @@
 
 package com.mechinn.android.ouralliance;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -353,7 +354,8 @@ public abstract class ImageWorker {
      * @param imageView
      * @param bitmap
      */
-    @SuppressWarnings("deprecation")
+    @SuppressLint("NewApi")
+	@SuppressWarnings("deprecation")
 	private void setImageBitmap(ImageView imageView, Bitmap bitmap) {
         if (mFadeInBitmap) {
             // Transition drawable with a transparent drwabale and the final bitmap
@@ -369,7 +371,6 @@ public abstract class ImageWorker {
             } else {
             	imageView.setBackground(background);
             }
-            
 
             imageView.setImageDrawable(td);
             td.startTransition(FADE_IN_TIME);

@@ -2,7 +2,6 @@ package com.mechinn.android.ouralliance.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.RadioButton;
 
 public class UncheckableRadioButton extends RadioButton {

@@ -1,10 +1,7 @@
 package com.mechinn.android.ouralliance.view;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,7 +17,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -30,7 +26,6 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.Team;
 
 public class InsertMatchDialogFragment extends DialogFragment {
 	public static final String TAG = InsertMatchDialogFragment.class.getSimpleName();

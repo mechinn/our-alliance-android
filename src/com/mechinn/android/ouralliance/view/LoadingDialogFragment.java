@@ -1,11 +1,7 @@
 package com.mechinn.android.ouralliance.view;
 
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.Setup;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
@@ -23,7 +19,6 @@ public class LoadingDialogFragment extends DialogFragment {
 	public static final String TITLE = "title";
 	public static final String MAX = "max";
     private View dialog;
-    private Setup setup;
     private ProgressBar progress;
     private TextView status;
     
@@ -51,7 +46,12 @@ public class LoadingDialogFragment extends DialogFragment {
 	@Override
 	public void onStart () {
 		super.onStart();
-		this.getDialog().setTitle(this.getArguments().getCharSequence(TITLE,""));
+		CharSequence title = this.getArguments().getCharSequence(TITLE);
+		if(null==title) {
+			this.getDialog().setTitle("");
+		} else {
+			this.getDialog().setTitle(title);
+		}
 		// Disable the back button
 		OnKeyListener keyListener = new OnKeyListener() {
 			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {

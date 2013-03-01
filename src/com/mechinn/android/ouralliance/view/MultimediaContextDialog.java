@@ -54,7 +54,7 @@ public class MultimediaContextDialog extends DialogFragment {
 		dialog = inflater.inflate(R.layout.multimedia_context_menu, null);
 		waiting = (ProgressBar) dialog.findViewById(R.id.waiting);
 		image = (ImageView) dialog.findViewById(R.id.image);
-		file = this.getArguments().getString(IMAGE, "");
+		file = this.getArguments().getString(IMAGE);
 		image.setTag(R.string.file, file);
 		MultimediaAdapter.setImageBad(file, image);
 		waiting.setVisibility(View.GONE);

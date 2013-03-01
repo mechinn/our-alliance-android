@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.res.AssetManager;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -42,10 +41,12 @@ public class Setup extends BackgroundProgress {
 	private Map<String, String> comps;
 	private ContentResolver data;
 	private boolean reset;
+	private Activity activity;
 	
 	public Setup(Activity activity, boolean reset) {
 		super(activity, FLAG_SETUP);
 		this.reset = reset;
+		this.activity = activity;
 		this.data = activity.getContentResolver();
 		assets = activity.getAssets();
 		jsonMapper = new ObjectMapper();
@@ -86,7 +87,7 @@ public class Setup extends BackgroundProgress {
 					return false;
 				}
 				setStatus("Resetting database");
-		        if(SQLiteDatabase.deleteDatabase(dbPath)) {
+		        if(activity.deleteDatabase(dbPath.getAbsolutePath())) {
 					Log.d(TAG,"deleted db");
 				} else {
 					Log.d(TAG,"did not delete db");

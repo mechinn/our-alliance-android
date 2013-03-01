@@ -12,7 +12,6 @@ import com.devsmart.android.ui.HorizontalListView;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
-import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
@@ -46,6 +45,7 @@ import android.widget.Toast;
 
 public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurAllianceDataSource<A>> extends Fragment implements LoaderCallbacks<Cursor> {
 	public static final String TAG = TeamDetailFragment.class.getSimpleName();
+	public static final String TEAM_ARG = "team";
 	public static final int LOADER_TEAMSCOUTING = 0;
 	public static final int LOADER_TEAMWHEEL = 1;
 	public static final int LOADER_WHEELTYPES = 2;
@@ -121,7 +121,6 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 //		LoaderManager.enableDebugLogging(true);
-		this.getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 		teamScoutingWheelData = new TeamScoutingWheelDataSource(this.getActivity());
 		setDataSource(createDataSouce());
 		prefs = new Prefs(this.getActivity());
@@ -276,7 +275,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
         Bundle args = getArguments();
         if (args != null) {
             // Set article based on argument passed in
-    		teamId = getArguments().getLong(Team.TAG, 0);
+    		teamId = getArguments().getLong(TEAM_ARG, 0);
     		Log.d(TAG, "team: "+teamId);
         }
         if (prefs.getSeason() != 0 && teamId != 0) {
@@ -287,15 +286,17 @@ public abstract class TeamDetailFragment<A extends TeamScouting, B extends AOurA
 	
 	@Override
 	public void onPause() {
+		if(null!=scouting) {
+			updateScouting();
+			commitUpdatedScouting();
+		}
 		super.onPause();
-		updateScouting();
-		commitUpdatedScouting();
 	}
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(Team.TAG, teamId);
+        outState.putLong(TEAM_ARG, teamId);
     }
 	
 	@Override

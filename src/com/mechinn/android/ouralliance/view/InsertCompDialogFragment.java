@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.Season;
 
 public class InsertCompDialogFragment extends DialogFragment {
 	public static final String TAG = InsertCompDialogFragment.class.getSimpleName();
@@ -69,7 +68,7 @@ public class InsertCompDialogFragment extends DialogFragment {
 			update = false;
     		Log.d(TAG, "insert");
 		}
-		Season season = (Season) this.getArguments().getSerializable(SEASON_ARG);
+		long season = this.getArguments().getLong(SEASON_ARG);
 		competition.setSeason(season);
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {

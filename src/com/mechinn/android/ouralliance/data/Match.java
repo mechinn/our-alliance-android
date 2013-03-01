@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.provider.Database;
 
 import android.content.ContentValues;

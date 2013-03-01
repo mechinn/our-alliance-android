@@ -1,10 +1,11 @@
 package com.mechinn.android.ouralliance.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager.OnBackStackChangedListener;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,9 +15,6 @@ import android.widget.Toast;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
-import com.mechinn.android.ouralliance.Utility;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
 
@@ -53,6 +51,7 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
         loadTeam = this.getIntent().getLongExtra(TEAM_ARG, 0);
         loadMatch = this.getIntent().getLongExtra(MATCH_ARG, 0);
         if(0!=loadTeam) {
+        	Log.d(TAG, "listfrag: "+listFrag+" detailfrag: "+detailFrag);
         	if(listFrag==detailFrag) {
         		onTeamSelected(loadTeam);
         	} else {
@@ -99,7 +98,7 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 
 	public void onTeamSelected(long team) {
         Bundle args = new Bundle();
-        args.putLong(Team.TAG, team);
+        args.putLong(TeamDetailFragment.TEAM_ARG, team);
         
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		switch(prefs.getYear()) {
@@ -113,10 +112,16 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 		}
 		teamDetailFragment.setArguments(args);
         transaction.replace(detailFrag, teamDetailFragment);
-        transaction.addToBackStack(null);
+        if(listFrag==detailFrag) {
+        	if(0==loadMatch) {
+                transaction.addToBackStack(null);
+        	}
+            this.getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         transaction.commit();
 	}
 
+	@SuppressLint("NewApi")
 	public void onBackStackChanged() {
 		Log.i(TAG, "back stack changed ");
         if (getFragmentManager().getBackStackEntryCount() < 1){
@@ -125,7 +130,9 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
         	} else {
             	this.setTitle(R.string.app_name);
         		this.getActionBar().setDisplayHomeAsUpEnabled(false);
-        		this.getActionBar().setHomeButtonEnabled(false);
+        		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            		this.getActionBar().setHomeButtonEnabled(false);
+                }
         	}
         }
 	}

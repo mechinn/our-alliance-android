@@ -26,9 +26,11 @@ public class HtmlDialogFragment extends DialogFragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		dialog = inflater.inflate(R.layout.html, null);
 		html = (WebView) dialog.findViewById(R.id.content);
-		String htmlFile = this.getArguments().getString(HTMLFILE, "");
+		String htmlFile = this.getArguments().getString(HTMLFILE);
 		Log.d(TAG, htmlFile);
-		html.loadUrl(htmlFile);
+		if(null!=htmlFile) {
+			html.loadUrl(htmlFile);
+		}
 		builder.setView(dialog).setCancelable(false)
 			.setPositiveButton("Done", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {

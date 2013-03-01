@@ -1,12 +1,9 @@
 package com.mechinn.android.ouralliance.view;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.source.AOurAllianceDataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
@@ -29,8 +26,9 @@ import android.widget.TextView;
 
 public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianceDataSource<A>> extends Fragment implements LoaderCallbacks<Cursor> {
 	public static final String TAG = MatchDetailFragment.class.getSimpleName();
+	public static final String MATCH_ARG = "match";
+	
 	public static final int LOADER_MATCH = 0;
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
     
     private long matchId;
 
@@ -93,7 +91,6 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 //		LoaderManager.enableDebugLogging(true);
-		this.getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 		setDataSource(createDataSouce());
 
 //        mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
@@ -163,7 +160,7 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
         Bundle args = getArguments();
         if (args != null) {
             // Set article based on argument passed in
-    		matchId = getArguments().getLong(Match.TAG, 0);
+    		matchId = getArguments().getLong(MATCH_ARG, 0);
     		Log.d(TAG, "match: "+matchId);
         }
         if (matchId != 0) {
@@ -181,7 +178,7 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(Season.TAG, matchId);
+        outState.putLong(MATCH_ARG, matchId);
     }
 	
 	@Override

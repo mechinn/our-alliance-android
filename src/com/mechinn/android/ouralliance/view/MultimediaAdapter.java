@@ -11,7 +11,6 @@ import com.mechinn.android.ouralliance.data.TeamScouting;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
@@ -26,13 +25,12 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 public class MultimediaAdapter extends BaseAdapter implements OnClickListener, OnLongClickListener {
 	public static final String TAG = MultimediaAdapter.class.getSimpleName();
 	private String[] multimedia;
-    private ImageFetcher imageFetcher;
+//    private ImageFetcher imageFetcher;
     private File teamFileDirectory;
     private Activity activity;
     private Prefs prefs;

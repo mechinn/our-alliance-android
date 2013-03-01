@@ -87,6 +87,7 @@ public abstract class AOurAllianceDataSource<A extends AOurAllianceData> {
 	}
 	
 	public CursorLoader get(long season, long team) {
+		Log.d(TAG, "season: "+season+" team: "+team);
 		return get(TeamScouting.SEASON+" = '"+season+"' AND "+TeamScouting.TEAM+" = '"+team+"'");
 	}
 	

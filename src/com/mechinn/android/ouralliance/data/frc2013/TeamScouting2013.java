@@ -1,23 +1,19 @@
 package com.mechinn.android.ouralliance.data.frc2013;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
 import com.mechinn.android.ouralliance.provider.DataProvider;
-import com.mechinn.android.ouralliance.provider.Database;
 
 public class TeamScouting2013 extends TeamScouting implements Comparable<TeamScouting>  {
 	public static final String TAG = TeamScouting2013.class.getSimpleName();
