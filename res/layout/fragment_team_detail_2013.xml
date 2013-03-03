@@ -72,8 +72,9 @@
 			    android:layout_width="0dip"
 			    android:layout_height="wrap_content"
 			    android:layout_weight="1"
-			    android:inputType="number"
-		     	android:imeOptions="flagNoExtractUi" />
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="number|numberDecimal" />
+
 			<TextView
 			    android:id="@+id/widthUnit"
 			     android:layout_width="wrap_content"
@@ -91,8 +92,8 @@
 			    android:layout_width="0dip"
 			    android:layout_height="wrap_content"
 			    android:layout_weight="1"
-			    android:inputType="number"
-			    android:imeOptions="flagNoExtractUi" />
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="number|numberDecimal" />
 
 			<TextView
 			    android:id="@+id/lengthUnit"
@@ -124,7 +125,7 @@
 			    android:layout_height="wrap_content"
 			    android:layout_weight="1"
 			    android:imeOptions="flagNoExtractUi"
-			    android:inputType="number" />
+			    android:inputType="number|numberDecimal" />
 			
 			<TextView
 			    android:id="@+id/shooterHeightUnit"
@@ -144,7 +145,7 @@
 			    android:layout_height="wrap_content"
 			    android:layout_weight="1"
 			    android:imeOptions="flagNoExtractUi"
-			    android:inputType="number" />
+			    android:inputType="number|numberDecimal" />
 			
 			<TextView
 			    android:id="@+id/maxHeightUnit"
@@ -331,6 +332,7 @@
 		    android:layout_height="wrap_content"
 		    android:text="Pyramid" />
 	</org.apmem.tools.layouts.FlowLayout>
+
 	<org.apmem.tools.layouts.FlowLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -377,6 +379,30 @@
         		android:visibility="gone" />
         </com.mechinn.android.ouralliance.widget.UncheckableRadioGroup>
 	</org.apmem.tools.layouts.FlowLayout>
+
+	<LinearLayout
+        android:id="@+id/autoAvgScoreContainer"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_vertical"
+	    android:visibility="gone" >
+
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Autonomous Average Scored: "
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	    <EditText
+	        android:id="@+id/autoAvgScore"
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:ems="10"
+	        android:imeOptions="flagNoExtractUi"
+	        android:inputType="numberDecimal" />
+	</LinearLayout>
+
 	<org.apmem.tools.layouts.FlowLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

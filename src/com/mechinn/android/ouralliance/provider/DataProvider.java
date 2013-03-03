@@ -115,7 +115,7 @@ public class DataProvider extends ContentProvider {
 	
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-		Log.d(TAG, uri.toString());
+		Log.d(TAG, "query: "+uri.toString());
 		String table = null;
 		String[] cols = null;
 		// Using SQLiteQueryBuilder instead of query() method
@@ -230,13 +230,12 @@ public class DataProvider extends ContentProvider {
 		} finally {
 			read.unlock();
 		}
-		Log.d(TAG, "query: "+uri.toString());
 		return cursor;
 	}
 	
 	@Override
 	public String getType(Uri uri) {
-		Log.d(TAG, uri.toString());
+		Log.d(TAG, "type: "+uri.toString());
 		int uriType = sURIMatcher.match(uri);
 		switch (uriType) {
 			case CODE_TEAM:
@@ -267,7 +266,8 @@ public class DataProvider extends ContentProvider {
 	
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-		Log.d(TAG, uri.toString());
+		Log.d(TAG, "insert: "+uri.toString());
+		Log.d(TAG, values.toString());
 		int uriType = sURIMatcher.match(uri);
 		db = database.getWritableDatabase();
 		long id = 0;
@@ -328,7 +328,6 @@ public class DataProvider extends ContentProvider {
 	
 	@Override
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-		Log.d(TAG, uri.toString());
 		int rows = 0;
 		String table;
 		int uriType = sURIMatcher.match(uri);
@@ -366,6 +365,7 @@ public class DataProvider extends ContentProvider {
 		}
 		db = database.getWritableDatabase();
 		if(values!=null) {
+			Log.d(TAG, "update: "+uri.toString());
 			write.lock();
 			try {
 				rows = db.update(table, values, selection, selectionArgs);
@@ -422,6 +422,7 @@ public class DataProvider extends ContentProvider {
 					throw new IllegalArgumentException("Unknown URI: " + uri);
 			}
 		} else {
+			Log.d(TAG, "delete: "+uri.toString());
 			write.lock();
 			try {
 				rows = db.delete(table, selection, selectionArgs);
@@ -430,12 +431,12 @@ public class DataProvider extends ContentProvider {
 	    	}
 			getContext().getContentResolver().notifyChange(uri, null);
 		}
-		Log.d(TAG, "delete/update: "+uri.toString());
 		return rows;
 	}
 	
 	@Override
 	public Bundle call(String method, String arg, Bundle extras) {
+		Log.d(TAG, "call: "+method);
 		//run custom methods declared here
         if(method.equals(RESET)) {
         	write.lock();

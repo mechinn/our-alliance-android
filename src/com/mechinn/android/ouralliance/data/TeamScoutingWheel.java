@@ -148,10 +148,10 @@ public class TeamScoutingWheel extends AOurAllianceData {
 			error.add(TYPE);
 		}
 		if(0==this.getSize()) {
-			error.add(SIZE);
+//			error.add(SIZE);
 		}
 		if(0==this.getCount()) {
-			error.add(COUNT);
+//			error.add(COUNT);
 		}
 		return error;
 	}

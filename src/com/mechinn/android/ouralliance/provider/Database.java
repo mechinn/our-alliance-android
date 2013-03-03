@@ -21,7 +21,7 @@ public class Database extends SQLiteOpenHelper {
 	public static final String NAME = "ourAlliance.db";
 	public static final String MODIFIED = "modified";
 	public static final String[] COLUMNSBASE = new String[] {BaseColumns._ID, Database.MODIFIED};
-	public static final int VERSION = 1;
+	public static final int VERSION = 2;
 	
 	private static final String foreignSeason = " REFERENCES "+Season.TABLE+"("+BaseColumns._ID+") ON DELETE CASCADE";
 	private static final String foreignTeam = " REFERENCES "+Team.TABLE+"("+BaseColumns._ID+") ON DELETE CASCADE";
@@ -69,6 +69,7 @@ public class Database extends SQLiteOpenHelper {
 	
 	public void setup(SQLiteDatabase db, int currentVersion) {
 		Log.i(TAG,"Updating Database from "+currentVersion+" to "+VERSION);
+		String schema;
 		if(!db.isReadOnly()) {
 			switch(currentVersion+1) {
 				case 0:
@@ -88,27 +89,27 @@ public class Database extends SQLiteOpenHelper {
 				case 1:
 					Log.i(TAG,"Upgrade to version 1");
 					
-					String teamSchema = "CREATE TABLE "+Team.TABLE+" ( "+
+					schema = "CREATE TABLE "+Team.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 							MODIFIED+" DATE NOT NULL," +
 							Team.NUMBER+" INTEGER NOT NULL," +
 							Team.NAME+" TEXT," +
 							" UNIQUE ("+Team.NUMBER+") ON CONFLICT IGNORE"+
 							" );";
-					Log.i(TAG,teamSchema);
-					db.execSQL(teamSchema);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String seasonSchema = "CREATE TABLE "+Season.TABLE+" ( "+
+					schema = "CREATE TABLE "+Season.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 							MODIFIED+" DATE NOT NULL," +
 							Season.YEAR+" INTEGER NOT NULL," +
 							Season.TITLE+" TEXT," +
 							" UNIQUE ("+Season.YEAR+") ON CONFLICT IGNORE"+
 							" );";
-					Log.i(TAG,seasonSchema);
-					db.execSQL(seasonSchema);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String competitionSchema = "CREATE TABLE "+Competition.TABLE+" ( "+
+					schema = "CREATE TABLE "+Competition.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 							MODIFIED+" DATE NOT NULL," +
 							Competition.SEASON+" INTEGER NOT NULL"+foreignSeason+"," +
@@ -116,10 +117,10 @@ public class Database extends SQLiteOpenHelper {
 							Competition.CODE+" TEXT,"+
 							" UNIQUE ("+Competition.SEASON+","+Competition.NAME+") ON CONFLICT IGNORE"+
 							" );";
-					Log.i(TAG,competitionSchema);
-					db.execSQL(competitionSchema);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String competitionView = "CREATE VIEW "+Competition.VIEW+" AS " +
+					schema = "CREATE VIEW "+Competition.VIEW+" AS " +
 							"SELECT "+
 							Competition.TAG+"."+BaseColumns._ID+"," +
 							Competition.TAG+"."+Database.MODIFIED+"," +
@@ -136,10 +137,10 @@ public class Database extends SQLiteOpenHelper {
 							" WHERE " +
 							Competition.SEASON+"="+Season.VIEW_ID+
 							";";
-					Log.i(TAG,competitionView);
-					db.execSQL(competitionView);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String competitionTeamSchema = "CREATE TABLE "+CompetitionTeam.TABLE+" ( "+
+					schema = "CREATE TABLE "+CompetitionTeam.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 							MODIFIED+" DATE NOT NULL," +
 							CompetitionTeam.COMPETITION+" INTEGER NOT NULL"+foreignCompetition+"," +
@@ -147,10 +148,10 @@ public class Database extends SQLiteOpenHelper {
 							CompetitionTeam.RANK+" INTEGER NOT NULL,"+
 							" UNIQUE ("+CompetitionTeam.COMPETITION+","+CompetitionTeam.TEAM+") ON CONFLICT IGNORE"+
 							" );";
-					Log.i(TAG,competitionTeamSchema);
-					db.execSQL(competitionTeamSchema);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String competitionTeamView = "CREATE VIEW "+CompetitionTeam.VIEW+" AS " +
+					schema = "CREATE VIEW "+CompetitionTeam.VIEW+" AS " +
 							"SELECT "+
 							CompetitionTeam.TAG+"."+BaseColumns._ID+"," +
 							CompetitionTeam.TAG+"."+Database.MODIFIED+"," +
@@ -182,10 +183,10 @@ public class Database extends SQLiteOpenHelper {
 							" AND "+
 							CompetitionTeam.TEAM+"="+Team.VIEW_ID+
 							";";
-					Log.i(TAG,competitionTeamView);
-					db.execSQL(competitionTeamView);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String teamScoutingWheelSchema = "CREATE TABLE "+TeamScoutingWheel.TABLE+" ( "+
+					schema = "CREATE TABLE "+TeamScoutingWheel.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 							MODIFIED+" DATE NOT NULL," +
 							TeamScoutingWheel.SEASON+" INTEGER NOT NULL"+foreignSeason+"," +
@@ -195,10 +196,10 @@ public class Database extends SQLiteOpenHelper {
 							TeamScoutingWheel.COUNT+" INTEGER NOT NULL,"+
 							" UNIQUE ("+TeamScoutingWheel.SEASON+","+TeamScoutingWheel.TEAM+","+TeamScoutingWheel.TYPE+","+TeamScoutingWheel.SIZE+") ON CONFLICT IGNORE"+
 							" );";
-					Log.i(TAG,teamScoutingWheelSchema);
-					db.execSQL(teamScoutingWheelSchema);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String teamScoutingWheelView ="CREATE VIEW "+TeamScoutingWheel.VIEW+" AS " +
+					schema ="CREATE VIEW "+TeamScoutingWheel.VIEW+" AS " +
 							"SELECT "+
 							TeamScoutingWheel.TAG+"."+BaseColumns._ID+"," +
 							TeamScoutingWheel.TAG+"."+Database.MODIFIED+"," +
@@ -224,10 +225,10 @@ public class Database extends SQLiteOpenHelper {
 							" AND "+
 							TeamScoutingWheel.TEAM+"="+Team.VIEW_ID+
 							";";
-					Log.i(TAG,teamScoutingWheelView);
-					db.execSQL(teamScoutingWheelView);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String teamScouting2013Schema = "CREATE TABLE "+TeamScouting2013.TABLE+" ( "+
+					schema = "CREATE TABLE "+TeamScouting2013.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 							MODIFIED+" DATE NOT NULL," +
 							TeamScouting.SEASON+" INTEGER NOT NULL"+foreignSeason+"," +
@@ -258,10 +259,10 @@ public class Database extends SQLiteOpenHelper {
 							TeamScouting2013.BLOCKER+" INTEGER," +
 							" UNIQUE ("+TeamScouting2013.SEASON+","+TeamScouting2013.TEAM+") ON CONFLICT IGNORE"+
 							" );";
-					Log.i(TAG,teamScouting2013Schema);
-					db.execSQL(teamScouting2013Schema);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String teamScouting2013View = "CREATE VIEW "+TeamScouting2013.VIEW+" AS " +
+					schema = "CREATE VIEW "+TeamScouting2013.VIEW+" AS " +
 							"SELECT "+
 							TeamScouting2013.TAG+"."+BaseColumns._ID+"," +
 							TeamScouting2013.TAG+"."+Database.MODIFIED+"," +
@@ -308,10 +309,10 @@ public class Database extends SQLiteOpenHelper {
 							" AND "+
 							TeamScouting2013.TEAM+"="+Team.VIEW_ID+
 							";";
-					Log.i(TAG,teamScouting2013View);
-					db.execSQL(teamScouting2013View);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String match2013Schema = "CREATE TABLE "+Match2013.TABLE+" ( "+
+					schema = "CREATE TABLE "+Match2013.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 							MODIFIED+" DATE NOT NULL," +
 							Match.COMPETITION+" INTEGER NOT NULL"+foreignCompetition+"," +
@@ -329,10 +330,10 @@ public class Database extends SQLiteOpenHelper {
 							Match.OF+" INTEGER,"+
 							" UNIQUE ("+Match.COMPETITION+","+Match.NUMBER+") ON CONFLICT IGNORE"+
 							" );";
-					Log.i(TAG,match2013Schema);
-					db.execSQL(match2013Schema);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
-					String match2013View = "CREATE VIEW "+Match2013.VIEW+" AS " +
+					schema = "CREATE VIEW "+Match2013.VIEW+" AS " +
 							"SELECT "+
 							Match2013.TAG+"."+BaseColumns._ID+"," +
 							Match2013.TAG+"."+Database.MODIFIED+"," +
@@ -409,14 +410,73 @@ public class Database extends SQLiteOpenHelper {
 							" AND "+
 							Match.BLUE3+"="+Match.BLUE3+Team.VIEW_ID+
 							";";
-					Log.i(TAG,match2013View);
-					db.execSQL(match2013View);
+					Log.i(TAG,schema);
+					db.execSQL(schema);
 					
 					Log.i(TAG,"At version 1");
-//				case 2:
-//					Log.i(TAG,"Upgrade to version 2");
-//					
-//					Log.i(TAG,"At version 2");
+				case 2:
+					Log.i(TAG,"Upgrade to version 2");
+					
+					schema = "DROP VIEW "+TeamScouting2013.VIEW+";";
+					Log.i(TAG,schema);
+					db.execSQL(schema);
+
+					schema = "ALTER TABLE "+TeamScouting2013.TABLE+" ADD COLUMN "+TeamScouting2013.AUTOAVGSCORE+";";
+					Log.i(TAG,schema);
+					db.execSQL(schema);
+					
+					schema = "CREATE VIEW "+TeamScouting2013.VIEW+" AS " +
+							"SELECT "+
+							TeamScouting2013.TAG+"."+BaseColumns._ID+"," +
+							TeamScouting2013.TAG+"."+Database.MODIFIED+"," +
+							TeamScouting2013.TAG+"."+TeamScouting.SEASON+"," +
+							TeamScouting2013.TAG+"."+TeamScouting.TEAM+"," +
+							TeamScouting2013.TAG+"."+TeamScouting.NOTES+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.ORIENTATION+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.DRIVETRAIN+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.HUMANPLAYER+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.WIDTH+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.LENGTH+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.HEIGHTSHOOTER+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.HEIGHTMAX+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.MAXCLIMB+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.CLIMBTIME+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.SHOOTERTYPE+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.CONTINUOUSSHOOTING+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.LOWGOAL+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.MIDGOAL+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.HIGHGOAL+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.PYRAMIDGOAL+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.AUTOMODE+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.SLOT+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.GROUND+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.AUTOPICKUP+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.RELOADSPEED+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.SAFESHOOTER+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.LOADERSHOOTER+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.BLOCKER+"," +
+							TeamScouting2013.TAG+"."+TeamScouting2013.AUTOAVGSCORE+"," +
+							Season.TAG+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
+							Season.TAG+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
+							Season.TAG+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
+							Season.TAG+"."+Season.TITLE+" AS "+Season.VIEW_TITLE+"," +
+							Team.TAG+"."+BaseColumns._ID+" AS "+Team.VIEW_ID+"," +
+							Team.TAG+"."+Database.MODIFIED+" AS "+Team.VIEW_MODIFIED+"," +
+							Team.TAG+"."+Team.NUMBER+" AS "+Team.VIEW_NUMBER+"," +
+							Team.TAG+"."+Team.NAME+" AS "+Team.VIEW_NAME +
+							" FROM " +
+							TeamScouting2013.TABLE+" "+TeamScouting2013.TAG+"," +
+							Season.TABLE+" "+Season.TAG+"," +
+							Team.TABLE+" "+Team.TAG+
+							" WHERE " +
+							TeamScouting2013.SEASON+"="+Season.VIEW_ID+
+							" AND "+
+							TeamScouting2013.TEAM+"="+Team.VIEW_ID+
+							";";
+					Log.i(TAG,schema);
+					db.execSQL(schema);
+					
+					Log.i(TAG,"At version 2");
 				default:
 			}
 		} else {

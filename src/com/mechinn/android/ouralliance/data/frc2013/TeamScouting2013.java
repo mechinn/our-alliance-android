@@ -42,9 +42,10 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
     public static final String SAFESHOOTER = "safeShooter";
     public static final String LOADERSHOOTER = "loaderShooter";
     public static final String BLOCKER = "blocker";
+    public static final String AUTOAVGSCORE = "autoAvgScore";
 	public static final String[] ALLCOLUMNS2013 = { ORIENTATION, DRIVETRAIN, HUMANPLAYER, WIDTH, LENGTH,
 		HEIGHTSHOOTER, HEIGHTMAX, MAXCLIMB, CLIMBTIME, SHOOTERTYPE, CONTINUOUSSHOOTING, LOWGOAL, MIDGOAL,
-		HIGHGOAL, PYRAMIDGOAL, AUTOMODE, SLOT, GROUND, AUTOPICKUP, RELOADSPEED, SAFESHOOTER, LOADERSHOOTER, BLOCKER };
+		HIGHGOAL, PYRAMIDGOAL, AUTOMODE, SLOT, GROUND, AUTOPICKUP, RELOADSPEED, SAFESHOOTER, LOADERSHOOTER, BLOCKER, AUTOAVGSCORE };
 	public static final String[] ALLCOLUMNS = ArrayUtils.addAll(TeamScouting.ALLCOLUMNS, ALLCOLUMNS2013);
     
 	public static final String VIEW = TABLE+"view";
@@ -106,6 +107,7 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 	private boolean safeShooter;
 	private boolean loaderShooter;
 	private boolean blocker;
+	private float autoAvgScore;
 	public TeamScouting2013() {
 		super();
 	}
@@ -140,7 +142,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 			float reloadSpeed,
 			boolean safeShooter,
 			boolean loaderShooter,
-			boolean blocker
+			boolean blocker,
+			float autoAvgScore
 		) {
 		super(id, mod, season, team, notes);
 		setOrientation(orientation);
@@ -166,6 +169,7 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 		setSafeShooter(safeShooter);
 		setLoaderShooter(loaderShooter);
 		setBlocker(blocker);
+		setAutoAvgScore(autoAvgScore);
 	}
 	public CharSequence getOrientation() {
 		if(null==orientation) {
@@ -311,6 +315,12 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 	public void setBlocker(boolean blocker) {
 		this.blocker = blocker;
 	}
+	public float getAutoAvgScore() {
+		return autoAvgScore;
+	}
+	public void setAutoAvgScore(float autoAvgScore) {
+		this.autoAvgScore = autoAvgScore;
+	}
 	public String toString() {
 		return	"ID: "+this.getId()+
 				" Mod: "+this.getModified()+
@@ -336,7 +346,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 				" Autonomous Pickup: "+this.isAutoPickup()+
 				" Safe zone shooter: "+this.isSafeShooter()+
 				" Loading Station Shooter: "+this.isLoaderShooter()+
-				" Blocker: "+this.isBlocker();
+				" Blocker: "+this.isBlocker()+
+				" Auto Avg Score: "+this.getAutoAvgScore();
 	}
 	public boolean equals(TeamScouting2013 data) {
 		return super.equals(data) &&
@@ -362,7 +373,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 				getReloadSpeed()==data.getReloadSpeed() &&
 				isSafeShooter()==data.isSafeShooter() &&
 				isLoaderShooter()==data.isLoaderShooter() &&
-				isBlocker()==data.isBlocker();
+				isBlocker()==data.isBlocker() &&
+				getAutoAvgScore()==data.getAutoAvgScore();
 	}
 	
 	public ContentValues toCV() {
@@ -398,6 +410,7 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 		values.put(SAFESHOOTER, Utility.boolToShort(this.isSafeShooter()));
 		values.put(LOADERSHOOTER, Utility.boolToShort(this.isLoaderShooter()));
 		values.put(BLOCKER, Utility.boolToShort(this.isBlocker()));
+		values.put(AUTOAVGSCORE, this.getAutoAvgScore());
 		return values;
 	}
 
@@ -426,6 +439,7 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 		setSafeShooter(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(SAFESHOOTER))));
 		setLoaderShooter(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(LOADERSHOOTER))));
 		setBlocker(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(BLOCKER))));
+		setAutoAvgScore(cursor.getFloat(cursor.getColumnIndexOrThrow(AUTOAVGSCORE)));
 	}
 
 	@Override
@@ -453,7 +467,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 				Float.toString(getReloadSpeed()),
 				Boolean.toString(isSafeShooter()),
 				Boolean.toString(isLoaderShooter()),
-				Boolean.toString(isBlocker()));
+				Boolean.toString(isBlocker()),
+				Float.toString(getAutoAvgScore()));
 	}
 	
 	public static TeamScouting2013 newFromCursor(Cursor cursor) {

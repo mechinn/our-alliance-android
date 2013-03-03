@@ -67,6 +67,8 @@ public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamSco
 	private UncheckableRadioButton lowAuto;
 	private UncheckableRadioButton midAuto;
 	private UncheckableRadioButton highAuto;
+	private LinearLayout autoAvgScoreContainer;
+	private EditText autoAvgScore;
 	private CheckBox slot;
 	private CheckBox ground;
 	private LinearLayout autoPickupContainer;
@@ -324,9 +326,34 @@ public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamSco
 		});
 		pyramidGoal = (CheckBox) seasonView.findViewById(R.id.pyramidGoal);
 		autoMode = (UncheckableRadioGroup) seasonView.findViewById(R.id.autoMode);
+		autoMode.setOnCheckedChangeListener(new UncheckableRadioGroupOnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				super.onCheckedChanged(group, checkedId);
+				switch(checkedId) {
+					default:
+					case R.id.noAuto:
+					case R.id.driveAuto:
+						autoAvgScoreContainer.setVisibility(View.GONE);
+						autoAvgScore.setText("");
+						break;
+					case R.id.lowAuto:
+					case R.id.midAuto:
+					case R.id.highAuto:
+						autoAvgScoreContainer.setVisibility(View.VISIBLE);
+						if(0!=getScouting().getAutoAvgScore()) {
+							String num = Float.toString(getScouting().getAutoAvgScore());
+							autoAvgScore.setText(num);
+						}
+						break;
+				}
+			}
+		});
 		lowAuto = (UncheckableRadioButton) seasonView.findViewById(R.id.lowAuto);
 		midAuto = (UncheckableRadioButton) seasonView.findViewById(R.id.midAuto);
 		highAuto = (UncheckableRadioButton) seasonView.findViewById(R.id.highAuto);
+		autoAvgScoreContainer = (LinearLayout) seasonView.findViewById(R.id.autoAvgScoreContainer);
+		autoAvgScore = (EditText) seasonView.findViewById(R.id.autoAvgScore);
 		slot = (CheckBox) seasonView.findViewById(R.id.slot);
 		ground = (CheckBox) seasonView.findViewById(R.id.ground);
 		ground.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -405,6 +432,10 @@ public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamSco
 		safeShooter.setChecked(getScouting().isSafeShooter());
 		loaderShooter.setChecked(getScouting().isLoaderShooter());
 		blocker.setChecked(getScouting().isBlocker());
+		if(0!=getScouting().getAutoAvgScore()) {
+			num = Float.toString(getScouting().getAutoAvgScore());
+			autoAvgScore.setText(num);
+		}
 	}
 	
 	@Override
@@ -432,6 +463,7 @@ public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamSco
 		getScouting().setSafeShooter(safeShooter.isChecked());
 		getScouting().setLoaderShooter(loaderShooter.isChecked());
 		getScouting().setBlocker(blocker.isChecked());
+		getScouting().setAutoAvgScore(Utility.getFloatFromText(autoAvgScore.getText()));
 	}
 	
 	@Override

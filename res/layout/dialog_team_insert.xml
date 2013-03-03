@@ -11,6 +11,9 @@
         android:ems="10"
         android:inputType="number" 
         android:hint="@string/teamNumber">
+
+        <requestFocus />
+
     </EditText>
 
 </LinearLayout>
