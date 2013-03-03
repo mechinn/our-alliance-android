@@ -47,25 +47,29 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
         	listFrag = R.id.list_fragment;
 			detailFrag = R.id.detail_fragment;
 		}
-        matchName = this.getIntent().getStringExtra(MATCHNAME_ARG);
-        loadTeam = this.getIntent().getLongExtra(TEAM_ARG, 0);
-        loadMatch = this.getIntent().getLongExtra(MATCH_ARG, 0);
-        if(0!=loadTeam) {
-        	Log.d(TAG, "listfrag: "+listFrag+" detailfrag: "+detailFrag);
-        	if(listFrag==detailFrag) {
-        		onTeamSelected(loadTeam);
-        	} else {
-            	matchTeamListFrag = new MatchTeamListFragment();
-            	Bundle bundle = new Bundle();
-            	bundle.putLong(MatchTeamListFragment.MATCH_ARG, loadMatch);
-            	matchTeamListFrag.setArguments(bundle);
-                getFragmentManager().beginTransaction().replace(listFrag, matchTeamListFrag).commit();
-        		onTeamSelected(loadTeam);
-        	}
-        } else {
-        	teamListFrag = new TeamListFragment();
-        	teamListFrag.setArguments(getIntent().getExtras());
-            getFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
+        if(savedInstanceState == null) {
+            matchName = this.getIntent().getStringExtra(MATCHNAME_ARG);
+            loadTeam = this.getIntent().getLongExtra(TEAM_ARG, 0);
+            loadMatch = this.getIntent().getLongExtra(MATCH_ARG, 0);
+            if(0!=loadTeam) {
+            	Log.d(TAG, "listfrag: "+listFrag+" detailfrag: "+detailFrag);
+            	if(listFrag==detailFrag) {
+            		onTeamSelected(loadTeam);
+            	} else {
+                	matchTeamListFrag = new MatchTeamListFragment();
+                	Bundle bundle = new Bundle();
+                	bundle.putLong(MatchTeamListFragment.MATCH_ARG, loadMatch);
+                	matchTeamListFrag.setArguments(bundle);
+                    getFragmentManager().beginTransaction().replace(listFrag, matchTeamListFrag).commit();
+            		onTeamSelected(loadTeam);
+            	}
+            } else {
+            	teamListFrag = new TeamListFragment();
+            	teamListFrag.setArguments(getIntent().getExtras());
+                getFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
+            }
+        } else if(listFrag==detailFrag) {
+            this.getActionBar().setDisplayHomeAsUpEnabled(true);
         }
 	}
 	

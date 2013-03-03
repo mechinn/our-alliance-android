@@ -6,33 +6,36 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical" >
-	    
+
 	    <LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content" >
+	        android:id="@+id/galleryContainer"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	        
+	        <LinearLayout
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical" >
 
-	        <Button
-	            android:id="@+id/picture"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="1"
-	            android:text="Picture" />
-
-	        <Button
-	            android:id="@+id/video"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="1"
-	            android:text="Video" />
-
-		</LinearLayout>
-
-	    <com.devsmart.android.ui.HorizontalListView
-	        android:id="@+id/gallery"
-	        android:layout_width="fill_parent"
-	        android:layout_height="96dp"
-	        android:background="#ddd" >
-	    </com.devsmart.android.ui.HorizontalListView>
+		        <Button
+		            android:id="@+id/picture"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:text="Picture" />
+	
+		        <Button
+		            android:id="@+id/video"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:text="Video" />
+	         </LinearLayout>
+	        
+	        <com.devsmart.android.ui.HorizontalListView
+		        android:id="@+id/gallery"
+		        android:layout_width="fill_parent"
+		        android:layout_height="96dp"
+		        android:background="#ddd" />
+	    </LinearLayout>
 		
 		<LinearLayout
 			android:layout_width="match_parent"

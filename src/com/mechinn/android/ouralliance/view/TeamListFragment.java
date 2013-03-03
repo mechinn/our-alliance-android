@@ -141,6 +141,9 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
     		Log.d(TAG, "map: "+mapping.get(i));
     		if(null!=mapping.get(i)) {
         		CompetitionTeam team = adapter.get(mapping.get(i));
+        		if(i==team.getRank()) {
+        			continue;
+        		}
         		team.setRank(i);
         		try {
 					competitionTeamData.update(team);
@@ -164,7 +167,7 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        mCallback.onTeamSelected(adapter.get(position).getTeam().getId());
+        mCallback.onTeamSelected(adapter.get(adapter.getCursorPosition(position)).getTeam().getId());
         
         // Set the item as checked to be highlighted when in two-pane layout
         dslv.setItemChecked(position, true);
@@ -247,7 +250,7 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 	        	if(null!=comp) {
 		        	dialog = new DeleteTeamDialogFragment();
 		            Bundle deleteArgs = new Bundle();
-		            deleteArgs.putLong(DeleteTeamDialogFragment.TEAM_ARG, adapter.get(position).getId());
+		            deleteArgs.putLong(DeleteTeamDialogFragment.TEAM_ARG, adapter.get(adapter.getCursorPosition(position)).getId());
 		            dialog.setArguments(deleteArgs);
 		            dialog.show(this.getFragmentManager(), "Delete Team");
 				} else {

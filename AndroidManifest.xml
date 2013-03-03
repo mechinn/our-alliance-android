@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mechinn.android.ouralliance"
-    android:versionCode="12"
-    android:versionName="2013.2" android:installLocation="auto">
+    android:versionCode="13"
+    android:versionName="2013.3" android:installLocation="auto">
     <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="17" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme" android:logo="@drawable/ic_launcher" android:allowClearUserData="true">
         <activity
             android:name="com.mechinn.android.ouralliance.view.TeamScoutingActivity"
-            android:label="@string/app_name" android:configChanges="orientation">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -25,11 +25,11 @@
         </activity>
         <activity
             android:name="com.mechinn.android.ouralliance.view.MatchScoutingActivity"
-            android:label="@string/matches" android:configChanges="orientation">
+            android:label="@string/matches">
         </activity>
         <activity
             android:name="com.mechinn.android.ouralliance.view.SettingsActivity"
-            android:label="@string/settings" android:configChanges="orientation">
+            android:label="@string/settings">
         </activity>
         <provider
             android:name="com.mechinn.android.ouralliance.provider.DataProvider"

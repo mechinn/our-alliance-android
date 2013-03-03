@@ -32,7 +32,25 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		this.getFragmentManager().addOnBackStackChangedListener(this);
 		prefs = new Prefs(this);
-		setListFrag();
+        // Add the fragment to the 'fragment_container' FrameLayout
+        if (this.findViewById(R.id.fragment_container) != null) {
+        	listFrag = R.id.fragment_container;
+    		detailFrag = R.id.fragment_container;
+		} else {
+        	listFrag = R.id.list_fragment;
+			detailFrag = R.id.detail_fragment;
+		}
+        if(savedInstanceState == null) {
+            // Create an instance of ExampleFragment
+    		switch(prefs.getYear()) {
+    			case 2013:
+    				matchListFrag = new MatchList2013();
+    				break;
+    			default:
+    				throw new ClassCastException("Must give year!");
+    		}
+            getFragmentManager().beginTransaction().replace(listFrag, matchListFrag).commitAllowingStateLoss();
+        }
 	}
 	
 	@Override
@@ -67,26 +85,6 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
-	}
-	
-	private void setListFrag() {
-        // Create an instance of ExampleFragment
-		switch(prefs.getYear()) {
-			case 2013:
-				matchListFrag = new MatchList2013();
-				break;
-			default:
-				throw new ClassCastException("Must give year!");
-		}
-        // Add the fragment to the 'fragment_container' FrameLayout
-        if (this.findViewById(R.id.fragment_container) != null) {
-        	listFrag = R.id.fragment_container;
-    		detailFrag = R.id.fragment_container;
-		} else {
-        	listFrag = R.id.list_fragment;
-			detailFrag = R.id.detail_fragment;
-		}
-        getFragmentManager().beginTransaction().replace(listFrag, matchListFrag).commitAllowingStateLoss();
 	}
 
 	public void onMatchSelected(long match) {
