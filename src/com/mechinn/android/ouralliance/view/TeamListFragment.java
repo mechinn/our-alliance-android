@@ -131,7 +131,6 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
         if (getFragmentManager().findFragmentById(R.id.list_fragment) != null) {
         	dslv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
-		this.getLoaderManager().restartLoader(LOADER_COMPETITIONTEAMS, null, this);
     }
     
     @Override
@@ -162,7 +161,15 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
     @Override
     public void onResume() {
     	super.onResume();
-		setHasOptionsMenu(null!=comp);
+		if(null!=comp) {
+			setHasOptionsMenu(true);
+			if(comp.getId()!=prefs.getComp()) {
+				this.getLoaderManager().restartLoader(LOADER_COMPETITIONTEAMS, null, this);
+			}
+		} else {
+			setHasOptionsMenu(false);
+			this.getLoaderManager().restartLoader(LOADER_COMPETITIONTEAMS, null, this);
+		}
     }
     
     private void selectItem(int position) {

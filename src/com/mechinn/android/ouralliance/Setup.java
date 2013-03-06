@@ -29,7 +29,7 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 
 public class Setup extends BackgroundProgress {
 	public static final String TAG = Setup.class.getSimpleName();
-	public static final int VERSION = 1;
+	public static final int VERSION = 2;
 	private ObjectMapper jsonMapper;
 	private AssetManager assets;
 	private Prefs prefs;
@@ -130,9 +130,14 @@ public class Setup extends BackgroundProgress {
 				if(this.isCancelled()) {
 					return false;
 				}
-				setStatus("Adding 2013 teams");
+			case 2:
+				increaseVersion();
+				if(this.isCancelled()) {
+					return false;
+				}
+				setStatus("Updating 2013 teams");
 				try {
-					GetTeams getter = jsonMapper.readValue(assets.open("teams.json"),GetTeams.class);
+					GetTeams getter = jsonMapper.readValue(assets.open("teams2013.json"),GetTeams.class);
 					Log.d(TAG, "teams: "+getter.getData().size());
 					this.setTotal(getter.getData().size());
 					if(this.isCancelled()) {
@@ -158,9 +163,12 @@ public class Setup extends BackgroundProgress {
 								return false;
 							}
 							Team fromDb = TeamDataSource.getSingle(cusor);
-							fromDb.setName(team.getName());
-							fromDb.setNumber(team.getNumber());
-							teamData.update(fromDb);
+							//if something is different lets update the team
+							if(!fromDb.getName().equals(team.getName()) || fromDb.getNumber()!=team.getNumber()) {
+								fromDb.setName(team.getName());
+								fromDb.setNumber(team.getNumber());
+								teamData.update(fromDb);
+							}
 						} catch (OurAllianceException e1) {
 							e1.printStackTrace();
 						} catch (SQLException e1) {
@@ -175,11 +183,9 @@ public class Setup extends BackgroundProgress {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-//			case 2:
-//				increaseVersion();
-//				if(this.isCancelled()) {
-//					return false;
-//				}
+				if(this.isCancelled()) {
+					return false;
+				}
 		}
 		setStatus("Finished");
 		prefs.setVersion(getVersion());
