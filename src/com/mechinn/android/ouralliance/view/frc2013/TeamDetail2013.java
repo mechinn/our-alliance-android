@@ -71,8 +71,10 @@ public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamSco
 	private EditText autoAvgScore;
 	private CheckBox slot;
 	private CheckBox ground;
-	private LinearLayout autoPickupContainer;
-	private Switch autoPickup;
+	private LinearLayout autoPickupPyramidContainer;
+	private Switch autoPickupPyramid;
+	private LinearLayout autoPickupCenterContainer;
+	private Switch autoPickupCenter;
 	private FlowLayout reloadSpeedContainer;
 	private RatingBar reloadSpeed;
 	private LinearLayout safeShooterContainer;
@@ -359,16 +361,22 @@ public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamSco
 		ground.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if(isChecked) {
-					autoPickupContainer.setVisibility(View.VISIBLE);
-					autoPickup.setChecked(true);
+					autoPickupPyramidContainer.setVisibility(View.VISIBLE);
+					autoPickupPyramid.setChecked(getScouting().isAutoPickupPyramid());
+					autoPickupCenterContainer.setVisibility(View.VISIBLE);
+					autoPickupCenter.setChecked(getScouting().isAutoPickupCenter());
 				} else {
-					autoPickupContainer.setVisibility(View.GONE);
-					autoPickup.setChecked(false);
+					autoPickupPyramidContainer.setVisibility(View.GONE);
+					autoPickupPyramid.setChecked(false);
+					autoPickupCenterContainer.setVisibility(View.GONE);
+					autoPickupCenter.setChecked(false);
 				}
 			}
 		});
-		autoPickupContainer = (LinearLayout) seasonView.findViewById(R.id.autoPickupContainer);
-		autoPickup = (Switch) seasonView.findViewById(R.id.autoPickup);
+		autoPickupPyramidContainer = (LinearLayout) seasonView.findViewById(R.id.autoPickupPyramidContainer);
+		autoPickupPyramid = (Switch) seasonView.findViewById(R.id.autoPickupPyramid);
+		autoPickupCenterContainer = (LinearLayout) seasonView.findViewById(R.id.autoPickupCenterContainer);
+		autoPickupCenter = (Switch) seasonView.findViewById(R.id.autoPickupCenter);
 		reloadSpeed = (RatingBar) seasonView.findViewById(R.id.reloadSpeed);
 		reloadSpeedContainer = (FlowLayout) seasonView.findViewById(R.id.reloadSpeedContainer);
 		safeShooterContainer = (LinearLayout) seasonView.findViewById(R.id.safeShooterContainer);
@@ -427,7 +435,8 @@ public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamSco
 		autoMode.programaticallyCheck(getScouting().getAutoMode());
 		slot.setChecked(getScouting().isSlot());
 		ground.setChecked(getScouting().isGround());
-		autoPickup.setChecked(getScouting().isAutoPickup());
+		autoPickupPyramid.setChecked(getScouting().isAutoPickupPyramid());
+		autoPickupCenter.setChecked(getScouting().isAutoPickupCenter());
 		reloadSpeed.setRating(getScouting().getReloadSpeed());
 		safeShooter.setChecked(getScouting().isSafeShooter());
 		loaderShooter.setChecked(getScouting().isLoaderShooter());
@@ -459,6 +468,8 @@ public class TeamDetail2013 extends TeamDetailFragment<TeamScouting2013, TeamSco
 		getScouting().setAutoMode(autoMode.getCheckedRadioButtonId());
 		getScouting().setSlot(slot.isChecked());
 		getScouting().setGround(ground.isChecked());
+		getScouting().setAutoPickupPyramid(autoPickupPyramid.isChecked());
+		getScouting().setAutoPickupCenter(autoPickupCenter.isChecked());
 		getScouting().setReloadSpeed(reloadSpeed.getRating());
 		getScouting().setSafeShooter(safeShooter.isChecked());
 		getScouting().setLoaderShooter(loaderShooter.isChecked());

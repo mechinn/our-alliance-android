@@ -37,7 +37,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
     public static final String AUTOMODE = "autoMode";
     public static final String SLOT = "slot";
     public static final String GROUND = "ground";
-    public static final String AUTOPICKUP = "autoPickup";
+    public static final String AUTOPICKUPPYRAMID = "autoPickupPyramid";
+    public static final String AUTOPICKUPCENTER = "autoPickupCenter";
     public static final String RELOADSPEED = "reloadSpeed";
     public static final String SAFESHOOTER = "safeShooter";
     public static final String LOADERSHOOTER = "loaderShooter";
@@ -45,7 +46,7 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
     public static final String AUTOAVGSCORE = "autoAvgScore";
 	public static final String[] ALLCOLUMNS2013 = { ORIENTATION, DRIVETRAIN, HUMANPLAYER, WIDTH, LENGTH,
 		HEIGHTSHOOTER, HEIGHTMAX, MAXCLIMB, CLIMBTIME, SHOOTERTYPE, CONTINUOUSSHOOTING, LOWGOAL, MIDGOAL,
-		HIGHGOAL, PYRAMIDGOAL, AUTOMODE, SLOT, GROUND, AUTOPICKUP, RELOADSPEED, SAFESHOOTER, LOADERSHOOTER, BLOCKER, AUTOAVGSCORE };
+		HIGHGOAL, PYRAMIDGOAL, AUTOMODE, SLOT, GROUND, AUTOPICKUPPYRAMID, AUTOPICKUPCENTER, RELOADSPEED, SAFESHOOTER, LOADERSHOOTER, BLOCKER, AUTOAVGSCORE };
 	public static final String[] ALLCOLUMNS = ArrayUtils.addAll(TeamScouting.ALLCOLUMNS, ALLCOLUMNS2013);
     
 	public static final String VIEW = TABLE+"view";
@@ -57,29 +58,29 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 	public static final String DISTINCT = "d/"+TABLE;
 	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
 	
-	public static final String TITLE_ORIENTATION = "Orientation";
-	public static final String TITLE_DRIVETRAIN = "Drive Train";
-	public static final String TITLE_HUMANPLAYER = "Human Player";
-	public static final String TITLE_WIDTH = "Width";
-	public static final String TITLE_LENGTH = "Length";
-	public static final String TITLE_HEIGHTSHOOTER = "Height Shooter";
-	public static final String TITLE_HEIGHTMAX = "Height Max";
-	public static final String TITLE_MAXCLIMB = "Max Climb";
-	public static final String TITLE_CLIMBTIME = "Climb Time";
-	public static final String TITLE_SHOOTERTYPE = "Shooter Type";
-	public static final String TITLE_CONTINUOUSSHOOTING = "ContinuousShooting";
-	public static final String TITLE_LOWGOAL = "Low Goal";
-	public static final String TITLE_MIDGOAL = "Mid Goal";
-	public static final String TITLE_HIGHGOAL = "High Goal";
-	public static final String TITLE_PYRAMIDGOAL = "Pyramid Goal";
-	public static final String TITLE_AUTOMODE = "Auto Mode";
-	public static final String TITLE_SLOT = "Slot";
-	public static final String TITLE_GROUND = "Ground";
-	public static final String TITLE_AUTOPICKUP = "Auto Pickup";
-	public static final String TITLE_RELOADSPEED = "Reload Speed";
-	public static final String TITLE_SAFESHOOTER = "Safe Shooter";
-	public static final String TITLE_LOADERSHOOTER = "Loader Shooter";
-	public static final String TITLE_BLOCKER = "Blocker";
+//	public static final String TITLE_ORIENTATION = "Orientation";
+//	public static final String TITLE_DRIVETRAIN = "Drive Train";
+//	public static final String TITLE_HUMANPLAYER = "Human Player";
+//	public static final String TITLE_WIDTH = "Width";
+//	public static final String TITLE_LENGTH = "Length";
+//	public static final String TITLE_HEIGHTSHOOTER = "Height Shooter";
+//	public static final String TITLE_HEIGHTMAX = "Height Max";
+//	public static final String TITLE_MAXCLIMB = "Max Climb";
+//	public static final String TITLE_CLIMBTIME = "Climb Time";
+//	public static final String TITLE_SHOOTERTYPE = "Shooter Type";
+//	public static final String TITLE_CONTINUOUSSHOOTING = "ContinuousShooting";
+//	public static final String TITLE_LOWGOAL = "Low Goal";
+//	public static final String TITLE_MIDGOAL = "Mid Goal";
+//	public static final String TITLE_HIGHGOAL = "High Goal";
+//	public static final String TITLE_PYRAMIDGOAL = "Pyramid Goal";
+//	public static final String TITLE_AUTOMODE = "Auto Mode";
+//	public static final String TITLE_SLOT = "Slot";
+//	public static final String TITLE_GROUND = "Ground";
+//	public static final String TITLE_AUTOPICKUP = "Auto Pickup";
+//	public static final String TITLE_RELOADSPEED = "Reload Speed";
+//	public static final String TITLE_SAFESHOOTER = "Safe Shooter";
+//	public static final String TITLE_LOADERSHOOTER = "Loader Shooter";
+//	public static final String TITLE_BLOCKER = "Blocker";
 	
 	public static final int maxPerimeter = 112;
 	public static final int maxHeight = 84;
@@ -102,7 +103,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 	private int autoMode;
 	private boolean slot;
 	private boolean ground;
-	private boolean autoPickup;
+	private boolean autoPickupPyramid;
+	private boolean autoPickupCenter;
 	private float reloadSpeed;
 	private boolean safeShooter;
 	private boolean loaderShooter;
@@ -138,7 +140,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 			int autoMode,
 			boolean slot,
 			boolean ground,
-			boolean autoPickup,
+			boolean autoPickupPyramid,
+			boolean autoPickupCenter,
 			float reloadSpeed,
 			boolean safeShooter,
 			boolean loaderShooter,
@@ -164,7 +167,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 		setAutoMode(autoMode);
 		setSlot(slot);
 		setGround(ground);
-		setAutoPickup(autoPickup);
+		setAutoPickupPyramid(autoPickupPyramid);
+		setAutoPickupCenter(autoPickupCenter);
 		setReloadSpeed(reloadSpeed);
 		setSafeShooter(safeShooter);
 		setLoaderShooter(loaderShooter);
@@ -297,11 +301,17 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 	public void setAutoMode(int autoMode) {
 		this.autoMode = autoMode;
 	}
-	public boolean isAutoPickup() {
-		return autoPickup;
+	public boolean isAutoPickupPyramid() {
+		return autoPickupPyramid;
 	}
-	public void setAutoPickup(boolean autoPickup) {
-		this.autoPickup = autoPickup;
+	public void setAutoPickupPyramid(boolean autoPickupPyramid) {
+		this.autoPickupPyramid = autoPickupPyramid;
+	}
+	public boolean isAutoPickupCenter() {
+		return autoPickupCenter;
+	}
+	public void setAutoPickupCenter(boolean autoPickupCenter) {
+		this.autoPickupCenter = autoPickupCenter;
 	}
 	public boolean isLoaderShooter() {
 		return loaderShooter;
@@ -343,7 +353,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 				" Autonomous Mode: "+this.getAutoMode()+
 				" Get from Slot: "+this.isSlot()+
 				" Get from Ground: "+this.isGround()+
-				" Autonomous Pickup: "+this.isAutoPickup()+
+				" Autonomous Pickup Pyramid: "+this.isAutoPickupPyramid()+
+				" Autonomous Pickup Center: "+this.isAutoPickupCenter()+
 				" Safe zone shooter: "+this.isSafeShooter()+
 				" Loading Station Shooter: "+this.isLoaderShooter()+
 				" Blocker: "+this.isBlocker()+
@@ -369,7 +380,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 				getAutoMode()==data.getAutoMode() &&
 				isSlot()==data.isSlot() &&
 				isGround()==data.isGround() &&
-				isAutoPickup()==data.isAutoPickup() &&
+				isAutoPickupPyramid()==data.isAutoPickupPyramid() &&
+				isAutoPickupCenter()==data.isAutoPickupCenter() &&
 				getReloadSpeed()==data.getReloadSpeed() &&
 				isSafeShooter()==data.isSafeShooter() &&
 				isLoaderShooter()==data.isLoaderShooter() &&
@@ -405,7 +417,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 		values.put(AUTOMODE, this.getAutoMode());
 		values.put(SLOT, Utility.boolToShort(this.isSlot()));
 		values.put(GROUND, Utility.boolToShort(this.isGround()));
-		values.put(AUTOPICKUP, Utility.boolToShort(this.isAutoPickup()));
+		values.put(AUTOPICKUPPYRAMID, Utility.boolToShort(this.isAutoPickupPyramid()));
+		values.put(AUTOPICKUPCENTER, Utility.boolToShort(this.isAutoPickupCenter()));
 		values.put(RELOADSPEED, this.getReloadSpeed());
 		values.put(SAFESHOOTER, Utility.boolToShort(this.isSafeShooter()));
 		values.put(LOADERSHOOTER, Utility.boolToShort(this.isLoaderShooter()));
@@ -434,7 +447,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 		setAutoMode(cursor.getInt(cursor.getColumnIndexOrThrow(AUTOMODE)));
 		setSlot(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(SLOT))));
 		setGround(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(GROUND))));
-		setAutoPickup(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(AUTOPICKUP))));
+		setAutoPickupPyramid(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(AUTOPICKUPPYRAMID))));
+		setAutoPickupCenter(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(AUTOPICKUPCENTER))));
 		setReloadSpeed(cursor.getFloat(cursor.getColumnIndexOrThrow(RELOADSPEED)));
 		setSafeShooter(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(SAFESHOOTER))));
 		setLoaderShooter(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(LOADERSHOOTER))));
@@ -463,7 +477,8 @@ public class TeamScouting2013 extends TeamScouting implements Comparable<TeamSco
 				Integer.toString(getAutoMode()),
 				Boolean.toString(isSlot()),
 				Boolean.toString(isGround()),
-				Boolean.toString(isAutoPickup()),
+				Boolean.toString(isAutoPickupPyramid()),
+				Boolean.toString(isAutoPickupCenter()),
 				Float.toString(getReloadSpeed()),
 				Boolean.toString(isSafeShooter()),
 				Boolean.toString(isLoaderShooter()),

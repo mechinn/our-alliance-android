@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.provider.DataProvider;
 import com.mechinn.android.ouralliance.provider.Database;
 
@@ -21,7 +22,8 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	public static final String COMPETITION = Competition.TABLE;
     public static final String TEAM = Team.TABLE;
     public static final String RANK = "rank";
-	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM, RANK };
+    public static final String SCOUTED = "scouted";
+	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM, RANK, SCOUTED };
 
 	public static final String VIEW = TABLE+"view";
     public static final String VIEW_ID = TABLE+BaseColumns._ID;
@@ -29,7 +31,8 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
     public static final String VIEW_COMPETITION = TABLE+COMPETITION;
     public static final String VIEW_TEAM = TABLE+TEAM;
     public static final String VIEW_RANK = TABLE+RANK;
-	public static final String[] VIEWCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM, RANK,
+    public static final String VIEW_SCOUTED = TABLE+SCOUTED;
+	public static final String[] VIEWCOLUMNS = { BaseColumns._ID, Database.MODIFIED, COMPETITION, TEAM, RANK, SCOUTED,
 		Competition.VIEW_ID, Competition.VIEW_MODIFIED, Competition.VIEW_SEASON, Competition.VIEW_NAME, Competition.VIEW_CODE,
 		Season.VIEW_ID, Season.VIEW_MODIFIED, Season.VIEW_YEAR, Season.VIEW_TITLE,
 		Team.VIEW_ID, Team.VIEW_MODIFIED, Team.VIEW_NUMBER, Team.VIEW_NAME };
@@ -45,23 +48,25 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	private Competition competition;
 	private Team team;
 	private int rank;
+	private boolean scouted;
 	public CompetitionTeam() {
 		super();
 	}
 	public CompetitionTeam(Competition competition, Team team) {
-		setData(competition, team, 999);
+		setData(competition, team, 999, false);
 	}
-	public CompetitionTeam(Competition competition, Team team, int rank) {
-		setData(competition, team, rank);
+	public CompetitionTeam(Competition competition, Team team, int rank, boolean scouted) {
+		setData(competition, team, rank, scouted);
 	}
-	public CompetitionTeam(long id, Date mod, Competition competition, Team team, int rank) {
+	public CompetitionTeam(long id, Date mod, Competition competition, Team team, int rank, boolean scouted) {
 		super(id, mod);
-		setData(competition, team, rank);
+		setData(competition, team, rank, scouted);
 	}
-	private void setData(Competition competition, Team team, int rank) {
+	private void setData(Competition competition, Team team, int rank, boolean scouted) {
 		this.setCompetition(competition);
 		this.setTeam(team);
 		this.setRank(rank);
+		this.setScouted(scouted);
 	}
 	public Competition getCompetition() {
 		return competition;
@@ -81,6 +86,12 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	public void setRank(int rank) {
 		this.rank = rank;
 	}
+	public boolean isScouted() {
+		return scouted;
+	}
+	public void setScouted(boolean scouted) {
+		this.scouted = scouted;
+	}
 	public String toString() {
 		return this.competition+" # "+this.rank+" "+this.team;
 	}
@@ -88,7 +99,8 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 		return super.equals(data) &&
 				getCompetition().equals(data.getCompetition()) &&
 				getTeam().equals(data.getTeam()) &&
-				getRank() == data.getRank();
+				getRank() == data.getRank() &&
+				isScouted() == data.isScouted();
 	}
 	public ContentValues toCV() {
 		ContentValues values = new ContentValues();
@@ -96,6 +108,7 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 		values.put(COMPETITION, this.getCompetition().getId());
 		values.put(TEAM, this.getTeam().getId());
 		values.put(RANK, this.getRank());
+		values.put(SCOUTED, Utility.boolToShort(this.isScouted()));
 		return values;
 	}
 	public int compareTo(CompetitionTeam another) {
@@ -115,9 +128,6 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 		if(null==getTeam()) {
 			error.add(TEAM);
 		}
-		if(0==this.getRank()) {
-//			error.add(RANK);
-		}
 		return error;
 	}
 
@@ -127,6 +137,7 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 		setCompetition(Competition.newFromViewCursor(cursor));
 		setTeam(Team.newFromViewCursor(cursor));
 		setRank(cursor.getInt(cursor.getColumnIndexOrThrow(RANK)));
+		setScouted(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(SCOUTED))));
 	}
 
 	@Override
@@ -135,7 +146,8 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 				getCompetition().toStringArray(),
 				getTeam().toStringArray());
 		return ArrayUtils.addAll(links,
-				Integer.toString(getRank()));
+				Integer.toString(getRank()),
+				Boolean.toString(isScouted()));
 	}
 	
 	public static CompetitionTeam newFromCursor(Cursor cursor) {
@@ -150,6 +162,7 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 		Competition comp = Competition.newFromViewCursor(cursor);;
 		Team team = Team.newFromViewCursor(cursor);
 		int rank = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_RANK));
-		return new CompetitionTeam(id, mod, comp, team, rank);
+		boolean scouted = Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(VIEW_SCOUTED)));
+		return new CompetitionTeam(id, mod, comp, team, rank, scouted);
 	}
 }

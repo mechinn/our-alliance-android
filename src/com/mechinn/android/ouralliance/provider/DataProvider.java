@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.provider;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.concurrent.locks.Lock;
@@ -16,8 +15,6 @@ import com.mechinn.android.ouralliance.data.frc2013.Match2013;
 import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
 
 import android.content.ContentProvider;
-import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;

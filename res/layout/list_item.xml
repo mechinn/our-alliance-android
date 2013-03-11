@@ -14,14 +14,21 @@
 	    android:layout_weight="0"
 	    android:background="@drawable/drag"
 	    android:contentDescription="drag icon" />
-
+	
 	<TextView
-		android:id="@+id/text"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:gravity="center_vertical"
-		android:paddingLeft="8dp" />
+	    android:id="@+id/text"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="1"
+	    android:textAppearance="?android:attr/textAppearanceMedium"
+	    android:gravity="center_vertical"
+	    android:paddingLeft="8dp" />
+
+	<CheckBox
+	    android:id="@+id/scouted"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="0"
+	    android:focusable="false" />
 
 </LinearLayout>

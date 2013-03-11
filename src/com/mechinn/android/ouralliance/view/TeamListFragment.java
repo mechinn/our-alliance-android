@@ -1,7 +1,6 @@
 package com.mechinn.android.ouralliance.view;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import com.mechinn.android.ouralliance.Export;
 import com.mechinn.android.ouralliance.Prefs;
@@ -131,31 +130,6 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
         if (getFragmentManager().findFragmentById(R.id.list_fragment) != null) {
         	dslv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
-    }
-    
-    @Override
-    public void onPause() {
-    	ArrayList<Integer> mapping = adapter.getCursorPositions();
-    	for(int i=0;i<mapping.size();++i) {
-    		Log.d(TAG, "map: "+mapping.get(i));
-    		if(null!=mapping.get(i)) {
-        		CompetitionTeam team = adapter.get(mapping.get(i));
-        		if(i==team.getRank()) {
-        			continue;
-        		}
-        		team.setRank(i);
-        		try {
-					competitionTeamData.update(team);
-					continue;
-				} catch (OurAllianceException e) {
-					e.printStackTrace();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-        		Toast.makeText(this.getActivity(), "Could not save rank of "+team, Toast.LENGTH_SHORT).show();
-    		}
-    	}
-    	super.onPause();
     }
     
     @Override
