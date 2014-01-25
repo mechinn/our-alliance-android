@@ -1,0 +1,16 @@
+<resources>
+    <declare-styleable name="FlowLayout">
+        <attr name="flow_horizontalSpacing" format="dimension"/>
+        <attr name="flow_verticalSpacing" format="dimension"/>
+        <attr name="flow_orientation" format="enum">
+            <enum name="horizontal" value="0"/>
+            <enum name="vertical" value="1"/>
+        </attr>
+        <attr name="flow_debugDraw" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="FlowLayout_LayoutParams">
+        <attr name="flow_layout_newLine" format="boolean"/>
+        <attr name="flow_layout_horizontalSpacing" format="dimension"/>
+        <attr name="flow_layout_verticalSpacing" format="dimension"/>
+    </declare-styleable>
+</resources>

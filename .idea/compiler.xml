@@ -22,13 +22,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="actionbarsherlock" />
         <module name="drag-sort-listview" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="actionbarsherlock" target="1.6" />
-    </bytecodeTargetLevel>
   </component>
 </project>
 

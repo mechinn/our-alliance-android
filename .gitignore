@@ -24,3 +24,9 @@ Thumbs.db
 ###############
 bin/
 gen/
+
+# IDE STUFF #
+#############
+local.properties
+.idea/workspace.xml
+.gradle
