@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+                >
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Orientation: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<AutoCompleteTextView
+			    android:id="@+id/orientation"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="text" />
+
+		</LinearLayout>
+		 
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Drive Train: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<AutoCompleteTextView
+			    android:id="@+id/driveTrain"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="text" />
+
+		</LinearLayout>
+
+    <LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Width: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<EditText
+			    android:id="@+id/width"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="number|numberDecimal" />
+
+			<TextView
+			    android:id="@+id/widthUnit"
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:textAppearance="?android:attr/textAppearanceSmall" />
+			
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Length: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<EditText
+			    android:id="@+id/length"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="number|numberDecimal" />
+
+			<TextView
+			    android:id="@+id/lengthUnit"
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:textAppearance="?android:attr/textAppearanceSmall" />
+
+		</LinearLayout>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Heights:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shooter : "
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <EditText
+                    android:id="@+id/heightShooter"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:imeOptions="flagNoExtractUi"
+                    android:inputType="number|numberDecimal" />
+
+                <TextView
+                    android:id="@+id/shooterHeightUnit"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Max: "
+                     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <EditText
+                    android:id="@+id/heightMax"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:imeOptions="flagNoExtractUi"
+                    android:inputType="number|numberDecimal" />
+
+                <TextView
+                    android:id="@+id/maxHeightUnit"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            </LinearLayout>
+    </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="#000000"/>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shooter Type: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <com.mechinn.android.ouralliance.widget.UncheckableRadioGroup
+            android:id="@+id/shooterTypes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/none"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="None" />
+
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/dumper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dumper" />
+
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/shooter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shooter" />
+        </com.mechinn.android.ouralliance.widget.UncheckableRadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/shootableGoals"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shootable Goals: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <CheckBox
+            android:id="@+id/lowGoal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Low" />
+
+        <CheckBox
+            android:id="@+id/highGoal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="High" />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shooting Distance: "
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                android:id="@+id/editText"
+                />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pass: "
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <CheckBox
+                android:id="@+id/groundPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ground"/>
+
+        <CheckBox
+                android:id="@+id/airPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Air"/>
+
+        <CheckBox
+                android:id="@+id/overTruss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Over Truss"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pickup: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <CheckBox
+            android:id="@+id/pickupGround"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ground" />
+
+        <CheckBox
+                android:id="@+id/pickupCatch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Catch" />
+
+    </LinearLayout>
+
+    <LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_vertical" >
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Defensive: "
+			android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <CheckBox
+                android:id="@+id/defensive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pushing"
+                android:checked="false"/>
+
+        <CheckBox
+                android:id="@+id/blocker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Blocker"
+                android:checked="false"/>
+
+    </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="#000000"/>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Autonomous: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <com.mechinn.android.ouralliance.widget.UncheckableRadioGroup
+		    android:id="@+id/autoMode"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal" >
+
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/noAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No" />
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/driveAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drive" />
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/lowAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Low" />
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/highAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="High" />
+            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:id="@+id/hotAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hot" />
+        </com.mechinn.android.ouralliance.widget.UncheckableRadioGroup>
+    </LinearLayout>
+
+</LinearLayout>
