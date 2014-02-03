@@ -11,8 +11,8 @@ import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
-import com.mechinn.android.ouralliance.data.frc2013.Match2013;
-import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
+import com.mechinn.android.ouralliance.data.frc2014.Match2014;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -50,10 +50,10 @@ public class DataProvider extends ContentProvider {
 	private static final int CODE_DISTINCT_COMPETITIONTEAM = 8;
 	private static final int CODE_TEAMSCOUTINGWHEEL = 9;
 	private static final int CODE_DISTINCT_TEAMSCOUTINGWHEEL = 10;
-	private static final int CODE_2013TEAMSCOUTING = 11;
-	private static final int CODE_DISTINCT_2013TEAMSCOUTING = 12;
-	private static final int CODE_2013MATCHES = 13;
-	private static final int CODE_DISTINCT_2013MATCHES = 14;
+	private static final int CODE_2014TEAMSCOUTING = 11;
+	private static final int CODE_DISTINCT_2014TEAMSCOUTING = 12;
+	private static final int CODE_2014MATCHES = 13;
+	private static final int CODE_DISTINCT_2014MATCHES = 14;
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
 		sURIMatcher.addURI(AUTHORITY, Setup.TAG, CODE_RESET);
@@ -67,10 +67,10 @@ public class DataProvider extends ContentProvider {
 		sURIMatcher.addURI(AUTHORITY, CompetitionTeam.DISTINCT, CODE_DISTINCT_COMPETITIONTEAM);
 		sURIMatcher.addURI(AUTHORITY, TeamScoutingWheel.TABLE, CODE_TEAMSCOUTINGWHEEL);
 		sURIMatcher.addURI(AUTHORITY, TeamScoutingWheel.DISTINCT, CODE_DISTINCT_TEAMSCOUTINGWHEEL);
-		sURIMatcher.addURI(AUTHORITY, TeamScouting2013.TABLE, CODE_2013TEAMSCOUTING);
-		sURIMatcher.addURI(AUTHORITY, TeamScouting2013.DISTINCT, CODE_DISTINCT_2013TEAMSCOUTING);
-		sURIMatcher.addURI(AUTHORITY, Match2013.TABLE, CODE_2013MATCHES);
-		sURIMatcher.addURI(AUTHORITY, Match2013.DISTINCT, CODE_DISTINCT_2013MATCHES);
+		sURIMatcher.addURI(AUTHORITY, TeamScouting2014.TABLE, CODE_2014TEAMSCOUTING);
+		sURIMatcher.addURI(AUTHORITY, TeamScouting2014.DISTINCT, CODE_DISTINCT_2014TEAMSCOUTING);
+		sURIMatcher.addURI(AUTHORITY, Match2014.TABLE, CODE_2014MATCHES);
+		sURIMatcher.addURI(AUTHORITY, Match2014.DISTINCT, CODE_DISTINCT_2014MATCHES);
 	}
 	
 	private void checkColumns(String[] projection, String[] expected) {
@@ -168,23 +168,23 @@ public class DataProvider extends ContentProvider {
 				cols = TeamScoutingWheel.ALLCOLUMNS;
 				table = TeamScoutingWheel.TABLE;
 				break;
-			case CODE_2013TEAMSCOUTING:
-				cols = TeamScouting2013.VIEWCOLUMNS;
-				table = TeamScouting2013.VIEW;
+			case CODE_2014TEAMSCOUTING:
+				cols = TeamScouting2014.VIEWCOLUMNS;
+				table = TeamScouting2014.VIEW;
 				break;
-			case CODE_DISTINCT_2013TEAMSCOUTING:
+			case CODE_DISTINCT_2014TEAMSCOUTING:
 				distinct = true;
-				cols = TeamScouting2013.ALLCOLUMNS;
-				table = TeamScouting2013.TABLE;
+				cols = TeamScouting2014.ALLCOLUMNS;
+				table = TeamScouting2014.TABLE;
 				break;
-			case CODE_2013MATCHES:
-				cols = Match2013.VIEWCOLUMNS;
-				table = Match2013.VIEW;
+			case CODE_2014MATCHES:
+				cols = Match2014.VIEWCOLUMNS;
+				table = Match2014.VIEW;
 				break;
-			case CODE_DISTINCT_2013MATCHES:
+			case CODE_DISTINCT_2014MATCHES:
 				distinct = true;
-				cols = Match2013.ALLCOLUMNS;
-				table = Match2013.TABLE;
+				cols = Match2014.ALLCOLUMNS;
+				table = Match2014.TABLE;
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -253,12 +253,12 @@ public class DataProvider extends ContentProvider {
 			case CODE_TEAMSCOUTINGWHEEL:
 			case CODE_DISTINCT_TEAMSCOUTINGWHEEL:
 				return TeamScoutingWheel.URITYPE;
-			case CODE_2013TEAMSCOUTING:
-			case CODE_DISTINCT_2013TEAMSCOUTING:
-				return TeamScouting2013.URITYPE;
-			case CODE_2013MATCHES:
-			case CODE_DISTINCT_2013MATCHES:
-				return Match2013.URITYPE;
+			case CODE_2014TEAMSCOUTING:
+			case CODE_DISTINCT_2014TEAMSCOUTING:
+				return TeamScouting2014.URITYPE;
+			case CODE_2014MATCHES:
+			case CODE_DISTINCT_2014MATCHES:
+				return Match2014.URITYPE;
 			default:
 				throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
@@ -300,15 +300,15 @@ public class DataProvider extends ContentProvider {
 					id = db.insert(TeamScoutingWheel.TABLE, null, values);
 					newUri = Uri.parse(TeamScoutingWheel.URI+"/"+id);
 					break;
-				case CODE_2013TEAMSCOUTING:
-				case CODE_DISTINCT_2013TEAMSCOUTING:
-					id = db.insert(TeamScouting2013.TABLE, null, values);
-					newUri = Uri.parse(TeamScouting2013.URI+"/"+id);
+				case CODE_2014TEAMSCOUTING:
+				case CODE_DISTINCT_2014TEAMSCOUTING:
+					id = db.insert(TeamScouting2014.TABLE, null, values);
+					newUri = Uri.parse(TeamScouting2014.URI+"/"+id);
 					break;
-				case CODE_2013MATCHES:
-				case CODE_DISTINCT_2013MATCHES:
-					id = db.insert(Match2013.TABLE, null, values);
-					newUri = Uri.parse(Match2013.URI+"/"+id);
+				case CODE_2014MATCHES:
+				case CODE_DISTINCT_2014MATCHES:
+					id = db.insert(Match2014.TABLE, null, values);
+					newUri = Uri.parse(Match2014.URI+"/"+id);
 					break;
 				default:
 					throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -352,13 +352,13 @@ public class DataProvider extends ContentProvider {
 			case CODE_DISTINCT_TEAMSCOUTINGWHEEL:
 				table = TeamScoutingWheel.TABLE;
 				break;
-			case CODE_2013TEAMSCOUTING:
-			case CODE_DISTINCT_2013TEAMSCOUTING:
-				table = TeamScouting2013.TABLE;
+			case CODE_2014TEAMSCOUTING:
+			case CODE_DISTINCT_2014TEAMSCOUTING:
+				table = TeamScouting2014.TABLE;
 				break;
-			case CODE_2013MATCHES:
-			case CODE_DISTINCT_2013MATCHES:
-				table = Match2013.TABLE;
+			case CODE_2014MATCHES:
+			case CODE_DISTINCT_2014MATCHES:
+				table = Match2014.TABLE;
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -379,7 +379,7 @@ public class DataProvider extends ContentProvider {
 					getContext().getContentResolver().notifyChange(Team.DISTINCTURI, null);
 					getContext().getContentResolver().notifyChange(CompetitionTeam.URI, null);
 					getContext().getContentResolver().notifyChange(TeamScoutingWheel.URI, null);
-					getContext().getContentResolver().notifyChange(TeamScouting2013.URI, null);
+					getContext().getContentResolver().notifyChange(TeamScouting2014.URI, null);
 					break;
 				case CODE_SEASON:
 				case CODE_DISTINCT_SEASON:
@@ -388,15 +388,15 @@ public class DataProvider extends ContentProvider {
 					getContext().getContentResolver().notifyChange(Competition.URI, null);
 					getContext().getContentResolver().notifyChange(CompetitionTeam.URI, null);
 					getContext().getContentResolver().notifyChange(TeamScoutingWheel.URI, null);
-					getContext().getContentResolver().notifyChange(TeamScouting2013.URI, null);
-					getContext().getContentResolver().notifyChange(Match2013.URI, null);
+					getContext().getContentResolver().notifyChange(TeamScouting2014.URI, null);
+					getContext().getContentResolver().notifyChange(Match2014.URI, null);
 					break;
 				case CODE_COMPETITION:
 				case CODE_DISTINCT_COMPETITION:
 					getContext().getContentResolver().notifyChange(Competition.URI, null);
 					getContext().getContentResolver().notifyChange(Competition.DISTINCTURI, null);
 					getContext().getContentResolver().notifyChange(CompetitionTeam.URI, null);
-					getContext().getContentResolver().notifyChange(Match2013.URI, null);
+					getContext().getContentResolver().notifyChange(Match2014.URI, null);
 					break;
 				case CODE_COMPETITIONTEAM:
 				case CODE_DISTINCT_COMPETITIONTEAM:
@@ -408,15 +408,15 @@ public class DataProvider extends ContentProvider {
 					getContext().getContentResolver().notifyChange(TeamScoutingWheel.URI, null);
 					getContext().getContentResolver().notifyChange(TeamScoutingWheel.DISTINCTURI, null);
 					break;
-				case CODE_2013TEAMSCOUTING:
-				case CODE_DISTINCT_2013TEAMSCOUTING:
-					getContext().getContentResolver().notifyChange(TeamScouting2013.URI, null);
-					getContext().getContentResolver().notifyChange(TeamScouting2013.DISTINCTURI, null);
+				case CODE_2014TEAMSCOUTING:
+				case CODE_DISTINCT_2014TEAMSCOUTING:
+					getContext().getContentResolver().notifyChange(TeamScouting2014.URI, null);
+					getContext().getContentResolver().notifyChange(TeamScouting2014.DISTINCTURI, null);
 					break;
-				case CODE_2013MATCHES:
-				case CODE_DISTINCT_2013MATCHES:
-					getContext().getContentResolver().notifyChange(Match2013.URI, null);
-					getContext().getContentResolver().notifyChange(Match2013.DISTINCTURI, null);
+				case CODE_2014MATCHES:
+				case CODE_DISTINCT_2014MATCHES:
+					getContext().getContentResolver().notifyChange(Match2014.URI, null);
+					getContext().getContentResolver().notifyChange(Match2014.DISTINCTURI, null);
 					break;
 				default:
 					throw new IllegalArgumentException("Unknown URI: " + uri);

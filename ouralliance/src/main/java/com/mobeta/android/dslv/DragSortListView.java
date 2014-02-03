@@ -44,6 +44,8 @@ import android.widget.Checkable;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.mechinn.android.ouralliance.R;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

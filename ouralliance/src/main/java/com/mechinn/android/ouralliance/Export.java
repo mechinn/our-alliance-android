@@ -20,9 +20,9 @@ import android.widget.Toast;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
-import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
+import com.mechinn.android.ouralliance.data.source.frc2014.TeamScouting2014DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public class Export extends BackgroundProgress {
@@ -32,7 +32,7 @@ public class Export extends BackgroundProgress {
 	private Context context;
 	
 	private Prefs prefs;
-	private TeamScouting2013DataSource teamScouting2013Data;
+	private TeamScouting2014DataSource teamScouting2014Data;
 	private CompetitionTeamDataSource competitionTeamData;
 	public Export(Activity activity) {
 		super(activity, FLAG_EXPORT);
@@ -41,7 +41,7 @@ public class Export extends BackgroundProgress {
 		}
 		context = activity;
 		prefs = new Prefs(activity);
-		teamScouting2013Data = new TeamScouting2013DataSource(activity);
+		teamScouting2014Data = new TeamScouting2014DataSource(activity);
 		competitionTeamData = new CompetitionTeamDataSource(activity);
 //		HeaderColumnNameTranslateMappingStrategy<MockBean> strat = new HeaderColumnNameTranslateMappingStrategy<MockBean>();
 //        strat.setType(MockBean.class);
@@ -76,8 +76,8 @@ public class Export extends BackgroundProgress {
 			Log.d(TAG, list);
 			int year = prefs.getYear();
 			switch(year) {
-				case 2013:
-					get2013Data(list);
+				case 2014:
+					get2014Data(list);
 			}
 		} catch (OurAllianceException e) {
 			e.printStackTrace();
@@ -100,13 +100,13 @@ public class Export extends BackgroundProgress {
 		}
 	}
 	
-	public void get2013Data(String list) throws OurAllianceException, SQLException, IOException {
+	public void get2014Data(String list) throws OurAllianceException, SQLException, IOException {
 		Cursor cursor = null;
 		try {
-			cursor = teamScouting2013Data.queryAllTeams(list);
-			List<TeamScouting2013> scouting = TeamScouting2013DataSource.getList(cursor);
+			cursor = teamScouting2014Data.queryAllTeams(list);
+			List<TeamScouting2014> scouting = TeamScouting2014DataSource.getList(cursor);
 			List<String[]> data = new ArrayList<String[]>();
-			for(TeamScouting2013 each : scouting) {
+			for(TeamScouting2014 each : scouting) {
 				data.add(each.toStringArray());
 			}
 			exportToCSV(data);

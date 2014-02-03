@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AndroidConfiguredLogFilters">
+    <filters>
+      <filter>
+        <option name="logLevel" value="verbose" />
+        <option name="logMessagePattern" value="" />
+        <option name="logTagPattern" value="" />
+        <option name="name" value="Unnamed-0" />
+        <option name="packageNamePattern" value="com.mechinn.android.ouralliance" />
+        <option name="pid" value="" />
+      </filter>
+    </filters>
+  </component>
   <component name="AndroidLayoutPreviewToolWindow">
     <option name="state">
-      <GlobalState />
+      <GlobalState>
+        <option name="visible" value="false" />
+      </GlobalState>
     </option>
   </component>
   <component name="AndroidLayouts">
@@ -23,6 +37,9 @@
         </config>
       </layout>
     </layouts>
+  </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Unnamed-0" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6ecdad1b-0ade-4eb8-9839-48aeb2fc5b25" name="Default" comment="" />
@@ -88,15 +105,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="fragment_match_detail_2014.xml" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ouralliance/src/main/res/layout/fragment_match_detail_2014.xml">
-          <provider editor-type-id="text-editor">
-            <state line="143" column="42" selection-start="5076" selection-end="5076" vertical-scroll-proportion="0.0" vertical-offset="2145" max-vertical-offset="3540">
+      <file leaf-file-name="build.gradle" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="17" column="0" selection-start="333" selection-end="333" vertical-scroll-proportion="-10.2" vertical-offset="0" max-vertical-offset="345">
               <folding />
             </state>
           </provider>
-          <provider selected="true" editor-type-id="android-designer">
-            <state />
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ouralliance/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="585">
+              <folding />
+            </state>
           </provider>
         </entry>
       </file>
@@ -1173,7 +1196,6 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/ouralliance/build.gradle" />
-        <option value="$PROJECT_DIR$/ouralliance/src/main/res/layout/fragment_team_detail_2014.xml" />
         <option value="$PROJECT_DIR$/drag-sort-listview/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/drag-sort-listview/build.gradle" />
         <option value="$PROJECT_DIR$/build.gradle" />
@@ -1182,20 +1204,30 @@
         <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/GetCompetition.java" />
         <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/GetCompetitions.java" />
         <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/JsonCompetitions.java" />
-        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/JsonCompetition.java" />
-        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/Setup.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/TeamScoutingActivity.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/MatchScoutingActivity.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/MatchTeamListFragment.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/frc2014/MatchDetail2014.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/frc2014/MatchList2014.java" />
         <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/Export.java" />
         <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/provider/DataProvider.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/frc2014/Match2014.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/res/layout/fragment_team_detail_2014.xml" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/frc2014/TeamScouting2014.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/TeamListFragment.java" />
         <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/provider/Database.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mobeta/android/dslv/DragSortListView.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/source/CompetitionDataSource.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/JsonCompetition.java" />
+        <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/Setup.java" />
         <option value="$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/frc2014/TeamDetail2014.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1" />
     <option name="y" value="22" />
     <option name="width" value="1920" />
-    <option name="height" value="1058" />
+    <option name="height" value="1028" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -1364,6 +1396,10 @@
               <option name="myItemId" value="res" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="menu" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -1447,11 +1483,41 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Our Alliance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ouralliance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="java" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dslv" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1524,6 +1590,48 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="view" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Our Alliance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ouralliance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ouralliance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="view" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="frc2014" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1691,6 +1799,78 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Our Alliance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ouralliance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ouralliance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="frc2014" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Our Alliance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ouralliance" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -1708,10 +1888,14 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/ouralliance/libs/disklrucache-1.3.1.jar" />
     <property name="SearchEverywhereHistory" value="//" />
-    <property name="options.lastSelected" value="editor" />
+    <property name="options.lastSelected" value="editor.preferences.appearance" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager2.SHOW" value="true" />
+    <property name="UI_DESIGNER_EDITOR_MODE.PaletteToolWindowManager.SHOW" value="true" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="emulator-5554" />
+    <property name="FullScreen" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -1888,6 +2072,11 @@
     </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SliceManager">
+    <option name="analysisUIOptions">
+      <AnalysisUIOptions />
+    </option>
+  </component>
   <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false" SSL_PROTOCOLS="sslv3">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
@@ -1914,7 +2103,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1" y="22" width="1920" height="1058" extended-state="7" />
+    <frame x="0" y="22" width="1920" height="1028" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -1923,15 +2112,15 @@
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32960597" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32908705" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3223684" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32908705" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32894737" sideWeight="0.20979765" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32908705" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34100878" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32894737" sideWeight="0.7902023" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1939,7 +2128,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24973376" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32894737" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1964,40 +2153,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/res/layout/fragment_team_detail_2014.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="277" column="35" selection-start="9881" selection-end="9881" vertical-scroll-proportion="0.35875216" vertical-offset="3948" max-vertical-offset="5655">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="46" selection-start="330" selection-end="330" vertical-scroll-proportion="0.25309336" vertical-offset="0" max-vertical-offset="889">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="0" selection-start="333" selection-end="333" vertical-scroll-proportion="0.28683916" vertical-offset="0" max-vertical-offset="889">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/res/layout/fragment_team_detail.xml">
-      <provider editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1545">
-          <folding />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ouralliance/src/main/res/layout/preference_widget_mypreference.xml">
       <provider editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="225">
@@ -2170,80 +2325,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="990">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/source/AOurAllianceDataSource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="22" selection-start="636" selection-end="636" vertical-scroll-proportion="-1.2168875" vertical-offset="795" max-vertical-offset="3060">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/source/frc2014/Match2014DataSource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="13" selection-start="644" selection-end="644" vertical-scroll-proportion="0.09933775" vertical-offset="0" max-vertical-offset="2190">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/Setup.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="141" column="140" selection-start="4587" selection-end="4587" vertical-scroll-proportion="3.5294118" vertical-offset="75" max-vertical-offset="5820">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/JsonCompetition.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="5" selection-start="454" selection-end="454" vertical-scroll-proportion="-0.39072847" vertical-offset="521" max-vertical-offset="1125">
-          <folding>
-            <element signature="e#422#423#0" expanded="true" />
-            <element signature="e#453#454#0" expanded="true" />
-            <element signature="e#501#502#0" expanded="true" />
-            <element signature="e#541#542#0" expanded="true" />
-            <element signature="e#571#572#0" expanded="true" />
-            <element signature="e#597#598#0" expanded="true" />
-            <element signature="e#635#636#0" expanded="true" />
-            <element signature="e#665#666#0" expanded="true" />
-            <element signature="e#696#697#0" expanded="true" />
-            <element signature="e#723#724#0" expanded="true" />
-            <element signature="e#763#764#0" expanded="true" />
-            <element signature="e#795#796#0" expanded="true" />
-            <element signature="e#830#831#0" expanded="true" />
-            <element signature="e#861#862#0" expanded="true" />
-            <element signature="e#910#911#0" expanded="true" />
-            <element signature="e#950#951#0" expanded="true" />
-            <element signature="e#987#988#0" expanded="true" />
-            <element signature="e#1020#1021#0" expanded="true" />
-            <element signature="e#1072#1073#0" expanded="true" />
-            <element signature="e#1116#1117#0" expanded="true" />
-            <element signature="e#1153#1154#0" expanded="true" />
-            <element signature="e#1186#1187#0" expanded="true" />
-            <element signature="e#1238#1239#0" expanded="true" />
-            <element signature="e#1282#1283#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/source/CompetitionDataSource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="20" selection-start="2049" selection-end="2054" vertical-scroll-proportion="0.5215232" vertical-offset="585" max-vertical-offset="1755">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/Team.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="0" selection-start="558" selection-end="593" vertical-scroll-proportion="0.44701988" vertical-offset="0" max-vertical-offset="2265">
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2255,88 +2341,75 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/GetTeams.java">
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/TeamScoutingActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="13" selection-start="88" selection-end="88" vertical-scroll-proportion="0.07450331" vertical-offset="0" max-vertical-offset="604">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/res/values/dslv_attrs.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="604">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/Export.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="60" selection-start="617" selection-end="687" vertical-scroll-proportion="0.307947" vertical-offset="129" max-vertical-offset="2805">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/provider/Database.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="50" selection-start="493" selection-end="494" vertical-scroll-proportion="0.024834437" vertical-offset="120" max-vertical-offset="10125">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/provider/DataProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="62" selection-start="529" selection-end="662" vertical-scroll-proportion="0.29801324" vertical-offset="0" max-vertical-offset="6930">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/MatchScoutingActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="51" selection-start="306" selection-end="306" vertical-scroll-proportion="0.15228426" vertical-offset="0" max-vertical-offset="2250">
+        <state line="18" column="66" selection-start="662" selection-end="662" vertical-scroll-proportion="-2.5026739" vertical-offset="1674" max-vertical-offset="2655">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/MatchTeamListFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="58" selection-start="325" selection-end="325" vertical-scroll-proportion="0.1986755" vertical-offset="0" max-vertical-offset="2445">
-          <folding />
+        <state line="124" column="37" selection-start="4533" selection-end="4533" vertical-scroll-proportion="0.39198607" vertical-offset="1590" max-vertical-offset="2445">
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/TeamListFragment.java">
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/MatchScoutingActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="51" selection-start="432" selection-end="432" vertical-scroll-proportion="0.24834438" vertical-offset="0" max-vertical-offset="5805">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/TeamScoutingActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="51" selection-start="647" selection-end="647" vertical-scroll-proportion="0.33333334" vertical-offset="73" max-vertical-offset="2655">
-          <folding />
+        <state line="101" column="21" selection-start="3703" selection-end="3703" vertical-scroll-proportion="0.18716578" vertical-offset="1410" max-vertical-offset="2250">
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/frc2014/MatchDetail2014.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="51" selection-start="345" selection-end="345" vertical-scroll-proportion="0.29801324" vertical-offset="0" max-vertical-offset="990">
+        <state line="49" column="28" selection-start="1443" selection-end="1443" vertical-scroll-proportion="0.6271777" vertical-offset="375" max-vertical-offset="990">
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/Export.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="111" column="30" selection-start="3805" selection-end="3805" vertical-scroll-proportion="0.32752612" vertical-offset="1477" max-vertical-offset="2805">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/ImageCache.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="13" selection-start="1418" selection-end="1418" vertical-scroll-proportion="0.0" vertical-offset="135" max-vertical-offset="8100">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/source/frc2014/Match2014DataSource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="21" selection-start="649" selection-end="652" vertical-scroll-proportion="0.1183432" vertical-offset="0" max-vertical-offset="2190">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/source/frc2014/TeamScouting2014DataSource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="28" selection-start="559" selection-end="562" vertical-scroll-proportion="0.11214953" vertical-offset="0" max-vertical-offset="1770">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/frc2014/MatchList2014.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="51" selection-start="332" selection-end="332" vertical-scroll-proportion="0.27317882" vertical-offset="0" max-vertical-offset="1110">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/frc2014/TeamDetail2014.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="53" selection-start="2430" selection-end="2430" vertical-scroll-proportion="-0.571192" vertical-offset="1230" max-vertical-offset="8505">
+        <state line="60" column="32" selection-start="2110" selection-end="2110" vertical-scroll-proportion="1.4703833" vertical-offset="56" max-vertical-offset="1110">
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2349,6 +2422,172 @@
       </provider>
       <provider selected="true" editor-type-id="android-designer">
         <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/res/layout/fragment_team_detail_2014.xml">
+      <provider editor-type-id="text-editor">
+        <state line="367" column="45" selection-start="13047" selection-end="13063" vertical-scroll-proportion="0.0" vertical-offset="5503" max-vertical-offset="6090">
+          <folding />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/TeamListFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="269" column="38" selection-start="9581" selection-end="9581" vertical-scroll-proportion="-0.3025048" vertical-offset="4117" max-vertical-offset="5775">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/res/values/dslv_attrs.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="604">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/TeamScouting.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="52" selection-start="691" selection-end="703" vertical-scroll-proportion="0.21428572" vertical-offset="0" max-vertical-offset="1845">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/frc2014/Match2014.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="56" selection-start="687" selection-end="691" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1305">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/Match.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="45" selection-start="565" selection-end="570" vertical-scroll-proportion="0.1875" vertical-offset="0" max-vertical-offset="4740">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mobeta/android/dslv/DragSortListView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="924" column="43" selection-start="28593" selection-end="28593" vertical-scroll-proportion="0.21071428" vertical-offset="13292" max-vertical-offset="45555">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/frc2014/TeamScouting2014.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="63" selection-start="808" selection-end="812" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4710">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/view/frc2014/TeamDetail2014.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="228" column="27" selection-start="10150" selection-end="10150" vertical-scroll-proportion="0.5967742" vertical-offset="2787" max-vertical-offset="7245">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#7180#10835#0" expanded="true" />
+            <element signature="e#10824#10825#0" expanded="true" />
+            <element signature="e#11393#12064#0" expanded="true" />
+            <element signature="e#12052#12053#0" expanded="true" />
+            <element signature="e#12117#12332#0" expanded="true" />
+            <element signature="e#12321#12322#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/provider/DataProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="227" column="103" selection-start="8102" selection-end="8111" vertical-scroll-proportion="0.8732877" vertical-offset="2895" max-vertical-offset="6930">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3710#3718#0" expanded="true" />
+            <element signature="e#3796#3804#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/JsonCompetition.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="69" column="49" selection-start="1483" selection-end="1483" vertical-scroll-proportion="0.82020545" vertical-offset="196" max-vertical-offset="825">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/GetTeams.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="8" selection-start="611" selection-end="733" vertical-scroll-proportion="0.46232876" vertical-offset="0" max-vertical-offset="584">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/source/CompetitionDataSource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="83" column="47" selection-start="2405" selection-end="2421" vertical-scroll-proportion="0.74486303" vertical-offset="645" max-vertical-offset="1755">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/source/AOurAllianceDataSource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="125" column="23" selection-start="3733" selection-end="3738" vertical-scroll-proportion="0.5890411" vertical-offset="1306" max-vertical-offset="3060">
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#6010#6018#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/data/source/CompetitionTeamDataSource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="23" selection-start="1519" selection-end="1524" vertical-scroll-proportion="0.82191783" vertical-offset="0" max-vertical-offset="2070">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/Setup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="36" selection-start="1441" selection-end="1441" vertical-scroll-proportion="0.48801368" vertical-offset="255" max-vertical-offset="3210">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/java/com/mechinn/android/ouralliance/provider/Database.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="44" selection-start="1028" selection-end="1028" vertical-scroll-proportion="-9.556507" vertical-offset="5911" max-vertical-offset="6495">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="40" selection-start="308" selection-end="308" vertical-scroll-proportion="0.20547946" vertical-offset="0" max-vertical-offset="990">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="0" selection-start="333" selection-end="333" vertical-scroll-proportion="-10.2" vertical-offset="0" max-vertical-offset="345">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ouralliance/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="585">
+          <folding />
+        </state>
       </provider>
     </entry>
   </component>

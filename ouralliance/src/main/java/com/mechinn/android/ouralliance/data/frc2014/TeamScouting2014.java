@@ -18,39 +18,34 @@ import com.mechinn.android.ouralliance.provider.DataProvider;
 public class TeamScouting2014 extends TeamScouting implements Comparable<TeamScouting>  {
 	public static final String TAG = TeamScouting2014.class.getSimpleName();
 	private static final long serialVersionUID = 675330724134779728L;
-	public static final String TABLE = TeamScouting.TABLE+"2013";
+	public static final String TABLE = TeamScouting.TABLE+"2014";
     public static final String ORIENTATION = "orientation";
     public static final String DRIVETRAIN = "driveTrain";
-    public static final String HUMANPLAYER = "humanPlayer";
     public static final String WIDTH = "width";
     public static final String LENGTH = "length";
     public static final String HEIGHTSHOOTER = "heightShooter";
     public static final String HEIGHTMAX = "heightMax";
-    public static final String MAXCLIMB = "maxClimb";
-    public static final String CLIMBTIME = "climbTime";
     public static final String SHOOTERTYPE = "shooterType";
-    public static final String CONTINUOUSSHOOTING = "continuousShooting";
     public static final String LOWGOAL = "lowGoal";
-    public static final String MIDGOAL = "midGoal";
     public static final String HIGHGOAL = "highGoal";
-    public static final String PYRAMIDGOAL = "pyramidGoal";
-    public static final String AUTOMODE = "autoMode";
-    public static final String SLOT = "slot";
-    public static final String GROUND = "ground";
-    public static final String AUTOPICKUPPYRAMID = "autoPickupPyramid";
-    public static final String AUTOPICKUPCENTER = "autoPickupCenter";
-    public static final String RELOADSPEED = "reloadSpeed";
-    public static final String SAFESHOOTER = "safeShooter";
-    public static final String LOADERSHOOTER = "loaderShooter";
+    public static final String HOTGOAL = "hotGoal";
+    public static final String SHOOTINGDISTANCE = "shootingDistance";
+    public static final String PASSGROUND = "passGround";
+    public static final String PASSAIR = "passAir";
+    public static final String PASSTRUSS = "passTruss";
+    public static final String PICKUPGROUND = "pickupGround";
+    public static final String PICKUPCATCH = "pickupCatch";
+    public static final String PUSHER = "pusher";
     public static final String BLOCKER = "blocker";
-    public static final String AUTOAVGSCORE = "autoAvgScore";
-	public static final String[] ALLCOLUMNS2013 = { ORIENTATION, DRIVETRAIN, HUMANPLAYER, WIDTH, LENGTH,
-		HEIGHTSHOOTER, HEIGHTMAX, MAXCLIMB, CLIMBTIME, SHOOTERTYPE, CONTINUOUSSHOOTING, LOWGOAL, MIDGOAL,
-		HIGHGOAL, PYRAMIDGOAL, AUTOMODE, SLOT, GROUND, AUTOPICKUPPYRAMID, AUTOPICKUPCENTER, RELOADSPEED, SAFESHOOTER, LOADERSHOOTER, BLOCKER, AUTOAVGSCORE };
-	public static final String[] ALLCOLUMNS = ArrayUtils.addAll(TeamScouting.ALLCOLUMNS, ALLCOLUMNS2013);
+    public static final String HUMANPLAYER = "humanPlayer";
+    public static final String AUTOMODE = "autoMode";
+	public static final String[] ALLCOLUMNS2014 = { ORIENTATION, DRIVETRAIN, WIDTH, LENGTH,
+		HEIGHTSHOOTER, HEIGHTMAX, SHOOTERTYPE, LOWGOAL, HIGHGOAL, HOTGOAL, SHOOTINGDISTANCE, PASSGROUND,
+            PASSAIR, PASSTRUSS, PICKUPGROUND, PICKUPCATCH, PUSHER, BLOCKER, HUMANPLAYER, AUTOMODE };
+	public static final String[] ALLCOLUMNS = ArrayUtils.addAll(TeamScouting.ALLCOLUMNS, ALLCOLUMNS2014);
     
 	public static final String VIEW = TABLE+"view";
-	public static final String[] VIEWCOLUMNS = ArrayUtils.addAll(TeamScouting.VIEWCOLUMNS, ALLCOLUMNS2013);
+	public static final String[] VIEWCOLUMNS = ArrayUtils.addAll(TeamScouting.VIEWCOLUMNS, ALLCOLUMNS2014);
 
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
 	public static final String URITYPE = DataProvider.AUTHORITY+"."+CLASS;
@@ -58,58 +53,30 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 	public static final String DISTINCT = "d/"+TABLE;
 	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
 	
-//	public static final String TITLE_ORIENTATION = "Orientation";
-//	public static final String TITLE_DRIVETRAIN = "Drive Train";
-//	public static final String TITLE_HUMANPLAYER = "Human Player";
-//	public static final String TITLE_WIDTH = "Width";
-//	public static final String TITLE_LENGTH = "Length";
-//	public static final String TITLE_HEIGHTSHOOTER = "Height Shooter";
-//	public static final String TITLE_HEIGHTMAX = "Height Max";
-//	public static final String TITLE_MAXCLIMB = "Max Climb";
-//	public static final String TITLE_CLIMBTIME = "Climb Time";
-//	public static final String TITLE_SHOOTERTYPE = "Shooter Type";
-//	public static final String TITLE_CONTINUOUSSHOOTING = "ContinuousShooting";
-//	public static final String TITLE_LOWGOAL = "Low Goal";
-//	public static final String TITLE_MIDGOAL = "Mid Goal";
-//	public static final String TITLE_HIGHGOAL = "High Goal";
-//	public static final String TITLE_PYRAMIDGOAL = "Pyramid Goal";
-//	public static final String TITLE_AUTOMODE = "Auto Mode";
-//	public static final String TITLE_SLOT = "Slot";
-//	public static final String TITLE_GROUND = "Ground";
-//	public static final String TITLE_AUTOPICKUP = "Auto Pickup";
-//	public static final String TITLE_RELOADSPEED = "Reload Speed";
-//	public static final String TITLE_SAFESHOOTER = "Safe Shooter";
-//	public static final String TITLE_LOADERSHOOTER = "Loader Shooter";
-//	public static final String TITLE_BLOCKER = "Blocker";
-	
 	public static final int maxPerimeter = 112;
 	public static final int maxHeight = 84;
+    public static final int maxDistance = 9999;
 
 	private CharSequence orientation;
 	private CharSequence driveTrain;
-	private float humanPlayer;
 	private float width;
 	private float length;
 	private float heightShooter;
 	private float heightMax;
-	private int maxClimb;
-	private float climbTime;
 	private int shooterType;
-	private int continuousShooting;
 	private boolean lowGoal;
-	private boolean midGoal;
 	private boolean highGoal;
-	private boolean pyramidGoal;
-	private int autoMode;
-	private boolean slot;
-	private boolean ground;
-	private boolean autoPickupPyramid;
-	private boolean autoPickupCenter;
-	private float reloadSpeed;
-	private boolean safeShooter;
-	private boolean loaderShooter;
+    private boolean hotGoal;
+    private float shootingDistance;
+    private boolean passGround;
+    private boolean passAir;
+    private boolean passTruss;
+    private boolean pickupGround;
+    private boolean pickupCatch;
+    private boolean pusher;
 	private boolean blocker;
-	private float autoAvgScore;
+    private float humanPlayer;
+    private int autoMode;
 	public TeamScouting2014() {
 		super();
 	}
@@ -124,56 +91,46 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
             CharSequence notes,
             CharSequence orientation,
             CharSequence driveTrain,
-            float humanPlayer,
             float width,
             float length,
             float heightShooter,
             float heightMax,
-            int maxClimb,
-            float climbTime,
             int shooterType,
-            int continuousShooting,
             boolean lowGoal,
-            boolean midGoal,
             boolean highGoal,
-            boolean pyramidGoal,
-            int autoMode,
-            boolean slot,
-            boolean ground,
-            boolean autoPickupPyramid,
-            boolean autoPickupCenter,
-            float reloadSpeed,
-            boolean safeShooter,
-            boolean loaderShooter,
+            boolean hotGoal,
+            float shootingDistance,
+            boolean passGround,
+            boolean passAir,
+            boolean passTruss,
+            boolean pickupGround,
+            boolean pickupCatch,
+            boolean pusher,
             boolean blocker,
-            float autoAvgScore
+            float humanPlayer,
+            int autoMode
     ) {
 		super(id, mod, season, team, notes);
 		setOrientation(orientation);
 		setDriveTrain(driveTrain);
-		setHumanPlayer(humanPlayer);
 		setWidth(width);
 		setLength(length);
 		setHeightShooter(heightShooter);
 		setHeightMax(heightMax);
-		setMaxClimb(maxClimb);
-		setClimbTime(climbTime);
 		setShooterType(shooterType);
-		setContinuousShooting(continuousShooting);
 		setLowGoal(lowGoal);
-		setMidGoal(midGoal);
 		setHighGoal(highGoal);
-		setPyramidGoal(pyramidGoal);
-		setAutoMode(autoMode);
-		setSlot(slot);
-		setGround(ground);
-		setAutoPickupPyramid(autoPickupPyramid);
-		setAutoPickupCenter(autoPickupCenter);
-		setReloadSpeed(reloadSpeed);
-		setSafeShooter(safeShooter);
-		setLoaderShooter(loaderShooter);
+        setHotGoal(hotGoal);
+        setShootingDistance(shootingDistance);
+        setPassGround(passGround);
+        setPassAir(passAir);
+        setPassTruss(passTruss);
+        setPickupGround(pickupGround);
+        setPickupCatch(pickupCatch);
+        setPusher(pusher);
 		setBlocker(blocker);
-		setAutoAvgScore(autoAvgScore);
+        setHumanPlayer(humanPlayer);
+        setAutoMode(autoMode);
 	}
 	public CharSequence getOrientation() {
 		if(null==orientation) {
@@ -217,41 +174,11 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 	public void setHeightMax(float heightMax) {
 		this.heightMax = heightMax;
 	}
-	public float getHumanPlayer() {
-		return humanPlayer;
-	}
-	public void setHumanPlayer(float humanPlayer) {
-		this.humanPlayer = humanPlayer;
-	}
 	public int getShooterType() {
 		return shooterType;
 	}
 	public void setShooterType(int shooterType) {
 		this.shooterType = shooterType;
-	}
-	public int getContinuousShooting() {
-		return continuousShooting;
-	}
-	public void setContinuousShooting(int continuousShooting) {
-		this.continuousShooting = continuousShooting;
-	}
-	public int getMaxClimb() {
-		return maxClimb;
-	}
-	public void setMaxClimb(int maxClimb) {
-		this.maxClimb = maxClimb;
-	}
-	public float getReloadSpeed() {
-		return reloadSpeed;
-	}
-	public void setReloadSpeed(float reloadSpeed) {
-		this.reloadSpeed = reloadSpeed;
-	}
-	public boolean isSafeShooter() {
-		return safeShooter;
-	}
-	public void setSafeShooter(boolean safeShooter) {
-		this.safeShooter = safeShooter;
 	}
 	public boolean isLowGoal() {
 		return lowGoal;
@@ -259,134 +186,125 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 	public void setLowGoal(boolean lowGoal) {
 		this.lowGoal = lowGoal;
 	}
-	public boolean isMidGoal() {
-		return midGoal;
-	}
-	public void setMidGoal(boolean midGoal) {
-		this.midGoal = midGoal;
-	}
 	public boolean isHighGoal() {
 		return highGoal;
 	}
 	public void setHighGoal(boolean highGoal) {
 		this.highGoal = highGoal;
 	}
-	public boolean isPyramidGoal() {
-		return pyramidGoal;
+    public boolean isHotGoal() {
+        return hotGoal;
+    }
+    public void setHotGoal(boolean hotGoal) {
+        this.hotGoal = hotGoal;
+    }
+    public float getShootingDistance() {
+        return shootingDistance;
+    }
+    public void setShootingDistance(float shootingDistance) {
+        this.shootingDistance = shootingDistance;
+    }
+	public boolean isPassGround() {
+		return passGround;
 	}
-	public void setPyramidGoal(boolean pyramidGoal) {
-		this.pyramidGoal = pyramidGoal;
+	public void setPassGround(boolean passGround) {
+		this.passGround = passGround;
 	}
-	public boolean isSlot() {
-		return slot;
-	}
-	public void setSlot(boolean slot) {
-		this.slot = slot;
-	}
-	public boolean isGround() {
-		return ground;
-	}
-	public void setGround(boolean ground) {
-		this.ground = ground;
-	}
-	public float getClimbTime() {
-		return climbTime;
-	}
-	public void setClimbTime(float climbTime) {
-		this.climbTime = climbTime;
-	}
-	public int getAutoMode() {
-		return autoMode;
-	}
-	public void setAutoMode(int autoMode) {
-		this.autoMode = autoMode;
-	}
-	public boolean isAutoPickupPyramid() {
-		return autoPickupPyramid;
-	}
-	public void setAutoPickupPyramid(boolean autoPickupPyramid) {
-		this.autoPickupPyramid = autoPickupPyramid;
-	}
-	public boolean isAutoPickupCenter() {
-		return autoPickupCenter;
-	}
-	public void setAutoPickupCenter(boolean autoPickupCenter) {
-		this.autoPickupCenter = autoPickupCenter;
-	}
-	public boolean isLoaderShooter() {
-		return loaderShooter;
-	}
-	public void setLoaderShooter(boolean loaderShooter) {
-		this.loaderShooter = loaderShooter;
-	}
-	public boolean isBlocker() {
-		return blocker;
-	}
-	public void setBlocker(boolean blocker) {
-		this.blocker = blocker;
-	}
-	public float getAutoAvgScore() {
-		return autoAvgScore;
-	}
-	public void setAutoAvgScore(float autoAvgScore) {
-		this.autoAvgScore = autoAvgScore;
-	}
+    public boolean isPassAir() {
+        return passAir;
+    }
+    public void setPassAir(boolean passAir) {
+        this.passAir = passAir;
+    }
+    public boolean isPassTruss() {
+        return passTruss;
+    }
+    public void setPassTruss(boolean passTruss) {
+        this.passTruss = passTruss;
+    }
+    public boolean isPickupGround() {
+        return pickupGround;
+    }
+    public void setPickupGround(boolean pickupGround) {
+        this.pickupGround = pickupGround;
+    }
+    public boolean isPickupCatch() {
+        return pickupCatch;
+    }
+    public void setPickupCatch(boolean pickupCatch) {
+        this.pickupCatch = pickupCatch;
+    }
+    public boolean isPusher() {
+        return pusher;
+    }
+    public void setPusher(boolean pusher) {
+        this.pusher = pusher;
+    }
+    public boolean isBlocker() {
+        return blocker;
+    }
+    public void setBlocker(boolean blocker) {
+        this.blocker = blocker;
+    }
+    public float getHumanPlayer() {
+        return humanPlayer;
+    }
+    public void setHumanPlayer(float humanPlayer) {
+        this.humanPlayer = humanPlayer;
+    }
+    public int getAutoMode() {
+        return autoMode;
+    }
+    public void setAutoMode(int autoMode) {
+        this.autoMode = autoMode;
+    }
 	public String toString() {
 		return	"ID: "+this.getId()+
 				" Mod: "+this.getModified()+
 				" Notes: "+this.getNotes()+
 				" Orientation: "+this.getOrientation()+
 				" Drive Train: "+this.getDriveTrain()+
-				" Human Player: "+this.getHumanPlayer()+
 				" Width: "+this.getWidth()+
 				" Length: "+this.getLength()+
 				" Height Shooter: "+this.getHeightShooter()+
 				" Height Max: "+this.getHeightMax()+
-				" Max Climb: "+this.getMaxClimb()+
-				" Climb Time: "+this.getClimbTime()+
-				" Shooter Type: "+this.getShooterType()+
-				" Continuous Shooter: "+this.getContinuousShooting()+
-				" Low Goal: "+this.isLowGoal()+
-				" Middle Goal: "+this.isMidGoal()+
-				" High Goal: "+this.isHighGoal()+
-				" Pyramid Goal: "+this.isPyramidGoal()+
-				" Autonomous Mode: "+this.getAutoMode()+
-				" Get from Slot: "+this.isSlot()+
-				" Get from Ground: "+this.isGround()+
-				" Autonomous Pickup Pyramid: "+this.isAutoPickupPyramid()+
-				" Autonomous Pickup Center: "+this.isAutoPickupCenter()+
-				" Safe zone shooter: "+this.isSafeShooter()+
-				" Loading Station Shooter: "+this.isLoaderShooter()+
+                " Shooter Type: "+this.getShooterType()+
+                " Low Goal: "+this.isLowGoal()+
+                " High Goal: "+this.isHighGoal()+
+                " Hot Goal: "+this.isHotGoal()+
+                " Shooting Distance: "+this.getShootingDistance()+
+                " Pass Ground: "+this.isPassGround()+
+                " Pass Air: "+this.isPassAir()+
+                " Pass Truss: "+this.isPassTruss()+
+                " Pickup Ground: "+this.isPickupGround()+
+                " Pickup Catch: "+this.isPickupCatch()+
+                " Pusher: "+this.isPusher()+
 				" Blocker: "+this.isBlocker()+
-				" Auto Avg Score: "+this.getAutoAvgScore();
+                " Human Player: "+this.getHumanPlayer()+
+                " Autonomous Mode: "+this.getAutoMode();
 	}
 	public boolean equals(TeamScouting2014 data) {
 		return super.equals(data) &&
 				getOrientation().equals(data.getOrientation()) &&
 				getDriveTrain().equals(data.getDriveTrain()) &&
-				getHumanPlayer()==data.getHumanPlayer() &&
 				getWidth()==data.getWidth() &&
 				getLength()==data.getLength() &&
 				getHeightShooter()==data.getHeightShooter() &&
 				getHeightMax()==data.getHeightMax() &&
-				getMaxClimb()==data.getMaxClimb() &&
-				getClimbTime()==data.getClimbTime() &&
 				getShooterType()==data.getShooterType() &&
-				getContinuousShooting()==data.getContinuousShooting() &&
 				isLowGoal()==data.isLowGoal() &&
-				isMidGoal()==data.isMidGoal() &&
 				isHighGoal()==data.isHighGoal() &&
-				isPyramidGoal()==data.isPyramidGoal() &&
-				getAutoMode()==data.getAutoMode() &&
-				isSlot()==data.isSlot() &&
-				isGround()==data.isGround() &&
-				isAutoPickupPyramid()==data.isAutoPickupPyramid() &&
-				isAutoPickupCenter()==data.isAutoPickupCenter() &&
-				getReloadSpeed()==data.getReloadSpeed() &&
-				isSafeShooter()==data.isSafeShooter() &&
-				isLoaderShooter()==data.isLoaderShooter() &&
+                isHotGoal()==data.isHotGoal() &&
+                getShootingDistance()==data.getShootingDistance() &&
+                isPassGround()==data.isPassGround() &&
+                isPassAir()==data.isPassAir() &&
+                isPassTruss()==data.isPassTruss() &&
+                isPickupGround()==data.isPickupGround() &&
+                isPickupCatch()==data.isPickupCatch() &&
+                isPusher()==data.isPusher() &&
 				isBlocker()==data.isBlocker() &&
-				getAutoAvgScore()==data.getAutoAvgScore();
+                getHumanPlayer()==data.getHumanPlayer() &&
+                getAutoMode()==data.getAutoMode();
 	}
 	
 	public ContentValues toCV() {
@@ -401,29 +319,24 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 		} else {
 			values.put(DRIVETRAIN, this.getDriveTrain().toString());
 		}
-		values.put(HUMANPLAYER, this.getHumanPlayer());
 		values.put(WIDTH, this.getWidth());
 		values.put(LENGTH, this.getLength());
 		values.put(HEIGHTSHOOTER, this.getHeightShooter());
 		values.put(HEIGHTMAX, this.getHeightMax());
-		values.put(MAXCLIMB, this.getMaxClimb());
-		values.put(CLIMBTIME, this.getClimbTime());
 		values.put(SHOOTERTYPE, this.getShooterType());
-		values.put(CONTINUOUSSHOOTING, this.getContinuousShooting());
 		values.put(LOWGOAL, Utility.boolToShort(this.isLowGoal()));
-		values.put(MIDGOAL, Utility.boolToShort(this.isMidGoal()));
 		values.put(HIGHGOAL, Utility.boolToShort(this.isHighGoal()));
-		values.put(PYRAMIDGOAL, Utility.boolToShort(this.isPyramidGoal()));
-		values.put(AUTOMODE, this.getAutoMode());
-		values.put(SLOT, Utility.boolToShort(this.isSlot()));
-		values.put(GROUND, Utility.boolToShort(this.isGround()));
-		values.put(AUTOPICKUPPYRAMID, Utility.boolToShort(this.isAutoPickupPyramid()));
-		values.put(AUTOPICKUPCENTER, Utility.boolToShort(this.isAutoPickupCenter()));
-		values.put(RELOADSPEED, this.getReloadSpeed());
-		values.put(SAFESHOOTER, Utility.boolToShort(this.isSafeShooter()));
-		values.put(LOADERSHOOTER, Utility.boolToShort(this.isLoaderShooter()));
+        values.put(HOTGOAL, Utility.boolToShort(this.isHotGoal()));
+        values.put(SHOOTINGDISTANCE, this.getShootingDistance());
+        values.put(PASSGROUND, Utility.boolToShort(this.isPassGround()));
+        values.put(PASSAIR, Utility.boolToShort(this.isPassAir()));
+        values.put(PASSTRUSS, Utility.boolToShort(this.isPassTruss()));
+        values.put(PICKUPGROUND, Utility.boolToShort(this.isPickupGround()));
+        values.put(PICKUPCATCH, Utility.boolToShort(this.isPickupCatch()));
+        values.put(PUSHER, Utility.boolToShort(this.isPusher()));
 		values.put(BLOCKER, Utility.boolToShort(this.isBlocker()));
-		values.put(AUTOAVGSCORE, this.getAutoAvgScore());
+        values.put(HUMANPLAYER, this.getHumanPlayer());
+        values.put(AUTOMODE, this.getAutoMode());
 		return values;
 	}
 
@@ -431,29 +344,24 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 		super.fromCursor(cursor);
 		setOrientation(cursor.getString(cursor.getColumnIndexOrThrow(ORIENTATION)));
 		setDriveTrain(cursor.getString(cursor.getColumnIndexOrThrow(DRIVETRAIN)));
-		setHumanPlayer(cursor.getFloat(cursor.getColumnIndexOrThrow(HUMANPLAYER)));
 		setWidth(cursor.getFloat(cursor.getColumnIndexOrThrow(WIDTH)));
 		setLength(cursor.getFloat(cursor.getColumnIndexOrThrow(LENGTH)));
 		setHeightShooter(cursor.getFloat(cursor.getColumnIndexOrThrow(HEIGHTSHOOTER)));
 		setHeightMax(cursor.getFloat(cursor.getColumnIndexOrThrow(HEIGHTMAX)));
-		setMaxClimb(cursor.getInt(cursor.getColumnIndexOrThrow(MAXCLIMB)));
-		setClimbTime(cursor.getFloat(cursor.getColumnIndexOrThrow(CLIMBTIME)));
 		setShooterType(cursor.getInt(cursor.getColumnIndexOrThrow(SHOOTERTYPE)));
-		setContinuousShooting(cursor.getInt(cursor.getColumnIndexOrThrow(CONTINUOUSSHOOTING)));
 		setLowGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(LOWGOAL))));
-		setMidGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(MIDGOAL))));
-		setHighGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(HIGHGOAL))));
-		setPyramidGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PYRAMIDGOAL))));
-		setAutoMode(cursor.getInt(cursor.getColumnIndexOrThrow(AUTOMODE)));
-		setSlot(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(SLOT))));
-		setGround(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(GROUND))));
-		setAutoPickupPyramid(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(AUTOPICKUPPYRAMID))));
-		setAutoPickupCenter(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(AUTOPICKUPCENTER))));
-		setReloadSpeed(cursor.getFloat(cursor.getColumnIndexOrThrow(RELOADSPEED)));
-		setSafeShooter(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(SAFESHOOTER))));
-		setLoaderShooter(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(LOADERSHOOTER))));
+        setHotGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(HIGHGOAL))));
+        setHighGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(HOTGOAL))));
+        setShootingDistance(cursor.getFloat(cursor.getColumnIndexOrThrow(SHOOTINGDISTANCE)));
+        setPassGround(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PASSGROUND))));
+        setPassAir(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PASSAIR))));
+        setPassTruss(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PASSTRUSS))));
+        setPickupGround(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PICKUPGROUND))));
+        setPickupCatch(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PICKUPCATCH))));
+        setPusher(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PUSHER))));
 		setBlocker(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(BLOCKER))));
-		setAutoAvgScore(cursor.getFloat(cursor.getColumnIndexOrThrow(AUTOAVGSCORE)));
+        setHumanPlayer(cursor.getFloat(cursor.getColumnIndexOrThrow(HUMANPLAYER)));
+        setAutoMode(cursor.getInt(cursor.getColumnIndexOrThrow(AUTOMODE)));
 	}
 
 	@Override
@@ -461,29 +369,24 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 		return ArrayUtils.addAll(super.toStringArray(),
 				getOrientation().toString(),
 				getDriveTrain().toString(),
-				Float.toString(getHumanPlayer()),
 				Float.toString(getWidth()),
 				Float.toString(getLength()),
 				Float.toString(getHeightShooter()),
 				Float.toString(getHeightMax()),
-				Integer.toString(getMaxClimb()),
-				Float.toString(getClimbTime()),
 				Integer.toString(getShooterType()),
-				Integer.toString(getContinuousShooting()),
 				Boolean.toString(isLowGoal()),
-				Boolean.toString(isMidGoal()),
-				Boolean.toString(isHighGoal()),
-				Boolean.toString(isPyramidGoal()),
-				Integer.toString(getAutoMode()),
-				Boolean.toString(isSlot()),
-				Boolean.toString(isGround()),
-				Boolean.toString(isAutoPickupPyramid()),
-				Boolean.toString(isAutoPickupCenter()),
-				Float.toString(getReloadSpeed()),
-				Boolean.toString(isSafeShooter()),
-				Boolean.toString(isLoaderShooter()),
+                Boolean.toString(isHighGoal()),
+                Boolean.toString(isHotGoal()),
+                Float.toString(getShootingDistance()),
+                Boolean.toString(isPassGround()),
+                Boolean.toString(isPassAir()),
+                Boolean.toString(isPassTruss()),
+                Boolean.toString(isPickupGround()),
+                Boolean.toString(isPickupCatch()),
+                Boolean.toString(isPusher()),
 				Boolean.toString(isBlocker()),
-				Float.toString(getAutoAvgScore()));
+                Float.toString(getHumanPlayer()),
+                Integer.toString(getAutoMode()));
 	}
 	
 	public static TeamScouting2014 newFromCursor(Cursor cursor) {

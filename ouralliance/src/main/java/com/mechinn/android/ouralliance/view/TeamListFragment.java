@@ -8,11 +8,11 @@ import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
 import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
 import com.mechinn.android.ouralliance.data.source.TeamDataSource;
-import com.mechinn.android.ouralliance.data.source.frc2013.TeamScouting2013DataSource;
+import com.mechinn.android.ouralliance.data.source.frc2014.TeamScouting2014DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mobeta.android.dslv.DragSortListView;
 
@@ -52,7 +52,7 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 	private TeamDataSource teamData;
 	private CompetitionDataSource competitionData;
 	private CompetitionTeamDataSource competitionTeamData;
-	private TeamScouting2013DataSource scouting2013;
+	private TeamScouting2014DataSource scouting2014;
 	private CompetitionTeamCursorAdapter adapter;
 	private Competition comp;
 	public void setComp(Competition comp) {
@@ -86,7 +86,7 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 		teamData = new TeamDataSource(this.getActivity());
 		competitionData = new CompetitionDataSource(this.getActivity());
 		competitionTeamData = new CompetitionTeamDataSource(this.getActivity());
-		scouting2013 = new TeamScouting2013DataSource(this.getActivity());
+		scouting2014 = new TeamScouting2014DataSource(this.getActivity());
 		adapter = new CompetitionTeamCursorAdapter(getActivity(), null);
     }
     
@@ -271,8 +271,8 @@ public class TeamListFragment extends Fragment implements LoaderCallbacks<Cursor
 		if(addTeam!=null) {
 			try {
 				switch(prefs.getYear()) {
-					case 2013:
-						scouting2013.insert(new TeamScouting2013(comp.getSeason(),addTeam));
+					case 2014:
+						scouting2014.insert(new TeamScouting2014(comp.getSeason(),addTeam));
 					default:
 						Log.w(TAG, "unknown season");
 				}

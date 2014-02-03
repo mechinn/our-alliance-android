@@ -3,8 +3,8 @@ package com.mechinn.android.ouralliance.view;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.view.frc2013.MatchDetail2013;
-import com.mechinn.android.ouralliance.view.frc2013.MatchList2013;
+import com.mechinn.android.ouralliance.view.frc2014.MatchDetail2014;
+import com.mechinn.android.ouralliance.view.frc2014.MatchList2014;
 
 import android.app.Activity;
 import android.app.FragmentManager.OnBackStackChangedListener;
@@ -44,7 +44,7 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
             // Create an instance of ExampleFragment
     		switch(prefs.getYear()) {
     			case 2013:
-    				matchListFrag = new MatchList2013();
+    				matchListFrag = new MatchList2014();
     				break;
     			default:
     				throw new ClassCastException("Must give year!");
@@ -99,8 +99,8 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
         args.putLong(MatchDetailFragment.MATCH_ARG, match);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		switch(prefs.getYear()) {
-			case 2013:
-				matchDetailFragment = new MatchDetail2013();
+			case 2014:
+				matchDetailFragment = new MatchDetail2014();
 	            break;
 	        default:
 	        	Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();

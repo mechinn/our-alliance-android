@@ -16,7 +16,7 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.view.frc2013.TeamDetail2013;
+import com.mechinn.android.ouralliance.view.frc2014.TeamDetail2014;
 
 public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener, MatchTeamListFragment.Listener {
 	public static final String TAG = TeamScoutingActivity.class.getSimpleName();
@@ -106,8 +106,8 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
         
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		switch(prefs.getYear()) {
-			case 2013:
-				teamDetailFragment = new TeamDetail2013();
+			case 2014:
+				teamDetailFragment = new TeamDetail2014();
 	            break;
 	        default:
 	        	Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();

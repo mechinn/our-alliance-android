@@ -17,12 +17,12 @@ import android.net.Uri;
 public class Match2014 extends Match {
 	private static final long serialVersionUID = -3255822533528181976L;
 	public static final String TAG = Match2014.class.getSimpleName();
-	public static final String TABLE = Match.TABLE+"2013";
-	public static final String[] ALLCOLUMNS2013 = {  };
-	public static final String[] ALLCOLUMNS = ArrayUtils.addAll(Match2014.ALLCOLUMNS, ALLCOLUMNS2013);
+	public static final String TABLE = Match.TABLE+"2014";
+	public static final String[] ALLCOLUMNS2014 = {  };
+	public static final String[] ALLCOLUMNS = ArrayUtils.addAll(Match2014.ALLCOLUMNS, ALLCOLUMNS2014);
     
 	public static final String VIEW = TABLE+"view";
-	public static final String[] VIEWCOLUMNS = ArrayUtils.addAll(Match.VIEWCOLUMNS, ALLCOLUMNS2013);
+	public static final String[] VIEWCOLUMNS = ArrayUtils.addAll(Match.VIEWCOLUMNS, ALLCOLUMNS2014);
 
 	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
 	public static final String URITYPE = DataProvider.AUTHORITY+"."+TAG;

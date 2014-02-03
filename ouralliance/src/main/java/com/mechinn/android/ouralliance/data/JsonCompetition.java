@@ -64,6 +64,10 @@ public class JsonCompetition {
     }
 
 	public String toString() {
-		return key;
+        return "Key: "+getKey()+" "+
+                "Name: "+getName()+" "+
+                "Official: "+getName()+" "+
+                "Short Name: "+getShort_name()+" "+
+                "Start Date: "+getStart_date();
 	}
 }

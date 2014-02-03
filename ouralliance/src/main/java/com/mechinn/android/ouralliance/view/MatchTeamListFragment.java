@@ -6,7 +6,7 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.source.frc2013.Match2013DataSource;
+import com.mechinn.android.ouralliance.data.source.frc2014.Match2014DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 import android.app.Activity;
@@ -27,7 +27,7 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
 	private Prefs prefs;
-	private Match2013DataSource match2013Data;
+	private Match2014DataSource match2014Data;
 	private MatchTeamCursorAdapter adapter;
 	private long matchId;
 
@@ -53,7 +53,7 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
         super.onCreate(savedInstanceState);
         this.getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 		prefs = new Prefs(this.getActivity());
-		match2013Data = new Match2013DataSource(this.getActivity());
+		match2014Data = new Match2014DataSource(this.getActivity());
 		adapter = new MatchTeamCursorAdapter(getActivity(), null);
 		this.setListAdapter(adapter);
 		matchId = this.getArguments().getLong(MATCH_ARG);
@@ -121,8 +121,8 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
 		switch(id) {
 			case LOADER_MATCH:
 				switch(prefs.getYear()) {
-					case 2013:
-						return match2013Data.get(matchId);
+					case 2014:
+						return match2014Data.get(matchId);
 				}
 			default:
 				return null;
@@ -136,7 +136,7 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
 				try {
 					switch(prefs.getYear()) {
 						case 2013:
-							match = Match2013DataSource.getSingle(data);
+							match = Match2014DataSource.getSingle(data);
 					}
 					if(null!=match) {
 						adapter.swapMatch(match);

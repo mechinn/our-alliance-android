@@ -7,8 +7,8 @@ import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
-import com.mechinn.android.ouralliance.data.frc2013.Match2013;
-import com.mechinn.android.ouralliance.data.frc2013.TeamScouting2013;
+import com.mechinn.android.ouralliance.data.frc2014.Match2014;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,7 +21,7 @@ public class Database extends SQLiteOpenHelper {
 	public static final String NAME = "ourAlliance.db";
 	public static final String MODIFIED = "modified";
 	public static final String[] COLUMNSBASE = new String[] {BaseColumns._ID, Database.MODIFIED};
-	public static final int VERSION = 3;
+	public static final int VERSION = 5;
 	
 	private static final String foreignSeason = " REFERENCES "+Season.TABLE+"("+BaseColumns._ID+") ON DELETE CASCADE";
 	private static final String foreignTeam = " REFERENCES "+Team.TABLE+"("+BaseColumns._ID+") ON DELETE CASCADE";
@@ -70,24 +70,34 @@ public class Database extends SQLiteOpenHelper {
 	public void setup(SQLiteDatabase db, int currentVersion) {
 		Log.i(TAG,"Updating Database from "+currentVersion+" to "+VERSION);
 		String schema;
-		if(!db.isReadOnly()) {
+		if(db.isReadOnly()) {
+            Log.e(TAG,"Read only database!");
+        } else {
 			switch(currentVersion+1) {
 				case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
 					Log.i(TAG,"Clear Database");
-					db.execSQL("DROP VIEW IF EXISTS "+Match2013.VIEW);
-					db.execSQL("DROP TABLE IF EXISTS "+Match2013.TABLE);
-					db.execSQL("DROP VIEW IF EXISTS "+TeamScouting2013.VIEW);
-					db.execSQL("DROP TABLE IF EXISTS "+TeamScouting2013.TABLE);
-					db.execSQL("DROP VIEW IF EXISTS "+TeamScoutingWheel.VIEW);
-					db.execSQL("DROP TABLE IF EXISTS "+TeamScoutingWheel.TABLE);
-					db.execSQL("DROP VIEW IF EXISTS "+CompetitionTeam.VIEW);
-					db.execSQL("DROP TABLE IF EXISTS "+CompetitionTeam.TABLE);
-					db.execSQL("DROP VIEW IF EXISTS "+Competition.VIEW);
-					db.execSQL("DROP TABLE IF EXISTS "+Competition.TABLE);
-					db.execSQL("DROP TABLE IF EXISTS "+Season.TABLE);
-					db.execSQL("DROP TABLE IF EXISTS "+Team.TABLE);
-				case 1:
-					Log.i(TAG,"Upgrade to version 1");
+                    db.execSQL("DROP VIEW IF EXISTS match2013view");
+                    db.execSQL("DROP TABLE IF EXISTS match2013");
+                    db.execSQL("DROP VIEW IF EXISTS teamscouting2013view");
+                    db.execSQL("DROP TABLE IF EXISTS teamscouting2013");
+					db.execSQL("DROP VIEW IF EXISTS "+Match2014.VIEW);
+					db.execSQL("DROP TABLE IF EXISTS "+Match2014.TABLE);
+					db.execSQL("DROP VIEW IF EXISTS "+TeamScouting2014.VIEW);
+					db.execSQL("DROP TABLE IF EXISTS "+TeamScouting2014.TABLE);
+                    db.execSQL("DROP VIEW IF EXISTS "+TeamScoutingWheel.VIEW);
+                    db.execSQL("DROP TABLE IF EXISTS "+TeamScoutingWheel.TABLE);
+                    db.execSQL("DROP VIEW IF EXISTS "+CompetitionTeam.VIEW);
+                    db.execSQL("DROP TABLE IF EXISTS "+CompetitionTeam.TABLE);
+                    db.execSQL("DROP VIEW IF EXISTS "+Competition.VIEW);
+                    db.execSQL("DROP TABLE IF EXISTS "+Competition.TABLE);
+                    db.execSQL("DROP TABLE IF EXISTS "+Season.TABLE);
+                    db.execSQL("DROP TABLE IF EXISTS "+Team.TABLE);
+				case 5:
+					Log.i(TAG,"Upgrade to version 5");
 					
 					schema = "CREATE TABLE "+Team.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -146,45 +156,47 @@ public class Database extends SQLiteOpenHelper {
 							CompetitionTeam.COMPETITION+" INTEGER NOT NULL"+foreignCompetition+"," +
 							CompetitionTeam.TEAM+" INTEGER NOT NULL"+foreignTeam+","+
 							CompetitionTeam.RANK+" INTEGER NOT NULL,"+
+                            CompetitionTeam.SCOUTED+" INTEGER,"+
 							" UNIQUE ("+CompetitionTeam.COMPETITION+","+CompetitionTeam.TEAM+") ON CONFLICT IGNORE"+
 							" );";
 					Log.i(TAG,schema);
 					db.execSQL(schema);
-					
-					schema = "CREATE VIEW "+CompetitionTeam.VIEW+" AS " +
-							"SELECT "+
-							CompetitionTeam.TAG+"."+BaseColumns._ID+"," +
-							CompetitionTeam.TAG+"."+Database.MODIFIED+"," +
-							CompetitionTeam.TAG+"."+CompetitionTeam.COMPETITION+"," +
-							CompetitionTeam.TAG+"."+CompetitionTeam.TEAM+"," +
-							CompetitionTeam.TAG+"."+CompetitionTeam.RANK+"," +
-							Competition.TAG+"."+BaseColumns._ID+" AS "+Competition.VIEW_ID+"," +
-							Competition.TAG+"."+Database.MODIFIED+" AS "+Competition.VIEW_MODIFIED+"," +
-							Competition.TAG+"."+Competition.SEASON+" AS "+Competition.VIEW_SEASON+"," +
-							Competition.TAG+"."+Competition.NAME+" AS "+Competition.VIEW_NAME+"," +
-							Competition.TAG+"."+Competition.CODE+" AS "+Competition.VIEW_CODE+"," +
-							Season.TAG+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
-							Season.TAG+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
-							Season.TAG+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
-							Season.TAG+"."+Season.TITLE+" AS "+Season.VIEW_TITLE+"," +
-							Team.TAG+"."+BaseColumns._ID+" AS "+Team.VIEW_ID+"," +
-							Team.TAG+"."+Database.MODIFIED+" AS "+Team.VIEW_MODIFIED+"," +
-							Team.TAG+"."+Team.NUMBER+" AS "+Team.VIEW_NUMBER+"," +
-							Team.TAG+"."+Team.NAME+" AS "+Team.VIEW_NAME +
-							" FROM " +
-							CompetitionTeam.TABLE+" "+CompetitionTeam.TAG+"," +
-							Competition.TABLE+" "+Competition.TAG+"," +
-							Season.TABLE+" "+Season.TAG+"," +
-							Team.TABLE+" "+Team.TAG+
-							" WHERE " +
-							CompetitionTeam.COMPETITION+"="+Competition.VIEW_ID+
-							" AND "+
-							Competition.VIEW_SEASON+"="+Season.VIEW_ID+
-							" AND "+
-							CompetitionTeam.TEAM+"="+Team.VIEW_ID+
-							";";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
+
+                    schema = "CREATE VIEW "+CompetitionTeam.VIEW+" AS " +
+                            "SELECT "+
+                            CompetitionTeam.TAG+"."+BaseColumns._ID+"," +
+                            CompetitionTeam.TAG+"."+Database.MODIFIED+"," +
+                            CompetitionTeam.TAG+"."+CompetitionTeam.COMPETITION+"," +
+                            CompetitionTeam.TAG+"."+CompetitionTeam.TEAM+"," +
+                            CompetitionTeam.TAG+"."+CompetitionTeam.RANK+"," +
+                            CompetitionTeam.TAG+"."+CompetitionTeam.SCOUTED+"," +
+                            Competition.TAG+"."+BaseColumns._ID+" AS "+Competition.VIEW_ID+"," +
+                            Competition.TAG+"."+Database.MODIFIED+" AS "+Competition.VIEW_MODIFIED+"," +
+                            Competition.TAG+"."+Competition.SEASON+" AS "+Competition.VIEW_SEASON+"," +
+                            Competition.TAG+"."+Competition.NAME+" AS "+Competition.VIEW_NAME+"," +
+                            Competition.TAG+"."+Competition.CODE+" AS "+Competition.VIEW_CODE+"," +
+                            Season.TAG+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
+                            Season.TAG+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
+                            Season.TAG+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
+                            Season.TAG+"."+Season.TITLE+" AS "+Season.VIEW_TITLE+"," +
+                            Team.TAG+"."+BaseColumns._ID+" AS "+Team.VIEW_ID+"," +
+                            Team.TAG+"."+Database.MODIFIED+" AS "+Team.VIEW_MODIFIED+"," +
+                            Team.TAG+"."+Team.NUMBER+" AS "+Team.VIEW_NUMBER+"," +
+                            Team.TAG+"."+Team.NAME+" AS "+Team.VIEW_NAME +
+                            " FROM " +
+                            CompetitionTeam.TABLE+" "+CompetitionTeam.TAG+"," +
+                            Competition.TABLE+" "+Competition.TAG+"," +
+                            Season.TABLE+" "+Season.TAG+"," +
+                            Team.TABLE+" "+Team.TAG+
+                            " WHERE " +
+                            CompetitionTeam.COMPETITION+"="+Competition.VIEW_ID+
+                            " AND "+
+                            Competition.VIEW_SEASON+"="+Season.VIEW_ID+
+                            " AND "+
+                            CompetitionTeam.TEAM+"="+Team.VIEW_ID+
+                            ";";
+                    Log.i(TAG,schema);
+                    db.execSQL(schema);
 					
 					schema = "CREATE TABLE "+TeamScoutingWheel.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -228,70 +240,64 @@ public class Database extends SQLiteOpenHelper {
 					Log.i(TAG,schema);
 					db.execSQL(schema);
 					
-					schema = "CREATE TABLE "+TeamScouting2013.TABLE+" ( "+
+					schema = "CREATE TABLE "+TeamScouting2014.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 							MODIFIED+" DATE NOT NULL," +
 							TeamScouting.SEASON+" INTEGER NOT NULL"+foreignSeason+"," +
 							TeamScouting.TEAM+" INTEGER NOT NULL"+foreignTeam+"," +
 							TeamScouting.NOTES+" TEXT," +
-							TeamScouting2013.ORIENTATION+" TEXT," +
-							TeamScouting2013.DRIVETRAIN+" TEXT," +
-							TeamScouting2013.HUMANPLAYER+" REAL," +
-							TeamScouting2013.WIDTH+" REAL," +
-							TeamScouting2013.LENGTH+" REAL," +
-							TeamScouting2013.HEIGHTSHOOTER+" REAL," +
-							TeamScouting2013.HEIGHTMAX+" REAL," +
-							TeamScouting2013.MAXCLIMB+" INTEGER," +
-							TeamScouting2013.CLIMBTIME+" REAL," +
-							TeamScouting2013.SHOOTERTYPE+" INTEGER," +
-							TeamScouting2013.CONTINUOUSSHOOTING+" INTEGER," +
-							TeamScouting2013.LOWGOAL+" INTEGER," +
-							TeamScouting2013.MIDGOAL+" INTEGER," +
-							TeamScouting2013.HIGHGOAL+" INTEGER," +
-							TeamScouting2013.PYRAMIDGOAL+" INTEGER," +
-							TeamScouting2013.AUTOMODE+" INTEGER," +
-							TeamScouting2013.SLOT+" INTEGER," +
-							TeamScouting2013.GROUND+" INTEGER," +
-							"autoPickup INTEGER," +
-							TeamScouting2013.RELOADSPEED+" REAL," +
-							TeamScouting2013.SAFESHOOTER+" INTEGER," +
-							TeamScouting2013.LOADERSHOOTER+" INTEGER," +
-							TeamScouting2013.BLOCKER+" INTEGER," +
-							" UNIQUE ("+TeamScouting2013.SEASON+","+TeamScouting2013.TEAM+") ON CONFLICT IGNORE"+
+							TeamScouting2014.ORIENTATION+" TEXT," +
+							TeamScouting2014.DRIVETRAIN+" TEXT," +
+							TeamScouting2014.WIDTH+" REAL," +
+							TeamScouting2014.LENGTH+" REAL," +
+							TeamScouting2014.HEIGHTSHOOTER+" REAL," +
+							TeamScouting2014.HEIGHTMAX+" REAL," +
+							TeamScouting2014.SHOOTERTYPE+" INTEGER," +
+							TeamScouting2014.LOWGOAL+" INTEGER," +
+							TeamScouting2014.HIGHGOAL+" INTEGER," +
+                            TeamScouting2014.HOTGOAL+" INTEGER," +
+                            TeamScouting2014.SHOOTINGDISTANCE+" REAL," +
+                            TeamScouting2014.PASSGROUND+" INTEGER," +
+                            TeamScouting2014.PASSAIR+" INTEGER," +
+                            TeamScouting2014.PASSTRUSS+" INTEGER," +
+                            TeamScouting2014.PICKUPGROUND+" INTEGER," +
+                            TeamScouting2014.PICKUPCATCH+" INTEGER," +
+                            TeamScouting2014.PUSHER+" INTEGER," +
+                            TeamScouting2014.BLOCKER+" INTEGER," +
+                            TeamScouting2014.HUMANPLAYER+" REAL," +
+                            TeamScouting2014.AUTOMODE+" INTEGER," +
+							" UNIQUE ("+TeamScouting2014.SEASON+","+TeamScouting2014.TEAM+") ON CONFLICT IGNORE"+
 							" );";
 					Log.i(TAG,schema);
 					db.execSQL(schema);
 					
-					schema = "CREATE VIEW "+TeamScouting2013.VIEW+" AS " +
+					schema = "CREATE VIEW "+TeamScouting2014.VIEW+" AS " +
 							"SELECT "+
-							TeamScouting2013.TAG+"."+BaseColumns._ID+"," +
-							TeamScouting2013.TAG+"."+Database.MODIFIED+"," +
-							TeamScouting2013.TAG+"."+TeamScouting.SEASON+"," +
-							TeamScouting2013.TAG+"."+TeamScouting.TEAM+"," +
-							TeamScouting2013.TAG+"."+TeamScouting.NOTES+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.ORIENTATION+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.DRIVETRAIN+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HUMANPLAYER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.WIDTH+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.LENGTH+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HEIGHTSHOOTER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HEIGHTMAX+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.MAXCLIMB+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.CLIMBTIME+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.SHOOTERTYPE+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.CONTINUOUSSHOOTING+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.LOWGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.MIDGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HIGHGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.PYRAMIDGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.AUTOMODE+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.SLOT+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.GROUND+"," +
-							TeamScouting2013.TAG+".autoPickup," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.RELOADSPEED+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.SAFESHOOTER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.LOADERSHOOTER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.BLOCKER+"," +
+							TeamScouting2014.TAG+"."+BaseColumns._ID+"," +
+							TeamScouting2014.TAG+"."+Database.MODIFIED+"," +
+							TeamScouting2014.TAG+"."+TeamScouting.SEASON+"," +
+							TeamScouting2014.TAG+"."+TeamScouting.TEAM+"," +
+							TeamScouting2014.TAG+"."+TeamScouting.NOTES+"," +
+							TeamScouting2014.TAG+"."+TeamScouting2014.ORIENTATION+"," +
+							TeamScouting2014.TAG+"."+TeamScouting2014.DRIVETRAIN+"," +
+							TeamScouting2014.TAG+"."+TeamScouting2014.WIDTH+"," +
+							TeamScouting2014.TAG+"."+TeamScouting2014.LENGTH+"," +
+							TeamScouting2014.TAG+"."+TeamScouting2014.HEIGHTSHOOTER+"," +
+							TeamScouting2014.TAG+"."+TeamScouting2014.HEIGHTMAX+"," +
+							TeamScouting2014.TAG+"."+TeamScouting2014.SHOOTERTYPE+"," +
+							TeamScouting2014.TAG+"."+TeamScouting2014.LOWGOAL+"," +
+							TeamScouting2014.TAG+"."+TeamScouting2014.HIGHGOAL+"," +
+                            TeamScouting2014.TAG+"."+TeamScouting2014.HOTGOAL+"," +
+                            TeamScouting2014.TAG+"."+TeamScouting2014.SHOOTINGDISTANCE+"," +
+                            TeamScouting2014.TAG+"."+TeamScouting2014.PASSGROUND+"," +
+                            TeamScouting2014.TAG+"."+TeamScouting2014.PASSAIR+"," +
+                            TeamScouting2014.TAG+"."+TeamScouting2014.PASSTRUSS+"," +
+                            TeamScouting2014.TAG+"."+TeamScouting2014.PICKUPGROUND+"," +
+                            TeamScouting2014.TAG+"."+TeamScouting2014.PICKUPCATCH+"," +
+                            TeamScouting2014.TAG+"."+TeamScouting2014.PUSHER+"," +
+							TeamScouting2014.TAG+"."+TeamScouting2014.BLOCKER+"," +
+                            TeamScouting2014.TAG+"."+TeamScouting2014.HUMANPLAYER+"," +
+                            TeamScouting2014.TAG+"."+TeamScouting2014.AUTOMODE+"," +
 							Season.TAG+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
 							Season.TAG+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
 							Season.TAG+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
@@ -301,18 +307,18 @@ public class Database extends SQLiteOpenHelper {
 							Team.TAG+"."+Team.NUMBER+" AS "+Team.VIEW_NUMBER+"," +
 							Team.TAG+"."+Team.NAME+" AS "+Team.VIEW_NAME +
 							" FROM " +
-							TeamScouting2013.TABLE+" "+TeamScouting2013.TAG+"," +
+							TeamScouting2014.TABLE+" "+TeamScouting2014.TAG+"," +
 							Season.TABLE+" "+Season.TAG+"," +
 							Team.TABLE+" "+Team.TAG+
 							" WHERE " +
-							TeamScouting2013.SEASON+"="+Season.VIEW_ID+
+							TeamScouting2014.SEASON+"="+Season.VIEW_ID+
 							" AND "+
-							TeamScouting2013.TEAM+"="+Team.VIEW_ID+
+							TeamScouting2014.TEAM+"="+Team.VIEW_ID+
 							";";
 					Log.i(TAG,schema);
 					db.execSQL(schema);
 					
-					schema = "CREATE TABLE "+Match2013.TABLE+" ( "+
+					schema = "CREATE TABLE "+Match2014.TABLE+" ( "+
 							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
 							MODIFIED+" DATE NOT NULL," +
 							Match.COMPETITION+" INTEGER NOT NULL"+foreignCompetition+"," +
@@ -333,23 +339,23 @@ public class Database extends SQLiteOpenHelper {
 					Log.i(TAG,schema);
 					db.execSQL(schema);
 					
-					schema = "CREATE VIEW "+Match2013.VIEW+" AS " +
+					schema = "CREATE VIEW "+Match2014.VIEW+" AS " +
 							"SELECT "+
-							Match2013.TAG+"."+BaseColumns._ID+"," +
-							Match2013.TAG+"."+Database.MODIFIED+"," +
-							Match2013.TAG+"."+Match.COMPETITION+"," +
-							Match2013.TAG+"."+Match.NUMBER+"," +
-							Match2013.TAG+"."+Match.RED1+"," +
-							Match2013.TAG+"."+Match.RED2+"," +
-							Match2013.TAG+"."+Match.RED3+"," +
-							Match2013.TAG+"."+Match.BLUE1+"," +
-							Match2013.TAG+"."+Match.BLUE2+"," +
-							Match2013.TAG+"."+Match.BLUE3+"," +
-							Match2013.TAG+"."+Match.REDSCORE+"," +
-							Match2013.TAG+"."+Match.BLUESCORE+"," +
-							Match2013.TAG+"."+Match.TYPE+"," +
-							Match2013.TAG+"."+Match.SET+"," +
-							Match2013.TAG+"."+Match.OF+"," +
+							Match2014.TAG+"."+BaseColumns._ID+"," +
+							Match2014.TAG+"."+Database.MODIFIED+"," +
+							Match2014.TAG+"."+Match.COMPETITION+"," +
+							Match2014.TAG+"."+Match.NUMBER+"," +
+							Match2014.TAG+"."+Match.RED1+"," +
+							Match2014.TAG+"."+Match.RED2+"," +
+							Match2014.TAG+"."+Match.RED3+"," +
+							Match2014.TAG+"."+Match.BLUE1+"," +
+							Match2014.TAG+"."+Match.BLUE2+"," +
+							Match2014.TAG+"."+Match.BLUE3+"," +
+							Match2014.TAG+"."+Match.REDSCORE+"," +
+							Match2014.TAG+"."+Match.BLUESCORE+"," +
+							Match2014.TAG+"."+Match.TYPE+"," +
+							Match2014.TAG+"."+Match.SET+"," +
+							Match2014.TAG+"."+Match.OF+"," +
 							Competition.TAG+"."+BaseColumns._ID+" AS "+Competition.VIEW_ID+"," +
 							Competition.TAG+"."+Database.MODIFIED+" AS "+Competition.VIEW_MODIFIED+"," +
 							Competition.TAG+"."+Competition.SEASON+" AS "+Competition.VIEW_SEASON+"," +
@@ -384,7 +390,7 @@ public class Database extends SQLiteOpenHelper {
 							Match.BLUE3+Team.TAG+"."+Team.NUMBER+" AS "+Match.BLUE3+Team.VIEW_NUMBER+"," +
 							Match.BLUE3+Team.TAG+"."+Team.NAME+" AS "+Match.BLUE3+Team.VIEW_NAME +
 							" FROM " +
-							Match2013.TABLE+" "+Match2013.TAG+"," +
+							Match2014.TABLE+" "+Match2014.TAG+"," +
 							Competition.TABLE+" "+Competition.TAG+"," +
 							Season.TABLE+" "+Season.TAG+"," +
 							Team.TABLE+" "+Match.RED1+Team.TAG+"," +
@@ -413,257 +419,9 @@ public class Database extends SQLiteOpenHelper {
 					Log.i(TAG,schema);
 					db.execSQL(schema);
 					
-					Log.i(TAG,"At version 1");
-				case 2:
-					Log.i(TAG,"Upgrade to version 2");
-					
-					schema = "DROP VIEW "+TeamScouting2013.VIEW+";";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-
-					schema = "ALTER TABLE "+TeamScouting2013.TABLE+" ADD COLUMN "+TeamScouting2013.AUTOAVGSCORE+" INTEGER;";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-					
-					schema = "CREATE VIEW "+TeamScouting2013.VIEW+" AS " +
-							"SELECT "+
-							TeamScouting2013.TAG+"."+BaseColumns._ID+"," +
-							TeamScouting2013.TAG+"."+Database.MODIFIED+"," +
-							TeamScouting2013.TAG+"."+TeamScouting.SEASON+"," +
-							TeamScouting2013.TAG+"."+TeamScouting.TEAM+"," +
-							TeamScouting2013.TAG+"."+TeamScouting.NOTES+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.ORIENTATION+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.DRIVETRAIN+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HUMANPLAYER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.WIDTH+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.LENGTH+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HEIGHTSHOOTER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HEIGHTMAX+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.MAXCLIMB+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.CLIMBTIME+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.SHOOTERTYPE+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.CONTINUOUSSHOOTING+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.LOWGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.MIDGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HIGHGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.PYRAMIDGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.AUTOMODE+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.SLOT+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.GROUND+"," +
-							TeamScouting2013.TAG+".autoPickup," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.RELOADSPEED+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.SAFESHOOTER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.LOADERSHOOTER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.BLOCKER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.AUTOAVGSCORE+"," +
-							Season.TAG+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
-							Season.TAG+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
-							Season.TAG+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
-							Season.TAG+"."+Season.TITLE+" AS "+Season.VIEW_TITLE+"," +
-							Team.TAG+"."+BaseColumns._ID+" AS "+Team.VIEW_ID+"," +
-							Team.TAG+"."+Database.MODIFIED+" AS "+Team.VIEW_MODIFIED+"," +
-							Team.TAG+"."+Team.NUMBER+" AS "+Team.VIEW_NUMBER+"," +
-							Team.TAG+"."+Team.NAME+" AS "+Team.VIEW_NAME +
-							" FROM " +
-							TeamScouting2013.TABLE+" "+TeamScouting2013.TAG+"," +
-							Season.TABLE+" "+Season.TAG+"," +
-							Team.TABLE+" "+Team.TAG+
-							" WHERE " +
-							TeamScouting2013.SEASON+"="+Season.VIEW_ID+
-							" AND "+
-							TeamScouting2013.TEAM+"="+Team.VIEW_ID+
-							";";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-					
-					Log.i(TAG,"At version 2");
-				case 3:
-					Log.i(TAG,"Upgrade to version 3");
-					
-					schema = "DROP VIEW "+TeamScouting2013.VIEW+";";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-
-					schema = "CREATE TABLE "+TeamScouting2013.TABLE+"temp ( "+
-							BaseColumns._ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
-							MODIFIED+" DATE NOT NULL," +
-							TeamScouting.SEASON+" INTEGER NOT NULL"+foreignSeason+"," +
-							TeamScouting.TEAM+" INTEGER NOT NULL"+foreignTeam+"," +
-							TeamScouting.NOTES+" TEXT," +
-							TeamScouting2013.ORIENTATION+" TEXT," +
-							TeamScouting2013.DRIVETRAIN+" TEXT," +
-							TeamScouting2013.HUMANPLAYER+" REAL," +
-							TeamScouting2013.WIDTH+" REAL," +
-							TeamScouting2013.LENGTH+" REAL," +
-							TeamScouting2013.HEIGHTSHOOTER+" REAL," +
-							TeamScouting2013.HEIGHTMAX+" REAL," +
-							TeamScouting2013.MAXCLIMB+" INTEGER," +
-							TeamScouting2013.CLIMBTIME+" REAL," +
-							TeamScouting2013.SHOOTERTYPE+" INTEGER," +
-							TeamScouting2013.CONTINUOUSSHOOTING+" INTEGER," +
-							TeamScouting2013.LOWGOAL+" INTEGER," +
-							TeamScouting2013.MIDGOAL+" INTEGER," +
-							TeamScouting2013.HIGHGOAL+" INTEGER," +
-							TeamScouting2013.PYRAMIDGOAL+" INTEGER," +
-							TeamScouting2013.AUTOMODE+" INTEGER," +
-							TeamScouting2013.SLOT+" INTEGER," +
-							TeamScouting2013.GROUND+" INTEGER," +
-							TeamScouting2013.AUTOPICKUPPYRAMID+" INTEGER," +
-							TeamScouting2013.AUTOPICKUPCENTER+" INTEGER," +
-							TeamScouting2013.RELOADSPEED+" REAL," +
-							TeamScouting2013.SAFESHOOTER+" INTEGER," +
-							TeamScouting2013.LOADERSHOOTER+" INTEGER," +
-							TeamScouting2013.BLOCKER+" INTEGER," +
-							TeamScouting2013.AUTOAVGSCORE+" INTEGER," +
-							" UNIQUE ("+TeamScouting2013.SEASON+","+TeamScouting2013.TEAM+") ON CONFLICT IGNORE"+
-							" );";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-					
-					schema = "INSERT INTO "+TeamScouting2013.TABLE+"temp SELECT " +
-							BaseColumns._ID+"," +
-							MODIFIED+"," +
-							TeamScouting.SEASON+"," +
-							TeamScouting.TEAM+"," +
-							TeamScouting.NOTES+"," +
-							TeamScouting2013.ORIENTATION+"," +
-							TeamScouting2013.DRIVETRAIN+"," +
-							TeamScouting2013.HUMANPLAYER+"," +
-							TeamScouting2013.WIDTH+"," +
-							TeamScouting2013.LENGTH+"," +
-							TeamScouting2013.HEIGHTSHOOTER+"," +
-							TeamScouting2013.HEIGHTMAX+"," +
-							TeamScouting2013.MAXCLIMB+"," +
-							TeamScouting2013.CLIMBTIME+"," +
-							TeamScouting2013.SHOOTERTYPE+"," +
-							TeamScouting2013.CONTINUOUSSHOOTING+"," +
-							TeamScouting2013.LOWGOAL+"," +
-							TeamScouting2013.MIDGOAL+"," +
-							TeamScouting2013.HIGHGOAL+"," +
-							TeamScouting2013.PYRAMIDGOAL+"," +
-							TeamScouting2013.AUTOMODE+"," +
-							TeamScouting2013.SLOT+"," +
-							TeamScouting2013.GROUND+"," +
-							"0," +
-							"0," +
-							TeamScouting2013.RELOADSPEED+"," +
-							TeamScouting2013.SAFESHOOTER+"," +
-							TeamScouting2013.LOADERSHOOTER+"," +
-							TeamScouting2013.BLOCKER+"," +
-							TeamScouting2013.AUTOAVGSCORE +
-							" FROM "+TeamScouting2013.TABLE+";";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-					
-					schema = "DROP TABLE "+TeamScouting2013.TABLE+";";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-					
-					schema = "ALTER TABLE "+TeamScouting2013.TABLE+"temp RENAME TO "+TeamScouting2013.TABLE+";";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-					
-					schema = "CREATE VIEW "+TeamScouting2013.VIEW+" AS " +
-							"SELECT "+
-							TeamScouting2013.TAG+"."+BaseColumns._ID+"," +
-							TeamScouting2013.TAG+"."+Database.MODIFIED+"," +
-							TeamScouting2013.TAG+"."+TeamScouting.SEASON+"," +
-							TeamScouting2013.TAG+"."+TeamScouting.TEAM+"," +
-							TeamScouting2013.TAG+"."+TeamScouting.NOTES+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.ORIENTATION+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.DRIVETRAIN+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HUMANPLAYER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.WIDTH+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.LENGTH+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HEIGHTSHOOTER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HEIGHTMAX+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.MAXCLIMB+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.CLIMBTIME+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.SHOOTERTYPE+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.CONTINUOUSSHOOTING+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.LOWGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.MIDGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.HIGHGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.PYRAMIDGOAL+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.AUTOMODE+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.SLOT+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.GROUND+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.AUTOPICKUPPYRAMID+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.AUTOPICKUPCENTER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.RELOADSPEED+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.SAFESHOOTER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.LOADERSHOOTER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.BLOCKER+"," +
-							TeamScouting2013.TAG+"."+TeamScouting2013.AUTOAVGSCORE+"," +
-							Season.TAG+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
-							Season.TAG+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
-							Season.TAG+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
-							Season.TAG+"."+Season.TITLE+" AS "+Season.VIEW_TITLE+"," +
-							Team.TAG+"."+BaseColumns._ID+" AS "+Team.VIEW_ID+"," +
-							Team.TAG+"."+Database.MODIFIED+" AS "+Team.VIEW_MODIFIED+"," +
-							Team.TAG+"."+Team.NUMBER+" AS "+Team.VIEW_NUMBER+"," +
-							Team.TAG+"."+Team.NAME+" AS "+Team.VIEW_NAME +
-							" FROM " +
-							TeamScouting2013.TABLE+" "+TeamScouting2013.TAG+"," +
-							Season.TABLE+" "+Season.TAG+"," +
-							Team.TABLE+" "+Team.TAG+
-							" WHERE " +
-							TeamScouting2013.SEASON+"="+Season.VIEW_ID+
-							" AND "+
-							TeamScouting2013.TEAM+"="+Team.VIEW_ID+
-							";";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-					
-					schema = "DROP VIEW "+CompetitionTeam.VIEW+";";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-
-					schema = "ALTER TABLE "+CompetitionTeam.TABLE+" ADD COLUMN "+CompetitionTeam.SCOUTED+" INTEGER;";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-					
-					schema = "CREATE VIEW "+CompetitionTeam.VIEW+" AS " +
-							"SELECT "+
-							CompetitionTeam.TAG+"."+BaseColumns._ID+"," +
-							CompetitionTeam.TAG+"."+Database.MODIFIED+"," +
-							CompetitionTeam.TAG+"."+CompetitionTeam.COMPETITION+"," +
-							CompetitionTeam.TAG+"."+CompetitionTeam.TEAM+"," +
-							CompetitionTeam.TAG+"."+CompetitionTeam.RANK+"," +
-							CompetitionTeam.TAG+"."+CompetitionTeam.SCOUTED+"," +
-							Competition.TAG+"."+BaseColumns._ID+" AS "+Competition.VIEW_ID+"," +
-							Competition.TAG+"."+Database.MODIFIED+" AS "+Competition.VIEW_MODIFIED+"," +
-							Competition.TAG+"."+Competition.SEASON+" AS "+Competition.VIEW_SEASON+"," +
-							Competition.TAG+"."+Competition.NAME+" AS "+Competition.VIEW_NAME+"," +
-							Competition.TAG+"."+Competition.CODE+" AS "+Competition.VIEW_CODE+"," +
-							Season.TAG+"."+BaseColumns._ID+" AS "+Season.VIEW_ID+"," +
-							Season.TAG+"."+Database.MODIFIED+" AS "+Season.VIEW_MODIFIED+"," +
-							Season.TAG+"."+Season.YEAR+" AS "+Season.VIEW_YEAR+"," +
-							Season.TAG+"."+Season.TITLE+" AS "+Season.VIEW_TITLE+"," +
-							Team.TAG+"."+BaseColumns._ID+" AS "+Team.VIEW_ID+"," +
-							Team.TAG+"."+Database.MODIFIED+" AS "+Team.VIEW_MODIFIED+"," +
-							Team.TAG+"."+Team.NUMBER+" AS "+Team.VIEW_NUMBER+"," +
-							Team.TAG+"."+Team.NAME+" AS "+Team.VIEW_NAME +
-							" FROM " +
-							CompetitionTeam.TABLE+" "+CompetitionTeam.TAG+"," +
-							Competition.TABLE+" "+Competition.TAG+"," +
-							Season.TABLE+" "+Season.TAG+"," +
-							Team.TABLE+" "+Team.TAG+
-							" WHERE " +
-							CompetitionTeam.COMPETITION+"="+Competition.VIEW_ID+
-							" AND "+
-							Competition.VIEW_SEASON+"="+Season.VIEW_ID+
-							" AND "+
-							CompetitionTeam.TEAM+"="+Team.VIEW_ID+
-							";";
-					Log.i(TAG,schema);
-					db.execSQL(schema);
-					
-					Log.i(TAG,"At version 3");
+					Log.i(TAG,"At version 5");
 				default:
 			}
-		} else {
-			Log.e(TAG,"Read only database!");
 		}
 	}
 }

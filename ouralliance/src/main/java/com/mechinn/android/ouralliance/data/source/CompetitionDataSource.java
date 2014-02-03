@@ -65,11 +65,11 @@ public class CompetitionDataSource extends AOurAllianceDataSource<Competition> {
 	}
 	
 	public CursorLoader get(String code) {
-		return get(Competition.CODE, code);
+		return get(Competition.CODE, code, null);
 	}
 	
 	public Cursor query(String code) {
-		return query(Competition.CODE, code);
+		return query(Competition.CODE, code, null);
 	}
 	
 	public CursorLoader getAllCompetitions(Season season) {

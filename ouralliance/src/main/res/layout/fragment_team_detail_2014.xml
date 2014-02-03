@@ -15,7 +15,7 @@
 			     android:textAppearance="?android:attr/textAppearanceMedium" />
 
 			<AutoCompleteTextView
-			    android:id="@+id/orientation"
+			    android:id="@+id/team2014orientation"
 			    android:layout_width="0dip"
 			    android:layout_height="wrap_content"
 			    android:layout_weight="1"
@@ -34,7 +34,7 @@
 			     android:textAppearance="?android:attr/textAppearanceMedium" />
 
 			<AutoCompleteTextView
-			    android:id="@+id/driveTrain"
+			    android:id="@+id/team2014driveTrain"
 			    android:layout_width="0dip"
 			    android:layout_height="wrap_content"
 			    android:layout_weight="1"
@@ -53,7 +53,7 @@
 			     android:textAppearance="?android:attr/textAppearanceMedium" />
 
 			<EditText
-			    android:id="@+id/width"
+			    android:id="@+id/team2014width"
 			    android:layout_width="0dip"
 			    android:layout_height="wrap_content"
 			    android:layout_weight="1"
@@ -61,7 +61,7 @@
 			    android:inputType="number|numberDecimal" />
 
 			<TextView
-			    android:id="@+id/widthUnit"
+			    android:id="@+id/team2014widthUnit"
 			     android:layout_width="wrap_content"
 			     android:layout_height="wrap_content"
 			     android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -73,7 +73,7 @@
 			     android:textAppearance="?android:attr/textAppearanceMedium" />
 
 			<EditText
-			    android:id="@+id/length"
+			    android:id="@+id/team2014length"
 			    android:layout_width="0dip"
 			    android:layout_height="wrap_content"
 			    android:layout_weight="1"
@@ -81,7 +81,7 @@
 			    android:inputType="number|numberDecimal" />
 
 			<TextView
-			    android:id="@+id/lengthUnit"
+			    android:id="@+id/team2014lengthUnit"
 			     android:layout_width="wrap_content"
 			     android:layout_height="wrap_content"
 			     android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -110,7 +110,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <EditText
-                    android:id="@+id/heightShooter"
+                    android:id="@+id/team2014heightShooter"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -118,7 +118,7 @@
                     android:inputType="number|numberDecimal" />
 
                 <TextView
-                    android:id="@+id/shooterHeightUnit"
+                    android:id="@+id/team2014heightShooterUnit"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -130,7 +130,7 @@
                      android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <EditText
-                    android:id="@+id/heightMax"
+                    android:id="@+id/team2014heightMax"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -138,7 +138,7 @@
                     android:inputType="number|numberDecimal" />
 
                 <TextView
-                    android:id="@+id/maxHeightUnit"
+                    android:id="@+id/team2014heightMaxUnit"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -163,10 +163,11 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <com.mechinn.android.ouralliance.widget.UncheckableRadioGroup
-            android:id="@+id/shooterTypes"
+            android:id="@+id/team2014shooterType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:focusableInTouchMode="false">
 
             <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
                 android:id="@+id/none"
@@ -189,7 +190,7 @@
     </LinearLayout>
 
     <LinearLayout
-            android:id="@+id/shootableGoals"
+            android:id="@+id/team2014shooterGroup"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
@@ -201,24 +202,30 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <CheckBox
-            android:id="@+id/lowGoal"
+            android:id="@+id/team2014lowGoal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Low" />
 
         <CheckBox
-            android:id="@+id/highGoal"
+            android:id="@+id/team2014highGoal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="High" />
 
+        <CheckBox
+            android:id="@+id/team2014hotGoal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hot" />
+
     </LinearLayout>
 
     <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:orientation="horizontal"
+        android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+        android:id="@+id/team2014shootingDistanceGroup">
 
         <TextView
                 android:layout_width="wrap_content"
@@ -231,16 +238,20 @@
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:ems="10"
-                android:id="@+id/editText"
+                android:id="@+id/team2014shootingDistance"
                 />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/team2014shootingDistanceUnit" />
 
     </LinearLayout>
 
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/linearLayout">
+            android:layout_height="wrap_content">
 
         <TextView
                 android:layout_width="wrap_content"
@@ -249,19 +260,19 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <CheckBox
-                android:id="@+id/groundPass"
+                android:id="@+id/team2014passGround"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ground"/>
 
         <CheckBox
-                android:id="@+id/airPass"
+                android:id="@+id/team2014passAir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Air"/>
 
         <CheckBox
-                android:id="@+id/overTruss"
+                android:id="@+id/team2014passTruss"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Over Truss"/>
@@ -279,13 +290,13 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <CheckBox
-            android:id="@+id/pickupGround"
+            android:id="@+id/team2014pickupGround"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ground" />
 
         <CheckBox
-                android:id="@+id/pickupCatch"
+                android:id="@+id/team2014pickupCatch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Catch" />
@@ -304,19 +315,37 @@
 			android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <CheckBox
-                android:id="@+id/defensive"
+                android:id="@+id/team2014pusher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pushing"
                 android:checked="false"/>
 
         <CheckBox
-                android:id="@+id/blocker"
+                android:id="@+id/team2014blocker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Blocker"
                 android:checked="false"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Human Player"
+            android:layout_gravity="center_vertical" />
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/team2014humanPlayer" />
     </LinearLayout>
 
     <View
@@ -336,33 +365,33 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <com.mechinn.android.ouralliance.widget.UncheckableRadioGroup
-		    android:id="@+id/autoMode"
+		    android:id="@+id/team2014autoMode"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:orientation="horizontal" >
 
             <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
-                android:id="@+id/noAuto"
+                android:id="@+id/team2014noAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No" />
             <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
-                android:id="@+id/driveAuto"
+                android:id="@+id/team2014driveAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Drive" />
             <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
-                android:id="@+id/lowAuto"
+                android:id="@+id/team2014lowAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Low" />
             <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
-                android:id="@+id/highAuto"
+                android:id="@+id/team2014highAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="High" />
             <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
-                android:id="@+id/hotAuto"
+                android:id="@+id/team2014hotAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hot" />

@@ -10,12 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mechinn.android.ouralliance.data.frc2013.Match2013;
-import com.mechinn.android.ouralliance.data.source.frc2013.Match2013DataSource;
+import com.mechinn.android.ouralliance.data.frc2014.Match2014;
+import com.mechinn.android.ouralliance.data.source.frc2014.Match2014DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mechinn.android.ouralliance.view.MatchDetailFragment;
 
-public class MatchDetail2014 extends MatchDetailFragment<Match2013, Match2013DataSource> {
+public class MatchDetail2014 extends MatchDetailFragment<Match2014, Match2014DataSource> {
 	public final static String TAG = MatchDetail2014.class.getSimpleName();
 
 	@Override
@@ -41,13 +41,13 @@ public class MatchDetail2014 extends MatchDetailFragment<Match2013, Match2013Dat
 	}
 	
 	@Override
-	public Match2013 setMatchFromCursor(Cursor cursor) throws OurAllianceException, SQLException {
-		return Match2013DataSource.getSingle(cursor);
+	public Match2014 setMatchFromCursor(Cursor cursor) throws OurAllianceException, SQLException {
+		return Match2014DataSource.getSingle(cursor);
 	}
 
 	@Override
-	public Match2013DataSource createDataSouce() {
-		return new Match2013DataSource(this.getActivity());
+	public Match2014DataSource createDataSouce() {
+		return new Match2014DataSource(this.getActivity());
 	}
 
 	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {

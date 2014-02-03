@@ -9,15 +9,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.frc2013.Match2013;
-import com.mechinn.android.ouralliance.data.source.frc2013.Match2013DataSource;
+import com.mechinn.android.ouralliance.data.frc2014.Match2014;
+import com.mechinn.android.ouralliance.data.source.frc2014.Match2014DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
 import com.mechinn.android.ouralliance.view.MatchListFragment;
 
-public class MatchList2014 extends MatchListFragment<Match2013, Match2013DataSource> {
+public class MatchList2014 extends MatchListFragment<Match2014, Match2014DataSource> {
 	@Override
-	public Match2013DataSource createDataSouce() {
-		return new Match2013DataSource(this.getActivity());
+	public Match2014DataSource createDataSouce() {
+		return new Match2014DataSource(this.getActivity());
 	}
 	
 	public void insertMatch(Match match) {
