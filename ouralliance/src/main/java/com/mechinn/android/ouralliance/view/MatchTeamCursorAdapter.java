@@ -7,6 +7,7 @@ import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.Team;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ public class MatchTeamCursorAdapter extends BaseAdapter {
 		teams.add(match.getBlue1());
 		teams.add(match.getBlue2());
 		teams.add(match.getBlue3());
+        this.notifyDataSetChanged();
 	}
 	
 	public void swapMatch(Match match) {

@@ -22,6 +22,8 @@
     <uses-feature
             android:name="android.hardware.camera.flash" android:required="false" />
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -55,6 +57,7 @@
                 android:logo="@drawable/ic_launcher"
                 android:multiprocess="true" >
         </provider>
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="b0d52c1a1854fa2c1171de35d312d751fb817acd"/>
     </application>
 
 </manifest>

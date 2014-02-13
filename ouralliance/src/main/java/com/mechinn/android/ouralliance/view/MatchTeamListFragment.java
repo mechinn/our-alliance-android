@@ -15,10 +15,14 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 
 public class MatchTeamListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 	public static final String TAG = MatchTeamListFragment.class.getSimpleName();
@@ -32,7 +36,7 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
 	private long matchId;
 
 	public interface Listener {
-        public void onTeamSelected(long team);
+        public void onMatchTeamSelected(long match, long team);
     }
 
     @Override
@@ -55,13 +59,14 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
 		prefs = new Prefs(this.getActivity());
 		match2014Data = new Match2014DataSource(this.getActivity());
 		adapter = new MatchTeamCursorAdapter(getActivity(), null);
-		this.setListAdapter(adapter);
 		matchId = this.getArguments().getLong(MATCH_ARG);
+        Log.d(TAG, "match: "+matchId);
     }
     
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState);
+        this.setListAdapter(adapter);
     	setRetainInstance(true);
 		registerForContextMenu(getListView());
 		getListView().setOnItemClickListener(new OnItemClickListener() {
@@ -102,7 +107,7 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        mCallback.onTeamSelected(((Team) adapter.getItem(position)).getId());
+        mCallback.onMatchTeamSelected(matchId, ((Team) adapter.getItem(position)).getId());
         
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);
@@ -135,12 +140,14 @@ public class MatchTeamListFragment extends ListFragment implements LoaderCallbac
 				Match match = null;
 				try {
 					switch(prefs.getYear()) {
-						case 2013:
+						case 2014:
 							match = Match2014DataSource.getSingle(data);
 					}
 					if(null!=match) {
 						adapter.swapMatch(match);
-					}
+					} else {
+                        Log.wtf(TAG, "match is null");
+                    }
 				} catch (OurAllianceException e) {
 					e.printStackTrace();
 				} catch (SQLException e) {

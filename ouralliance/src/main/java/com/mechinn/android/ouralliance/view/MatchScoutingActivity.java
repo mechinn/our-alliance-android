@@ -18,38 +18,42 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MatchScoutingActivity extends Activity implements OnBackStackChangedListener, MatchListFragment.Listener, InsertMatchDialogFragment.Listener, DeleteMatchDialogFragment.Listener, OnSharedPreferenceChangeListener {
+public class MatchScoutingActivity extends Activity implements OnBackStackChangedListener, MatchListFragment.Listener, InsertMatchDialogFragment.Listener, DeleteMatchDialogFragment.Listener, MatchTeamListFragment.Listener, OnSharedPreferenceChangeListener {
 	public static final String TAG = MatchScoutingActivity.class.getSimpleName();
 	private Prefs prefs;
 	private MatchListFragment<?, ?> matchListFrag;
+    private MatchTeamListFragment matchTeamListFrag;
 	private MatchDetailFragment<?, ?> matchDetailFragment;
-	private int listFrag;
+	private int matchFrag;
+    private int teamFrag;
 	private int detailFrag;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_team_scouting);
+		setContentView(R.layout.activity_match_scouting);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		this.getFragmentManager().addOnBackStackChangedListener(this);
 		prefs = new Prefs(this);
         // Add the fragment to the 'fragment_container' FrameLayout
         if (this.findViewById(R.id.fragment_container) != null) {
-        	listFrag = R.id.fragment_container;
+            matchFrag = R.id.fragment_container;
+            teamFrag = R.id.fragment_container;
     		detailFrag = R.id.fragment_container;
 		} else {
-        	listFrag = R.id.list_fragment;
+        	matchFrag = R.id.list_fragment;
+            teamFrag = R.id.team_fragment;
 			detailFrag = R.id.detail_fragment;
 		}
         if(savedInstanceState == null) {
             // Create an instance of ExampleFragment
     		switch(prefs.getYear()) {
-    			case 2013:
+    			case 2014:
     				matchListFrag = new MatchList2014();
     				break;
     			default:
     				throw new ClassCastException("Must give year!");
     		}
-            getFragmentManager().beginTransaction().replace(listFrag, matchListFrag).commitAllowingStateLoss();
+            getFragmentManager().beginTransaction().replace(matchFrag, matchListFrag).commitAllowingStateLoss();
         }
 	}
 	
@@ -93,27 +97,42 @@ public class MatchScoutingActivity extends Activity implements OnBackStackChange
 //			teamDetailFragment.commitUpdatedScouting();
 //		}
 		Log.d(TAG, "match: "+match);
-		// The user selected the headline of an article from the HeadlinesFragment
 
-        Bundle args = new Bundle();
-        args.putLong(MatchDetailFragment.MATCH_ARG, match);
+        Bundle bundle = new Bundle();
+        bundle.putLong(MatchTeamListFragment.MATCH_ARG, match);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		switch(prefs.getYear()) {
-			case 2014:
-				matchDetailFragment = new MatchDetail2014();
-	            break;
-	        default:
-	        	Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();
-	            transaction.commit();
-	            return;
-		}
-		matchDetailFragment.setArguments(args);
-        transaction.replace(detailFrag, matchDetailFragment);
-        if(listFrag==detailFrag) {
+        matchTeamListFrag = new MatchTeamListFragment();
+        matchTeamListFrag.setArguments(bundle);
+        transaction.replace(teamFrag, matchTeamListFrag);
+        if(matchFrag==teamFrag) {
             transaction.addToBackStack(null);
         }
         transaction.commit();
 	}
+
+    public void onMatchTeamSelected(long match, long team) {
+        Log.d(TAG, "match: "+match);
+        Log.d(TAG, "team: "+team);
+        Bundle args = new Bundle();
+        args.putLong(MatchDetailFragment.MATCH_ARG, match);
+        args.putLong(MatchDetailFragment.TEAM_ARG, team);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        switch(prefs.getYear()) {
+            case 2014:
+                matchDetailFragment = new MatchDetail2014();
+                break;
+            default:
+                Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();
+                transaction.commit();
+                return;
+        }
+        matchDetailFragment.setArguments(args);
+        transaction.replace(detailFrag, matchDetailFragment);
+        if(teamFrag==detailFrag) {
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
+    }
 
 	public void onBackStackChanged() {
 		Log.i(TAG, "back stack changed ");

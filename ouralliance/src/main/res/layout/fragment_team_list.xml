@@ -16,16 +16,3 @@
     dslv:drag_start_mode="onDown"
     dslv:drag_handle_id="@id/drag_handle" />
 
-<!-- <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/team_list_item"
-    style="?android:attr/textAppearanceLarge"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:drawableLeft="@drawable/drag"
-    android:drawablePadding="10dp"
-    android:gravity="center_vertical"
-    android:paddingBottom="16dp"
-    android:paddingTop="16dp"
-    tools:context=".view.TeamDetailFragment" /> -->
-

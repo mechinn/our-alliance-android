@@ -27,21 +27,22 @@ import android.widget.TextView;
 public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianceDataSource<A>> extends Fragment implements LoaderCallbacks<Cursor> {
 	public static final String TAG = MatchDetailFragment.class.getSimpleName();
 	public static final String MATCH_ARG = "match";
+    public static final String TEAM_ARG = "team";
 	
 	public static final int LOADER_MATCH = 0;
     
     private long matchId;
 
 	private View rootView;
-	private Button red1;
-	private Button red2;
-	private Button red3;
-	private Button blue1;
-	private Button blue2;
-	private Button blue3;
-	private TextView redScore;
-	private TextView blueScore;
-	private LinearLayout scouting;
+//	private Button red1;
+//	private Button red2;
+//	private Button red3;
+//	private Button blue1;
+//	private Button blue2;
+//	private Button blue3;
+//	private TextView redScore;
+//	private TextView blueScore;
+	private LinearLayout season;
 	private Cursor currentView;
 
 	private A match;
@@ -56,24 +57,24 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
 	public void setMatchId(long matchId) {
 		this.matchId = matchId;
 	}
-	public TextView getRedScore() {
-		return redScore;
-	}
-	public void setRedScore(TextView redScore) {
-		this.redScore = redScore;
-	}
-	public TextView getBlueScore() {
-		return blueScore;
-	}
-	public void setBlueScore(TextView blueScore) {
-		this.blueScore = blueScore;
-	}
-	public LinearLayout getScouting() {
-		return scouting;
-	}
-	public void setScouting(LinearLayout scouting) {
-		this.scouting = scouting;
-	}
+//	public TextView getRedScore() {
+//		return redScore;
+//	}
+//	public void setRedScore(TextView redScore) {
+//		this.redScore = redScore;
+//	}
+//	public TextView getBlueScore() {
+//		return blueScore;
+//	}
+//	public void setBlueScore(TextView blueScore) {
+//		this.blueScore = blueScore;
+//	}
+public LinearLayout getSeason() {
+    return season;
+}
+    public void setSeason(LinearLayout season) {
+        this.season = season;
+    }
 	public A getMatch() {
 		return match;
 	}
@@ -123,29 +124,16 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
 	        	Intent intent = new Intent(MatchDetailFragment.this.getActivity(), TeamScoutingActivity.class);
 	        	Bundle args = new Bundle();
 	        	args.putString(TeamScoutingActivity.MATCHNAME_ARG, match.toString());
-	        	args.putLong(TeamScoutingActivity.TEAM_ARG,team.getId());
 	        	args.putLong(TeamScoutingActivity.MATCH_ARG,match.getId());
+                args.putLong(TeamScoutingActivity.TEAM_ARG,team.getId());
 	        	intent.putExtras(args);
 	            startActivity(intent);
+
 		    }
 		};
         
         rootView = inflater.inflate(R.layout.fragment_match_detail, container, false);
-		red1 = (Button) rootView.findViewById(R.id.red1);
-		red1.setOnClickListener(teamButton);
-		red2 = (Button) rootView.findViewById(R.id.red2);
-		red2.setOnClickListener(teamButton);
-		red3 = (Button) rootView.findViewById(R.id.red3);
-		red3.setOnClickListener(teamButton);
-		blue1 = (Button) rootView.findViewById(R.id.blue1);
-		blue1.setOnClickListener(teamButton);
-		blue2 = (Button) rootView.findViewById(R.id.blue2);
-		blue2.setOnClickListener(teamButton);
-		blue3 = (Button) rootView.findViewById(R.id.blue3);
-		blue3.setOnClickListener(teamButton);
-		redScore = (TextView) rootView.findViewById(R.id.redScore);
-		blueScore = (TextView) rootView.findViewById(R.id.blueScore);
-		scouting = (LinearLayout) rootView.findViewById(R.id.scouting);
+		season = (LinearLayout) rootView.findViewById(R.id.season);
 		return rootView;
     }
 
@@ -192,24 +180,24 @@ public abstract class MatchDetailFragment<A extends Match, B extends AOurAllianc
 	
 	public void setView() {
 		this.getActivity().setTitle(match.toString());
-		red1.setText(Integer.toString(match.getRed1().getNumber()));
-		red2.setText(Integer.toString(match.getRed2().getNumber()));
-		red3.setText(Integer.toString(match.getRed3().getNumber()));
-		blue1.setText(Integer.toString(match.getBlue1().getNumber()));
-		blue2.setText(Integer.toString(match.getBlue2().getNumber()));
-		blue3.setText(Integer.toString(match.getBlue3().getNumber()));
-		red1.setTag(match.getRed1());
-		red2.setTag(match.getRed2());
-		red3.setTag(match.getRed3());
-		blue1.setTag(match.getBlue1());
-		blue2.setTag(match.getBlue2());
-		blue3.setTag(match.getBlue3());
-		if(-1!=match.getRedScore()) {
-			redScore.setText(Integer.toString(match.getRedScore()));
-		}
-		if(-1!=match.getBlueScore()) {
-			blueScore.setText(Integer.toString(match.getBlueScore()));
-		}
+//		red1.setText(Integer.toString(match.getRed1().getNumber()));
+//		red2.setText(Integer.toString(match.getRed2().getNumber()));
+//		red3.setText(Integer.toString(match.getRed3().getNumber()));
+//		blue1.setText(Integer.toString(match.getBlue1().getNumber()));
+//		blue2.setText(Integer.toString(match.getBlue2().getNumber()));
+//		blue3.setText(Integer.toString(match.getBlue3().getNumber()));
+//		red1.setTag(match.getRed1());
+//		red2.setTag(match.getRed2());
+//		red3.setTag(match.getRed3());
+//		blue1.setTag(match.getBlue1());
+//		blue2.setTag(match.getBlue2());
+//		blue3.setTag(match.getBlue3());
+//		if(-1!=match.getRedScore()) {
+//			redScore.setText(Integer.toString(match.getRedScore()));
+//		}
+//		if(-1!=match.getBlueScore()) {
+//			blueScore.setText(Integer.toString(match.getBlueScore()));
+//		}
 	}
 	
 	public void updateScouting() {

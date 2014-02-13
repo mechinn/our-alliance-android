@@ -12,13 +12,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.view.frc2014.TeamDetail2014;
 
-public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener, MatchTeamListFragment.Listener {
+public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, InsertTeamDialogFragment.Listener, DeleteTeamDialogFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialog.Listener {
 	public static final String TAG = TeamScoutingActivity.class.getSimpleName();
 	public static final String TEAM_ARG = "team";
 	public static final String MATCH_ARG = "match";
@@ -35,6 +36,8 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Crashlytics.start(this);
+
 		new Setup(this, false).execute();
 		setContentView(R.layout.activity_team_scouting);
 		this.getFragmentManager().addOnBackStackChangedListener(this);

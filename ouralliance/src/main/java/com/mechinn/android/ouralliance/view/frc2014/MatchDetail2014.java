@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.frc2014.Match2014;
 import com.mechinn.android.ouralliance.data.source.frc2014.Match2014DataSource;
 import com.mechinn.android.ouralliance.error.OurAllianceException;
@@ -21,7 +22,8 @@ public class MatchDetail2014 extends MatchDetailFragment<Match2014, Match2014Dat
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
-		Log.wtf(TAG, "2013 match scouting not implemented yet");
+        View seasonView = inflater.inflate(R.layout.fragment_team_detail_2014, getSeason(), false);
+		Log.wtf(TAG, "2014 match scouting not implemented yet");
 		return rootView;
 	}
 	
