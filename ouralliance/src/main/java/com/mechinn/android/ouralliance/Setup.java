@@ -171,11 +171,4 @@ public class Setup extends BackgroundProgress {
 		setStatus("Finished");
 		return true;
 	}
-
-    @Override
-    protected void onPostExecute(Boolean result) {
-        if(result && reset) {
-            Utility.restartApp(this.activity);
-        }
-    }
 }
