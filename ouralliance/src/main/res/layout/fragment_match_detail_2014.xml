@@ -146,7 +146,7 @@
         <RatingBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/match2014drivetrain" />
+            android:id="@+id/match2014driveTrain" />
     </LinearLayout>
 
     <LinearLayout
@@ -163,7 +163,7 @@
         <RatingBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/match2014ballaccuracy" />
+            android:id="@+id/match2014ballAccuracy" />
     </LinearLayout>
 
     <LinearLayout
@@ -181,7 +181,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ground"
-            android:id="@+id/checkBox3" />
+            android:id="@+id/match2014ground" />
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -205,27 +205,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Low"
-            android:id="@+id/checkBox" />
+            android:id="@+id/match2014low" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="High"
-            android:id="@+id/checkBox2"
+            android:id="@+id/match2014high"
             android:singleLine="false" />
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Notes/Penalties:"
-        android:id="@+id/textView2" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/editText" />
 
 </LinearLayout>

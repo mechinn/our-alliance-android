@@ -1,6 +1,6 @@
 package com.mechinn.android.ouralliance;
 
-import com.mechinn.android.ouralliance.view.LoadingDialogFragment;
+import com.mechinn.android.ouralliance.fragment.LoadingDialogFragment;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -124,6 +124,11 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 		setProgressFlag(NORMAL);
         publishProgress(progressFlag, ++primary, progressTotal, version, status);
 	}
+
+    protected void setVersion(int version) {
+        this.version = version;
+        publishProgress(progressFlag, primary, progressTotal, version, status);
+    }
 	
 	protected void increaseVersion() {
         publishProgress(progressFlag, primary, progressTotal, (++version), status);

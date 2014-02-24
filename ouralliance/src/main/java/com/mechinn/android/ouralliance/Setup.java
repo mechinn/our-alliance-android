@@ -2,15 +2,11 @@ package com.mechinn.android.ouralliance;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.res.AssetManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -18,29 +14,20 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.GetTeams;
 import com.mechinn.android.ouralliance.data.JsonCompetition;
 import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.source.CompetitionDataSource;
-import com.mechinn.android.ouralliance.data.source.SeasonDataSource;
-import com.mechinn.android.ouralliance.data.source.TeamDataSource;
-import com.mechinn.android.ouralliance.error.OurAllianceException;
-import com.mechinn.android.ouralliance.provider.DataProvider;
+
+import se.emilsjolander.sprinkles.SqlStatement;
 
 public class Setup extends BackgroundProgress {
 	public static final String TAG = Setup.class.getSimpleName();
-	public static final int VERSION = 3;
+	public static final int VERSION = 16;
 	private ObjectMapper jsonMapper;
 	private AssetManager assets;
 	private Prefs prefs;
-	private TeamDataSource teamData;
-	private SeasonDataSource seasonData;
-	private CompetitionDataSource competitionData;
 	private String packageName;
 	private File dbPath;
-	private Map<String, String> comps;
-	private ContentResolver data;
+    private File sprinklesDbPath;
 	private boolean reset;
 	private Activity activity;
 	
@@ -48,15 +35,12 @@ public class Setup extends BackgroundProgress {
 		super(activity, FLAG_SETUP);
 		this.reset = reset;
 		this.activity = activity;
-		this.data = activity.getContentResolver();
 		assets = activity.getAssets();
 		jsonMapper = new ObjectMapper();
 		prefs = new Prefs(activity);
-		teamData = new TeamDataSource(activity);
-		seasonData = new SeasonDataSource(activity);
-		competitionData = new CompetitionDataSource(activity);
 		packageName = activity.getPackageName();
-		dbPath = activity.getDatabasePath("ourAlliance.sqlite");
+		dbPath = activity.getDatabasePath("ourAlliance.db");
+        sprinklesDbPath = activity.getDatabasePath("sprinkles.db");
 	}
 	
 	@Override
@@ -68,7 +52,7 @@ public class Setup extends BackgroundProgress {
 		} else {
 			setTitle("Setup data");
 		}
-		Log.d(TAG,"curent version: "+prefs.getVersion());
+		Log.d(TAG,"current version: "+prefs.getVersion());
 		Log.d(TAG,"new version: "+VERSION);
 		if(prefs.getVersion() < VERSION) {
 			super.onPreExecute();
@@ -85,19 +69,8 @@ public class Setup extends BackgroundProgress {
             //reset
 			case 0:
 				increaseVersion();
-				if(this.isCancelled()) {
-					return false;
-				}
-				setStatus("Resetting database");
-		        if(activity.deleteDatabase(dbPath.getAbsolutePath())) {
-					Log.d(TAG,"deleted db");
-				} else {
-					Log.d(TAG,"did not delete db");
-				}
-				if(this.isCancelled()) {
-					return false;
-				}
-		        data.call(Uri.parse(DataProvider.BASE_URI_STRING+TAG), DataProvider.RESET, null, null);
+                //drop all the rows
+                new SqlStatement("DELETE FROM season").execute();
                 prefs.setVersion(0);
 			case 1:
 				increaseVersion();
@@ -120,15 +93,42 @@ public class Setup extends BackgroundProgress {
 				}
                 prefs.setVersion(2);
             case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+                prefs.clear();
+                prefs.setVersion(15);
+                setVersion(15);
                 increaseVersion();
                 if(this.isCancelled()) {
                     return false;
                 }
+                setStatus("Resetting database");
+                if(activity.deleteDatabase(dbPath.getAbsolutePath())) {
+                    Log.d(TAG,"deleted db");
+                } else {
+                    Log.d(TAG,"did not delete db");
+                }
+                if(this.isCancelled()) {
+                    return false;
+                }
+
                 setStatus("Setting up 2014 competitions");
                 try {
                     Season s2014 = new Season(2014, "Arial Assist");
                     Log.d(TAG,s2014.toString());
-                    s2014 = seasonData.insert(s2014);
+                    s2014.save();
+//                    JsonCompetition[] getter = jsonMapper.readValue(assets.open("eventsDebug.json"),JsonCompetition[].class);
                     JsonCompetition[] getter = jsonMapper.readValue(assets.open("events2014.json"),JsonCompetition[].class);
                     Log.d(TAG, "competitions: "+getter.length);
                     this.setTotal(getter.length);
@@ -153,43 +153,9 @@ public class Setup extends BackgroundProgress {
                         }
                         Log.d(TAG, "name: "+competitionName);
                         Log.d(TAG, "key: "+competitionKey);
-                        try {
-                            competitionData.insert(new Competition(s2014,competitionName,competitionKey));
-                            this.increasePrimary();
-                            continue;
-                        } catch (OurAllianceException e) {
-                            //just go to the update part then
-                        } catch (SQLException e) {
-                            //just go to the update part then
-                        }
-                        Cursor cusor = competitionData.query(competitionKey);
-                        try {
-                            if(this.isCancelled()) {
-                                return false;
-                            }
-                            Competition fromDb = CompetitionDataSource.getSingle(cusor);
-                            //if something is different lets update the team
-                            if(!fromDb.getSeason().equals(s2014) || !fromDb.getName().equals(competitionName) || !fromDb.getCode().equals(competitionKey)) {
-                                fromDb.setSeason(s2014);
-                                fromDb.setName(competitionName);
-                                fromDb.setCode(competitionKey);
-                                competitionData.update(fromDb);
-                            }
-                        } catch (OurAllianceException e1) {
-                            e1.printStackTrace();
-                            return false;
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                            return false;
-                        }
+                        new Competition(s2014,competitionName,competitionKey).save();
                         this.increasePrimary();
                     }
-                } catch (OurAllianceException e) {
-                    e.printStackTrace();
-                    return false;
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    return false;
                 } catch (JsonMappingException e) {
                     e.printStackTrace();
                     return false;
@@ -200,9 +166,16 @@ public class Setup extends BackgroundProgress {
                     e.printStackTrace();
                     return false;
                 }
-                prefs.setVersion(3);
+                prefs.setVersion(16);
 		}
 		setStatus("Finished");
 		return true;
 	}
+
+    @Override
+    protected void onPostExecute(Boolean result) {
+        if(result && reset) {
+            Utility.restartApp(this.activity);
+        }
+    }
 }

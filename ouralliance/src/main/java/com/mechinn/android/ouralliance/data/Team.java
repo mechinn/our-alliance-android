@@ -5,10 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-import com.mechinn.android.ouralliance.provider.DataProvider;
-import com.mechinn.android.ouralliance.provider.Database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -16,38 +12,41 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
+import se.emilsjolander.sprinkles.Query;
+import se.emilsjolander.sprinkles.annotations.CascadeDelete;
+import se.emilsjolander.sprinkles.annotations.Check;
+import se.emilsjolander.sprinkles.annotations.Column;
+import se.emilsjolander.sprinkles.annotations.ConflictClause;
+import se.emilsjolander.sprinkles.annotations.ForeignKey;
+import se.emilsjolander.sprinkles.annotations.NotNull;
+import se.emilsjolander.sprinkles.annotations.Table;
+import se.emilsjolander.sprinkles.annotations.UniqueCombo;
+import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
+import se.emilsjolander.sprinkles.typeserializers.SqlType;
+
 @JsonIgnoreProperties({"id","mod"})
-@DatabaseTable(tableName = "team")
+@Table
+@UniqueComboConflictClause(ConflictClause.IGNORE)
 public class Team extends AOurAllianceData implements Comparable<Team> {
 	public static final String TAG = Team.class.getSimpleName();
 	private static final long serialVersionUID = 6981108401294045422L;
-	public static final String TABLE = "team";
 	public static final String NUMBER = "number";
 	public static final String NAME = "name";
-	
-	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, NUMBER, NAME };
 
-    public static final String VIEW_ID = TABLE+BaseColumns._ID;
-    public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
-    public static final String VIEW_NUMBER = TABLE+NUMBER;
-    public static final String VIEW_NAME = TABLE+NAME;
-
-	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
-	public static final String URITYPE = DataProvider.AUTHORITY+"."+TAG;
-
-	public static final String DISTINCT = "d/"+TABLE;
-	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
-	
-	public static final String TITLE_NUMBER = "Team Number";
-	public static final String TITLE_NAME = "Team Name";
-
-    @DatabaseField(id = true)
-	private int number;
-    @DatabaseField(id = true)
+    @Column
+    @UniqueCombo()
+    @Check("teamNumber > 0")
+	private int teamNumber;
+    @Column
+    @NotNull
 	private CharSequence name;
+
 	public Team() {
 		super();
 	}
+    public Team(long id) {
+        super(id);
+    }
 	public Team(int number) {
 		this.setNumber(number);
 	}
@@ -63,10 +62,10 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 		this.setName(name);
 	}
 	public int getNumber() {
-		return number;
+		return teamNumber;
 	}
-	public void setNumber(int number) {
-		this.number = number;
+	public void setNumber(int teamNumber) {
+		this.teamNumber = teamNumber;
 	}
 	public CharSequence getName() {
 		if(null==name) {
@@ -87,65 +86,5 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 		return super.equals(data) &&
 				getNumber()==data.getNumber() &&
 				getName().equals(getName());
-	}
-	public ContentValues toCV() {
-		ContentValues values = new ContentValues();
-		values.put(Database.MODIFIED, new Date().getTime());
-		values.put(Team.NUMBER, this.getNumber());
-		if(TextUtils.isEmpty(this.getName())) {
-			values.putNull(Team.NAME);
-		} else {
-			values.put(Team.NAME, this.getName().toString());
-		}
-		return values;
-	}
-	
-	@Override
-	public List<String> checkNotNulls() {
-		List<String> error = new ArrayList<String>();
-		if(0==this.getNumber()) {
-			error.add(NUMBER);
-		}
-		if(TextUtils.isEmpty(this.getName())) {
-//			error += NAME;
-		}
-		return error;
-	}
-
-	@Override
-	public void fromCursor(Cursor cursor) {
-		super.fromCursor(cursor);
-		setNumber(cursor.getInt(cursor.getColumnIndexOrThrow(NUMBER)));
-		setName(cursor.getString(cursor.getColumnIndexOrThrow(NAME)));
-	}
-
-	@Override
-	public String[] getStringArrayHeaders() {
-		return new String[] {BaseColumns._ID,
-				Database.MODIFIED};
-	}
-
-	@Override
-	public String[] toStringArray() {
-		return new String[] {Integer.toString(getNumber()),
-				getName().toString()};
-	}
-	
-	public static Team newFromCursor(Cursor cursor) {
-		Team data = new Team();
-		data.fromCursor(cursor);
-		return data;
-	}
-	
-	public static Team newFromViewCursor(Cursor cursor) {
-		return newFromViewCursor(cursor, "");
-	}
-	
-	public static Team newFromViewCursor(Cursor cursor, String prefix) {
-		long teamId = cursor.getLong(cursor.getColumnIndexOrThrow(prefix+VIEW_ID));
-		Date teamMod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(prefix+VIEW_MODIFIED)));
-		int teamNumber = cursor.getInt(cursor.getColumnIndexOrThrow(prefix+VIEW_NUMBER));
-		String teamName = cursor.getString(cursor.getColumnIndexOrThrow(prefix+VIEW_NAME));
-		return new Team(teamId, teamMod, teamNumber, teamName);
 	}
 }

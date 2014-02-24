@@ -5,26 +5,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLConnection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import se.emilsjolander.sprinkles.CursorList;
+import se.emilsjolander.sprinkles.Query;
 
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
-import com.mechinn.android.ouralliance.data.source.CompetitionTeamDataSource;
-import com.mechinn.android.ouralliance.data.source.frc2014.TeamScouting2014DataSource;
-import com.mechinn.android.ouralliance.error.OurAllianceException;
 
 public class Export extends BackgroundProgress {
 	public static final String TAG = Export.class.getSimpleName();
@@ -33,8 +29,6 @@ public class Export extends BackgroundProgress {
 	private Context context;
 	
 	private Prefs prefs;
-	private TeamScouting2014DataSource teamScouting2014Data;
-	private CompetitionTeamDataSource competitionTeamData;
 	public Export(Activity activity) {
 		super(activity, FLAG_EXPORT);
 		if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -42,8 +36,6 @@ public class Export extends BackgroundProgress {
 		}
 		context = activity;
 		prefs = new Prefs(activity);
-		teamScouting2014Data = new TeamScouting2014DataSource(activity);
-		competitionTeamData = new CompetitionTeamDataSource(activity);
 //		HeaderColumnNameTranslateMappingStrategy<MockBean> strat = new HeaderColumnNameTranslateMappingStrategy<MockBean>();
 //        strat.setType(MockBean.class);
 //        Map<String, String> map = new HashMap<String, String>();
@@ -64,60 +56,46 @@ public class Export extends BackgroundProgress {
 	
 	public void getData() {
 		boolean cancel = false;
-		Cursor cursor = null;
-		try {
-			cursor = competitionTeamData.queryAllTeams(prefs.getComp());
-			List<CompetitionTeam> teams = CompetitionTeamDataSource.getList(cursor);
-			String list = "";
-			int i;
-			for(i=0;i<teams.size()-1;++i) {
-				list += teams.get(i).getTeam().getId()+",";
-			}
-			list += teams.get(i).getTeam().getId();
-			Log.d(TAG, list);
-			int year = prefs.getYear();
-			switch(year) {
-				case 2014:
-					get2014Data(list);
-			}
-		} catch (OurAllianceException e) {
-			e.printStackTrace();
-			cancel = true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			cancel = true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			cancel = true;
-		} finally {
-			if(null!=cursor) {
-				try { cursor.close(); } catch (Exception e) {
-                    Log.d(TAG,"unknown error",e);
-                }
-			}
-		}
+		CursorList<CompetitionTeam> teams = null;
+        teams = Query.many(CompetitionTeam.class,"select * from CompetitionTeam where competition=?",prefs.getComp()).get();
+        String list = "";
+        int i;
+        for(i=0;i<teams.size()-1;++i) {
+            list += teams.get(i).getTeam().getId()+",";
+        }
+        list += teams.get(i).getTeam().getId();
+        Log.d(TAG, list);
+        int year = prefs.getYear();
+        switch(year) {
+            case 2014:
+                get2014Data(list);
+        }
+        if(null!=teams) {
+            try { teams.close(); } catch (Exception e) {
+                Log.d(TAG,"unknown error",e);
+            }
+        }
 		if(cancel) {
 			this.cancel(true);
 		}
 	}
 	
-	public void get2014Data(String list) throws OurAllianceException, SQLException, IOException {
-		Cursor cursor = null;
-		try {
-			cursor = teamScouting2014Data.queryAllTeams(list);
-			List<TeamScouting2014> scouting = TeamScouting2014DataSource.getList(cursor);
-			List<String[]> data = new ArrayList<String[]>();
-			for(TeamScouting2014 each : scouting) {
-				data.add(each.toStringArray());
-			}
-			exportToCSV(data);
-		} finally {
-			if(null!=cursor) {
-				try { cursor.close(); } catch (Exception e) {
-                    Log.d(TAG,"unknown error",e);
-                }
-			}
-		}
+	public void get2014Data(String list) {
+//        CursorList<TeamScouting2014> scouting = null;
+//		try {
+//            scouting = Query.all(TeamScouting2014.class).get();
+//			List<String[]> data = new ArrayList<String[]>();
+//			for(TeamScouting2014 each : scouting) {
+//				data.add(each.toStringArray());
+//			}
+//			exportToCSV(data);
+//		} finally {
+//			if(null!=cursor) {
+//				try { cursor.close(); } catch (Exception e) {
+//                    Log.d(TAG,"unknown error",e);
+//                }
+//			}
+//		}
 	}
 	
 	public boolean exportToCSV(List<String[]> data) throws IOException {

@@ -32,12 +32,6 @@ public class Utility {
 		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(i);
 	}
-	public static boolean shortToBool(short val) {
-		return val!=0;
-	}
-	public static short boolToShort(boolean val) {
-		return (short) (val?1:0);
-	}
 	public static boolean isIntentAvailable(Context context, String action) {
 	    final PackageManager packageManager = context.getPackageManager();
 	    final Intent intent = new Intent(action);

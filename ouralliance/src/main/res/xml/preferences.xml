@@ -8,13 +8,13 @@
 			android:defaultValue="@string/pref_practice_default" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_category_location">
-		<ListPreference
+		<com.mechinn.android.ouralliance.widget.ListPreference
 			android:key="@string/pref_season"
 			android:title="@string/pref_season_title"
 			android:summary="@string/pref_season_summary"
 			android:dialogTitle="@string/pref_season_dialogTitle"
 			android:defaultValue="@string/pref_season_default" />
-		<ListPreference
+		<com.mechinn.android.ouralliance.widget.ListPreference
 			android:key="@string/pref_comp"
 			android:title="@string/pref_comp_title"
 			android:summary="@string/pref_comp_summary"

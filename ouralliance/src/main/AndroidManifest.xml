@@ -25,12 +25,13 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
+        android:name="com.mechinn.android.ouralliance.OurAlliance"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-                android:name="com.mechinn.android.ouralliance.view.TeamScoutingActivity"
+                android:name="com.mechinn.android.ouralliance.activity.TeamScoutingActivity"
                 android:label="@string/app_name">
             <intent-filter>
                 <action
@@ -40,23 +41,17 @@
             </intent-filter>
         </activity>
         <activity
-                android:name="com.mechinn.android.ouralliance.view.MatchScoutingActivity"
+                android:name="com.mechinn.android.ouralliance.activity.MatchScoutingActivity"
                 android:label="@string/matches">
         </activity>
         <activity
-                android:name="com.mechinn.android.ouralliance.view.SettingsActivity"
+                android:name="com.mechinn.android.ouralliance.activity.SettingsActivity"
                 android:label="@string/settings">
         </activity>
-        <provider
-                android:name="com.mechinn.android.ouralliance.provider.DataProvider"
-                android:authorities="com.mechinn.android.ouralliance.data"
-                android:enabled="true"
-                android:exported="false"
-                android:icon="@drawable/ic_launcher"
-                android:label="@string/provider_name"
-                android:logo="@drawable/ic_launcher"
-                android:multiprocess="true" >
-        </provider>
+        <activity
+            android:name="com.mechinn.android.ouralliance.activity.PreferenceActivity"
+            android:label="@string/settings">
+        </activity>
         <meta-data android:name="com.crashlytics.ApiKey" android:value="b0d52c1a1854fa2c1171de35d312d751fb817acd"/>
     </application>
 

@@ -13,12 +13,20 @@ import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.provider.DataProvider;
 
+import se.emilsjolander.sprinkles.annotations.CascadeDelete;
+import se.emilsjolander.sprinkles.annotations.Column;
+import se.emilsjolander.sprinkles.annotations.ConflictClause;
+import se.emilsjolander.sprinkles.annotations.ForeignKey;
+import se.emilsjolander.sprinkles.annotations.Table;
+import se.emilsjolander.sprinkles.annotations.UniqueCombo;
+import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
+
+@Table
+@UniqueComboConflictClause(ConflictClause.IGNORE)
 public class TeamScouting2014 extends TeamScouting implements Comparable<TeamScouting>  {
 	public static final String TAG = TeamScouting2014.class.getSimpleName();
 	private static final long serialVersionUID = 675330724134779728L;
-	public static final String TABLE = TeamScouting.TABLE+"2014";
     public static final String ORIENTATION = "orientation";
     public static final String DRIVETRAIN = "driveTrain";
     public static final String WIDTH = "width";
@@ -42,46 +50,60 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 	public static final String[] ALLCOLUMNS2014 = { ORIENTATION, DRIVETRAIN, WIDTH, LENGTH,
 		HEIGHTSHOOTER, HEIGHTMAX, SHOOTERTYPE, LOWGOAL, HIGHGOAL, HOTGOAL, SHOOTINGDISTANCE, PASSGROUND,
             PASSAIR, PASSTRUSS, PICKUPGROUND, PICKUPCATCH, PUSHER, BLOCKER, HUMANPLAYER, AUTOMODE };
-	public static final String[] ALLCOLUMNS = ArrayUtils.addAll(TeamScouting.ALLCOLUMNS, ALLCOLUMNS2014);
-    
-	public static final String VIEW = TABLE+"view";
-	public static final String[] VIEWCOLUMNS = ArrayUtils.addAll(TeamScouting.VIEWCOLUMNS, ALLCOLUMNS2014);
-
-	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
-	public static final String URITYPE = DataProvider.AUTHORITY+"."+CLASS;
-
-	public static final String DISTINCT = "d/"+TABLE;
-	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
 	
 	public static final int maxPerimeter = 112;
 	public static final int maxHeight = 84;
     public static final int maxDistance = 9999;
 
+    @Column
 	private CharSequence orientation;
+    @Column
 	private CharSequence driveTrain;
+    @Column
 	private float width;
+    @Column
 	private float length;
+    @Column
 	private float heightShooter;
+    @Column
 	private float heightMax;
+    @Column
 	private int shooterType;
+    @Column
 	private boolean lowGoal;
+    @Column
 	private boolean highGoal;
+    @Column
     private boolean hotGoal;
+    @Column
     private float shootingDistance;
+    @Column
     private boolean passGround;
+    @Column
     private boolean passAir;
+    @Column
     private boolean passTruss;
+    @Column
     private boolean pickupGround;
+    @Column
     private boolean pickupCatch;
+    @Column
     private boolean pusher;
+    @Column
 	private boolean blocker;
+    @Column
     private float humanPlayer;
+    @Column
     private int autoMode;
+
 	public TeamScouting2014() {
 		super();
 	}
-	public TeamScouting2014(Season season, Team team) {
-		super(season, team);
+    public TeamScouting2014(long id) {
+        super(id);
+    }
+	public TeamScouting2014(Team team) {
+		super(team);
 	}
 	public TeamScouting2014(
             long id,
@@ -110,7 +132,7 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
             float humanPlayer,
             int autoMode
     ) {
-		super(id, mod, season, team, notes);
+		super(id, mod, team, notes);
 		setOrientation(orientation);
 		setDriveTrain(driveTrain);
 		setWidth(width);
@@ -305,93 +327,5 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 				isBlocker()==data.isBlocker() &&
                 getHumanPlayer()==data.getHumanPlayer() &&
                 getAutoMode()==data.getAutoMode();
-	}
-	
-	public ContentValues toCV() {
-		ContentValues values = super.toCV();
-		if(TextUtils.isEmpty(this.getOrientation())){
-			values.putNull(ORIENTATION);
-		} else {
-			values.put(ORIENTATION, this.getOrientation().toString());
-		}
-		if(TextUtils.isEmpty(this.getDriveTrain())){
-			values.putNull(DRIVETRAIN);
-		} else {
-			values.put(DRIVETRAIN, this.getDriveTrain().toString());
-		}
-		values.put(WIDTH, this.getWidth());
-		values.put(LENGTH, this.getLength());
-		values.put(HEIGHTSHOOTER, this.getHeightShooter());
-		values.put(HEIGHTMAX, this.getHeightMax());
-		values.put(SHOOTERTYPE, this.getShooterType());
-		values.put(LOWGOAL, Utility.boolToShort(this.isLowGoal()));
-		values.put(HIGHGOAL, Utility.boolToShort(this.isHighGoal()));
-        values.put(HOTGOAL, Utility.boolToShort(this.isHotGoal()));
-        values.put(SHOOTINGDISTANCE, this.getShootingDistance());
-        values.put(PASSGROUND, Utility.boolToShort(this.isPassGround()));
-        values.put(PASSAIR, Utility.boolToShort(this.isPassAir()));
-        values.put(PASSTRUSS, Utility.boolToShort(this.isPassTruss()));
-        values.put(PICKUPGROUND, Utility.boolToShort(this.isPickupGround()));
-        values.put(PICKUPCATCH, Utility.boolToShort(this.isPickupCatch()));
-        values.put(PUSHER, Utility.boolToShort(this.isPusher()));
-		values.put(BLOCKER, Utility.boolToShort(this.isBlocker()));
-        values.put(HUMANPLAYER, this.getHumanPlayer());
-        values.put(AUTOMODE, this.getAutoMode());
-		return values;
-	}
-
-	public void fromCursor(Cursor cursor) {
-		super.fromCursor(cursor);
-		setOrientation(cursor.getString(cursor.getColumnIndexOrThrow(ORIENTATION)));
-		setDriveTrain(cursor.getString(cursor.getColumnIndexOrThrow(DRIVETRAIN)));
-		setWidth(cursor.getFloat(cursor.getColumnIndexOrThrow(WIDTH)));
-		setLength(cursor.getFloat(cursor.getColumnIndexOrThrow(LENGTH)));
-		setHeightShooter(cursor.getFloat(cursor.getColumnIndexOrThrow(HEIGHTSHOOTER)));
-		setHeightMax(cursor.getFloat(cursor.getColumnIndexOrThrow(HEIGHTMAX)));
-		setShooterType(cursor.getInt(cursor.getColumnIndexOrThrow(SHOOTERTYPE)));
-		setLowGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(LOWGOAL))));
-        setHotGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(HIGHGOAL))));
-        setHighGoal(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(HOTGOAL))));
-        setShootingDistance(cursor.getFloat(cursor.getColumnIndexOrThrow(SHOOTINGDISTANCE)));
-        setPassGround(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PASSGROUND))));
-        setPassAir(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PASSAIR))));
-        setPassTruss(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PASSTRUSS))));
-        setPickupGround(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PICKUPGROUND))));
-        setPickupCatch(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PICKUPCATCH))));
-        setPusher(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(PUSHER))));
-		setBlocker(Utility.shortToBool(cursor.getShort(cursor.getColumnIndexOrThrow(BLOCKER))));
-        setHumanPlayer(cursor.getFloat(cursor.getColumnIndexOrThrow(HUMANPLAYER)));
-        setAutoMode(cursor.getInt(cursor.getColumnIndexOrThrow(AUTOMODE)));
-	}
-
-	@Override
-	public String[] toStringArray() {
-		return ArrayUtils.addAll(super.toStringArray(),
-				getOrientation().toString(),
-				getDriveTrain().toString(),
-				Float.toString(getWidth()),
-				Float.toString(getLength()),
-				Float.toString(getHeightShooter()),
-				Float.toString(getHeightMax()),
-				Integer.toString(getShooterType()),
-				Boolean.toString(isLowGoal()),
-                Boolean.toString(isHighGoal()),
-                Boolean.toString(isHotGoal()),
-                Float.toString(getShootingDistance()),
-                Boolean.toString(isPassGround()),
-                Boolean.toString(isPassAir()),
-                Boolean.toString(isPassTruss()),
-                Boolean.toString(isPickupGround()),
-                Boolean.toString(isPickupCatch()),
-                Boolean.toString(isPusher()),
-				Boolean.toString(isBlocker()),
-                Float.toString(getHumanPlayer()),
-                Integer.toString(getAutoMode()));
-	}
-	
-	public static TeamScouting2014 newFromCursor(Cursor cursor) {
-		TeamScouting2014 data = new TeamScouting2014();
-		data.fromCursor(cursor);
-		return data;
 	}
 }

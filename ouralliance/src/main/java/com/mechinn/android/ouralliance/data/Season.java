@@ -10,37 +10,36 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
-import com.mechinn.android.ouralliance.provider.DataProvider;
-import com.mechinn.android.ouralliance.provider.Database;
+import se.emilsjolander.sprinkles.annotations.Check;
+import se.emilsjolander.sprinkles.annotations.Column;
+import se.emilsjolander.sprinkles.annotations.ConflictClause;
+import se.emilsjolander.sprinkles.annotations.NotNull;
+import se.emilsjolander.sprinkles.annotations.Table;
+import se.emilsjolander.sprinkles.annotations.UniqueCombo;
+import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 
+@Table
+@UniqueComboConflictClause(ConflictClause.IGNORE)
 public class Season extends AOurAllianceData implements Comparable<Season> {
 	public static final String TAG = Season.class.getSimpleName();
 	private static final long serialVersionUID = -7570760453585739510L;
-	public static final String TABLE = "season";
 	public static final String YEAR = "year";
 	public static final String TITLE = "title";
-	
-	public static final String[] ALLCOLUMNS = { BaseColumns._ID, Database.MODIFIED, YEAR, TITLE };
 
-    public static final String VIEW_ID = TABLE+BaseColumns._ID;
-    public static final String VIEW_MODIFIED = TABLE+Database.MODIFIED;
-    public static final String VIEW_YEAR = TABLE+YEAR;
-    public static final String VIEW_TITLE = TABLE+TITLE;
-
-	public static final Uri URI = Uri.parse(DataProvider.BASE_URI_STRING+TABLE);
-	public static final String URITYPE = DataProvider.AUTHORITY+"."+TAG;
-
-	public static final String DISTINCT = "d/"+TABLE;
-	public static final Uri DISTINCTURI = Uri.parse(DataProvider.BASE_URI_STRING+DISTINCT);
-
-	public static final String TITLE_YEAR = "Season Year";
-	public static final String TITLE_TITLE = "Season Title";
-	
+    @Column
+    @UniqueCombo
+    @Check("year > 0")
 	private int year;
-	private CharSequence title;
+    @Column
+    @NotNull
+    private CharSequence title;
+
 	public Season() {
 		super();
 	}
+    public Season(long id) {
+        super(id);
+    }
 	public Season(int year) {
 		this.setYear(year);
 	}
@@ -74,61 +73,16 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 		return getYear()+": "+getTitle();
 	}
 	public int compareTo(Season another) {
-		return this.getYear() - another.getYear();
+		int yearCompare = this.getYear() - another.getYear();
+        if(0==yearCompare) {
+            return this.getTitle().toString().compareToIgnoreCase(another.getTitle().toString());
+        } else {
+            return yearCompare;
+        }
 	}
 	public boolean equals(Season data) {
 		return super.equals(data) &&
 				getYear()==data.getYear() &&
 				getTitle().equals(data.getTitle());
-	}
-	public ContentValues toCV() {
-		ContentValues values = new ContentValues();
-		values.put(Database.MODIFIED, new Date().getTime());
-		values.put(Season.YEAR, this.getYear());
-		if(TextUtils.isEmpty(this.getTitle())) {
-			values.putNull(Season.TITLE);
-		} else {
-			values.put(Season.TITLE, this.getTitle().toString());
-		}
-		return values;
-	}
-	
-	@Override
-	public List<String> checkNotNulls() {
-		List<String> error = new ArrayList<String>();
-		if(0==this.getYear()) {
-			error.add(YEAR);
-		}
-		if(TextUtils.isEmpty(this.getTitle())) {
-//			error += TITLE;
-		}
-		return error;
-	}
-
-	@Override
-	public void fromCursor(Cursor cursor) {
-		super.fromCursor(cursor);
-		setYear(cursor.getInt(cursor.getColumnIndexOrThrow(YEAR)));
-		setTitle(cursor.getString(cursor.getColumnIndexOrThrow(TITLE)));
-	}
-
-	@Override
-	public String[] toStringArray() {
-		return new String[] {Integer.toString(getYear()),
-				getTitle().toString()};
-	}
-	
-	public static Season newFromCursor(Cursor cursor) {
-		Season data = new Season();
-		data.fromCursor(cursor);
-		return data;
-	}
-	
-	public static Season newFromViewCursor(Cursor cursor) {
-		long id = cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_ID));
-		Date mod = new Date(cursor.getLong(cursor.getColumnIndexOrThrow(VIEW_MODIFIED)));
-		int year = cursor.getInt(cursor.getColumnIndexOrThrow(VIEW_YEAR));
-		String title = cursor.getString(cursor.getColumnIndexOrThrow(VIEW_TITLE));
-		return new Season(id, mod, year, title);
 	}
 }

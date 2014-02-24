@@ -1,4 +1,5 @@
 package com.mechinn.android.ouralliance.data;
+
 import java.util.ArrayList;
 
 public class GetTeams {

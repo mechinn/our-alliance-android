@@ -30,3 +30,4 @@ gen/
 local.properties
 .idea/workspace.xml
 .gradle
+com_crashlytics_export_strings.xml

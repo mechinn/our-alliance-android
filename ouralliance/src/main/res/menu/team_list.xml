@@ -6,5 +6,5 @@
         android:showAsAction="ifRoom"
         android:title="Add Team" android:menuCategory="system" android:orderInCategory="2">
     </item>
-    <item android:id="@+id/export" android:orderInCategory="3" android:menuCategory="system" android:title="Export Scouting" android:showAsAction="ifRoom"></item>
+    <!--<item android:id="@+id/export" android:orderInCategory="3" android:menuCategory="system" android:title="Export Scouting" android:showAsAction="ifRoom"></item>-->
 </menu>
