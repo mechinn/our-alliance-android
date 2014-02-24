@@ -24,10 +24,16 @@ android {
         versionCode 16
         versionName "2014.1"
     }
+    signingConfigs {
+        release {
+        }
+    }
     buildTypes {
         release {
+            zipAlign true
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
         }
     }
 }
