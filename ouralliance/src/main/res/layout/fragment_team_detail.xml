@@ -29,13 +29,21 @@
 		            android:layout_height="wrap_content"
 		            android:text="Video" />
 	         </LinearLayout>
-	        
-	        <com.devsmart.android.ui.HorizontalListView
-		        android:id="@+id/gallery"
-		        android:layout_width="fill_parent"
-		        android:layout_height="96dp"
-		        android:background="#ddd" />
-	    </LinearLayout>
+
+            <com.jess.ui.TwoWayGridView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/gallery"
+                app:rowHeight="100dp"
+                android:numColumns="auto_fit"
+                app:numRows="1"
+                app:horizontalSpacing="10dp"
+                app:scrollDirectionPortrait="horizontal"
+                app:scrollDirectionLandscape="horizontal"
+                app:gravity="center" />
+
+        </LinearLayout>
 
         <TextView
              android:layout_width="wrap_content"

@@ -109,10 +109,10 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 		width = (EditText) seasonView.findViewById(R.id.team2014width);
 		width.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+				if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
 			            actionId == EditorInfo.IME_ACTION_DONE ||
 			            event.getAction() == KeyEvent.ACTION_DOWN &&
-			            event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+			            event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
 			        if (!event.isShiftPressed()) {
 			        	checkPerimeter();
 			        	return true; // consume.
@@ -132,10 +132,10 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 		length = (EditText) seasonView.findViewById(R.id.team2014length);
 		length.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+				if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
 			            actionId == EditorInfo.IME_ACTION_DONE ||
 			            event.getAction() == KeyEvent.ACTION_DOWN &&
-			            event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+			            event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
 			        if (!event.isShiftPressed()) {
 			        	checkPerimeter();
 			        	return true; // consume.
@@ -155,10 +155,10 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 		heightShooter = (EditText) seasonView.findViewById(R.id.team2014heightShooter);
 		heightShooter.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+				if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
 			            actionId == EditorInfo.IME_ACTION_DONE ||
 			            event.getAction() == KeyEvent.ACTION_DOWN &&
-			            event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+			            event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
 			        if (!event.isShiftPressed()) {
 			        	checkShooterHeight();
 			        	return true; // consume.
@@ -178,10 +178,10 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 		heightMax = (EditText) seasonView.findViewById(R.id.team2014heightMax);
 		heightMax.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+				if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
 			            actionId == EditorInfo.IME_ACTION_DONE ||
 			            event.getAction() == KeyEvent.ACTION_DOWN &&
-			            event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+			            event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
 			        if (!event.isShiftPressed()) {
 			        	checkMaxHeight();
 			        	return true; // consume.
@@ -276,10 +276,10 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         shootingDistance = (EditText) seasonView.findViewById(R.id.team2014shootingDistance);
         shootingDistance.setOnEditorActionListener(new OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
                         actionId == EditorInfo.IME_ACTION_DONE ||
                         event.getAction() == KeyEvent.ACTION_DOWN &&
-                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                     if (!event.isShiftPressed()) {
                         checkShootingDistance();
                         return true; // consume.

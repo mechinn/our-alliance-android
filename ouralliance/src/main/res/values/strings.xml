@@ -63,4 +63,6 @@
     <string name="no">No</string>
     <string name="no_network_connection_toast">No network connection found</string>
 
+    <string name="descr_image">Image</string>
+
 </resources>

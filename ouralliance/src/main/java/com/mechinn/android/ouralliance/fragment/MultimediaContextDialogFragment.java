@@ -4,6 +4,8 @@ import java.io.File;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,15 +21,26 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class MultimediaContextDialogFragment extends DialogFragment {
+public class MultimediaContextDialogFragment extends DialogFragment implements Callback {
 	public static final String TAG = MultimediaContextDialogFragment.class.getSimpleName();
 	public static final String IMAGE = "image";
-	private String file;
+	private File file;
     private View dialog;
     private ProgressBar waiting;
     private ImageView image;
     private Button delete;
     private Button open;
+
+    @Override
+    public void onSuccess() {
+        waiting.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onError() {
+        waiting.setVisibility(View.GONE);
+    }
+
     public interface Listener {
         public void onDeletedImage();
     }
@@ -52,19 +65,23 @@ public class MultimediaContextDialogFragment extends DialogFragment {
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
+//        Picasso.with(getActivity()).setIndicatorsEnabled(true);
+        file = (File) this.getArguments().getSerializable(IMAGE);
 		dialog = inflater.inflate(R.layout.multimedia_context_menu, null);
-		waiting = (ProgressBar) dialog.findViewById(R.id.waiting);
-		image = (ImageView) dialog.findViewById(R.id.image);
-		file = this.getArguments().getString(IMAGE);
-		image.setTag(R.string.file, file);
-		MultimediaAdapter.setImageBad(file, image);
-		waiting.setVisibility(View.GONE);
-		image.setVisibility(View.VISIBLE);
+        image = (ImageView) dialog.findViewById(R.id.image);
+        image.setTag(R.string.file, file);
+        waiting = (ProgressBar) dialog.findViewById(R.id.loading);
+        waiting.setVisibility(View.VISIBLE);
+        Picasso.with(getActivity())
+                .load(file)
+                .placeholder(R.drawable.ic_empty)
+                .error(R.drawable.ic_error)
+                .fit()
+                .into(image,this);
 		delete = (Button) dialog.findViewById(R.id.delete);
 		delete.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				file = file.replaceFirst("file://", "");
-				if(new File(file).delete()) {
+				if(file.delete()) {
 					Toast.makeText(MultimediaContextDialogFragment.this.getActivity(), "Deleted media", Toast.LENGTH_SHORT).show();
 					listener.onDeletedImage();
 				} else {

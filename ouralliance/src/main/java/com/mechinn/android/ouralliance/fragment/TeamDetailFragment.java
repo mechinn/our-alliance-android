@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import com.devsmart.android.ui.HorizontalListView;
+import com.jess.ui.TwoWayGridView;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
@@ -23,6 +23,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +56,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	private View rootView;
 	private Button picture;
 	private Button video;
-	private HorizontalListView gallery;
+	private TwoWayGridView gallery;
 	private TextView notes;
 	private Button addWheel;
 	private LinearLayout wheels;
@@ -272,7 +274,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	        picture.setVisibility(View.GONE);
 	        video.setVisibility(View.GONE);
 	    }
-		gallery = (HorizontalListView) rootView.findViewById(R.id.gallery);
+		gallery = (TwoWayGridView) rootView.findViewById(R.id.gallery);
 //		gallery.setOnScrollListener(new AbsListView.OnScrollListener() {
 //            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
 //                // Pause fetcher to ensure smoother scrolling when flinging
@@ -402,7 +404,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	
 	public void resetMultimediaAdapter() {
 		if(null!=multimedia) {
-			multimedia.notifyDataSetChanged();
+            multimedia.buildImageSet(scouting);
 		}
 	}
 	

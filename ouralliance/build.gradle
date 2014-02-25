@@ -54,6 +54,8 @@ dependencies {
     //compile 'se.emilsjolander:sprinkles:+'
     compile 'com.crashlytics.android:crashlytics:1.+'
     //compile 'com.googlecode.lambdaj:lambdaj:2.3.3'
-	compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-
+    //compile 'com.squareup.picasso:picasso:+'
+    compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    compile project(':picasso')
+    compile project(':two-way-gridview')
 }

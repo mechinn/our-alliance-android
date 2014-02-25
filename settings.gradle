@@ -1,1 +1,1 @@
-include ':ouralliance'
+include ':ouralliance', ':picasso', ':two-way-gridview'
