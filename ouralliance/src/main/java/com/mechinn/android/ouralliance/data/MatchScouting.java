@@ -23,11 +23,10 @@ import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 public abstract class MatchScouting extends AOurAllianceData implements Comparable<MatchScouting>  {
 	public static final String TAG = MatchScouting.class.getSimpleName();
 	private static final long serialVersionUID = 2234995463512680398L;
-	public static final String SEASON = Season.TAG;
     public static final String MATCH = Match.TAG;
 	public static final String TEAM = Team.TAG;
     public static final String NOTES = "notes";
-	public static final String[] ALLCOLUMNSBASE = { SEASON, TEAM, NOTES };
+	public static final String[] ALLCOLUMNSBASE = { TEAM, NOTES };
 
     @Column
     @UniqueCombo
@@ -85,7 +84,7 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
 		this.notes = notes;
 	}
 	public String toString() {
-		return this.match+" - "+this.team;
+		return this.match+" - "+this.team.getTeam();
 	}
 	public boolean equals(MatchScouting data) {
 		return super.equals(data) &&

@@ -1,8 +1,10 @@
 package com.mechinn.android.ouralliance;
 
 import android.app.Application;
+import android.provider.BaseColumns;
 
 import com.crashlytics.android.Crashlytics;
+import com.mechinn.android.ouralliance.data.AOurAllianceData;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Match;
@@ -44,15 +46,24 @@ public class OurAlliance extends Application {
         sprinkles.registerType(Match.class, new MatchSerializer());
         sprinkles.registerType(MatchScouting2014.class, new MatchScouting2014Serializer());
 
-        Migration initialMigration = new Migration();
-        initialMigration.createTable(Team.class);
-        initialMigration.createTable(Season.class);
-        initialMigration.createTable(Competition.class);
-        initialMigration.createTable(CompetitionTeam.class);
-        initialMigration.createTable(TeamScoutingWheel.class);
-        initialMigration.createTable(TeamScouting2014.class);
-        initialMigration.createTable(Match.class);
-        initialMigration.createTable(MatchScouting2014.class);
-        sprinkles.addMigration(initialMigration);
+        Migration v16 = new Migration();
+        v16.createTable(Team.class);
+        v16.createTable(Season.class);
+        v16.createTable(Competition.class);
+        v16.createTable(CompetitionTeam.class);
+        v16.createTable(TeamScoutingWheel.class);
+        v16.createTable(TeamScouting2014.class);
+        v16.createTable(Match.class);
+        v16.createTable(MatchScouting2014.class);
+        sprinkles.addMigration(v16);
+
+
+        String v17matchScouting2014Columns = AOurAllianceData._ID+","+AOurAllianceData.MODIFIED+","+MatchScouting2014.MATCH+","+MatchScouting2014.TEAM+","+MatchScouting2014.NOTES;
+        Migration v17 = new Migration();
+        v17.renameTable(MatchScouting2014.TAG, MatchScouting2014.TAG+"_OLD");
+        v17.createTable(MatchScouting2014.class);
+        v17.addRawStatement("INSERT INTO " + MatchScouting2014.TAG + "("+ v17matchScouting2014Columns +") SELECT " + v17matchScouting2014Columns + " FROM " + MatchScouting2014.TAG + "_OLD;");
+        v17.addRawStatement("DROP TABLE " + MatchScouting2014.TAG + "_OLD;");
+        sprinkles.addMigration(v17);
     }
 }

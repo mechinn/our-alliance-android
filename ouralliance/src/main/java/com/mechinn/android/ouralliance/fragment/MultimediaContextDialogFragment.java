@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
+
 public class MultimediaContextDialogFragment extends DialogFragment implements Callback {
 	public static final String TAG = MultimediaContextDialogFragment.class.getSimpleName();
 	public static final String IMAGE = "image";
@@ -70,13 +72,13 @@ public class MultimediaContextDialogFragment extends DialogFragment implements C
 		dialog = inflater.inflate(R.layout.multimedia_context_menu, null);
         image = (ImageView) dialog.findViewById(R.id.image);
         image.setTag(R.string.file, file);
+        image.setScaleType(CENTER_INSIDE);
         waiting = (ProgressBar) dialog.findViewById(R.id.loading);
         waiting.setVisibility(View.VISIBLE);
         Picasso.with(getActivity())
                 .load(file)
                 .placeholder(R.drawable.ic_empty)
                 .error(R.drawable.ic_error)
-                .fit()
                 .into(image,this);
 		delete = (Button) dialog.findViewById(R.id.delete);
 		delete.setOnClickListener(new OnClickListener() {

@@ -47,7 +47,6 @@ import se.emilsjolander.sprinkles.Query;
 public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragment {
 	public static final String TAG = TeamDetailFragment.class.getSimpleName();
 	public static final String TEAM_ARG = "team";
-	final static String ARG_POSITION = "position";
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
 	private final static int PICTURE_CAPTURE_CODE = 100;
 	private final static int VIDEO_CAPTURE_CODE = 101;
@@ -195,19 +194,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		LoaderManager.enableDebugLogging(true);
 		prefs = new Prefs(this.getActivity());
-
-//        mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
-//        mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
-//        ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
-//
-//        cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
-//
-//        // The ImageFetcher takes care of loading images into our ImageView children asynchronously
-//        mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
-//        mImageFetcher.setLoadingImage(R.drawable.empty_photo);
-//        mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
 	}
 
     @Override
@@ -474,8 +461,6 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 			theWheel.setCount(Utility.getIntFromText(count));
 			//see if we should update or insert or just tell the user there isnt enough info
             theWheel.save();
-            System.out.println("Saved " + theWheel);
-			
 		}
 		scouting.setNotes(notes.getText());
 	}

@@ -34,7 +34,6 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 	private int listFrag;
 	private int detailFrag;
 	private long loadTeam;
-	private long loadMatch;
 	private Prefs prefs;
 	private String matchName;
 	@Override
@@ -56,7 +55,6 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
         if(savedInstanceState == null) {
             matchName = this.getIntent().getStringExtra(MATCHNAME_ARG);
             loadTeam = this.getIntent().getLongExtra(TEAM_ARG, 0);
-            loadMatch = this.getIntent().getLongExtra(MATCH_ARG, 0);
             if(0!=loadTeam) {
             	Log.d(TAG, "listfrag: "+listFrag+" detailfrag: "+detailFrag);
             	if(listFrag==detailFrag) {
@@ -64,7 +62,6 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
             	} else {
                 	matchTeamListFrag = new MatchTeamListFragment();
                 	Bundle bundle = new Bundle();
-                	bundle.putLong(MatchTeamListFragment.MATCH_ARG, loadMatch);
                 	matchTeamListFrag.setArguments(bundle);
                     getFragmentManager().beginTransaction().replace(listFrag, matchTeamListFrag).commit();
             		onTeamSelected(loadTeam);
@@ -123,9 +120,7 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 		teamDetailFragment.setArguments(args);
         transaction.replace(detailFrag, teamDetailFragment);
         if(listFrag==detailFrag) {
-        	if(0==loadMatch) {
-                transaction.addToBackStack(null);
-        	}
+            transaction.addToBackStack(null);
             this.getActionBar().setDisplayHomeAsUpEnabled(true);
         }
         transaction.commit();

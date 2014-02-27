@@ -29,9 +29,11 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import static android.widget.ImageView.ScaleType.FIT_CENTER;
+import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
+import static android.widget.ImageView.ScaleType.FIT_START;
 
 public class MultimediaAdapter extends BaseAdapter implements OnClickListener, OnLongClickListener, Callback {
 	public static final String TAG = MultimediaAdapter.class.getSimpleName();
@@ -90,11 +92,12 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
 		return position;
 	}
 	public View getView(int position, View convertView, ViewGroup parent) {
-        SquaredImageView view = (SquaredImageView) convertView;
+        ImageView view = (ImageView) convertView;
         if (view == null) {
-            view = new SquaredImageView(activity);
-            view.setScaleType(FIT_CENTER);
+            view = new ImageView(activity);
         }
+        view.setScaleType(FIT_START);
+        view.setAdjustViewBounds(true);
         view.setOnClickListener(this);
         view.setOnLongClickListener(this);
         view.setTag(R.string.file,getItem(position));
@@ -104,11 +107,11 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
 
         Log.d(TAG, "get image");
         // Trigger the download of the URL asynchronously into the image view.
+        final float scale = activity.getResources().getDisplayMetrics().density;
         Picasso.with(activity) //
                 .load(file) //
                 .placeholder(R.drawable.ic_empty) //
                 .error(R.drawable.ic_error) //
-                .fit() //
                 .into(view, this);
 
         return view;

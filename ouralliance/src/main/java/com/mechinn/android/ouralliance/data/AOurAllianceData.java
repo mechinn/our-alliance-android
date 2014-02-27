@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.util.Log;
 
 import se.emilsjolander.sprinkles.Model;
@@ -13,6 +14,9 @@ import se.emilsjolander.sprinkles.annotations.Column;
 public abstract class AOurAllianceData extends Model implements Serializable {
     public static final String TAG = AOurAllianceData.class.getSimpleName();
 	private static final long serialVersionUID = -3683063632828709652L;
+    public static final String _ID = BaseColumns._ID;
+//    public static final String _COUNT = BaseColumns._COUNT;
+    public static final String MODIFIED = "modified";
 
     @AutoIncrementPrimaryKey
     @Column("_id")

@@ -6,6 +6,7 @@ import com.mechinn.android.ouralliance.adapter.MatchTeamAdapter;
 import com.mechinn.android.ouralliance.data.Match;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,6 +79,18 @@ public class MatchTeamListFragment extends ListFragment {
 		    	selectItem(position);
 			}
 		});
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                DialogFragment dialog = new MatchTeamDialogFragment();
+                Bundle dialogArgs = new Bundle();
+                dialogArgs.putLong(MatchTeamDialogFragment.MATCH_ARG, matchId);
+                dialogArgs.putLong(MatchTeamDialogFragment.TEAM_ARG, adapter.getItem(position).getTeam().getId());
+                dialog.setArguments(dialogArgs);
+                dialog.show(getFragmentManager(), adapter.getItem(position).getTeam().toString());
+                return true;
+            }
+        });
 		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			int position = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);
 			if (position == ListView.INVALID_POSITION) {
@@ -112,7 +125,7 @@ public class MatchTeamListFragment extends ListFragment {
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        //mCallback.onMatchTeamSelected(matchId, adapter.getItem(position).getTeam().getId());
+        mCallback.onMatchTeamSelected(matchId, adapter.getItem(position).getTeam().getId());
         
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);
