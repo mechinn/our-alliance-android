@@ -6,7 +6,6 @@ import com.mechinn.android.ouralliance.adapter.MatchAdapter;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -73,7 +72,7 @@ public class MatchListFragment extends ListFragment {
                 @Override
                 public boolean handleResult(CursorList<Match> result) {
 
-                    if(null!=result && !result.isClosed()) {
+                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
                         ModelList<Match> matches = ModelList.from(result);
                         result.close();
                         adapter.swapList(matches);
@@ -95,14 +94,14 @@ public class MatchListFragment extends ListFragment {
                 @Override
                 public boolean handleResult(CursorList<CompetitionTeam> result) {
                     Log.d(TAG, "Count: " + result.size());
-                    if(null!=result && !result.isClosed()) {
+                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
                         teams = ModelList.from(result);
                         result.close();
                         if(teams.size()>0) {
                             setComp(teams.get(0).getCompetition());
                         }
                         if(matchesLoaded && null==comp) {
-                            Query.one(Competition.class, "select * where _id=?", compId).getAsync(getLoaderManager(), onCompetitionLoaded);
+                            Query.one(Competition.class, "select * from Competition where _id=?", compId).getAsync(getLoaderManager(), onCompetitionLoaded);
                         }
                     } else {
                         teams = null;
@@ -185,10 +184,14 @@ public class MatchListFragment extends ListFragment {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-//		if (this.getSelectedItemPosition() != ListView.INVALID_POSITION) {
-//			// Serialize and persist the activated item position.
-//			outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
-//		}
+        try {
+            if (this.getSelectedItemPosition() != ListView.INVALID_POSITION) {
+                // Serialize and persist the activated item position.
+                outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
+            }
+        } catch (IllegalStateException e) {
+            Log.d(TAG,"",e);
+        }
 	}
 	
 	@Override

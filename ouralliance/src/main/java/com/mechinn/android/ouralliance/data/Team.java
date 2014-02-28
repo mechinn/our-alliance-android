@@ -1,28 +1,14 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.BaseColumns;
-import android.text.TextUtils;
-
-import se.emilsjolander.sprinkles.Query;
-import se.emilsjolander.sprinkles.annotations.CascadeDelete;
 import se.emilsjolander.sprinkles.annotations.Check;
 import se.emilsjolander.sprinkles.annotations.Column;
 import se.emilsjolander.sprinkles.annotations.ConflictClause;
-import se.emilsjolander.sprinkles.annotations.ForeignKey;
 import se.emilsjolander.sprinkles.annotations.NotNull;
 import se.emilsjolander.sprinkles.annotations.Table;
 import se.emilsjolander.sprinkles.annotations.UniqueCombo;
 import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
-import se.emilsjolander.sprinkles.typeserializers.SqlType;
 
 @JsonIgnoreProperties({"id","mod"})
 @Table
@@ -51,15 +37,8 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 		this.setNumber(number);
 	}
 	public Team(int number, CharSequence name) {
-		setData(number, name);
-	}
-	public Team(long id, Date mod, int number, CharSequence name) {
-		super(id, mod);
-		setData(number, name);
-	}
-	private void setData(int number, CharSequence name) {
-		this.setNumber(number);
-		this.setName(name);
+        this.setNumber(number);
+        this.setName(name);
 	}
 	public int getNumber() {
 		return teamNumber;

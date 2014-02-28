@@ -1,17 +1,5 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.BaseColumns;
-import android.text.TextUtils;
-
 import se.emilsjolander.sprinkles.annotations.CascadeDelete;
 import se.emilsjolander.sprinkles.annotations.Check;
 import se.emilsjolander.sprinkles.annotations.Column;
@@ -65,18 +53,11 @@ public class TeamScoutingWheel extends AOurAllianceData {
         super(id);
     }
 	public TeamScoutingWheel(Season season, Team team, CharSequence type, float size, int count) {
-		this.setData(season, team, type, size, count);
-	}
-	public TeamScoutingWheel(long id, Date mod, Season season, Team team, CharSequence type, float size, int count) {
-		super(id, mod);
-		this.setData(season, team, type, size, count);
-	}
-	public void setData(Season season, Team team, CharSequence type, float size, int count) {
-		this.setSeason(season);
-		this.setTeam(team);
-		this.setType(type);
-		this.setSize(size);
-		this.setCount(count);
+        this.setSeason(season);
+        this.setTeam(team);
+        this.setType(type);
+        this.setSize(size);
+        this.setCount(count);
 	}
 	public Season getSeason() {
 		return season;

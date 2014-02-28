@@ -23,7 +23,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -33,7 +32,6 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -105,7 +103,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 
                 @Override
                 public boolean handleResult(CursorList<TeamScoutingWheel> result) {
-                    if(null!=result && !result.isClosed()) {
+                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
                         ModelList<TeamScoutingWheel> wheelModel = ModelList.from(result);
                         result.close();
                         wheelTypesAdapter.swapList(wheelModel);
@@ -122,7 +120,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 
                 @Override
                 public boolean handleResult(CursorList<TeamScoutingWheel> result) {
-                    if(null!=result && !result.isClosed()) {
+                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
                         Log.d(TAG, "Count: " + result.size());
                         wheelCursor = ModelList.from(result);
                         result.close();

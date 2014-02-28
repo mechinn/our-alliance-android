@@ -1,17 +1,5 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.BaseColumns;
-import android.text.TextUtils;
-
 import se.emilsjolander.sprinkles.annotations.CascadeDelete;
 import se.emilsjolander.sprinkles.annotations.Check;
 import se.emilsjolander.sprinkles.annotations.Column;
@@ -52,16 +40,9 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
         super(id);
     }
 	public Competition(Season season, CharSequence name, CharSequence code) {
-		setData(season, name, code);
-	}
-	public Competition(long id, Date mod, Season season, CharSequence name, CharSequence code) {
-		super(id, mod);
-		setData(season, name, code);
-	}
-	private void setData(Season season, CharSequence name, CharSequence code) {
-		this.setSeason(season);
-		this.setName(name);
-		this.setCode(code);
+        this.setSeason(season);
+        this.setName(name);
+        this.setCode(code);
 	}
 	public Season getSeason() {
 		return season;

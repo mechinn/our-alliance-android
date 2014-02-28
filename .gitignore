@@ -6,6 +6,7 @@
 *.exe
 *.o
 *.so
+*.apk
 
 # Logs and databases #
 ######################
@@ -31,6 +32,3 @@ local.properties
 .idea/workspace.xml
 .gradle
 com_crashlytics_export_strings.xml
-ouralliance.apk
-two-way-gridview
-picasso

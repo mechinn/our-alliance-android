@@ -134,10 +134,14 @@ public class MatchTeamListFragment extends ListFragment {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		if (this.getSelectedItemPosition() != ListView.INVALID_POSITION) {
-			// Serialize and persist the activated item position.
-			outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
-		}
+        try {
+            if (this.getSelectedItemPosition() != ListView.INVALID_POSITION) {
+                // Serialize and persist the activated item position.
+                outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
+            }
+        } catch (IllegalStateException e) {
+            Log.d(TAG,"",e);
+        }
 	}
 
 }

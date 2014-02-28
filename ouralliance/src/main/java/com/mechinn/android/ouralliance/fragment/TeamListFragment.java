@@ -61,7 +61,7 @@ public class TeamListFragment extends Fragment {
 
                 @Override
                 public boolean handleResult(CursorList<CompetitionTeam> result) {
-                    if(null!=result && !result.isClosed()){
+                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
                         Log.d(TAG,"cursor size: "+result.size());
                         ModelList<CompetitionTeam> teams = ModelList.from(result);
                         result.close();
@@ -71,6 +71,20 @@ public class TeamListFragment extends Fragment {
                         } else {
                             setComp(teams.get(0).getCompetition());
                         }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            };
+
+    private OneQuery.ResultHandler<Team> onTeamLoaded =
+            new OneQuery.ResultHandler<Team>() {
+                @Override
+                public boolean handleResult(Team result) {
+                    if(null!=result) {
+                        saving = result;
+                        saveCompetitionTeam();
                         return true;
                     } else {
                         return false;
@@ -116,6 +130,15 @@ public class TeamListFragment extends Fragment {
     public void saveTeam(Team team) {
         saving = team;
         saving.save();
+        Log.d(TAG,"saving id: "+saving.getId());
+        if(saving.getId()==0) {
+            Query.one(Team.class, "select * from Team where teamNumber=? LIMIT 1",saving.getNumber()).getAsync(this.getLoaderManager(),onTeamLoaded);
+        } else {
+            saveCompetitionTeam();
+        }
+    }
+
+    public void saveCompetitionTeam() {
         switch(comp.getSeason().getYear()) {
             case 2014:
                 Query.one(TeamScouting2014.class, "select * from TeamScouting2014 where team=? LIMIT 1",saving.getId()).getAsync(this.getLoaderManager(), onTeamScouting2014Loaded);
@@ -123,7 +146,6 @@ public class TeamListFragment extends Fragment {
 
         }
         Query.one(CompetitionTeam.class, "select * from CompetitionTeam where competition=? AND team=? LIMIT 1",prefs.getComp(),saving.getId()).getAsync(this.getLoaderManager(),onCompetitionTeamLoaded);
-
     }
 
     @Override
@@ -217,10 +239,14 @@ public class TeamListFragment extends Fragment {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		if (selectedPosition != ListView.INVALID_POSITION) {
-			// Serialize and persist the activated item position.
-			outState.putInt(STATE_ACTIVATED_POSITION, selectedPosition);
-		}
+        try {
+            if (selectedPosition != ListView.INVALID_POSITION) {
+                // Serialize and persist the activated item position.
+                outState.putInt(STATE_ACTIVATED_POSITION, selectedPosition);
+            }
+        } catch (IllegalStateException e) {
+            Log.d(TAG,"",e);
+        }
 	}
 	
 	@Override

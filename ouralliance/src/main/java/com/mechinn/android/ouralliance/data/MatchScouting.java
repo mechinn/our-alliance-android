@@ -1,24 +1,11 @@
 package com.mechinn.android.ouralliance.data;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.provider.BaseColumns;
-import android.text.TextUtils;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import se.emilsjolander.sprinkles.annotations.CascadeDelete;
 import se.emilsjolander.sprinkles.annotations.Check;
 import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ConflictClause;
 import se.emilsjolander.sprinkles.annotations.ForeignKey;
 import se.emilsjolander.sprinkles.annotations.NotNull;
 import se.emilsjolander.sprinkles.annotations.UniqueCombo;
-import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 
 public abstract class MatchScouting extends AOurAllianceData implements Comparable<MatchScouting>  {
 	public static final String TAG = MatchScouting.class.getSimpleName();
@@ -51,16 +38,8 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
         super(id);
     }
 	public MatchScouting(Match match, CompetitionTeam team) {
-		this.setData(match, team);
-	}
-	public MatchScouting(long id, Date mod, Match match, CompetitionTeam team, CharSequence notes) {
-		super(id, mod);
-		this.setData(match, team);
-		this.setNotes(notes);
-	}
-	public void setData(Match match, CompetitionTeam team) {
-		this.setMatch(match);
-		this.setTeam(team);
+        this.setMatch(match);
+        this.setTeam(team);
 	}
 	public Match getMatch() {
 		return match;

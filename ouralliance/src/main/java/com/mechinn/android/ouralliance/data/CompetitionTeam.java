@@ -1,18 +1,5 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.BaseColumns;
-
-import com.mechinn.android.ouralliance.Utility;
-
 import se.emilsjolander.sprinkles.annotations.CascadeDelete;
 import se.emilsjolander.sprinkles.annotations.Check;
 import se.emilsjolander.sprinkles.annotations.Column;
@@ -51,20 +38,16 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
         super(id);
     }
 	public CompetitionTeam(Competition competition, Team team) {
-		setData(competition, team, 999, false);
+        this.setCompetition(competition);
+        this.setTeam(team);
+        this.setRank(999);
+        this.setScouted(false);
 	}
 	public CompetitionTeam(Competition competition, Team team, int rank, boolean scouted) {
-		setData(competition, team, rank, scouted);
-	}
-	public CompetitionTeam(long id, Date mod, Competition competition, Team team, int rank, boolean scouted) {
-		super(id, mod);
-		setData(competition, team, rank, scouted);
-	}
-	private void setData(Competition competition, Team team, int rank, boolean scouted) {
-		this.setCompetition(competition);
-		this.setTeam(team);
-		this.setRank(rank);
-		this.setScouted(scouted);
+        this.setCompetition(competition);
+        this.setTeam(team);
+        this.setRank(rank);
+        this.setScouted(scouted);
 	}
 	public Competition getCompetition() {
 		return competition;

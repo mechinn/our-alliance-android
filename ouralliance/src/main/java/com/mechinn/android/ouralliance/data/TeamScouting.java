@@ -1,24 +1,11 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.provider.BaseColumns;
-import android.text.TextUtils;
-
 import se.emilsjolander.sprinkles.annotations.CascadeDelete;
 import se.emilsjolander.sprinkles.annotations.Check;
 import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ConflictClause;
 import se.emilsjolander.sprinkles.annotations.ForeignKey;
 import se.emilsjolander.sprinkles.annotations.NotNull;
 import se.emilsjolander.sprinkles.annotations.UniqueCombo;
-import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 
 public abstract class TeamScouting extends AOurAllianceData implements Comparable<TeamScouting>  {
 	public static final String TAG = TeamScouting.class.getSimpleName();
@@ -47,15 +34,7 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
         super(id);
     }
 	public TeamScouting(Team team) {
-		this.setData(team);
-	}
-	public TeamScouting(long id, Date mod, Team team, CharSequence notes) {
-		super(id, mod);
-		this.setData(team);
-		this.setNotes(notes);
-	}
-	public void setData(Team team) {
-		this.setTeam(team);
+        this.setTeam(team);
 	}
 	public Team getTeam() {
 		return team;

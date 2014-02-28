@@ -3,6 +3,7 @@ package com.mechinn.android.ouralliance.serializers;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import android.database.DatabaseUtils;
 import se.emilsjolander.sprinkles.typeserializers.SqlType;
 import se.emilsjolander.sprinkles.typeserializers.TypeSerializer;
 
@@ -23,6 +24,11 @@ public class CharSequenceSerializer implements TypeSerializer<CharSequence> {
         } else {
             cv.put(name, new String());
         }
+    }
+
+    @Override
+    public String toSql(CharSequence object) {
+        return  DatabaseUtils.sqlEscapeString(object.toString());
     }
 
     @Override

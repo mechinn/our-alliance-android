@@ -1,15 +1,5 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.BaseColumns;
-import android.text.TextUtils;
-
 import se.emilsjolander.sprinkles.annotations.Check;
 import se.emilsjolander.sprinkles.annotations.Column;
 import se.emilsjolander.sprinkles.annotations.ConflictClause;
@@ -44,15 +34,8 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 		this.setYear(year);
 	}
 	public Season(int year, CharSequence title) {
-		setData(year, title);
-	}
-	public Season(long id, Date mod, int year, CharSequence title) {
-		super(id, mod);
-		setData(year, title);
-	}
-	private void setData(int year, CharSequence title) {
-		this.setYear(year);
-		this.setTitle(title);
+        this.setYear(year);
+        this.setTitle(title);
 	}
 	public int getYear() {
 		return year;

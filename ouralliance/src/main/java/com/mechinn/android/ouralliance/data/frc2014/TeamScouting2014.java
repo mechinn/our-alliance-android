@@ -1,25 +1,11 @@
 package com.mechinn.android.ouralliance.data.frc2014;
 
-import java.util.Date;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
-import android.text.TextUtils;
-
-import com.mechinn.android.ouralliance.Utility;
-import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 
-import se.emilsjolander.sprinkles.annotations.CascadeDelete;
 import se.emilsjolander.sprinkles.annotations.Column;
 import se.emilsjolander.sprinkles.annotations.ConflictClause;
-import se.emilsjolander.sprinkles.annotations.ForeignKey;
 import se.emilsjolander.sprinkles.annotations.Table;
-import se.emilsjolander.sprinkles.annotations.UniqueCombo;
 import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 
 @Table
@@ -104,55 +90,6 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
     }
 	public TeamScouting2014(Team team) {
 		super(team);
-	}
-	public TeamScouting2014(
-            long id,
-            Date mod,
-            Season season,
-            Team team,
-            CharSequence notes,
-            CharSequence orientation,
-            CharSequence driveTrain,
-            float width,
-            float length,
-            float heightShooter,
-            float heightMax,
-            int shooterType,
-            boolean lowGoal,
-            boolean highGoal,
-            boolean hotGoal,
-            float shootingDistance,
-            boolean passGround,
-            boolean passAir,
-            boolean passTruss,
-            boolean pickupGround,
-            boolean pickupCatch,
-            boolean pusher,
-            boolean blocker,
-            float humanPlayer,
-            int autoMode
-    ) {
-		super(id, mod, team, notes);
-		setOrientation(orientation);
-		setDriveTrain(driveTrain);
-		setWidth(width);
-		setLength(length);
-		setHeightShooter(heightShooter);
-		setHeightMax(heightMax);
-		setShooterType(shooterType);
-		setLowGoal(lowGoal);
-		setHighGoal(highGoal);
-        setHotGoal(hotGoal);
-        setShootingDistance(shootingDistance);
-        setPassGround(passGround);
-        setPassAir(passAir);
-        setPassTruss(passTruss);
-        setPickupGround(pickupGround);
-        setPickupCatch(pickupCatch);
-        setPusher(pusher);
-		setBlocker(blocker);
-        setHumanPlayer(humanPlayer);
-        setAutoMode(autoMode);
 	}
 	public CharSequence getOrientation() {
 		if(null==orientation) {

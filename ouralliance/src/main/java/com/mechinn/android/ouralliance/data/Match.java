@@ -1,13 +1,5 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.util.Log;
 
 import se.emilsjolander.sprinkles.annotations.CascadeDelete;
@@ -106,34 +98,35 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
     }
 	public Match(Competition competition, int number, CompetitionTeam red1, CompetitionTeam red2, CompetitionTeam red3, CompetitionTeam blue1, CompetitionTeam blue2, CompetitionTeam blue3, int type) {
 		super();
-		setData(competition, number, red1, red2, red3, blue1, blue2, blue3, -1, -1, type, 0, 0);
+        this.setCompetition(competition);
+        this.setNumber(number);
+        this.setRed1(red1);
+        this.setRed2(red2);
+        this.setRed3(red3);
+        this.setBlue1(blue1);
+        this.setBlue2(blue2);
+        this.setBlue3(blue3);
+        this.setRedScore(-1);
+        this.setBlueScore(-1);
+        this.setType(type);
+        this.setSet(0);
+        this.setOf(0);
 	}
 	public Match(Competition competition, int number, CompetitionTeam red1, CompetitionTeam red2, CompetitionTeam red3, CompetitionTeam blue1, CompetitionTeam blue2, CompetitionTeam blue3, int type, int set, int of) {
 		super();
-		setData(competition, number, red1, red2, red3, blue1, blue2, blue3, -1, -1, type, set, of);
-	}
-	public Match(Competition competition, CompetitionTeam red1, CompetitionTeam red2, CompetitionTeam red3, CompetitionTeam blue1, CompetitionTeam blue2, CompetitionTeam blue3, int redScore, int blueScore, int type, int set, int of) {
-		super();
-		setData(competition, -1, red1, red2, red3, blue1, blue2, blue3, redScore, blueScore, type, set, of);
-	}
-	public Match(long id, Date mod, Competition competition, int number, CompetitionTeam red1, CompetitionTeam red2, CompetitionTeam red3, CompetitionTeam blue1, CompetitionTeam blue2, CompetitionTeam blue3, int redScore, int blueScore, int type, int set, int of) {
-		super(id, mod);
-		setData(competition, number, red1, red2, red3, blue1, blue2, blue3, redScore, blueScore, type, set, of);
-	}
-	private void setData(Competition competition, int number, CompetitionTeam red1, CompetitionTeam red2, CompetitionTeam red3, CompetitionTeam blue1, CompetitionTeam blue2, CompetitionTeam blue3, int redScore, int blueScore, int type, int set, int of) {
-		this.setCompetition(competition);
-		this.setRed1(red1);
-		this.setRed2(red2);
-		this.setRed3(red3);
-		this.setBlue1(blue1);
-		this.setBlue2(blue2);
-		this.setBlue3(blue3);
-		this.setRedScore(redScore);
-		this.setBlueScore(blueScore);
-		this.setType(type);
-		this.setSet(set);
-		this.setOf(of);
-		this.setNumber(number);
+        this.setCompetition(competition);
+        this.setNumber(number);
+        this.setRed1(red1);
+        this.setRed2(red2);
+        this.setRed3(red3);
+        this.setBlue1(blue1);
+        this.setBlue2(blue2);
+        this.setBlue3(blue3);
+        this.setRedScore(-1);
+        this.setBlueScore(-1);
+        this.setType(type);
+        this.setSet(set);
+        this.setOf(of);
 	}
 	public Competition getCompetition() {
 		return competition;

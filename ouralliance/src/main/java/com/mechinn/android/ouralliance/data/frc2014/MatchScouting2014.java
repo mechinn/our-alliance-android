@@ -71,9 +71,6 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
 	public MatchScouting2014(Match match, CompetitionTeam team) {
         super(match, team);
 	}
-	public MatchScouting2014(long id, Date mod, Match match, CompetitionTeam team, CharSequence notes) {
-		super(id, mod, match, team, notes);
-	}
     public int getHotShots() {
         return hotShots;
     }

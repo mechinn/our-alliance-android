@@ -71,7 +71,7 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 
                 @Override
                 public boolean handleResult(CursorList<TeamScouting2014> result) {
-                    if(null!=result && !result.isClosed()) {
+                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
                         ModelList<TeamScouting2014> model = ModelList.from(result);
                         result.close();
                         orientationsAdapter.swapList(model);
@@ -88,7 +88,7 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 
                 @Override
                 public boolean handleResult(CursorList<TeamScouting2014> result) {
-                    if(null!=result && !result.isClosed()) {
+                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
                         ModelList<TeamScouting2014> model = ModelList.from(result);
                         result.close();
                         driveTrainsAdapter.swapList(model);

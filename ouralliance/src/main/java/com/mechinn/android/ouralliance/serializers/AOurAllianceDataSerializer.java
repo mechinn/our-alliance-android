@@ -21,6 +21,11 @@ public abstract class AOurAllianceDataSerializer<A extends AOurAllianceData> imp
     }
 
     @Override
+    public String toSql(A object) {
+        return ""+object.getId();
+    }
+
+    @Override
     public SqlType getSqlType() {
         return SqlType.INTEGER;
     }

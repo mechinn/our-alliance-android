@@ -8,9 +8,15 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/drag-sort-listview" />
+            <option value="$PROJECT_DIR$/drag-sort-listview/dslv-library" />
             <option value="$PROJECT_DIR$/ouralliance" />
             <option value="$PROJECT_DIR$/picasso" />
+            <option value="$PROJECT_DIR$/picasso/picasso" />
+            <option value="$PROJECT_DIR$/sprinkles" />
+            <option value="$PROJECT_DIR$/sprinkles/library" />
             <option value="$PROJECT_DIR$/two-way-gridview" />
+            <option value="$PROJECT_DIR$/two-way-gridview/lib" />
           </set>
         </option>
       </GradleProjectSettings>

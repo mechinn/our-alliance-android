@@ -2,27 +2,21 @@ package com.mechinn.android.ouralliance.adapter;
 
 import java.io.File;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.fragment.MultimediaContextDialogFragment;
-import com.mechinn.android.ouralliance.widget.SquaredImageView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,7 +26,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
 import static android.widget.ImageView.ScaleType.FIT_START;
 
 public class MultimediaAdapter extends BaseAdapter implements OnClickListener, OnLongClickListener, Callback {
@@ -54,7 +47,6 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
 		this.activity = activity;
 		prefs = new Prefs(activity);
 		Log.d(TAG, team.toString());
-//        Picasso.with(activity).setIndicatorsEnabled(true);
         Log.d(TAG,"find images");
         buildImageSet(team);
 	}

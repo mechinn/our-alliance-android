@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="support-v4-19.0.1">
+  <library name="Gradle: support-v4-19.0.1">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../../../../../opt/androidsdk/extras/android/m2repository/com/android/support/support-v4/19.0.1/support-v4-19.0.1.jar!/" />
     </CLASSES>

@@ -63,7 +63,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
                 @Override
                 public boolean handleResult(CursorList<Season> result) {
-                    if(result!=null) {
+                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
                         ModelList<Season> seasons = ModelList.from(result);
                         result.close();
                         season.swapAdapter(seasons, prefs.getSeason());
@@ -82,7 +82,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
                 @Override
                 public boolean handleResult(CursorList<Competition> result) {
-                    if(result!=null) {
+                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
                         ModelList<Competition> competitions = ModelList.from(result);
                         result.close();
                         comp.swapAdapter(competitions, prefs.getComp());
