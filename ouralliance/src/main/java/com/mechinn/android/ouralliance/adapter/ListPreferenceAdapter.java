@@ -135,7 +135,7 @@ public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapt
             if(Long.toString(id)==values[position]){
                 container.setChecked(true);
             }
-            buttons.add(position,container);
+            buttons.set(position,container);
         }
         return container;
     }
