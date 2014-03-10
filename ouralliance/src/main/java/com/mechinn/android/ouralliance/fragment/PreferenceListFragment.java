@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  * from http://forum.xda-developers.com/showthread.php?t=1363906
  */
 public class PreferenceListFragment extends ListFragment {
-    public static final String TAG = PreferenceListFragment.class.getSimpleName();
+    public static final String TAG = "PreferenceListFragment";
 
     private PreferenceManager mPreferenceManager;
 

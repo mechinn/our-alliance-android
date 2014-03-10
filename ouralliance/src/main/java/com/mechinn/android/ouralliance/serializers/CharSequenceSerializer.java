@@ -11,6 +11,7 @@ import se.emilsjolander.sprinkles.typeserializers.TypeSerializer;
  * Created by emilsjolander on 27/12/13.
  */
 public class CharSequenceSerializer implements TypeSerializer<CharSequence> {
+    public static final String TAG = "CharSequenceSerializer";
 
     @Override
     public CharSequence unpack(Cursor c, String name) {

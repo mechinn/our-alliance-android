@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
+import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.Check;
 import se.emilsjolander.sprinkles.annotations.Column;
 import se.emilsjolander.sprinkles.annotations.ConflictClause;
@@ -8,21 +9,28 @@ import se.emilsjolander.sprinkles.annotations.Table;
 import se.emilsjolander.sprinkles.annotations.UniqueCombo;
 import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 
-@Table
+@Table(Season.TAG)
 @UniqueComboConflictClause(ConflictClause.IGNORE)
 public class Season extends AOurAllianceData implements Comparable<Season> {
-	public static final String TAG = Season.class.getSimpleName();
+	public static final String TAG = "Season";
 	private static final long serialVersionUID = -7570760453585739510L;
 	public static final String YEAR = "year";
 	public static final String TITLE = "title";
 
-    @Column
+    public static final String[] FIELD_MAPPING = new String[] {
+            MODIFIED
+            ,YEAR
+            ,TITLE
+    };
+
+    @Column(YEAR)
     @UniqueCombo
     @Check("year > 0")
 	private int year;
-    @Column
+    @Column(TITLE)
     @NotNull
-    private CharSequence title;
+    @Check(TITLE+" != ''")
+    private String title;
 
 	public Season() {
 		super();
@@ -30,10 +38,7 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
     public Season(long id) {
         super(id);
     }
-	public Season(int year) {
-		this.setYear(year);
-	}
-	public Season(int year, CharSequence title) {
+	public Season(int year, String title) {
         this.setYear(year);
         this.setTitle(title);
 	}
@@ -43,15 +48,22 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 	public void setYear(int year) {
 		this.year = year;
 	}
-	public CharSequence getTitle() {
+	public String getTitle() {
 		if(null==title) {
 			return "";
 		}
 		return title;
 	}
-	public void setTitle(CharSequence title) {
+	public void setTitle(String title) {
 		this.title = title;
 	}
+    public void setTitle(CharSequence title) {
+        if(null==title) {
+            setTitle("");
+        } else {
+            setTitle(title.toString());
+        }
+    }
 	public String toString() {
 		return getYear()+": "+getTitle();
 	}
@@ -68,4 +80,8 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
 				getYear()==data.getYear() &&
 				getTitle().equals(data.getTitle());
 	}
+
+    public AOurAllianceData validate() {
+        return Query.one(Season.class, "SELECT * FROM " + TAG + " WHERE " + YEAR + "=? LIMIT 1", getYear()).get();
+    }
 }

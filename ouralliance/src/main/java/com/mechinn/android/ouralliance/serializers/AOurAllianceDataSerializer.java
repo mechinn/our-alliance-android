@@ -12,7 +12,7 @@ import se.emilsjolander.sprinkles.typeserializers.TypeSerializer;
  * Created by mechinn on 2/18/14.
  */
 public abstract class AOurAllianceDataSerializer<A extends AOurAllianceData> implements TypeSerializer<A> {
-    public static final String TAG = AOurAllianceDataSerializer.class.getSimpleName();
+    public static final String TAG = "AOurAllianceDataSerializer";
 
     @Override
     public void pack(A object, ContentValues cv, String name) {

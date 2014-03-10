@@ -13,7 +13,7 @@ import android.view.View;
 import android.webkit.WebView;
 
 public class HtmlDialogFragment extends DialogFragment {
-	public static final String TAG = HtmlDialogFragment.class.getSimpleName();
+    public static final String TAG = "HtmlDialogFragment";
 	public static final String HTMLFILE = "htmlFile";
     private View dialog;
     private WebView html;

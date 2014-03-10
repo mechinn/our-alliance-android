@@ -11,7 +11,7 @@ import com.mechinn.android.ouralliance.R;
  * Created by mechinn on 2/19/14.
  */
 public class PreferenceFragment extends PreferenceListFragment implements SharedPreferences.OnSharedPreferenceChangeListener, PreferenceListFragment.OnPreferenceAttachedListener {
-    public static final String TAG = PreferenceFragment.class.getSimpleName();
+    public static final String TAG = "PreferenceFragment";
     public static final String SHARED_PREFS_NAME = "settings";
 
     @Override

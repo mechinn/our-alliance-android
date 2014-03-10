@@ -11,7 +11,7 @@ import se.emilsjolander.sprinkles.Query;
  * Created by mechinn on 2/18/14.
  */
 public class MatchScouting2014Serializer extends AOurAllianceDataSerializer<MatchScouting2014> {
-    public static final String TAG = MatchScouting2014Serializer.class.getSimpleName();
+    public static final String TAG = "MatchScouting2014Serializer";
 
     @Override
     public MatchScouting2014 unpack(Cursor c, String name) {

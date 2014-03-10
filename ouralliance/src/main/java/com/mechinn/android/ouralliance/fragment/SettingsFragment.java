@@ -41,7 +41,7 @@ import se.emilsjolander.sprinkles.SqlStatement;
  * API Guide</a> for more information on devdeloping a Settings UI.
  */
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener, GenericDialogFragment.Listener {
-	public static final String TAG = SettingsFragment.class.getSimpleName();
+    public static final String TAG = "SettingsFragment";
 	public static final int DIALOG_RESET = 0;
 	public static final int DIALOG_DELETECOMP = 1;
 	private Prefs prefs;

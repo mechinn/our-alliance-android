@@ -33,7 +33,7 @@ import se.emilsjolander.sprinkles.ModelList;
 import se.emilsjolander.sprinkles.Query;
 
 public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
-	public final static String TAG = TeamDetail2014.class.getSimpleName();
+    public static final String TAG = "TeamDetail2014";
 
 	private AutoCompleteTextView orientation;
 	private AutoCompleteTextView driveTrain;
@@ -203,68 +203,70 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 super.onCheckedChanged(group, checkedId);
-                switch (checkedId) {
-                    default:
-                    case R.id.none:
-                        shooterGroup.setVisibility(View.GONE);
-                        lowGoal.setChecked(false);
-                        highGoal.setChecked(false);
-                        hotGoal.setChecked(false);
-                        shootingDistanceGroup.setVisibility(View.GONE);
-                        shootingDistance.setText("");
-                        lowAuto.setVisibility(View.GONE);
-                        lowAuto.setChecked(false);
-                        highAuto.setVisibility(View.GONE);
-                        highAuto.setChecked(false);
-                        hotAuto.setVisibility(View.GONE);
-                        hotAuto.setChecked(false);
-                        break;
-                    case R.id.dumper:
-                        shooterGroup.setVisibility(View.VISIBLE);
-                        lowGoal.setChecked(getScouting().isLowGoal());
-                        highGoal.setVisibility(View.GONE);
-                        highGoal.setChecked(false);
-                        hotGoal.setVisibility(View.GONE);
-                        hotGoal.setChecked(false);
-                        shootingDistanceGroup.setVisibility(View.GONE);
-                        shootingDistance.setText("");
-                        lowAuto.setVisibility(View.VISIBLE);
-                        highAuto.setVisibility(View.GONE);
-                        hotAuto.setVisibility(View.GONE);
-                        autoMode.programaticallyCheck(getScouting().getAutoMode());
-                        break;
-                    case R.id.shooter:
-                        shooterGroup.setVisibility(View.VISIBLE);
-                        lowGoal.setChecked(getScouting().isLowGoal());
-                        highGoal.setVisibility(View.VISIBLE);
-                        highGoal.setChecked(getScouting().isHighGoal());
-                        hotGoal.setVisibility(View.VISIBLE);
-                        hotGoal.setChecked(getScouting().isHotGoal());
-                        shootingDistanceGroup.setVisibility(View.VISIBLE);
-                        if(0!=getScouting().getShootingDistance()) {
-                            shootingDistance.setText(Float.toString(getScouting().getShootingDistance()));
-                        }
-                        lowAuto.setVisibility(View.VISIBLE);
-                        highAuto.setVisibility(View.VISIBLE);
-                        hotAuto.setVisibility(View.VISIBLE);
-                        switch(getScouting().getAutoMode()){
-                            case R.id.team2014noAuto:
-                                noAuto.setChecked(true);
-                                break;
-                            case R.id.team2014driveAuto:
-                                driveAuto.setChecked(true);
-                                break;
-                            case R.id.team2014lowAuto:
-                                lowAuto.setChecked(true);
-                                break;
-                            case R.id.team2014highAuto:
-                                highAuto.setChecked(true);
-                                break;
-                            case R.id.team2014hotAuto:
-                                hotAuto.setChecked(true);
-                                break;
-                        }
-                        break;
+                if(null!=getScouting()) {
+                    switch (checkedId) {
+                        default:
+                        case R.id.none:
+                            shooterGroup.setVisibility(View.GONE);
+                            lowGoal.setChecked(false);
+                            highGoal.setChecked(false);
+                            hotGoal.setChecked(false);
+                            shootingDistanceGroup.setVisibility(View.GONE);
+                            shootingDistance.setText("");
+                            lowAuto.setVisibility(View.GONE);
+                            lowAuto.setChecked(false);
+                            highAuto.setVisibility(View.GONE);
+                            highAuto.setChecked(false);
+                            hotAuto.setVisibility(View.GONE);
+                            hotAuto.setChecked(false);
+                            break;
+                        case R.id.dumper:
+                            shooterGroup.setVisibility(View.VISIBLE);
+                            lowGoal.setChecked(getScouting().isLowGoal());
+                            highGoal.setVisibility(View.GONE);
+                            highGoal.setChecked(false);
+                            hotGoal.setVisibility(View.GONE);
+                            hotGoal.setChecked(false);
+                            shootingDistanceGroup.setVisibility(View.GONE);
+                            shootingDistance.setText("");
+                            lowAuto.setVisibility(View.VISIBLE);
+                            highAuto.setVisibility(View.GONE);
+                            hotAuto.setVisibility(View.GONE);
+                            autoMode.programaticallyCheck(getScouting().getAutoMode());
+                            break;
+                        case R.id.shooter:
+                            shooterGroup.setVisibility(View.VISIBLE);
+                            lowGoal.setChecked(getScouting().isLowGoal());
+                            highGoal.setVisibility(View.VISIBLE);
+                            highGoal.setChecked(getScouting().isHighGoal());
+                            hotGoal.setVisibility(View.VISIBLE);
+                            hotGoal.setChecked(getScouting().isHotGoal());
+                            shootingDistanceGroup.setVisibility(View.VISIBLE);
+                            if(0!=getScouting().getShootingDistance()) {
+                                shootingDistance.setText(Double.toString(getScouting().getShootingDistance()));
+                            }
+                            lowAuto.setVisibility(View.VISIBLE);
+                            highAuto.setVisibility(View.VISIBLE);
+                            hotAuto.setVisibility(View.VISIBLE);
+                            switch(getScouting().getAutoMode()){
+                                case R.id.team2014noAuto:
+                                    noAuto.setChecked(true);
+                                    break;
+                                case R.id.team2014driveAuto:
+                                    driveAuto.setChecked(true);
+                                    break;
+                                case R.id.team2014lowAuto:
+                                    lowAuto.setChecked(true);
+                                    break;
+                                case R.id.team2014highAuto:
+                                    highAuto.setChecked(true);
+                                    break;
+                                case R.id.team2014hotAuto:
+                                    hotAuto.setChecked(true);
+                                    break;
+                            }
+                            break;
+                    }
                 }
             }
         });
@@ -348,19 +350,19 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 		driveTrain.setText(getScouting().getDriveTrain());
 		//check if its 0, if so empty the string so the user doesnt go crazy
 		if(0!=getScouting().getWidth()) {
-			num = Float.toString(getScouting().getWidth());
+			num = Double.toString(getScouting().getWidth());
 			width.setText(num);
 		}
 		if(0!=getScouting().getLength()) {
-			num = Float.toString(getScouting().getLength());
+			num = Double.toString(getScouting().getLength());
 			length.setText(num);
 		}
 		if(0!=getScouting().getHeightShooter()) {
-			num = Float.toString(getScouting().getHeightShooter());
+			num = Double.toString(getScouting().getHeightShooter());
 			heightShooter.setText(num);
 		}
 		if(0!=getScouting().getHeightMax()) {
-			num = Float.toString(getScouting().getHeightMax());
+			num = Double.toString(getScouting().getHeightMax());
 			heightMax.setText(num);
 		}
 		shooterTypes.programaticallyCheck(getScouting().getShooterType());
@@ -368,7 +370,7 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         highGoal.setChecked(getScouting().isHighGoal());
         hotGoal.setChecked(getScouting().isHotGoal());
         if(0!=getScouting().getShootingDistance()) {
-            num = Float.toString(getScouting().getShootingDistance());
+            num = Double.toString(getScouting().getShootingDistance());
             shootingDistance.setText(num);
         }
         passGround.setChecked(getScouting().isPassGround());
@@ -378,7 +380,7 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         pickupCatch.setChecked(getScouting().isPickupCatch());
         pusher.setChecked(getScouting().isPusher());
 		blocker.setChecked(getScouting().isBlocker());
-        humanPlayer.setRating(getScouting().getHumanPlayer());
+        humanPlayer.setRating((float)getScouting().getHumanPlayer());
         autoMode.programaticallyCheck(getScouting().getAutoMode());
 	}
 	

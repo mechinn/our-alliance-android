@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-	<item android:id="@+id/matchList" android:orderInCategory="1" android:menuCategory="system" android:showAsAction="ifRoom" android:title="Match List"></item>
-    <item
-        android:id="@+id/insert"
-        android:showAsAction="ifRoom"
-        android:title="Add Team" android:menuCategory="system" android:orderInCategory="2">
+	<item android:id="@+id/matchList"
+          android:orderInCategory="1"
+          android:menuCategory="system"
+          android:showAsAction="ifRoom"
+          android:title="Match List">
     </item>
-    <!--<item android:id="@+id/export" android:orderInCategory="3" android:menuCategory="system" android:title="Export Scouting" android:showAsAction="ifRoom"></item>-->
+    <item
+        android:id="@+id/insertTeamScouting"
+        android:showAsAction="ifRoom"
+        android:title="Add Team"
+        android:menuCategory="system"
+        android:orderInCategory="2">
+    </item>
+    <item android:id="@+id/exportTeamScouting"
+          android:orderInCategory="3"
+          android:menuCategory="system"
+          android:title="Export Scouting"
+          android:showAsAction="ifRoom">
+    </item>
+    <item
+        android:id="@+id/importTeamScouting"
+        android:orderInCategory="4"
+        android:menuCategory="system"
+        android:title="Import Scouting"
+        android:showAsAction="ifRoom">
+    </item>
 </menu>

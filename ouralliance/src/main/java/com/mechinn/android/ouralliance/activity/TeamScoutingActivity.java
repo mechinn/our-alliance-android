@@ -21,15 +21,16 @@ import com.mechinn.android.ouralliance.fragment.MatchTeamListFragment;
 import com.mechinn.android.ouralliance.fragment.MultimediaContextDialogFragment;
 import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;
 import com.mechinn.android.ouralliance.fragment.TeamListFragment;
+import com.mechinn.android.ouralliance.fragment.frc2014.MatchTeamList2014Fragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.TeamDetail2014;
 
 public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialogFragment.Listener, InsertTeamDialogFragment.Listener {
-	public static final String TAG = TeamScoutingActivity.class.getSimpleName();
+    public static final String TAG = "TeamScoutingActivity";
 	public static final String TEAM_ARG = "team";
 	public static final String MATCH_ARG = "match";
 	public static final String MATCHNAME_ARG = "matchname";
 	private TeamListFragment teamListFrag;
-	private MatchTeamListFragment matchTeamListFrag;
+	private MatchTeamListFragment<?> matchTeamListFrag;
 	private TeamDetailFragment<?> teamDetailFragment;
 	private int listFrag;
 	private int detailFrag;
@@ -60,7 +61,15 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
             	if(listFrag==detailFrag) {
             		onTeamSelected(loadTeam);
             	} else {
-                	matchTeamListFrag = new MatchTeamListFragment();
+                    switch(prefs.getYear()) {
+                        case 2014:
+                            matchTeamListFrag = new MatchTeamList2014Fragment();
+                            break;
+                        default:
+                            Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();
+                            return;
+
+                    }
                 	Bundle bundle = new Bundle();
                 	matchTeamListFrag.setArguments(bundle);
                     getFragmentManager().beginTransaction().replace(listFrag, matchTeamListFrag).commit();

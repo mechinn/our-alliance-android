@@ -4,7 +4,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 public class UncheckableRadioGroupOnCheckedChangeListener implements OnCheckedChangeListener {
-	public final static String TAG = UncheckableRadioGroupOnCheckedChangeListener.class.getSimpleName();
+    public static final String TAG = "UncheckableRadioGroupOnCheckedChangeListener";
 
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		UncheckableRadioButton uncheckableRadioButton;

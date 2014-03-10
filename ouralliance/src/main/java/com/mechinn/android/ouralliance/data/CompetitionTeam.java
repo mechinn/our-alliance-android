@@ -1,35 +1,43 @@
 package com.mechinn.android.ouralliance.data;
 
-import se.emilsjolander.sprinkles.annotations.CascadeDelete;
-import se.emilsjolander.sprinkles.annotations.Check;
-import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ConflictClause;
-import se.emilsjolander.sprinkles.annotations.ForeignKey;
-import se.emilsjolander.sprinkles.annotations.Table;
-import se.emilsjolander.sprinkles.annotations.UniqueCombo;
-import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
+import android.util.Log;
+import se.emilsjolander.sprinkles.Query;
+import se.emilsjolander.sprinkles.annotations.*;
 
-@Table
+@Table(CompetitionTeam.TAG)
 @UniqueComboConflictClause(ConflictClause.IGNORE)
 public class CompetitionTeam extends AOurAllianceData implements Comparable<CompetitionTeam> {
-	public static final String TAG = CompetitionTeam.class.getSimpleName();
+    public static final String TAG = "CompetitionTeam";
 	private static final long serialVersionUID = 1458046534212642950L;
 
-    @Column
+    public static final String COMPETITION = Competition.TAG;
+    public static final String TEAM = Team.TAG;
+    public static final String RANK = "rank";
+    public static final String SCOUTED = "scouted";
+
+    public static final String[] FIELD_MAPPING = new String[] {
+            MODIFIED
+            ,COMPETITION+"."+Competition.CODE
+            ,TEAM+"."+Team.NUMBER
+            ,RANK
+            ,SCOUTED
+    };
+
+    @Column(COMPETITION)
     @UniqueCombo
     @ForeignKey("Competition(_id)")
     @CascadeDelete
     @Check("competition > 0")
 	private Competition competition;
-    @Column
+    @Column(TEAM)
     @UniqueCombo
     @ForeignKey("Team(_id)")
     @CascadeDelete
     @Check("team > 0")
 	private Team team;
-    @Column
+    @Column(RANK)
 	private int rank;
-    @Column
+    @Column(SCOUTED)
 	private boolean scouted;
 	public CompetitionTeam() {
 		super();
@@ -86,4 +94,8 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	public int compareTo(CompetitionTeam another) {
         return this.getRank() - another.getRank();
 	}
+
+    public AOurAllianceData validate() {
+        return Query.one(CompetitionTeam.class, "SELECT * FROM " + TAG + " WHERE "+COMPETITION+"=? AND " + TEAM + "=? LIMIT 1",getCompetition().getId(), getTeam().getId()).get();
+    }
 }

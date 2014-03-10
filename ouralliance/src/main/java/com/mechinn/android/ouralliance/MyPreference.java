@@ -30,7 +30,7 @@ import android.widget.TextView;
  * number of clicks it has received and stores/retrieves it from the storage.
  */
 public class MyPreference extends Preference {
-	public static final String TAG = MyPreference.class.getSimpleName();
+    public static final String TAG = "MyPreference";
     private int mClickCounter;
 
     // This is the constructor called by the inflater

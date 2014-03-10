@@ -2,7 +2,7 @@ package com.mechinn.android.ouralliance.data;
 import java.util.ArrayList;
 
 public class JsonCompetition {
-	public static final String TAG = JsonCompetition.class.getSimpleName();
+    public static final String TAG = "JsonCompetition";
 
 
     private String end_date;

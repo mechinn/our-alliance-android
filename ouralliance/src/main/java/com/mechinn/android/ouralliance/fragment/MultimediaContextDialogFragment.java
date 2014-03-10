@@ -24,7 +24,7 @@ import android.widget.Toast;
 import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
 
 public class MultimediaContextDialogFragment extends DialogFragment implements Callback {
-	public static final String TAG = MultimediaContextDialogFragment.class.getSimpleName();
+    public static final String TAG = "MultimediaContextDialogFragment";
 	public static final String IMAGE = "image";
 	private File file;
     private View dialog;

@@ -10,7 +10,7 @@ import se.emilsjolander.sprinkles.Query;
  * Created by mechinn on 2/18/14.
  */
 public class SeasonSerializer extends AOurAllianceDataSerializer<Season> {
-    public static final String TAG = SeasonSerializer.class.getSimpleName();
+    public static final String TAG = "SeasonSerializer";
 
     @Override
     public Season unpack(Cursor c, String name) {

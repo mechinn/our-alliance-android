@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import com.mechinn.android.ouralliance.Export;
+import com.mechinn.android.ouralliance.Import;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.CompetitionTeamDragSortListAdapter;
@@ -38,7 +39,7 @@ import se.emilsjolander.sprinkles.OneQuery;
 import se.emilsjolander.sprinkles.Query;
 
 public class TeamListFragment extends Fragment {
-	public static final String TAG = TeamListFragment.class.getSimpleName();
+    public static final String TAG = "TeamListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
     private DragSortListView dslv;
@@ -132,7 +133,7 @@ public class TeamListFragment extends Fragment {
         saving.save();
         Log.d(TAG,"saving id: "+saving.getId());
         if(saving.getId()==0) {
-            Query.one(Team.class, "select * from Team where teamNumber=? LIMIT 1",saving.getNumber()).getAsync(this.getLoaderManager(),onTeamLoaded);
+            Query.one(Team.class, "select * from Team where teamNumber=? LIMIT 1",saving.getTeamNumber()).getAsync(this.getLoaderManager(),onTeamLoaded);
         } else {
             saveCompetitionTeam();
         }
@@ -267,7 +268,7 @@ public class TeamListFragment extends Fragment {
 	        		noCompetition();
 	        	}
 	            return true;
-	        case R.id.insert:
+	        case R.id.insertTeamScouting:
 	        	if(null!=comp) {
 		            DialogFragment newFragment = new InsertTeamDialogFragment();
 		    		newFragment.show(this.getFragmentManager(), "Add Team");
@@ -275,13 +276,20 @@ public class TeamListFragment extends Fragment {
 	        		noCompetition();
 	        	}
 	            return true;
-//	        case R.id.export:
-//	        	if(null!=comp) {
-//	        		new Export(this.getActivity()).execute();
-//	        	} else {
-//	        		noCompetition();
-//	        	}
-//	            return true;
+	        case R.id.exportTeamScouting:
+	        	if(null!=comp) {
+	        		new Export(this.getActivity(),Export.Types.TEAMSCOUTING2014).execute();
+	        	} else {
+	        		noCompetition();
+	        	}
+	            return true;
+            case R.id.importTeamScouting:
+                if(null!=comp) {
+                    new Import(this.getActivity(),Import.Types.TEAMSCOUTING2014).execute();
+                } else {
+                    noCompetition();
+                }
+                return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

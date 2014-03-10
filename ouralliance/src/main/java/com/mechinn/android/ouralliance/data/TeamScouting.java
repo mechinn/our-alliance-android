@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
+import org.apache.commons.lang3.ArrayUtils;
 import se.emilsjolander.sprinkles.annotations.CascadeDelete;
 import se.emilsjolander.sprinkles.annotations.Check;
 import se.emilsjolander.sprinkles.annotations.Column;
@@ -8,24 +9,20 @@ import se.emilsjolander.sprinkles.annotations.NotNull;
 import se.emilsjolander.sprinkles.annotations.UniqueCombo;
 
 public abstract class TeamScouting extends AOurAllianceData implements Comparable<TeamScouting>  {
-	public static final String TAG = TeamScouting.class.getSimpleName();
+	public static final String TAG = "TeamScouting";
 	private static final long serialVersionUID = 2234995463512680398L;
-	public static final String SEASON = Season.TAG;
 	public static final String TEAM = Team.TAG;
     public static final String NOTES = "notes";
-	public static final String[] ALLCOLUMNSBASE = { SEASON, TEAM, NOTES };
 
-	public static final String TITLE_NOTES = "Scouting Notes";
-
-    @Column
+    @Column(TEAM)
     @UniqueCombo
     @ForeignKey("Team(_id)")
     @CascadeDelete
     @Check("team > 0")
 	private Team team;
-    @Column
-    @NotNull
-	private CharSequence notes;
+    @Column(NOTES)
+	private String notes;
+
 
 	public TeamScouting() {
 		super();
@@ -42,14 +39,21 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 	public void setTeam(Team team) {
 		this.team = team;
 	}
-	public CharSequence getNotes() {
+	public String getNotes() {
 		if(null==notes) {
 			return "";
 		}
 		return notes;
 	}
+    public void setNotes(String notes) {
+            this.notes = notes.toString();
+    }
 	public void setNotes(CharSequence notes) {
-		this.notes = notes;
+        if(null==notes) {
+            setNotes("");
+        } else {
+            setNotes(notes.toString());
+        }
 	}
 	public boolean equals(TeamScouting data) {
 		return super.equals(data) &&

@@ -1,37 +1,39 @@
 package com.mechinn.android.ouralliance.data;
 
-import se.emilsjolander.sprinkles.annotations.CascadeDelete;
-import se.emilsjolander.sprinkles.annotations.Check;
-import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ConflictClause;
-import se.emilsjolander.sprinkles.annotations.ForeignKey;
-import se.emilsjolander.sprinkles.annotations.NotNull;
-import se.emilsjolander.sprinkles.annotations.Table;
-import se.emilsjolander.sprinkles.annotations.UniqueCombo;
-import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
+import se.emilsjolander.sprinkles.Query;
+import se.emilsjolander.sprinkles.annotations.*;
 
-@Table
+@Table(Competition.TAG)
 @UniqueComboConflictClause(ConflictClause.IGNORE)
 public class Competition extends AOurAllianceData implements Comparable<Competition> {
-	public static final String TAG = Competition.class.getSimpleName();
+    public static final String TAG = "Competition";
 	private static final long serialVersionUID = -5179493838272851750L;
 	public static final String SEASON = Season.TAG;
     public static final String NAME = "name";
     public static final String CODE = "code";
 
-    @Column
+    public static final String[] FIELD_MAPPING = new String[] {
+            MODIFIED
+            ,SEASON+"."+Season.YEAR
+            ,NAME
+            ,CODE
+    };
+
+    @Column(SEASON)
     @UniqueCombo
-    @ForeignKey("Season(_id)")
+    @ForeignKey(SEASON+"("+_ID+")")
     @CascadeDelete
-    @Check("season > 0")
+    @Check(SEASON+" > 0")
 	private Season season;
-    @Column
+    @Column(NAME)
+    @NotNull
+    @Check(NAME+" != ''")
+	private String name;
+    @Column(CODE)
     @UniqueCombo
     @NotNull
-	private CharSequence name;
-    @Column
-    @NotNull
-	private CharSequence code;
+    @Check(CODE+" != ''")
+	private String code;
 
 	public Competition() {
 		super();
@@ -39,7 +41,7 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
     public Competition(long id) {
         super(id);
     }
-	public Competition(Season season, CharSequence name, CharSequence code) {
+	public Competition(Season season, String name, String code) {
         this.setSeason(season);
         this.setName(name);
         this.setCode(code);
@@ -50,18 +52,32 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 	public void setSeason(Season season) {
 		this.season = season;
 	}
-	public CharSequence getName() {
+	public String getName() {
 		return name;
 	}
-	public void setName(CharSequence name) {
+	public void setName(String name) {
 		this.name = name;
 	}
-	public CharSequence getCode() {
+    public void setName(CharSequence name) {
+        if(null==name) {
+            setName("");
+        } else {
+            setName(name.toString());
+        }
+    }
+	public String getCode() {
 		return code;
 	}
-	public void setCode(CharSequence code) {
-		this.code = code;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
+    public void setCode(CharSequence code) {
+        if(null==code) {
+            setCode("");
+        } else {
+            setCode(code.toString());
+        }
+    }
 	public String toString() {
 		return ""+this.name;
 	}
@@ -74,4 +90,8 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 	public int compareTo(Competition another) {
 		return this.getName().toString().compareTo(another.getName().toString());
 	}
+
+    public AOurAllianceData validate() {
+        return Query.one(Competition.class, "SELECT * FROM " + TAG + " WHERE "+SEASON+"=? AND " + CODE + "=? LIMIT 1", getSeason(), getCode()).get();
+    }
 }

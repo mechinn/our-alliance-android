@@ -43,7 +43,7 @@ import se.emilsjolander.sprinkles.OneQuery;
 import se.emilsjolander.sprinkles.Query;
 
 public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragment {
-	public static final String TAG = TeamDetailFragment.class.getSimpleName();
+    public static final String TAG = "TeamDetailFragment";
 	public static final String TEAM_ARG = "team";
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
 	private final static int PICTURE_CAPTURE_CODE = 100;
@@ -379,7 +379,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	}
 	
 	public void setView() {
-		this.getActivity().setTitle(Integer.toString(scouting.getTeam().getNumber())+": "+scouting.getTeam().getName());
+		this.getActivity().setTitle(Integer.toString(scouting.getTeam().getTeamNumber())+": "+scouting.getTeam().getName());
 		multimedia = new MultimediaAdapter(this.getActivity(),scouting);
 		Log.d(TAG,"thumbs: "+multimedia.getCount());
 		gallery.setAdapter(multimedia);
@@ -398,7 +398,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 		view.setTag(thisWheel);
 		//1 is the type field
 		AutoCompleteTextView type = (AutoCompleteTextView)view.getChildAt(TeamScoutingWheel.FIELD_TYPE);
-		type.setText(thisWheel.getType());
+		type.setText(thisWheel.getWheelType());
 		type.setThreshold(1);
 		type.setAdapter(wheelTypesAdapter);
 		type.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -420,16 +420,16 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 		});
 		String num;
 		//if the size is currently 0 dont show it for the user's sake
-		if(0!=thisWheel.getSize()) {
+		if(0!=thisWheel.getWheelSize()) {
 			//get the number 
-			num = Float.toString(thisWheel.getSize());
+			num = Double.toString(thisWheel.getWheelSize());
 			TextView size = (TextView)view.getChildAt(TeamScoutingWheel.FIELD_SIZE);
 			size.setText(num);
 		}
 		//if the size is currently 0 dont show it for the user's sake
-		if(0!=thisWheel.getCount()) {
+		if(0!=thisWheel.getWheelCount()) {
 			//get the number 
-			num = Integer.toString(thisWheel.getCount());
+			num = Integer.toString(thisWheel.getWheelCount());
 			//6 is the count field
 			TextView count = (TextView)view.getChildAt(TeamScoutingWheel.FIELD_COUNT);
 			count.setText(num);
@@ -452,11 +452,11 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 			LinearLayout theWheelView = (LinearLayout) wheels.getChildAt(i);
 			TeamScoutingWheel theWheel = (TeamScoutingWheel) theWheelView.getTag();
 			CharSequence type = ((TextView) theWheelView.getChildAt(TeamScoutingWheel.FIELD_TYPE)).getText();
-			theWheel.setType(type);
+			theWheel.setWheelType(type);
 			CharSequence size = ((TextView) theWheelView.getChildAt(TeamScoutingWheel.FIELD_SIZE)).getText();
-			theWheel.setSize(Utility.getFloatFromText(size));
+			theWheel.setWheelSize(Utility.getFloatFromText(size));
 			CharSequence count = ((TextView) theWheelView.getChildAt(TeamScoutingWheel.FIELD_COUNT)).getText();
-			theWheel.setCount(Utility.getIntFromText(count));
+			theWheel.setWheelCount(Utility.getIntFromText(count));
 			//see if we should update or insert or just tell the user there isnt enough info
             theWheel.save();
 		}

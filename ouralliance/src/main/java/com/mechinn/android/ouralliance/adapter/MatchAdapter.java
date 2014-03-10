@@ -13,7 +13,7 @@ import android.widget.TextView;
 import se.emilsjolander.sprinkles.ModelList;
 
 public class MatchAdapter extends BaseAdapter {
-	public static final String TAG = MatchAdapter.class.getSimpleName();
+    public static final String TAG = "MatchAdapter";
     Context context;
     ModelList<Match> matches;
 	 
@@ -44,7 +44,7 @@ public class MatchAdapter extends BaseAdapter {
         if(isEmpty()) {
             return null;
         }
-        return getItem(0).getRed1().getCompetition();
+        return getItem(0).getCompetition();
     }
 
     @Override
@@ -71,7 +71,7 @@ public class MatchAdapter extends BaseAdapter {
             TextView summary = (TextView)container.findViewById(android.R.id.text1);
             TextView subText = (TextView)container.findViewById(android.R.id.text2);
             summary.setText(matches.get(position).toString());
-            subText.setText(matches.get(position).getTeams());
+//            subText.setText(matches.get(position).getTeams());
         }
         return container;
     }

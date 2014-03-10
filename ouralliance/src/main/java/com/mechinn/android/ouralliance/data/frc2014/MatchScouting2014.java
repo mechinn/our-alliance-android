@@ -7,19 +7,29 @@ import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 
+import com.mechinn.android.ouralliance.processor.FmtMatch;
+import com.mechinn.android.ouralliance.processor.FmtTeam;
+import com.mechinn.android.ouralliance.processor.ParseMatch;
+import com.mechinn.android.ouralliance.processor.ParseTeam;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Date;
 
+import org.supercsv.cellprocessor.FmtBool;
+import org.supercsv.cellprocessor.FmtDate;
+import org.supercsv.cellprocessor.ParseBool;
+import org.supercsv.cellprocessor.ParseDate;
+import org.supercsv.cellprocessor.ift.CellProcessor;
+import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.Column;
 import se.emilsjolander.sprinkles.annotations.ConflictClause;
 import se.emilsjolander.sprinkles.annotations.Table;
 import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 
-@Table("MatchScouting2014")
+@Table(MatchScouting2014.TAG)
 @UniqueComboConflictClause(ConflictClause.IGNORE)
 public class MatchScouting2014 extends MatchScouting implements Comparable<MatchScouting>  {
-	public static final String TAG = MatchScouting2014.class.getSimpleName();
+    public static final String TAG = "MatchScouting2014";
 	private static final long serialVersionUID = 2234995463512680398L;
     public static final String HOTSHOTS = "hotShots";
     public static final String SHOTSMADE = "shotsMade";
@@ -35,6 +45,69 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     public static final String LOW = "low";
     public static final String HIGH = "high";
 
+    public static final String[] FIELD_MAPPING = new String[] {
+            MODIFIED
+            ,MATCH
+            ,TEAM
+            ,ALLIANCE
+            ,NOTES
+            ,HOTSHOTS
+            ,SHOTSMADE
+            ,SHOTSMISSED
+            ,MOVEFWD
+            ,SHOOTER
+            ,CATCHER
+            ,PASSER
+            ,DRIVETRAIN
+            ,BALLACCURACY
+            ,GROUND
+            ,OVERTRUSS
+            ,LOW
+            ,HIGH
+    };
+
+    public static final CellProcessor[] writeProcessor = new CellProcessor[] {
+            new FmtDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
+            ,new FmtMatch()                     //MATCH
+            ,new FmtTeam()                      //TEAM
+            ,new FmtBool(TRUE,FALSE)            //ALLIANCE
+            ,null                               //NOTES
+            ,null                               //HOTSHOTS
+            ,null                               //SHOTSMADE
+            ,null                               //SHOTSMISSED
+            ,null                               //MOVEFWD
+            ,new FmtBool(TRUE,FALSE)            //SHOOTER
+            ,new FmtBool(TRUE,FALSE)            //CATCHER
+            ,new FmtBool(TRUE,FALSE)            //PASSER
+            ,null                               //DRIVETRAIN
+            ,new FmtBool(TRUE,FALSE)            //BALLACCURACY
+            ,new FmtBool(TRUE,FALSE)            //GROUND
+            ,new FmtBool(TRUE,FALSE)            //OVERTRUSS
+            ,new FmtBool(TRUE,FALSE)            //LOW
+            ,new FmtBool(TRUE,FALSE)            //HIGH
+    };
+
+    public static final CellProcessor[] readProcessor = new CellProcessor[] {
+            new ParseDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
+            ,new ParseMatch()                     //TEAM
+            ,new ParseTeam()                      //TEAM
+            ,new ParseBool(TRUE,FALSE)            //ALLIANCE
+            ,null                                 //NOTES
+            ,null                                 //HOTSHOTS
+            ,null                                 //SHOTSMADE
+            ,null                                 //SHOTSMISSED
+            ,null                                 //MOVEFWD
+            ,new ParseBool(TRUE,FALSE)            //SHOOTER
+            ,new ParseBool(TRUE,FALSE)            //CATCHER
+            ,new ParseBool(TRUE,FALSE)            //PASSER
+            ,null                                 //DRIVETRAIN
+            ,null                                 //BALLACCURACY
+            ,new ParseBool(TRUE,FALSE)            //GROUND
+            ,new ParseBool(TRUE,FALSE)            //OVERTRUSS
+            ,new ParseBool(TRUE,FALSE)            //LOW
+            ,new ParseBool(TRUE,FALSE)            //HIGH
+    };
+
     @Column(HOTSHOTS)
     private int hotShots;
     @Column(SHOTSMADE)
@@ -42,7 +115,7 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     @Column(SHOTSMISSED)
     private int shotsMissed;
     @Column(MOVEFWD)
-    private float moveFwd;
+    private double moveFwd;
     @Column(SHOOTER)
     private boolean shooter;
     @Column(CATCHER)
@@ -50,9 +123,9 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     @Column(PASSER)
     private boolean passer;
     @Column(DRIVETRAIN)
-    private float driveTrain;
+    private double driveTrain;
     @Column(BALLACCURACY)
-    private float ballAccuracy;
+    private double ballAccuracy;
     @Column(GROUND)
     private boolean ground;
     @Column(OVERTRUSS)
@@ -68,8 +141,8 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     public MatchScouting2014(long id) {
         super(id);
     }
-	public MatchScouting2014(Match match, CompetitionTeam team) {
-        super(match, team);
+	public MatchScouting2014(Match match, CompetitionTeam team, boolean blue) {
+        super(match, team, blue);
 	}
     public int getHotShots() {
         return hotShots;
@@ -89,10 +162,10 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     public void setShotsMissed(int shotsMissed) {
         this.shotsMissed = shotsMissed;
     }
-    public float getMoveFwd() {
+    public double getMoveFwd() {
         return moveFwd;
     }
-    public void setMoveFwd(float moveFwd) {
+    public void setMoveFwd(double moveFwd) {
         this.moveFwd = moveFwd;
     }
     public boolean isShooter() {
@@ -113,16 +186,16 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     public void setPasser(boolean passer) {
         this.passer = passer;
     }
-    public float getDriveTrain() {
+    public double getDriveTrain() {
         return driveTrain;
     }
-    public void setDriveTrain(float driveTrain) {
+    public void setDriveTrain(double driveTrain) {
         this.driveTrain = driveTrain;
     }
-    public float getBallAccuracy() {
+    public double getBallAccuracy() {
         return ballAccuracy;
     }
-    public void setBallAccuracy(float ballAccuracy) {
+    public void setBallAccuracy(double ballAccuracy) {
         this.ballAccuracy = ballAccuracy;
     }
     public boolean isGround() {
@@ -164,5 +237,9 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
                 isOverTruss()==data.isOverTruss() &&
                 isLow()==data.isLow() &&
                 isHigh()==data.isHigh();
+    }
+
+    public AOurAllianceData validate() {
+        return Query.one(MatchScouting2014.class, "SELECT * FROM " + TAG + " WHERE " + MATCH + "=? AND " + TEAM + "=? LIMIT 1", getMatch().getId(), getTeam().getId()).get();
     }
 }

@@ -23,16 +23,15 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MatchTeamSelectAdapter;
-import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
 import se.emilsjolander.sprinkles.ModelList;
 
 public class InsertMatchDialogFragment extends DialogFragment {
-	public static final String TAG = InsertMatchDialogFragment.class.getSimpleName();
+    public static final String TAG = "InsertMatchDialogFragment";
 	public static final String MATCH_ARG = "match";
 	public static final String TEAMS_ARG = "teams";
 
@@ -119,17 +118,17 @@ public class InsertMatchDialogFragment extends DialogFragment {
 			type.setOnItemSelectedListener(new OnItemSelectedListener() {
 				@Override
 				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-					if(Match.QUARTERFINAL==position) {
-						set.setVisibility(View.VISIBLE);
-						set.setAdapter(quarterfinals);
-					} else if(Match.SEMIFINAL==position) {
+					if(Match.Type.QUARTERFINAL.getValue()==position) {
+                        set.setVisibility(View.VISIBLE);
+                        set.setAdapter(quarterfinals);
+					} else if(Match.Type.SEMIFINAL.getValue()==position) {
 						set.setVisibility(View.VISIBLE);
 						set.setAdapter(semifinals);
 					} else {
 						set.setVisibility(View.INVISIBLE);
 						set.setSelection(0);
 					}
-					if(Match.QUALIFIER==position) {
+					if(Match.Type.QUALIFIER.getValue()==position) {
 						numberContainer.setVisibility(View.VISIBLE);
 					} else {
 						numberContainer.setVisibility(View.GONE);
@@ -173,7 +172,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		int yes;
 		try {
 			match = (Match) this.getArguments().getSerializable(MATCH_ARG);
-			number.setText(Integer.toString(match.getNumber()));
+			number.setText(Integer.toString(match.getDisplayNum()));
     		yes = R.string.update;
     		Log.d(TAG, "update");
 		} catch(NullPointerException e) {
@@ -185,32 +184,26 @@ public class InsertMatchDialogFragment extends DialogFragment {
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     if (prefs.getPractice()) {
-                        match.setType(Match.PRACTICE);
+                        match.setMatchType(Match.Type.PRACTICE);
                     } else {
-                        match.setType(type.getSelectedItemPosition());
+                        match.setMatchType(type.getSelectedItemPosition());
                         if (View.VISIBLE == set.getVisibility()) {
-                            match.setSet(set.getSelectedItemPosition() + 1);
+                            match.setMatchSet(set.getSelectedItemPosition() + 1);
                         }
                     }
-                    match.setRed1(((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()));
-                    match.setRed2(((MatchTeamSelectAdapter) red2.getAdapter()).getItem(red2.getSelectedItemPosition()));
-                    match.setRed3(((MatchTeamSelectAdapter) red3.getAdapter()).getItem(red3.getSelectedItemPosition()));
-                    match.setBlue1(((MatchTeamSelectAdapter) blue1.getAdapter()).getItem(blue1.getSelectedItemPosition()));
-                    match.setBlue2(((MatchTeamSelectAdapter) blue2.getAdapter()).getItem(blue2.getSelectedItemPosition()));
-                    match.setBlue3(((MatchTeamSelectAdapter) blue3.getAdapter()).getItem(blue3.getSelectedItemPosition()));
-                    match.setNumber(Utility.getIntFromText(number.getText()));
+                    match.setMatchNum(Utility.getIntFromText(number.getText()));
                     match.setRedScore(-1);
                     match.setBlueScore(-1);
-                    match.setCompetition(match.getRed1().getCompetition());
+                    match.setCompetition(((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()).getCompetition());
                     match.save();
                     switch (prefs.getYear()) {
                         case 2014:
-                            new MatchScouting2014(match, match.getRed1()).save();
-                            new MatchScouting2014(match, match.getRed2()).save();
-                            new MatchScouting2014(match, match.getRed3()).save();
-                            new MatchScouting2014(match, match.getBlue1()).save();
-                            new MatchScouting2014(match, match.getBlue2()).save();
-                            new MatchScouting2014(match, match.getBlue3()).save();
+                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()), false).save();
+                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) red2.getAdapter()).getItem(red2.getSelectedItemPosition()), false).save();
+                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) red3.getAdapter()).getItem(red3.getSelectedItemPosition()), false).save();
+                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue1.getAdapter()).getItem(blue1.getSelectedItemPosition()), true).save();
+                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue2.getAdapter()).getItem(blue2.getSelectedItemPosition()), true).save();
+                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue3.getAdapter()).getItem(blue3.getSelectedItemPosition()), true).save();
                             break;
                     }
                 }

@@ -16,7 +16,7 @@ import com.mechinn.android.ouralliance.fragment.PreferenceListFragment;
  * Created by mechinn on 2/19/14.
  */
 public class PreferenceActivity extends Activity implements PreferenceListFragment.OnPreferenceAttachedListener, FragmentManager.OnBackStackChangedListener {
-    public static final String TAG = PreferenceActivity.class.getSimpleName();
+    public static final String TAG = "PreferenceActivity";
     private Prefs prefs;
     private PreferenceFragment preferenceFrag;
 

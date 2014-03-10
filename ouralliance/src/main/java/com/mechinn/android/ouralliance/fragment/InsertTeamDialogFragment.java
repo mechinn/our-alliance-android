@@ -16,7 +16,7 @@ import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Team;
 
 public class InsertTeamDialogFragment extends DialogFragment {
-	public static final String TAG = InsertTeamDialogFragment.class.getSimpleName();
+    public static final String TAG = "InsertTeamDialogFragment";
 	public static final String TEAM_ARG = "team";
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
@@ -54,7 +54,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
 		int yes;
 		try {
 			team = (Team) this.getArguments().getSerializable(TEAM_ARG);
-    		teamNumber.setText(Integer.toString(team.getNumber()));
+    		teamNumber.setText(Integer.toString(team.getTeamNumber()));
     		yes = R.string.update;
     		Log.d(TAG, "update");
 		} catch(NullPointerException e) {
@@ -65,7 +65,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					team.setNumber(Utility.getIntFromText(teamNumber.getText()));
+					team.setTeamNumber(Utility.getIntFromText(teamNumber.getText()));
                     listener.onInsertTeamDialogPositiveClick(team);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

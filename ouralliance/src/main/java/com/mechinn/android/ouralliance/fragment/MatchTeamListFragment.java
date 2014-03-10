@@ -15,36 +15,46 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import se.emilsjolander.sprinkles.OneQuery;
-import se.emilsjolander.sprinkles.Query;
+import com.mechinn.android.ouralliance.data.MatchScouting;
+import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
+import se.emilsjolander.sprinkles.*;
 
-public class MatchTeamListFragment extends ListFragment {
-	public static final String TAG = MatchTeamListFragment.class.getSimpleName();
+public abstract class MatchTeamListFragment<A extends MatchScouting> extends ListFragment {
+    public static final String TAG = "MatchTeamListFragment";
 	public static final String MATCH_ARG = "match";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
 	private Prefs prefs;
-	private MatchTeamAdapter adapter;
+	private MatchTeamAdapter<A> adapter;
     private long matchId;
 
 	public interface Listener {
-        public void onMatchTeamSelected(long match, long team);
+        public void onMatchTeamSelected(long team);
     }
 
-    private OneQuery.ResultHandler<Match> onMatchLoaded =
-            new OneQuery.ResultHandler<Match>() {
+    private ManyQuery.ResultHandler<A> onMatchLoaded =
+            new ManyQuery.ResultHandler<A>() {
+
                 @Override
-                public boolean handleResult(Match result) {
-                    adapter.swapMatch(result);
-                    if(null!=result) {
-                        Log.d(TAG, "result: " + result);
-                        getActivity().setTitle(result.toString());
+                public boolean handleResult(CursorList<A> result) {
+                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
+                        ModelList<A> matches = ModelList.from(result);
+                        result.close();
+                        adapter.swapMatch(matches);
+                        Log.d(TAG, "Count: " + matches.size());
                         return true;
                     } else {
                         return false;
                     }
                 }
             };
+
+    public ManyQuery.ResultHandler<A> getOnMatchLoaded() {
+        return onMatchLoaded;
+    }
+    public long getMatchId() {
+        return matchId;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -84,7 +94,6 @@ public class MatchTeamListFragment extends ListFragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 DialogFragment dialog = new MatchTeamDialogFragment();
                 Bundle dialogArgs = new Bundle();
-                dialogArgs.putLong(MatchTeamDialogFragment.MATCH_ARG, matchId);
                 dialogArgs.putLong(MatchTeamDialogFragment.TEAM_ARG, adapter.getItem(position).getTeam().getId());
                 dialog.setArguments(dialogArgs);
                 dialog.show(getFragmentManager(), adapter.getItem(position).getTeam().toString());
@@ -114,18 +123,10 @@ public class MatchTeamListFragment extends ListFragment {
         	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(0!=matchId) {
-            Query.one(Match.class, "select * from Match where _id=?", matchId).getAsync(getLoaderManager(), onMatchLoaded);
-        }
-    }
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        mCallback.onMatchTeamSelected(matchId, adapter.getItem(position).getTeam().getId());
+        mCallback.onMatchTeamSelected(adapter.getItem(position).getId());
         
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);

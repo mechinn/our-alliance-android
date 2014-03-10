@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import se.emilsjolander.sprinkles.ModelList;
 
 public abstract class CompetitionTeamAdapter extends BaseAdapter {
-	public static final String TAG = CompetitionTeamAdapter.class.getSimpleName();
+    public static final String TAG = "CompetitionTeamAdapter";
 
     private Context context;
     private ModelList<CompetitionTeam> teams;

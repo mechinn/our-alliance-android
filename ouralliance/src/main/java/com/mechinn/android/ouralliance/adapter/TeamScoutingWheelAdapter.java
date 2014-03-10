@@ -17,7 +17,7 @@ import java.util.List;
 import se.emilsjolander.sprinkles.ModelList;
 
 public class TeamScoutingWheelAdapter extends BaseAdapter implements Filterable {
-	public static final String TAG = TeamScoutingWheelAdapter.class.getSimpleName();
+    public static final String TAG = "TeamScoutingWheelAdapter";
     public static final int TYPE = 0;
 	Context context;
     ModelList<TeamScoutingWheel> teams;
@@ -38,7 +38,7 @@ public class TeamScoutingWheelAdapter extends BaseAdapter implements Filterable 
             for(TeamScoutingWheel each : this.teams) {
                 switch(field) {
                     case TYPE:
-                        original.add(each.getType());
+                        original.add(each.getWheelType());
                         break;
                 }
             }

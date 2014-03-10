@@ -25,12 +25,10 @@ import android.widget.TextView;
 import se.emilsjolander.sprinkles.OneQuery;
 
 public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragment {
-	public static final String TAG = MatchDetailFragment.class.getSimpleName();
-	public static final String MATCH_ARG = "match";
+    public static final String TAG = "MatchDetailFragment";
     public static final String TEAM_ARG = "team";
 
     private Prefs prefs;
-    private long matchId;
     private long teamId;
 
 	private View rootView;
@@ -39,12 +37,6 @@ public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragm
 
 	private A match;
 
-	public long getMatchId() {
-		return matchId;
-	}
-	public void setMatchId(long matchId) {
-		this.matchId = matchId;
-	}
     public long getTeamId() {
         return teamId;
     }
@@ -103,8 +95,6 @@ public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragm
         // the previous article selection set by onSaveInstanceState().
         // This is primarily necessary when in the two-pane layout.
         if (savedInstanceState != null) {
-            matchId = savedInstanceState.getLong(Match.TAG, 0);
-            Log.d(TAG, "match: "+matchId);
             teamId = savedInstanceState.getLong(CompetitionTeam.TAG, 0);
             Log.d(TAG, "team: "+teamId);
         }
@@ -138,9 +128,6 @@ public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragm
         // below that sets the article text.
         Bundle args = getArguments();
         if (args != null) {
-            // Set article based on argument passed in
-    		matchId = getArguments().getLong(MATCH_ARG, 0);
-    		Log.d(TAG, "match: " + matchId);
             teamId = getArguments().getLong(TEAM_ARG, 0);
             Log.d(TAG, "team: " + teamId);
         }
@@ -158,7 +145,6 @@ public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragm
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(MATCH_ARG, matchId);
         outState.putLong(TEAM_ARG, teamId);
     }
 	

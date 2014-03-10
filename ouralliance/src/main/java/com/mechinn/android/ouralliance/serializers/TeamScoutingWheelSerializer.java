@@ -10,7 +10,7 @@ import se.emilsjolander.sprinkles.Query;
  * Created by mechinn on 2/18/14.
  */
 public class TeamScoutingWheelSerializer extends AOurAllianceDataSerializer<TeamScoutingWheel> {
-    public static final String TAG = TeamScoutingWheelSerializer.class.getSimpleName();
+    public static final String TAG = "TeamScoutingWheelSerializer";
 
     @Override
     public TeamScoutingWheel unpack(Cursor c, String name) {

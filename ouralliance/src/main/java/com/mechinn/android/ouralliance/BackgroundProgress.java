@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean> {
-	public static final String TAG = BackgroundProgress.class.getSimpleName();
+    public static final String TAG = "BackgroundProgress";
 	public static final int INDETERMINATE = -1;
 	public static final int NORMAL = 0;
 	public static final int FLAG_SETUP = 0;
@@ -111,7 +111,9 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 
 	@Override
     protected void onPostExecute(Boolean result) {
-		dialog.dismiss();
+		if(null!=dialog) {
+            dialog.dismiss();
+        }
 		listener.complete(flag);
     }
 	

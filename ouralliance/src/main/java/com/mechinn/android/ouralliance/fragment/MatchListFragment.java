@@ -31,7 +31,7 @@ import se.emilsjolander.sprinkles.OneQuery;
 import se.emilsjolander.sprinkles.Query;
 
 public class MatchListFragment extends ListFragment {
-	public static final String TAG = MatchListFragment.class.getSimpleName();
+    public static final String TAG = "MatchListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
 	private Prefs prefs;
@@ -176,6 +176,7 @@ public class MatchListFragment extends ListFragment {
     private void selectItem(int position) {
         // Notify the parent activity of selected item
         mCallback.onMatchSelected(((Match)adapter.getItem(position)).getId());
+        getActivity().setTitle(((Match)adapter.getItem(position)).toString());
         
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);

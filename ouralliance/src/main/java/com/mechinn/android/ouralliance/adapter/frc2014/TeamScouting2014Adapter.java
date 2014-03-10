@@ -17,7 +17,7 @@ import java.util.List;
 import se.emilsjolander.sprinkles.ModelList;
 
 public class TeamScouting2014Adapter extends BaseAdapter implements Filterable {
-	public static final String TAG = TeamScouting2014Adapter.class.getSimpleName();
+    public static final String TAG = "TeamScouting2014Adapter";
     public static final int ORIENTATION = 0;
     public static final int DRIVETRAIN = 1;
 	Context context;

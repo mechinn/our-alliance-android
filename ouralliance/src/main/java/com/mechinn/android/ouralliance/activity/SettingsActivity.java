@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 public class SettingsActivity extends PreferenceActivity implements Setup.Listener, GenericDialogFragment.Listener {
-	public static final String TAG = SettingsActivity.class.getSimpleName();
+    public static final String TAG = "SettingsActivity";
 	private SettingsFragment frag;
 
 	@Override

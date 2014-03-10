@@ -15,11 +15,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoadingDialogFragment extends DialogFragment {
-	public static final String TAG = LoadingDialogFragment.class.getSimpleName();
+    public static final String TAG = "LoadingDialogFragment";
 	public static final String TITLE = "title";
 	public static final String MAX = "max";
     private View dialog;
     private ProgressBar progress;
+
     private TextView status;
     
     @Override
@@ -75,4 +76,8 @@ public class LoadingDialogFragment extends DialogFragment {
 	public void setProgressStatus(CharSequence statusText) {
 		status.setText(statusText);
 	}
+
+    public CharSequence getProgressStatus() {
+        return status.getText();
+    }
 }

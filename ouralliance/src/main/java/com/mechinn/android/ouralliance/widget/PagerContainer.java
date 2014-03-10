@@ -32,7 +32,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 public class PagerContainer extends FrameLayout implements ViewPager.OnPageChangeListener {
-	public static final String TAG = PagerContainer.class.getSimpleName();
+    public static final String TAG = "PagerContainer";
     private GalleryViewPager mPager;
     boolean mNeedsRedraw = false;
  

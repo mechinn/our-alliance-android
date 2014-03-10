@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLConnection;
-import java.sql.SQLException;
-import java.util.List;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -16,119 +14,42 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import com.mechinn.android.ouralliance.data.Competition;
+import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.Query;
 
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 
 public class Export extends BackgroundProgress {
-	public static final String TAG = Export.class.getSimpleName();
-	private String filename;
-	private CSVWriter writer;
+    public static final String TAG = "Export";
+    private static final String CSV = ".csv";
+	private String directory;
+    private String filename;
 	private Context context;
+    private Types type;
+
+    public enum Types {TEAMSCOUTING2014, MATCHSCOUTING2014};
 	
 	private Prefs prefs;
-	public Export(Activity activity) {
+	public Export(Activity activity, Types type) {
 		super(activity, FLAG_EXPORT);
-		if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			filename = activity.getExternalFilesDir(null).getAbsolutePath()+File.separator+"test.csv";
-		}
 		context = activity;
 		prefs = new Prefs(activity);
-//		HeaderColumnNameTranslateMappingStrategy<MockBean> strat = new HeaderColumnNameTranslateMappingStrategy<MockBean>();
-//        strat.setType(MockBean.class);
-//        Map<String, String> map = new HashMap<String, String>();
-//        map.put("n", "name");
-//        map.put("o", "orderNumber");
-//        map.put("foo", "id");
-//        strat.setColumnMapping(map);
-//
-//        CsvToBean<MockBean> csv = new CsvToBean<MockBean>();
-//        List<MockBean> list = csv.parse(strat, new StringReader(s));
-//        assertNotNull(list);
-//        assertTrue(list.size() == 2);
-//        MockBean bean = list.get(0);
-//        assertEquals("kyle", bean.getName());
-//        assertEquals("123456", bean.getOrderNumber());
-//        assertEquals("emp123", bean.getId());
-	}
-	
-	public void getData() {
-		boolean cancel = false;
-		CursorList<CompetitionTeam> teams = null;
-        teams = Query.many(CompetitionTeam.class,"select * from CompetitionTeam where competition=?",prefs.getComp()).get();
-        String list = "";
-        int i;
-        for(i=0;i<teams.size()-1;++i) {
-            list += teams.get(i).getTeam().getId()+",";
+        this.type = type;
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            directory = activity.getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getYear()+File.separator;
         }
-        list += teams.get(i).getTeam().getId();
-        Log.d(TAG, list);
-        int year = prefs.getYear();
-        switch(year) {
-            case 2014:
-                get2014Data(list);
-        }
-        if(null!=teams) {
-            try { teams.close(); } catch (Exception e) {
-                Log.d(TAG,"unknown error",e);
-            }
-        }
-		if(cancel) {
-			this.cancel(true);
-		}
-	}
-	
-	public void get2014Data(String list) {
-//        CursorList<TeamScouting2014> scouting = null;
-//		try {
-//            scouting = Query.all(TeamScouting2014.class).get();
-//			List<String[]> data = new ArrayList<String[]>();
-//			for(TeamScouting2014 each : scouting) {
-//				data.add(each.toStringArray());
-//			}
-//			exportToCSV(data);
-//		} finally {
-//			if(null!=cursor) {
-//				try { cursor.close(); } catch (Exception e) {
-//                    Log.d(TAG,"unknown error",e);
-//                }
-//			}
-//		}
-	}
-	
-	public boolean exportToCSV(List<String[]> data) throws IOException {
-		FileWriter file = null;
-		try {
-			file = new FileWriter(filename);
-			writer = new CSVWriter(file, ',');
-			writer.writeAll(data);
-		} finally {
-			if(null!=writer) {
-				try {
-					writer.flush();
-					writer.close();
-				} catch (Exception e) {
-                    Log.d(TAG,"unknown error",e);
-                }
-			}
-			if(null!=file) {
-				try {
-					file.flush();
-					file.close();
-				} catch (Exception e) {
-                    Log.d(TAG,"unknown error",e);
-                }
-			}
-		}
-		return true;
 	}
 	
 	@Override
 	protected void onPreExecute() {
 		this.setTitle("Export data");
-		if(null!=filename) {
+		if(null!=directory) {
 			super.onPreExecute();
 		} else {
 			this.cancel(true);
@@ -137,24 +58,109 @@ public class Export extends BackgroundProgress {
 
 	@Override
 	protected Boolean doInBackground(Void... params) {
-		getData();
-		setStatus("Finished");
+        Competition competition = Query.one(Competition.class, "SELECT * FROM "+Competition.TAG+" WHERE "+Competition._ID+"=?",prefs.getComp()).get();
+        CsvBeanWriter beanWriter = null;
+        switch(type) {
+            case TEAMSCOUTING2014:
+                filename = directory+"teamScouting";
+                new File(filename).mkdirs();
+                filename += File.separator+competition.getCode()+CSV;
+                CursorList<TeamScouting2014> teams = Query.many(TeamScouting2014.class,
+                        "SELECT "+TeamScouting2014.TAG+".*" +
+                                " FROM " + TeamScouting2014.TAG +
+                                " INNER JOIN " + CompetitionTeam.TAG+
+                                " ON " + TeamScouting2014.TAG+"."+TeamScouting2014.TEAM+"="+CompetitionTeam.TAG+"."+CompetitionTeam.TEAM+
+                                " AND "+CompetitionTeam.COMPETITION+"="+prefs.getComp()).get();
+                try {
+                    beanWriter = new CsvBeanWriter(new FileWriter(filename), CsvPreference.EXCEL_PREFERENCE);
+
+                    // write the header
+                    beanWriter.writeHeader(TeamScouting2014.FIELD_MAPPING);
+
+                    // write the beans
+                    for( final TeamScouting2014 team : teams ) {
+                        Log.d(TAG,"writing: "+team.toString());
+                        beanWriter.write(team, TeamScouting2014.FIELD_MAPPING, TeamScouting2014.writeProcessor);
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG,e.toString());
+                    setStatus("Error writing to file: "+filename);
+                    return false;
+                } finally {
+                    if( beanWriter != null ) {
+                        try {
+                            beanWriter.close();
+                        } catch (IOException e) {
+                            Log.e(TAG,e.toString());
+                            setStatus("Error closing writer");
+                            return false;
+                        }
+                    }
+                }
+                break;
+            case MATCHSCOUTING2014:
+                filename = directory+"matchScouting";
+                new File(filename).mkdirs();
+                filename += File.separator+competition.getCode()+CSV;
+                CursorList<MatchScouting2014> matches = Query.many(MatchScouting2014.class,
+                        "SELECT "+MatchScouting2014.TAG+".*" +
+                                " FROM " + MatchScouting2014.TAG +
+                                " INNER JOIN " + CompetitionTeam.TAG+
+                                " ON " + MatchScouting2014.TAG+"."+MatchScouting2014.TEAM+"="+CompetitionTeam.TAG+"."+CompetitionTeam.TEAM+
+                                " AND "+CompetitionTeam.COMPETITION+"="+prefs.getComp()).get();
+
+                try {
+                    beanWriter = new CsvBeanWriter(new FileWriter(filename), CsvPreference.EXCEL_PREFERENCE);
+
+                    // write the header
+                    beanWriter.writeHeader(TeamScouting2014.FIELD_MAPPING);
+
+                    // write the beans
+                    for( final MatchScouting2014 team : matches ) {
+                        Log.d(TAG,"writing: "+team.toString());
+                        beanWriter.write(team, TeamScouting2014.FIELD_MAPPING, TeamScouting2014.writeProcessor);
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG,e.toString());
+                    setStatus("Error writing to file: "+filename);
+                    return false;
+                } finally {
+                    if( beanWriter != null ) {
+                        try {
+                            beanWriter.close();
+                        } catch (IOException e) {
+                            Log.e(TAG,e.toString());
+                            setStatus("Error closing writer");
+                            return false;
+                        }
+                    }
+                }
+                break;
+        }
+
+
+
+        setStatus("Finished");
 		return true;
 	}
 
 	@Override
     protected void onPostExecute(Boolean result) {
 		getDialog().dismiss();
-		Log.d(TAG, filename);
-		String type = URLConnection.guessContentTypeFromName(filename);
-		Log.d(TAG, type);
-		Intent intent = new Intent();
-		intent.setAction(Intent.ACTION_VIEW);
-		intent.setDataAndType(Uri.parse("file://"+filename), type);
-		try {
-			context.startActivity(intent);
-		} catch (ActivityNotFoundException e) {
-			Toast.makeText(context, "No known viewer for this file type", Toast.LENGTH_LONG).show();
-		}
+        if(result) {
+            Log.d(TAG, filename);
+            String type = URLConnection.guessContentTypeFromName(filename);
+            Log.d(TAG, type);
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse("file://"+filename), type);
+            try {
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(context, "No known viewer for this file type", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(context,getDialog().getProgressStatus(),Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -2,30 +2,47 @@ package com.mechinn.android.ouralliance.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import se.emilsjolander.sprinkles.annotations.Check;
-import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ConflictClause;
+import org.supercsv.cellprocessor.FmtBool;
+import org.supercsv.cellprocessor.FmtDate;
+import org.supercsv.cellprocessor.HashMapper;
+import org.supercsv.cellprocessor.Optional;
+import org.supercsv.cellprocessor.constraint.*;
+import org.supercsv.cellprocessor.ift.CellProcessor;
+import se.emilsjolander.sprinkles.Query;
+import se.emilsjolander.sprinkles.annotations.*;
 import se.emilsjolander.sprinkles.annotations.NotNull;
-import se.emilsjolander.sprinkles.annotations.Table;
-import se.emilsjolander.sprinkles.annotations.UniqueCombo;
-import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 
 @JsonIgnoreProperties({"id","mod"})
-@Table
+@Table(Team.TAG)
 @UniqueComboConflictClause(ConflictClause.IGNORE)
 public class Team extends AOurAllianceData implements Comparable<Team> {
-	public static final String TAG = Team.class.getSimpleName();
+	public static final String TAG = "Team";
 	private static final long serialVersionUID = 6981108401294045422L;
-	public static final String NUMBER = "number";
+	public static final String NUMBER = "teamNumber";
 	public static final String NAME = "name";
 
-    @Column
+    public static final String[] FIELD_MAPPING = new String[] {
+            MODIFIED
+            ,NUMBER
+            ,NAME
+    };
+
+    public static final CellProcessor[] writeProcessor = new CellProcessor[] {
+            new FmtDate("yyyy.MM.dd.HH.mm.ss")                      //MODIFIED
+            ,new Optional()                     //NUMBER
+            ,new Optional()    //NAME
+    };
+
+    public static final CellProcessor[] readProcessor = new CellProcessor[] {
+
+    };
+
+    @Column(NUMBER)
     @UniqueCombo()
     @Check("teamNumber > 0")
 	private int teamNumber;
-    @Column
-    @NotNull
-	private CharSequence name;
+    @Column(NAME)
+	private String name;
 
 	public Team() {
 		super();
@@ -34,36 +51,47 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
         super(id);
     }
 	public Team(int number) {
-		this.setNumber(number);
+		this.setTeamNumber(number);
 	}
-	public Team(int number, CharSequence name) {
-        this.setNumber(number);
+	public Team(int number, String name) {
+        this.setTeamNumber(number);
         this.setName(name);
 	}
-	public int getNumber() {
+	public int getTeamNumber() {
 		return teamNumber;
 	}
-	public void setNumber(int teamNumber) {
+	public void setTeamNumber(int teamNumber) {
 		this.teamNumber = teamNumber;
 	}
-	public CharSequence getName() {
+	public String getName() {
 		if(null==name) {
 			return "";
 		}
 		return name;
 	}
-	public void setName(CharSequence name) {
+	public void setName(String name) {
 		this.name = name;
 	}
+    public void setName(CharSequence name) {
+        if(null==name) {
+            setName("");
+        } else {
+            setName(name.toString());
+        }
+    }
 	public String toString() {
-		return this.getNumber()+": "+this.getName();
+		return this.getTeamNumber()+": "+this.getName();
 	}
 	public int compareTo(Team another) {
-		return this.getNumber() - another.getNumber();
+		return this.getTeamNumber() - another.getTeamNumber();
 	}
 	public boolean equals(Team data) {
 		return super.equals(data) &&
-				getNumber()==data.getNumber() &&
+				getTeamNumber()==data.getTeamNumber() &&
 				getName().equals(getName());
 	}
+
+    public AOurAllianceData validate() {
+        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE " + NUMBER + "=? LIMIT 1", getTeamNumber()).get();
+    }
 }

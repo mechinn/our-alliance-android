@@ -16,7 +16,7 @@ import se.emilsjolander.sprinkles.ModelList;
  * Created by mechinn on 2/19/14.
  */
 public class ListPreference<A extends AOurAllianceData> extends android.preference.ListPreference {
-    public static final String TAG = PreferenceFragment.class.getSimpleName();
+    public static final String TAG = "ListPreference";
     ListPreferenceAdapter<A> listPreferenceAdapter = null;
     Context context;
     Prefs prefs;

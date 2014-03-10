@@ -28,7 +28,7 @@ import com.mechinn.android.ouralliance.widget.UncheckableRadioGroupOnCheckedChan
 import se.emilsjolander.sprinkles.Query;
 
 public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
-	public final static String TAG = MatchDetail2014.class.getSimpleName();
+    public static final String TAG = "MatchDetail2014";
 
     NumberPicker hotShots;
     NumberPicker shotsMade;
@@ -89,24 +89,23 @@ public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
     @Override
     public void onResume() {
         super.onResume();
-        if (this.getMatchId() != 0) {
-            Query.one(MatchScouting2014.class,"select * from MatchScouting2014 where match=? AND team=?",this.getMatchId(),this.getTeamId()).getAsync(getLoaderManager(),getOnMatchLoaded());
+        if (this.getTeamId() != 0) {
+            Query.one(MatchScouting2014.class,"select * from "+MatchScouting2014.TAG+" where "+MatchScouting2014._ID+"=?",this.getTeamId()).getAsync(getLoaderManager(),getOnMatchLoaded());
         }
     }
 	
 	@Override
 	public void setView() {
 		super.setView();
-        String num;
         hotShots.setValue(getMatch().getHotShots());
         shotsMade.setValue(getMatch().getShotsMade());
         shotsMissed.setValue(getMatch().getShotsMissed());
-        moveFwd.setRating(getMatch().getMoveFwd());
+        moveFwd.setRating((float)getMatch().getMoveFwd());
         shooter.setChecked(getMatch().isShooter());
         catcher.setChecked(getMatch().isCatcher());
         passer.setChecked(getMatch().isPasser());
-        driveTrain.setRating(getMatch().getDriveTrain());
-        ballAccuracy.setRating(getMatch().getBallAccuracy());
+        driveTrain.setRating((float)getMatch().getDriveTrain());
+        ballAccuracy.setRating((float)getMatch().getBallAccuracy());
         ground.setChecked(getMatch().isGround());
         overTruss.setChecked(getMatch().isOverTruss());
         low.setChecked(getMatch().isLow());

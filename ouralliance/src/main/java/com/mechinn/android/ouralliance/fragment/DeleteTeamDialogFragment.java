@@ -10,7 +10,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 public class DeleteTeamDialogFragment extends DialogFragment {
-	public static final String TAG = DeleteTeamDialogFragment.class.getSimpleName();
+    public static final String TAG = "DeleteTeamDialogFragment";
 	public static final String TEAM_ARG = "team";
     private CompetitionTeam team;
 	

@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.widget.RadioButton;
 
 public class UncheckableRadioButton extends RadioButton {
+    public static final String TAG = "UncheckableRadioButton";
 	private boolean wasChecked;
 	public UncheckableRadioButton(Context context) {
 		super(context);

@@ -29,7 +29,7 @@ import android.widget.Toast;
 import static android.widget.ImageView.ScaleType.FIT_START;
 
 public class MultimediaAdapter extends BaseAdapter implements OnClickListener, OnLongClickListener, Callback {
-	public static final String TAG = MultimediaAdapter.class.getSimpleName();
+    public static final String TAG = "MultimediaAdapter";
     private File[] multimedia;
     private File teamFileDirectory;
     private Activity activity;
@@ -52,7 +52,7 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
 	}
     public void buildImageSet(TeamScouting team) {
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            teamFileDirectory = new File(activity.getExternalFilesDir(null).getAbsoluteFile() + "/" + prefs.getYear() + "/" + team.getTeam().getNumber());
+            teamFileDirectory = new File(activity.getExternalFilesDir(null).getAbsoluteFile() + File.separator + prefs.getYear() + File.separator + team.getTeam().getTeamNumber());
             Log.d(TAG, teamFileDirectory.getAbsolutePath());
             if(!teamFileDirectory.mkdirs()) {
                 multimedia = teamFileDirectory.listFiles();

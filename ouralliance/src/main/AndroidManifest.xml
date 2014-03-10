@@ -6,20 +6,25 @@
         android:minSdkVersion="14" />
 
     <uses-permission
-            android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission
-            android:name="android.permission.RECORD_AUDIO" />
+        android:name="android.permission.RECORD_AUDIO" />
     <uses-permission
-            android:name="android.permission.CAMERA" />
+        android:name="android.permission.CAMERA" />
+    <uses-permission
+        android:name="android.permission.INTERNET"/>
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature
-            android:name="android.hardware.camera" android:required="false" />
+        android:name="android.hardware.camera"
+        android:required="false" />
     <uses-feature
-            android:name="android.hardware.camera.autofocus" android:required="false" />
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
     <uses-feature
-            android:name="android.hardware.camera.flash" android:required="false" />
-
-    <uses-permission android:name="android.permission.INTERNET"/>
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
 
     <application
         android:name="com.mechinn.android.ouralliance.OurAlliance"

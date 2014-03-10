@@ -10,7 +10,7 @@ import android.os.Bundle;
 import com.mechinn.android.ouralliance.R;
 
 public class GenericDialogFragment extends DialogFragment {
-	public static final String TAG = GenericDialogFragment.class.getSimpleName();
+    public static final String TAG = "GenericDialogFragment";
 	public static final String FLAG = "flag";
 	public static final String MESSAGE = "message";
 	public static final String POSITIVE = "positive";

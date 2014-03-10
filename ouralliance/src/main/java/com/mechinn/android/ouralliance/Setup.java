@@ -20,7 +20,7 @@ import com.mechinn.android.ouralliance.data.Season;
 import se.emilsjolander.sprinkles.SqlStatement;
 
 public class Setup extends BackgroundProgress {
-	public static final String TAG = Setup.class.getSimpleName();
+    public static final String TAG = "Setup";
 	public static final int VERSION = 16;
 	private ObjectMapper jsonMapper;
 	private AssetManager assets;

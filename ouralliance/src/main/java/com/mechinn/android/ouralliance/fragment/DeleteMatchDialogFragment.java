@@ -10,7 +10,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 public class DeleteMatchDialogFragment extends DialogFragment {
-	public static final String TAG = DeleteMatchDialogFragment.class.getSimpleName();
+    public static final String TAG = "DeleteMatchDialogFragment";
 	public static final String MATCH_ARG = "match";
 
     private Match match;

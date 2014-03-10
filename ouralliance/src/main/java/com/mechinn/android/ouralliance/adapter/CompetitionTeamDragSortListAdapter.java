@@ -16,7 +16,7 @@ import com.mobeta.android.dslv.DragSortListView;
 import se.emilsjolander.sprinkles.ModelList;
 
 public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter implements DragSortListView.DropListener {
-	public static final String TAG = CompetitionTeamDragSortListAdapter.class.getSimpleName();
+    public static final String TAG = "CompetitionTeamDragSortListAdapter";
 
     public CompetitionTeamDragSortListAdapter(Context context, ModelList<CompetitionTeam> teams) {
         super(context,teams);

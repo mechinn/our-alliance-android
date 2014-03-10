@@ -10,7 +10,7 @@ import android.content.pm.ResolveInfo;
 import android.util.Log;
 
 public class Utility {
-	public static final String TAG = Utility.class.getSimpleName();
+    public static final String TAG = "Utility";
 	//utility functions for specific uses throughout the app
 	public static void deleteRecursive(File fileOrDirectory) {
 	    if (fileOrDirectory.isDirectory()) {

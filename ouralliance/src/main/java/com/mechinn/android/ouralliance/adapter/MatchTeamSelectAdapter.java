@@ -13,7 +13,7 @@ import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import se.emilsjolander.sprinkles.ModelList;
 
 public class MatchTeamSelectAdapter extends CompetitionTeamAdapter {
-	public static final String TAG = MatchTeamSelectAdapter.class.getSimpleName();
+    public static final String TAG = "MatchTeamSelectAdapter";
     public static final int RED1 = 0;
     public static final int RED2 = 1;
     public static final int RED3 = 2;

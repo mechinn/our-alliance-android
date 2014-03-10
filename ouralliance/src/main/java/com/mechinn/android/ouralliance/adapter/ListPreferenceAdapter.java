@@ -17,7 +17,7 @@ import se.emilsjolander.sprinkles.ModelList;
  * Created by mechinn on 2/19/14.
  */
 public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapter {
-    public static final String TAG = ListPreferenceAdapter.class.getSimpleName();
+    public static final String TAG = "ListPreferenceAdapter";
 
     private long id;
     private Context context;
@@ -135,7 +135,11 @@ public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapt
             if(Long.toString(id)==values[position]){
                 container.setChecked(true);
             }
-            buttons.set(position,container);
+            try {
+                buttons.set(position,container);
+            } catch (IndexOutOfBoundsException e) {
+                buttons.add(position,container);
+            }
         }
         return container;
     }
