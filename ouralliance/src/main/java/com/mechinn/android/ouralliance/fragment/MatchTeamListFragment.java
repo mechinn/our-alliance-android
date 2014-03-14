@@ -3,7 +3,6 @@ package com.mechinn.android.ouralliance.fragment;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchTeamAdapter;
-import com.mechinn.android.ouralliance.data.Match;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -16,7 +15,6 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.mechinn.android.ouralliance.data.MatchScouting;
-import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import se.emilsjolander.sprinkles.*;
 
 public abstract class MatchTeamListFragment<A extends MatchScouting> extends ListFragment {
@@ -94,9 +92,9 @@ public abstract class MatchTeamListFragment<A extends MatchScouting> extends Lis
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 DialogFragment dialog = new MatchTeamDialogFragment();
                 Bundle dialogArgs = new Bundle();
-                dialogArgs.putLong(MatchTeamDialogFragment.TEAM_ARG, adapter.getItem(position).getTeam().getId());
+                dialogArgs.putLong(MatchTeamDialogFragment.TEAM_ARG, adapter.getItem(position).getCompetitionTeam().getId());
                 dialog.setArguments(dialogArgs);
-                dialog.show(getFragmentManager(), adapter.getItem(position).getTeam().toString());
+                dialog.show(getFragmentManager(), adapter.getItem(position).getCompetitionTeam().toString());
                 return true;
             }
         });

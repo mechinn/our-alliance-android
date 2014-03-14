@@ -41,6 +41,8 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	private boolean scouted;
 	public CompetitionTeam() {
 		super();
+        competition = new Competition();
+        team = new Team();
 	}
     public CompetitionTeam(long id) {
         super(id);

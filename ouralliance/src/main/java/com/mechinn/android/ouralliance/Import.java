@@ -10,6 +10,9 @@ import android.util.Log;
 import android.widget.Toast;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.Season;
+import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
+import com.mechinn.android.ouralliance.data.frc2014.MoveTeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.CsvBeanWriter;
@@ -56,33 +59,25 @@ public class Import extends BackgroundProgress {
 	protected Boolean doInBackground(Void... params) {
         Competition competition = Query.one(Competition.class, "SELECT * FROM "+Competition.TAG+" WHERE "+Competition._ID+"=?",prefs.getComp()).get();
 
+        CsvBeanReader beanReader = null;
         switch(type) {
             case TEAMSCOUTING2014:
                 filename = directory+"teamScouting";
                 new File(filename).mkdirs();
                 filename += File.separator+competition.getCode()+CSV;
-                CursorList<TeamScouting2014> teams = Query.many(TeamScouting2014.class,
-                        "SELECT "+TeamScouting2014.TAG+".*" +
-                                " FROM " + TeamScouting2014.TAG +
-                                " INNER JOIN " + CompetitionTeam.TAG+
-                                " ON " + TeamScouting2014.TAG+"."+TeamScouting2014.TEAM+"="+CompetitionTeam.TAG+"."+CompetitionTeam.TEAM+
-                                " AND "+CompetitionTeam.COMPETITION+"="+prefs.getComp()).get();
 
-                CsvBeanReader beanReader = null;
                 try {
                     beanReader = new CsvBeanReader(new FileReader(filename), CsvPreference.EXCEL_PREFERENCE);
 
                     // write the header
                     final String[] header = beanReader.getHeader(true);
 
-                    if(Arrays.equals(header,TeamScouting2014.FIELD_MAPPING)) {
+                    if(Arrays.equals(header, MoveTeamScouting2014.FIELD_MAPPING)) {
                         // write the beans
-                        TeamScouting2014 team;
-                        while( (team = beanReader.read(TeamScouting2014.class, header, TeamScouting2014.readProcessor)) != null ) {
-                            Log.d(TAG,"lineNo="+beanReader.getLineNumber()+", rowNo="+beanReader.getRowNumber()+", team="+team);
-                            team.save();
-                            //create competition teams for whatever competition the user is on right now
-                            new CompetitionTeam(new Competition(prefs.getComp()),team.getTeam()).save();
+                        MoveTeamScouting2014 move;
+                        while( (move = beanReader.read(MoveTeamScouting2014.class, header, MoveTeamScouting2014.readProcessor)) != null ) {
+                            Log.d(TAG,"lineNo="+beanReader.getLineNumber()+", rowNo="+beanReader.getRowNumber()+", data="+move);
+                            move.save(new Season(prefs.getSeason()), new Competition(prefs.getComp()));
                         }
                     } else {
                         Log.w(TAG, "Invalid file columns: "+filename);
@@ -110,7 +105,50 @@ public class Import extends BackgroundProgress {
                 }
                 break;
             case MATCHSCOUTING2014:
+                filename = directory+"matchScouting";
+                new File(filename).mkdirs();
+                filename += File.separator+competition.getCode()+CSV;
 
+                try {
+                    beanReader = new CsvBeanReader(new FileReader(filename), CsvPreference.EXCEL_PREFERENCE);
+
+                    // write the header
+                    final String[] header = beanReader.getHeader(true);
+
+                    if(Arrays.equals(header, MatchScouting2014.FIELD_MAPPING)) {
+                        // write the beans
+                        MatchScouting2014 match;
+                        while( (match = beanReader.read(MatchScouting2014.class, header, MatchScouting2014.readProcessor)) != null ) {
+                            Log.d(TAG,"lineNo="+beanReader.getLineNumber()+", rowNo="+beanReader.getRowNumber()+", data="+match);
+                            match.setCompetition(new Competition(prefs.getComp()));
+                            match.getCompetitionTeam().save();
+                            match.getMatch().save();
+                            match.save();
+                        }
+                    } else {
+                        Log.w(TAG, "Invalid file columns: "+filename);
+                        setStatus("Invalid file columns: "+filename);
+                        return false;
+                    }
+                } catch (FileNotFoundException e) {
+                    Log.e(TAG, e.toString());
+                    setStatus("File does not exist: "+filename);
+                    return false;
+                } catch (IOException e) {
+                    Log.e(TAG, e.toString());
+                    setStatus("Error reading file: "+filename);
+                    return false;
+                } finally {
+                    if( beanReader != null ) {
+                        try {
+                            beanReader.close();
+                        } catch (IOException e) {
+                            Log.e(TAG,e.toString());
+                            setStatus("Error closing reader");
+                            return false;
+                        }
+                    }
+                }
                 break;
         }
 

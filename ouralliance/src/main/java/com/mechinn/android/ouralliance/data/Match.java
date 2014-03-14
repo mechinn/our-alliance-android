@@ -23,7 +23,7 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
     public static final String BLUESCORE = "blueScore";
     public static final String MATCHTYPE = "matchType";
     public static final String MATCHSET = "matchSet";
-    public static final String OF = "matchOf";
+    public static final String MATCHOF = "matchOf";
 
     public static final String[] FIELD_MAPPING = new String[] {
             MODIFIED
@@ -33,7 +33,7 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
             ,BLUESCORE
             ,MATCHTYPE
             ,MATCHSET
-            ,OF
+            ,MATCHOF
     };
 
     public enum Type {
@@ -82,11 +82,12 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	private Type matchType;
     @Column(MATCHSET)
 	private int matchSet;
-    @Column(OF)
+    @Column(MATCHOF)
 	private int outOf;
 
 	public Match() {
 		super();
+        competition = new Competition();
 	}
     public Match(long id) {
         super(id);
@@ -128,14 +129,18 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 		return Math.abs(matchNum);
 	}
 	public void setMatchNum(int number) {
-		//negative all our practices so we dont get conflicts
-        switch(matchType) {
-            case PRACTICE:
-                this.matchNum = -number;
-                break;
-            default:
-                this.matchNum = number;
-                break;
+        if(number<0) {
+            this.matchNum = number;
+        } else {
+            //negative all our practices so we dont get conflicts
+            switch(getMatchType()) {
+                case PRACTICE:
+                    this.matchNum = -number;
+                    break;
+                default:
+                    this.matchNum = number;
+                    break;
+            }
         }
 	}
 	public int getRedScore() {
@@ -151,7 +156,10 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 		this.blueScore = blueScore;
 	}
 	public Type getMatchType() {
-		return matchType;
+        if(null==matchType) {
+            return Type.QUALIFIER;
+        }
+        return matchType;
 	}
 	public void setMatchType(Type type) {
 		this.matchType = type;
@@ -217,6 +225,6 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	}
 
     public AOurAllianceData validate() {
-        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE "+COMPETITION+"=? AND " + NUMBER + "=? LIMIT 1", getCompetition(), getDisplayNum()).get();
+        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE "+COMPETITION+"=? AND " + NUMBER + "=? LIMIT 1", getCompetition(), getMatchNum()).get();
     }
 }

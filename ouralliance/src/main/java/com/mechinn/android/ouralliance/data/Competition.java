@@ -37,6 +37,7 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 
 	public Competition() {
 		super();
+        season = new Season();
 	}
     public Competition(long id) {
         super(id);

@@ -16,14 +16,14 @@
     <item android:id="@+id/exportTeamScouting"
           android:orderInCategory="3"
           android:menuCategory="system"
-          android:title="Export Scouting"
+          android:title="Export Team Scouting"
           android:showAsAction="ifRoom">
     </item>
     <item
         android:id="@+id/importTeamScouting"
         android:orderInCategory="4"
         android:menuCategory="system"
-        android:title="Import Scouting"
+        android:title="Import Team Scouting"
         android:showAsAction="ifRoom">
     </item>
 </menu>

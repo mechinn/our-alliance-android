@@ -277,10 +277,10 @@ public class TeamListFragment extends Fragment {
 	        	}
 	            return true;
 	        case R.id.exportTeamScouting:
-	        	if(null!=comp) {
+	        	if(null!=adapter && adapter.getCount()>0) {
 	        		new Export(this.getActivity(),Export.Types.TEAMSCOUTING2014).execute();
 	        	} else {
-	        		noCompetition();
+                    noTeams();
 	        	}
 	            return true;
             case R.id.importTeamScouting:
@@ -336,6 +336,12 @@ public class TeamListFragment extends Fragment {
 	            return super.onContextItemSelected(item);
 	    }
 	}
+
+    private void noTeams() {
+        String message = "Add a team first";
+        Log.i(TAG, message);
+        Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
 	
 	private void noCompetition() {
 		String message = "Select a competition in settings first";

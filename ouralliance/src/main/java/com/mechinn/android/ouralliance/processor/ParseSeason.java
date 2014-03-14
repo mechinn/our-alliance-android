@@ -1,23 +1,25 @@
 package com.mechinn.android.ouralliance.processor;
 
-import com.mechinn.android.ouralliance.data.Match;
+import android.util.Log;
+import com.mechinn.android.ouralliance.data.Season;
 import com.mechinn.android.ouralliance.data.Team;
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.exception.SuperCsvCellProcessorException;
+import org.supercsv.exception.SuperCsvConstraintViolationException;
 import org.supercsv.util.CsvContext;
 import se.emilsjolander.sprinkles.Query;
 
 /**
  * Created by mechinn on 3/9/14.
  */
-public class ParseMatch extends CellProcessorAdaptor {
+public class ParseSeason extends CellProcessorAdaptor {
 
-    public ParseMatch() {
+    public ParseSeason() {
         super();
     }
 
-    public ParseMatch(CellProcessor next) {
+    public ParseSeason(CellProcessor next) {
         // this constructor allows other processors to be chained after ParseDay
         super(next);
     }
@@ -33,12 +35,12 @@ public class ParseMatch extends CellProcessorAdaptor {
 
         int number = Integer.parseInt(numString);
 
-        Match match = Query.one(Match.class, "select * from ? where ?=? LIMIT 1", Match.TAG, Match.NUMBER, number).get();
+        Season season = Query.one(Season.class, "select * from "+Season.TAG+" where "+Season.YEAR+"=? LIMIT 1", number).get();
 
-        if(null==match) {
-            match = new Match(number);
+        if(null==season) {
+            throw new SuperCsvConstraintViolationException("Invalid season: "+number,context,this);
         }
 
-        return next.execute(match,context);
+        return next.execute(season,context);
     }
 }

@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.processor;
 
-import com.mechinn.android.ouralliance.data.Match;
+import com.mechinn.android.ouralliance.data.Season;
+import com.mechinn.android.ouralliance.data.Team;
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.exception.SuperCsvCellProcessorException;
@@ -9,13 +10,13 @@ import org.supercsv.util.CsvContext;
 /**
  * Created by mechinn on 3/9/14.
  */
-public class FmtMatch extends CellProcessorAdaptor {
+public class FmtSeason extends CellProcessorAdaptor {
 
-    public FmtMatch() {
+    public FmtSeason() {
         super();
     }
 
-    public FmtMatch(CellProcessor next) {
+    public FmtSeason(CellProcessor next) {
         // this constructor allows other processors to be chained after ParseDay
         super(next);
     }
@@ -24,12 +25,12 @@ public class FmtMatch extends CellProcessorAdaptor {
 
         validateInputNotNull(value, context);
 
-        if(!(value instanceof Match)) {
-            throw new SuperCsvCellProcessorException(Match.class, value, context, this);
+        if(!(value instanceof Season)) {
+            throw new SuperCsvCellProcessorException(Season.class, value, context, this);
         }
 
-        Match match = (Match) value;
+        Season season = (Season) value;
 
-        return next.execute(match.getDisplayNum(), context);
+        return next.execute(season.getYear(), context);
     }
 }

@@ -1,24 +1,13 @@
 package com.mechinn.android.ouralliance.data.frc2014;
 
-import com.mechinn.android.ouralliance.data.AOurAllianceData;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.MatchScouting;
-import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.*;
 
-import com.mechinn.android.ouralliance.processor.FmtMatch;
+import com.mechinn.android.ouralliance.processor.FmtSeason;
 import com.mechinn.android.ouralliance.processor.FmtTeam;
-import com.mechinn.android.ouralliance.processor.ParseMatch;
+import com.mechinn.android.ouralliance.processor.ParseSeason;
 import com.mechinn.android.ouralliance.processor.ParseTeam;
-import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.Date;
-
-import org.supercsv.cellprocessor.FmtBool;
-import org.supercsv.cellprocessor.FmtDate;
-import org.supercsv.cellprocessor.ParseBool;
-import org.supercsv.cellprocessor.ParseDate;
+import org.supercsv.cellprocessor.*;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.Column;
@@ -47,7 +36,10 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
 
     public static final String[] FIELD_MAPPING = new String[] {
             MODIFIED
-            ,MATCH
+            ,Match.MATCHTYPE
+            ,Match.MATCHSET
+            ,Match.MATCHOF
+            ,Match.NUMBER
             ,TEAM
             ,ALLIANCE
             ,NOTES
@@ -68,9 +60,12 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
 
     public static final CellProcessor[] writeProcessor = new CellProcessor[] {
             new FmtDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
-            ,new FmtMatch()                     //MATCH
+            ,null                     //Match.MATCHTYPE
+            ,null                     //Match.MATCHSET
+            ,null                     //Match.MATCHOF
+            ,null                     //Match.NUMBER
             ,new FmtTeam()                      //TEAM
-            ,new FmtBool(TRUE,FALSE)            //ALLIANCE
+            ,null                       //ALLIANCE
             ,null                               //NOTES
             ,null                               //HOTSHOTS
             ,null                               //SHOTSMADE
@@ -80,7 +75,7 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
             ,new FmtBool(TRUE,FALSE)            //CATCHER
             ,new FmtBool(TRUE,FALSE)            //PASSER
             ,null                               //DRIVETRAIN
-            ,new FmtBool(TRUE,FALSE)            //BALLACCURACY
+            ,null                               //BALLACCURACY
             ,new FmtBool(TRUE,FALSE)            //GROUND
             ,new FmtBool(TRUE,FALSE)            //OVERTRUSS
             ,new FmtBool(TRUE,FALSE)            //LOW
@@ -89,23 +84,26 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
 
     public static final CellProcessor[] readProcessor = new CellProcessor[] {
             new ParseDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
-            ,new ParseMatch()                     //TEAM
+            ,new ParseInt()                     //Match.MATCHTYPE
+            ,new ParseInt()                     //Match.MATCHSET
+            ,new ParseInt()                     //Match.MATCHOF
+            ,new ParseInt()                     //Match.NUMBER
             ,new ParseTeam()                      //TEAM
-            ,new ParseBool(TRUE,FALSE)            //ALLIANCE
+            ,new ParseBool("blue","red")            //ALLIANCE
             ,null                                 //NOTES
-            ,null                                 //HOTSHOTS
-            ,null                                 //SHOTSMADE
-            ,null                                 //SHOTSMISSED
-            ,null                                 //MOVEFWD
-            ,new ParseBool(TRUE,FALSE)            //SHOOTER
-            ,new ParseBool(TRUE,FALSE)            //CATCHER
-            ,new ParseBool(TRUE,FALSE)            //PASSER
-            ,null                                 //DRIVETRAIN
-            ,null                                 //BALLACCURACY
-            ,new ParseBool(TRUE,FALSE)            //GROUND
-            ,new ParseBool(TRUE,FALSE)            //OVERTRUSS
-            ,new ParseBool(TRUE,FALSE)            //LOW
-            ,new ParseBool(TRUE,FALSE)            //HIGH
+            ,new ParseInt()                                 //HOTSHOTS
+            ,new ParseInt()                                 //SHOTSMADE
+            ,new ParseInt()                                 //SHOTSMISSED
+            ,new ParseDouble()                                 //MOVEFWD
+            ,new ParseBool()            //SHOOTER
+            ,new ParseBool()            //CATCHER
+            ,new ParseBool()            //PASSER
+            ,new ParseDouble()                                 //DRIVETRAIN
+            ,new ParseDouble()                                 //BALLACCURACY
+            ,new ParseBool()            //GROUND
+            ,new ParseBool()            //OVERTRUSS
+            ,new ParseBool()            //LOW
+            ,new ParseBool()            //HIGH
     };
 
     @Column(HOTSHOTS)
@@ -115,7 +113,7 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     @Column(SHOTSMISSED)
     private int shotsMissed;
     @Column(MOVEFWD)
-    private double moveFwd;
+    private double moveForward;
     @Column(SHOOTER)
     private boolean shooter;
     @Column(CATCHER)
@@ -123,9 +121,9 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     @Column(PASSER)
     private boolean passer;
     @Column(DRIVETRAIN)
-    private double driveTrain;
+    private double driveTrainRating;
     @Column(BALLACCURACY)
-    private double ballAccuracy;
+    private double ballAccuracyRating;
     @Column(GROUND)
     private boolean ground;
     @Column(OVERTRUSS)
@@ -162,11 +160,11 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     public void setShotsMissed(int shotsMissed) {
         this.shotsMissed = shotsMissed;
     }
-    public double getMoveFwd() {
-        return moveFwd;
+    public double getMoveForward() {
+        return moveForward;
     }
-    public void setMoveFwd(double moveFwd) {
-        this.moveFwd = moveFwd;
+    public void setMoveForward(double moveForward) {
+        this.moveForward = moveForward;
     }
     public boolean isShooter() {
         return shooter;
@@ -186,17 +184,17 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     public void setPasser(boolean passer) {
         this.passer = passer;
     }
-    public double getDriveTrain() {
-        return driveTrain;
+    public double getDriveTrainRating() {
+        return driveTrainRating;
     }
-    public void setDriveTrain(double driveTrain) {
-        this.driveTrain = driveTrain;
+    public void setDriveTrainRating(double driveTrainRating) {
+        this.driveTrainRating = driveTrainRating;
     }
-    public double getBallAccuracy() {
-        return ballAccuracy;
+    public double getBallAccuracyRating() {
+        return ballAccuracyRating;
     }
-    public void setBallAccuracy(double ballAccuracy) {
-        this.ballAccuracy = ballAccuracy;
+    public void setBallAccuracyRating(double ballAccuracyRating) {
+        this.ballAccuracyRating = ballAccuracyRating;
     }
     public boolean isGround() {
         return ground;
@@ -227,12 +225,12 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
                 getHotShots()==data.getHotShots() &&
                 getShotsMade()==data.getShotsMade() &&
                 getShotsMissed()==data.getShotsMissed() &&
-                getMoveFwd()==data.getMoveFwd() &&
+                getMoveForward()==data.getMoveForward() &&
                 isShooter()==data.isShooter() &&
                 isCatcher()==data.isCatcher() &&
                 isPasser()==data.isPasser() &&
-                getDriveTrain()==data.getDriveTrain() &&
-                getBallAccuracy()==data.getBallAccuracy() &&
+                getDriveTrainRating()==data.getDriveTrainRating() &&
+                getBallAccuracyRating()==data.getBallAccuracyRating() &&
                 isGround()==data.isGround() &&
                 isOverTruss()==data.isOverTruss() &&
                 isLow()==data.isLow() &&
@@ -240,6 +238,6 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     }
 
     public AOurAllianceData validate() {
-        return Query.one(MatchScouting2014.class, "SELECT * FROM " + TAG + " WHERE " + MATCH + "=? AND " + TEAM + "=? LIMIT 1", getMatch().getId(), getTeam().getId()).get();
+        return Query.one(MatchScouting2014.class, "SELECT * FROM " + TAG + " WHERE " + MATCH + "=? AND " + TEAM + "=? LIMIT 1", getMatch().getId(), getCompetitionTeam().getId()).get();
     }
 }

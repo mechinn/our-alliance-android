@@ -1,11 +1,5 @@
 package com.mechinn.android.ouralliance.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Match;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,7 +60,7 @@ public class MatchTeamAdapter<A extends MatchScouting> extends BaseAdapter {
                 LayoutInflater inflater = LayoutInflater.from(context);
                 container = (TextView) inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
             }
-		    container.setText(teams.get(position).getTeam().getTeam().toString());
+		    container.setText(teams.get(position).getCompetitionTeam().getTeam().toString());
             if(teams.get(position).isAlliance()) {
                 container.setTextColor(context.getResources().getColor(android.R.color.holo_blue_dark));
             } else {

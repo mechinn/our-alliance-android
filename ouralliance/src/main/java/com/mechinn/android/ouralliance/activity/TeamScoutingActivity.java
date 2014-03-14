@@ -12,9 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.mechinn.android.ouralliance.Prefs;
-import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.Setup;
+import com.mechinn.android.ouralliance.*;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.fragment.InsertTeamDialogFragment;
 import com.mechinn.android.ouralliance.fragment.MatchTeamListFragment;
@@ -24,7 +22,7 @@ import com.mechinn.android.ouralliance.fragment.TeamListFragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.MatchTeamList2014Fragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.TeamDetail2014;
 
-public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, OnBackStackChangedListener, Setup.Listener, MultimediaContextDialogFragment.Listener, InsertTeamDialogFragment.Listener {
+public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, OnBackStackChangedListener, BackgroundProgress.Listener, MultimediaContextDialogFragment.Listener, InsertTeamDialogFragment.Listener {
     public static final String TAG = "TeamScoutingActivity";
 	public static final String TEAM_ARG = "team";
 	public static final String MATCH_ARG = "match";

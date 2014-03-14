@@ -51,136 +51,6 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
     public static final String BLOCKER = "blocker";
     public static final String HUMANPLAYER = "humanPlayer";
     public static final String AUTOMODE = "autoMode";
-
-    public static final Map shootersWrite;
-    public static final Map shootersRead;
-
-    public static final Map autoModesWrite;
-    public static final Map autoModesRead;
-
-    static {
-        int[] shooterIds = {
-                R.id.none
-                ,R.id.dumper
-                ,R.id.shooter
-        };
-        String[] shooterText = {
-                "None"
-                ,"Dumper"
-                ,"Shooter"
-        };
-        Map shootersWriteTemp;
-        Map shootersReadTemp;
-        shootersWriteTemp = new ArrayMap();
-        shootersReadTemp = new ArrayMap();
-        for(int i=0;i<shooterIds.length;++i) {
-            shootersWriteTemp.put(shooterIds[i],shooterText[i]);
-            shootersReadTemp.put(shooterText[i],shooterIds[i]);
-        }
-        shootersWrite = shootersWriteTemp;
-        shootersRead = shootersReadTemp;
-
-        int[] autoModeIds = {
-                R.id.team2014noAuto
-                ,R.id.team2014driveAuto
-                ,R.id.team2014lowAuto
-                ,R.id.team2014highAuto
-                ,R.id.team2014hotAuto
-        };
-        String[] autoModeText = {
-                "No"
-                ,"Drive"
-                ,"Low"
-                ,"High"
-                ,"Hot"
-        };
-        Map autoModesWriteTemp = new ArrayMap();
-        Map autoModesReadTemp = new ArrayMap();
-        for(int i=0;i<shooterIds.length;++i) {
-            autoModesWriteTemp.put(autoModeIds[i],autoModeText[i]);
-            autoModesReadTemp.put(autoModeText[i],autoModeIds[i]);
-        }
-        autoModesWrite = autoModesWriteTemp;
-        autoModesRead = autoModesReadTemp;
-    }
-
-    public static final String[] FIELD_MAPPING = new String[] {
-            MODIFIED
-            ,TEAM
-            ,NOTES
-            ,ORIENTATION
-            ,DRIVETRAIN
-            ,WIDTH
-            ,LENGTH
-            ,HEIGHTSHOOTER
-            ,HEIGHTMAX
-            ,SHOOTERTYPE
-            ,LOWGOAL
-            ,HIGHGOAL
-            ,HOTGOAL
-            ,SHOOTINGDISTANCE
-            ,PASSGROUND
-            ,PASSAIR
-            ,PASSTRUSS
-            ,PICKUPGROUND
-            ,PICKUPCATCH
-            ,PUSHER
-            ,BLOCKER
-            ,HUMANPLAYER
-            ,AUTOMODE
-    };
-
-    public static final CellProcessor[] writeProcessor = new CellProcessor[] {
-            new FmtDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
-            ,new FmtTeam()                      //TEAM
-            ,null                               //NOTES
-            ,null                               //ORIENTATION
-            ,null                               //DRIVETRAIN
-            ,null                               //WIDTH
-            ,null                               //LENGTH
-            ,null                               //HEIGHTSHOOTER
-            ,null                               //HEIGHTMAX
-            ,new HashMapper(shootersWrite,0)    //SHOOTERTYPE
-            ,new FmtBool(TRUE,FALSE)            //LOWGOAL
-            ,new FmtBool(TRUE,FALSE)            //HIGHGOAL
-            ,new FmtBool(TRUE,FALSE)            //HOTGOAL
-            ,null                               //SHOOTINGDISTANCE
-            ,new FmtBool(TRUE,FALSE)            //PASSGROUND
-            ,new FmtBool(TRUE,FALSE)            //PASSAIR
-            ,new FmtBool(TRUE,FALSE)            //PASSTRUSS
-            ,new FmtBool(TRUE,FALSE)            //PICKUPGROUND
-            ,new FmtBool(TRUE,FALSE)            //PICKUPCATCH
-            ,new FmtBool(TRUE,FALSE)            //PUSHER
-            ,new FmtBool(TRUE,FALSE)            //BLOCKER
-            ,null                               //HUMANPLAYER
-            ,new HashMapper(autoModesWrite,0)   //AUTOMODE
-    };
-
-    public static final CellProcessor[] readProcessor = new CellProcessor[] {
-            new ParseDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
-            ,new ParseTeam()                    //TEAM
-            ,null                               //NOTES
-            ,null                               //ORIENTATION
-            ,null                               //DRIVETRAIN
-            ,new ParseDouble()                  //WIDTH
-            ,new ParseDouble()                  //LENGTH
-            ,new ParseDouble()                  //HEIGHTSHOOTER
-            ,new ParseDouble()                  //HEIGHTMAX
-            ,new HashMapper(shootersRead,0)     //SHOOTERTYPE
-            ,new ParseBool()          //LOWGOAL
-            ,new ParseBool()          //HIGHGOAL
-            ,new ParseBool()          //HOTGOAL
-            ,new ParseDouble()                  //SHOOTINGDISTANCE
-            ,new ParseBool()          //PASSGROUND
-            ,new ParseBool()          //PASSAIR
-            ,new ParseBool()          //PASSTRUSS
-            ,new ParseBool()          //PICKUPGROUND
-            ,new ParseBool()          //PICKUPCATCH
-            ,new ParseBool()          //PUSHER
-            ,new ParseBool()          //BLOCKER
-            ,new ParseDouble()                  //HUMANPLAYER
-            ,new HashMapper(autoModesRead,0)    //AUTOMODE
-    };
 	
 	public static final int maxPerimeter = 112;
 	public static final int maxHeight = 84;
@@ -249,7 +119,7 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
         if(null==orientation) {
             setOrientation("");
         } else {
-            setDriveTrain(orientation.toString());
+            setOrientation(orientation.toString());
         }
     }
 	public String getDriveTrain() {

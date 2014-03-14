@@ -56,6 +56,8 @@ public class TeamScoutingWheel extends AOurAllianceData {
 	private int wheelCount;
 	public TeamScoutingWheel() {
 		super();
+        season = new Season();
+        team = new Team();
 	}
     public TeamScoutingWheel(long id) {
         super(id);
@@ -120,6 +122,6 @@ public class TeamScoutingWheel extends AOurAllianceData {
 	}
 
     public AOurAllianceData validate() {
-        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE " + SEASON + "=? AND " + TEAM + "=? AND"+TYPE+"=? LIMIT 1", getSeason(),getTeam(),getWheelType()).get();
+        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE " + SEASON + "=? AND " + TEAM + "=? AND "+TYPE+"=? LIMIT 1", getSeason(),getTeam(),getWheelType()).get();
     }
 }

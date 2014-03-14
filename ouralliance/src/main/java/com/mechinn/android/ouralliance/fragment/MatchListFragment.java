@@ -1,5 +1,7 @@
 package com.mechinn.android.ouralliance.fragment;
 
+import com.mechinn.android.ouralliance.Export;
+import com.mechinn.android.ouralliance.Import;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchAdapter;
@@ -234,13 +236,20 @@ public class MatchListFragment extends ListFragment {
 	        		noCompetition();
 	        	}
 	            return true;
-//	        case R.id.export:
-//	        	if(null!=comp) {
-//	        		new Export(this.getActivity()).execute();
-//	        	} else {
-//	        		noCompetition();
-//	        	}
-//	            return true;
+            case R.id.exportMatchScouting:
+                if(null!=adapter && adapter.getCount()>0) {
+                    new Export(this.getActivity(),Export.Types.MATCHSCOUTING2014).execute();
+                } else {
+                    noMatches();
+                }
+                return true;
+            case R.id.importMatchScouting:
+                if(null!=comp) {
+                    new Import(this.getActivity(),Import.Types.MATCHSCOUTING2014).execute();
+                } else {
+                    noCompetition();
+                }
+                return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -287,6 +296,12 @@ public class MatchListFragment extends ListFragment {
 	            return super.onContextItemSelected(item);
 	    }
 	}
+
+    private void noMatches() {
+        String message = "Add a match first.";
+        Log.i(TAG, message);
+        Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
 	
 	private void notEnoughTeams() {
 		String message = "Please add at least 6 teams to the competition first.";

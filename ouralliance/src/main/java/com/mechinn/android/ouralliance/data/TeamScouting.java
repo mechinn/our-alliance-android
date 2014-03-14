@@ -23,7 +23,6 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
     @Column(NOTES)
 	private String notes;
 
-
 	public TeamScouting() {
 		super();
 	}
