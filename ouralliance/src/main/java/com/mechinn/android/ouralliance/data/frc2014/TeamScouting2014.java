@@ -50,11 +50,45 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
     public static final String PUSHER = "pusher";
     public static final String BLOCKER = "blocker";
     public static final String HUMANPLAYER = "humanPlayer";
-    public static final String AUTOMODE = "autoMode";
+    public static final String NOAUTO = "noAuto";
+    public static final String DRIVEAUTO = "driveAuto";
+    public static final String LOWAUTO = "lowAuto";
+    public static final String HIGHAUTO = "highAuto";
+    public static final String HOTAUTO = "hotAuto";
 	
 	public static final int maxPerimeter = 112;
 	public static final int maxHeight = 84;
     public static final int maxDistance = 9999;
+
+    public static final int NONE = 1;
+    public static final int DUMPER = 2;
+    public static final int SHOOTER = 3;
+
+    public static final Map shootersWrite;
+    public static final Map shootersRead;
+
+    static {
+        int[] shooterIds = {
+                NONE
+                ,DUMPER
+                ,SHOOTER
+        };
+        String[] shooterText = {
+                "None"
+                ,"Dumper"
+                ,"Shooter"
+        };
+        Map shootersWriteTemp;
+        Map shootersReadTemp;
+        shootersWriteTemp = new ArrayMap();
+        shootersReadTemp = new ArrayMap();
+        for(int i=0;i<shooterIds.length;++i) {
+            shootersWriteTemp.put(shooterIds[i],shooterText[i]);
+            shootersReadTemp.put(shooterText[i],shooterIds[i]);
+        }
+        shootersWrite = shootersWriteTemp;
+        shootersRead = shootersReadTemp;
+    }
 
     @Column(ORIENTATION)
 	private String orientation;
@@ -94,8 +128,16 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 	private boolean blocker;
     @Column(HUMANPLAYER)
     private double humanPlayer;
-    @Column(AUTOMODE)
-    private int autoMode;
+    @Column(NOAUTO)
+    private boolean noAuto;
+    @Column(DRIVEAUTO)
+    private boolean driveAuto;
+    @Column(LOWAUTO)
+    private boolean lowAuto;
+    @Column(HIGHAUTO)
+    private boolean highAuto;
+    @Column(HOTAUTO)
+    private boolean hotAuto;
 
 	public TeamScouting2014() {
 		super();
@@ -248,11 +290,35 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
     public void setHumanPlayer(double humanPlayer) {
         this.humanPlayer = humanPlayer;
     }
-    public int getAutoMode() {
-        return autoMode;
+    public boolean isNoAuto() {
+        return noAuto;
     }
-    public void setAutoMode(int autoMode) {
-        this.autoMode = autoMode;
+    public void setNoAuto(boolean noAuto) {
+        this.noAuto = noAuto;
+    }
+    public boolean isDriveAuto() {
+        return driveAuto;
+    }
+    public void setDriveAuto(boolean driveAuto) {
+        this.driveAuto = driveAuto;
+    }
+    public boolean isLowAuto() {
+        return lowAuto;
+    }
+    public void setLowAuto(boolean lowAuto) {
+        this.lowAuto = lowAuto;
+    }
+    public boolean isHighAuto() {
+        return highAuto;
+    }
+    public void setHighAuto(boolean highAuto) {
+        this.highAuto = highAuto;
+    }
+    public boolean isHotAuto() {
+        return hotAuto;
+    }
+    public void setHotAuto(boolean hotAuto) {
+        this.hotAuto = hotAuto;
     }
 	public String toString() {
 		return	"ID: "+this.getId()+
@@ -277,7 +343,11 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
                 " Pusher: "+this.isPusher()+
 				" Blocker: "+this.isBlocker()+
                 " Human Player: "+this.getHumanPlayer()+
-                " Autonomous Mode: "+this.getAutoMode();
+                " No Autonomous Mode: "+this.isNoAuto()+
+                " Drive Autonomous Mode: "+this.isDriveAuto()+
+                " Low Autonomous Mode: "+this.isLowAuto()+
+                " High Autonomous Mode: "+this.isHighAuto()+
+                " Hot Autonomous Mode: "+this.isHotAuto();
 	}
 	public boolean equals(TeamScouting2014 data) {
 		return super.equals(data) &&
@@ -300,7 +370,11 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
                 isPusher()==data.isPusher() &&
 				isBlocker()==data.isBlocker() &&
                 getHumanPlayer()==data.getHumanPlayer() &&
-                getAutoMode()==data.getAutoMode();
+                isNoAuto()==data.isNoAuto() &&
+                isDriveAuto()==data.isDriveAuto() &&
+                isLowAuto()==data.isLowAuto() &&
+                isHighAuto()==data.isHighAuto() &&
+                isHotAuto()==data.isHotAuto();
 	}
     public boolean isValid() {
         Log.d(TAG, "id: " + getId());
@@ -337,6 +411,10 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
                 && isPusher()==false
                 && isBlocker()==false
                 && getHumanPlayer()==0
-                && getAutoMode()==0;
+                && isNoAuto()==false
+                && isDriveAuto()==false
+                && isLowAuto()==false
+                && isHighAuto()==false
+                && isHotAuto()==false;
     }
 }

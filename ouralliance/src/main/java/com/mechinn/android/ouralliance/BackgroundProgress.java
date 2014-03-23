@@ -132,8 +132,10 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 
 	@Override
     protected void onPostExecute(Boolean result) {
-		if(null!=dialog) {
+        try {
             dialog.dismiss();
+        } catch(Exception e) {
+            Log.w(TAG,"error dismissing dialog",e);
         }
 		listener.complete(flag);
     }

@@ -56,12 +56,11 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     private CheckBox pusher;
     private CheckBox blocker;
     private RatingBar humanPlayer;
-    private UncheckableRadioButton noAuto;
-    private UncheckableRadioButton driveAuto;
-    private UncheckableRadioButton lowAuto;
-    private UncheckableRadioButton highAuto;
-    private UncheckableRadioButton hotAuto;
-    private UncheckableRadioGroup autoMode;
+    private CheckBox noAuto;
+    private CheckBox driveAuto;
+    private CheckBox lowAuto;
+    private CheckBox highAuto;
+    private CheckBox hotAuto;
 
 	private TeamScouting2014Adapter orientationsAdapter;
 	private TeamScouting2014Adapter driveTrainsAdapter;
@@ -230,9 +229,11 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
                             shootingDistanceGroup.setVisibility(View.GONE);
                             shootingDistance.setText("");
                             lowAuto.setVisibility(View.VISIBLE);
+                            lowAuto.setChecked(getScouting().isLowAuto());
                             highAuto.setVisibility(View.GONE);
+                            highAuto.setChecked(false);
                             hotAuto.setVisibility(View.GONE);
-                            autoMode.programaticallyCheck(getScouting().getAutoMode());
+                            hotAuto.setChecked(false);
                             break;
                         case R.id.shooter:
                             shooterGroup.setVisibility(View.VISIBLE);
@@ -245,26 +246,12 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
                             if(0!=getScouting().getShootingDistance()) {
                                 shootingDistance.setText(Double.toString(getScouting().getShootingDistance()));
                             }
+                            lowAuto.setChecked(getScouting().isLowAuto());
                             lowAuto.setVisibility(View.VISIBLE);
+                            highAuto.setChecked(getScouting().isHighAuto());
                             highAuto.setVisibility(View.VISIBLE);
+                            hotAuto.setChecked(getScouting().isHotAuto());
                             hotAuto.setVisibility(View.VISIBLE);
-                            switch(getScouting().getAutoMode()){
-                                case R.id.team2014noAuto:
-                                    noAuto.setChecked(true);
-                                    break;
-                                case R.id.team2014driveAuto:
-                                    driveAuto.setChecked(true);
-                                    break;
-                                case R.id.team2014lowAuto:
-                                    lowAuto.setChecked(true);
-                                    break;
-                                case R.id.team2014highAuto:
-                                    highAuto.setChecked(true);
-                                    break;
-                                case R.id.team2014hotAuto:
-                                    hotAuto.setChecked(true);
-                                    break;
-                            }
                             break;
                     }
                 }
@@ -306,12 +293,11 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         pusher = (CheckBox) seasonView.findViewById(R.id.team2014pusher);
         blocker = (CheckBox) seasonView.findViewById(R.id.team2014blocker);
         humanPlayer = (RatingBar) seasonView.findViewById(R.id.team2014humanPlayer);
-        noAuto = (UncheckableRadioButton) seasonView.findViewById(R.id.team2014noAuto);
-        driveAuto = (UncheckableRadioButton) seasonView.findViewById(R.id.team2014driveAuto);
-        lowAuto = (UncheckableRadioButton) seasonView.findViewById(R.id.team2014lowAuto);
-        highAuto = (UncheckableRadioButton) seasonView.findViewById(R.id.team2014highAuto);
-        hotAuto = (UncheckableRadioButton) seasonView.findViewById(R.id.team2014hotAuto);
-        autoMode = (UncheckableRadioGroup) seasonView.findViewById(R.id.team2014autoMode);
+        noAuto = (CheckBox) seasonView.findViewById(R.id.team2014noAuto);
+        driveAuto = (CheckBox) seasonView.findViewById(R.id.team2014driveAuto);
+        lowAuto = (CheckBox) seasonView.findViewById(R.id.team2014lowAuto);
+        highAuto = (CheckBox) seasonView.findViewById(R.id.team2014highAuto);
+        hotAuto = (CheckBox) seasonView.findViewById(R.id.team2014hotAuto);
 		getSeason().addView(seasonView);
 		return rootView;
 	}
@@ -365,7 +351,17 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 			num = Double.toString(getScouting().getHeightMax());
 			heightMax.setText(num);
 		}
-		shooterTypes.programaticallyCheck(getScouting().getShooterType());
+        switch(getScouting().getShooterType()) {
+            case TeamScouting2014.NONE:
+                shooterTypes.programaticallyCheck(R.id.none);
+                break;
+            case TeamScouting2014.DUMPER:
+                shooterTypes.programaticallyCheck(R.id.dumper);
+                break;
+            case TeamScouting2014.SHOOTER:
+                shooterTypes.programaticallyCheck(R.id.shooter);
+                break;
+        }
 		lowGoal.setChecked(getScouting().isLowGoal());
         highGoal.setChecked(getScouting().isHighGoal());
         hotGoal.setChecked(getScouting().isHotGoal());
@@ -381,7 +377,11 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         pusher.setChecked(getScouting().isPusher());
 		blocker.setChecked(getScouting().isBlocker());
         humanPlayer.setRating((float)getScouting().getHumanPlayer());
-        autoMode.programaticallyCheck(getScouting().getAutoMode());
+        noAuto.setChecked(getScouting().isNoAuto());
+        driveAuto.setChecked(getScouting().isDriveAuto());
+        lowAuto.setChecked(getScouting().isLowAuto());
+        highAuto.setChecked(getScouting().isHighAuto());
+        hotAuto.setChecked(getScouting().isHotAuto());
 	}
 	
 	@Override
@@ -393,7 +393,17 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 		getScouting().setLength(Utility.getFloatFromText(length.getText()));
 		getScouting().setHeightShooter(Utility.getFloatFromText(heightShooter.getText()));
 		getScouting().setHeightMax(Utility.getFloatFromText(heightMax.getText()));
-		getScouting().setShooterType(shooterTypes.getCheckedRadioButtonId());
+        switch(shooterTypes.getCheckedRadioButtonId()) {
+            case R.id.none:
+                getScouting().setShooterType(TeamScouting2014.NONE);
+                break;
+            case R.id.dumper:
+                getScouting().setShooterType(TeamScouting2014.DUMPER);
+                break;
+            case R.id.shooter:
+                getScouting().setShooterType(TeamScouting2014.SHOOTER);
+                break;
+        }
 		getScouting().setLowGoal(lowGoal.isChecked());
         getScouting().setHighGoal(highGoal.isChecked());
 		getScouting().setHotGoal(hotGoal.isChecked());
@@ -406,7 +416,11 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 		getScouting().setPusher(pusher.isChecked());
 		getScouting().setBlocker(blocker.isChecked());
         getScouting().setHumanPlayer(humanPlayer.getRating());
-        getScouting().setAutoMode(autoMode.getCheckedRadioButtonId());
+        getScouting().setNoAuto(noAuto.isChecked());
+        getScouting().setDriveAuto(driveAuto.isChecked());
+        getScouting().setLowAuto(lowAuto.isChecked());
+        getScouting().setHighAuto(highAuto.isChecked());
+        getScouting().setHotAuto(hotAuto.isChecked());
 	}
 	
 	public void checkPerimeter() {

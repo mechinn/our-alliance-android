@@ -364,38 +364,47 @@
             android:text="Autonomous: "
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <com.mechinn.android.ouralliance.widget.UncheckableRadioGroup
-		    android:id="@+id/team2014autoMode"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:orientation="horizontal" >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
-            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+            <CheckBox
                 android:id="@+id/team2014noAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No" />
-            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:text="No"
+                android:checked="false"/>
+
+            <CheckBox
                 android:id="@+id/team2014driveAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Drive" />
-            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:text="Drive"
+                android:checked="false"/>
+
+            <CheckBox
                 android:id="@+id/team2014lowAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Low" />
-            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:text="Low"
+                android:checked="false"/>
+
+            <CheckBox
                 android:id="@+id/team2014highAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="High" />
-            <com.mechinn.android.ouralliance.widget.UncheckableRadioButton
+                android:text="High"
+                android:checked="false"/>
+
+            <CheckBox
                 android:id="@+id/team2014hotAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hot" />
-        </com.mechinn.android.ouralliance.widget.UncheckableRadioGroup>
+                android:text="Hot"
+                android:checked="false"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

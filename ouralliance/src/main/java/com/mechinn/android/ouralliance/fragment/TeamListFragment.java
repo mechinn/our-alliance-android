@@ -251,7 +251,7 @@ public class TeamListFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.matchList).setVisible(null!=comp);
+        menu.findItem(R.id.matchList).setVisible(null!=comp && null!=adapter && adapter.getCount() > 5);
         menu.findItem(R.id.insertTeamScouting).setVisible(null!=comp);
         menu.findItem(R.id.importTeamScouting).setVisible(null!=comp);
         menu.findItem(R.id.exportTeamScouting).setVisible(null!=adapter && adapter.getCount()>0);

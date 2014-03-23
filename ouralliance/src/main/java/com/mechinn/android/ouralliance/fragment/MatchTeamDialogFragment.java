@@ -19,7 +19,8 @@ import com.mechinn.android.ouralliance.data.Team;
 
 public class MatchTeamDialogFragment extends DialogFragment {
     public static final String TAG = "MatchTeamDialogFragment";
-	public static final String TEAM_ARG = "team";
+	public static final String MATCHSCOUTING_ARG = "matchScouting";
+    public static final String TEAM_ARG = "team";
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
@@ -29,7 +30,7 @@ public class MatchTeamDialogFragment extends DialogFragment {
     }
 
     Listener listener;
-    private long matchId;
+    private long matchScoutingId;
     private long teamId;
 
     @Override
@@ -50,6 +51,7 @@ public class MatchTeamDialogFragment extends DialogFragment {
 		setRetainInstance(true);
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        matchScoutingId = this.getArguments().getLong(MATCHSCOUTING_ARG);
         teamId = this.getArguments().getLong(TEAM_ARG);
 		builder
 			.setPositiveButton("Team Scouting", new DialogInterface.OnClickListener() {
@@ -58,7 +60,7 @@ public class MatchTeamDialogFragment extends DialogFragment {
 				}
 			}).setNegativeButton("Match Scouting", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-                    listener.onMatchTeamDialogNegativeClick(teamId);
+                    listener.onMatchTeamDialogNegativeClick(matchScoutingId);
 				}
 			});
 		// Create the AlertDialog object and return it

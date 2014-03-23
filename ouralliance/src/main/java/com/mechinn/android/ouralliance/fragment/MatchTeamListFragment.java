@@ -92,7 +92,8 @@ public abstract class MatchTeamListFragment<A extends MatchScouting> extends Lis
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 DialogFragment dialog = new MatchTeamDialogFragment();
                 Bundle dialogArgs = new Bundle();
-                dialogArgs.putLong(MatchTeamDialogFragment.TEAM_ARG, adapter.getItem(position).getCompetitionTeam().getId());
+                dialogArgs.putLong(MatchTeamDialogFragment.MATCHSCOUTING_ARG, adapter.getItem(position).getId());
+                dialogArgs.putLong(MatchTeamDialogFragment.TEAM_ARG, adapter.getItem(position).getCompetitionTeam().getTeam().getId());
                 dialog.setArguments(dialogArgs);
                 dialog.show(getFragmentManager(), adapter.getItem(position).getCompetitionTeam().toString());
                 return true;

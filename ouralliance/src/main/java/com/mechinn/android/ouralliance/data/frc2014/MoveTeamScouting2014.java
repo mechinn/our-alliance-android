@@ -18,57 +18,6 @@ import java.util.Map;
  */
 public class MoveTeamScouting2014 {
     public static final String TAG = "MoveTeamScouting2014";
-    public static final Map shootersWrite;
-    public static final Map shootersRead;
-
-    public static final Map autoModesWrite;
-    public static final Map autoModesRead;
-
-    static {
-        int[] shooterIds = {
-                R.id.none
-                ,R.id.dumper
-                ,R.id.shooter
-        };
-        String[] shooterText = {
-                "None"
-                ,"Dumper"
-                ,"Shooter"
-        };
-        Map shootersWriteTemp;
-        Map shootersReadTemp;
-        shootersWriteTemp = new ArrayMap();
-        shootersReadTemp = new ArrayMap();
-        for(int i=0;i<shooterIds.length;++i) {
-            shootersWriteTemp.put(shooterIds[i],shooterText[i]);
-            shootersReadTemp.put(shooterText[i],shooterIds[i]);
-        }
-        shootersWrite = shootersWriteTemp;
-        shootersRead = shootersReadTemp;
-
-        int[] autoModeIds = {
-                R.id.team2014noAuto
-                ,R.id.team2014driveAuto
-                ,R.id.team2014lowAuto
-                ,R.id.team2014highAuto
-                ,R.id.team2014hotAuto
-        };
-        String[] autoModeText = {
-                "No"
-                ,"Drive"
-                ,"Low"
-                ,"High"
-                ,"Hot"
-        };
-        Map autoModesWriteTemp = new ArrayMap();
-        Map autoModesReadTemp = new ArrayMap();
-        for(int i=0;i<shooterIds.length;++i) {
-            autoModesWriteTemp.put(autoModeIds[i],autoModeText[i]);
-            autoModesReadTemp.put(autoModeText[i],autoModeIds[i]);
-        }
-        autoModesWrite = autoModesWriteTemp;
-        autoModesRead = autoModesReadTemp;
-    }
 
     public static final String[] FIELD_MAPPING = new String[] {
             TeamScouting2014.TAG+TeamScouting2014.MODIFIED
@@ -93,7 +42,11 @@ public class MoveTeamScouting2014 {
             ,TeamScouting2014.PUSHER
             ,TeamScouting2014.BLOCKER
             ,TeamScouting2014.HUMANPLAYER
-            ,TeamScouting2014.AUTOMODE
+            ,TeamScouting2014.NOAUTO
+            ,TeamScouting2014.DRIVEAUTO
+            ,TeamScouting2014.LOWAUTO
+            ,TeamScouting2014.HIGHAUTO
+            ,TeamScouting2014.HOTAUTO
             ,TeamScoutingWheel.TAG+TeamScoutingWheel.MODIFIED
             ,TeamScoutingWheel.TYPE
             ,TeamScoutingWheel.SIZE
@@ -110,7 +63,7 @@ public class MoveTeamScouting2014 {
             ,null                               //LENGTH
             ,null                               //HEIGHTSHOOTER
             ,null                               //HEIGHTMAX
-            ,new HashMapper(shootersWrite,0)    //SHOOTERTYPE
+            ,new HashMapper(TeamScouting2014.shootersWrite,0)    //SHOOTERTYPE
             ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //LOWGOAL
             ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //HIGHGOAL
             ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //HOTGOAL
@@ -123,7 +76,11 @@ public class MoveTeamScouting2014 {
             ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //PUSHER
             ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //BLOCKER
             ,null                               //HUMANPLAYER
-            ,new HashMapper(autoModesWrite,0)   //AUTOMODE
+            ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //NOAUTO
+            ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //DRIVEAUTO
+            ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //LOWAUTO
+            ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //HIGHAUTO
+            ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //HOTAUTO
             ,new FmtDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
             ,null
             ,null
@@ -140,7 +97,7 @@ public class MoveTeamScouting2014 {
             ,new ParseDouble()                  //LENGTH
             ,new ParseDouble()                  //HEIGHTSHOOTER
             ,new ParseDouble()                  //HEIGHTMAX
-            ,new HashMapper(shootersRead,0)     //SHOOTERTYPE
+            ,new HashMapper(TeamScouting2014.shootersRead,0)     //SHOOTERTYPE
             ,new ParseBool()          //LOWGOAL
             ,new ParseBool()          //HIGHGOAL
             ,new ParseBool()          //HOTGOAL
@@ -153,7 +110,11 @@ public class MoveTeamScouting2014 {
             ,new ParseBool()          //PUSHER
             ,new ParseBool()          //BLOCKER
             ,new ParseDouble()                  //HUMANPLAYER
-            ,new HashMapper(autoModesRead,0)    //AUTOMODE
+            ,new ParseBool()          //NOAUTO
+            ,new ParseBool()          //DRIVEAUTO
+            ,new ParseBool()          //LOWAUTO
+            ,new ParseBool()          //HIGHAUTO
+            ,new ParseBool()          //HOTAUTO
             ,new ParseDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
             ,null
             ,new ParseDouble()
@@ -316,11 +277,35 @@ public class MoveTeamScouting2014 {
     public void setHumanPlayer(double humanPlayer) {
         team.setHumanPlayer(humanPlayer);
     }
-    public int getAutoMode() {
-        return team.getAutoMode();
+    public boolean isNoAuto() {
+        return team.isNoAuto();
     }
-    public void setAutoMode(int autoMode) {
-        team.setAutoMode(autoMode);
+    public void setNoAuto(boolean noAuto) {
+        team.setNoAuto(noAuto);
+    }
+    public boolean isDriveAuto() {
+        return team.isDriveAuto();
+    }
+    public void setDriveAuto(boolean driveAuto) {
+        team.setDriveAuto(driveAuto);
+    }
+    public boolean isLowAuto() {
+        return team.isLowAuto();
+    }
+    public void setLowAuto(boolean lowAuto) {
+        team.setLowAuto(lowAuto);
+    }
+    public boolean isHighAuto() {
+        return team.isHighAuto();
+    }
+    public void setHighAuto(boolean highAuto) {
+        team.setHighAuto(highAuto);
+    }
+    public boolean isHotAuto() {
+        return team.isHotAuto();
+    }
+    public void setHotAuto(boolean hotAuto) {
+        team.setHotAuto(hotAuto);
     }
     public String getWheelType() {
         return wheel.getWheelType();
