@@ -20,7 +20,28 @@ public class Import extends Thread {
     protected static final String CSV = ".csv";
     public static final String RESULT = "Result";
 
-    public enum Type {BLUETOOTH, TEAMSCOUTING2014, MATCHSCOUTING2014};
+    public enum Type {
+        TEAMSCOUTING2014, MATCHSCOUTING2014;
+        @Override
+        public String toString() {
+            switch(this) {
+                case TEAMSCOUTING2014:
+                    return "2014 team scouting";
+                case MATCHSCOUTING2014:
+                    return "2014 match scouting";
+            }
+            return "";
+        }
+        public String path() {
+            switch(this) {
+                case TEAMSCOUTING2014:
+                    return "teamScouting";
+                case MATCHSCOUTING2014:
+                    return "matchScouting";
+            }
+            return "";
+        }
+    };
 
     private String filename;
 	private String directory;
@@ -33,6 +54,7 @@ public class Import extends Thread {
     private Reader reader;
     private String deviceName;
     private Type type;
+    private boolean error;
 
 	public Import(Context context, Handler handler, Type type) {
         common(context,handler);
@@ -45,7 +67,6 @@ public class Import extends Thread {
     public Import(Context context, Handler handler, String deviceName, InputStream input) {
         common(context,handler);
         this.deviceName = deviceName;
-        this.type = Type.BLUETOOTH;
         final File file = new File(context.getCacheDir(), "from_"+deviceName.replace(" ","_").toLowerCase()+".csv");
         try {
             final OutputStream output = new FileOutputStream(file);
@@ -78,73 +99,92 @@ public class Import extends Thread {
     }
 
     public void run() {
+        execute();
+    }
+
+    public void execute() {
         if(!fileRead || null!=directory) {
             this.competition = Query.one(Competition.class, "SELECT * FROM "+Competition.TAG+" WHERE "+Competition._ID+"=?",prefs.getComp()).get();
-            switch(type) {
-                case BLUETOOTH:
-                    break;
-                default:
-                    filename = directory+type;
-                    new File(filename).mkdirs();
-                    filename += File.separator+competition.getCode()+CSV;
-                    try {
-                        reader = new FileReader(filename);
-                    } catch (IOException e) {
-                        Log.e(TAG, e.toString());
-                        message.getData().putString(RESULT,"Error opening writable file: "+filename);
-                    }
-                    break;
+            if(fileRead) {
+                filename = directory+type.path();
+                new File(filename).mkdirs();
+                filename += File.separator+competition.getCode()+CSV;
+                try {
+                    reader = new FileReader(filename);
+                } catch (IOException e) {
+                    Log.e(TAG, e.toString());
+                    message.getData().putString(RESULT,"Error opening writable file: "+filename);
+                    error=true;
+                }
             }
-            CsvBeanReader beanReader = null;
-            try {
-                beanReader = new CsvBeanReader(reader, CsvPreference.EXCEL_PREFERENCE);
+            if(!error) {
+                CsvBeanReader beanReader = null;
+                try {
+                    beanReader = new CsvBeanReader(reader, CsvPreference.EXCEL_PREFERENCE);
 
-                // write the header
-                final String[] header = beanReader.getHeader(true);
-
-                if(Arrays.equals(header, MoveTeamScouting2014.FIELD_MAPPING)) {
-                    Log.d(TAG,"import team scouting 2014");
-                    // write the beans
-                    MoveTeamScouting2014 move;
-                    while( (move = beanReader.read(MoveTeamScouting2014.class, header, MoveTeamScouting2014.readProcessor)) != null ) {
-                        Log.d(TAG,"lineNo="+beanReader.getLineNumber()+", rowNo="+beanReader.getRowNumber()+", data="+move);
-                        move.save(new Season(prefs.getSeason()), new Competition(prefs.getComp()));
+                    // write the header
+                    final String[] header = beanReader.getHeader(true);
+                    switch (prefs.getYear()) {
+                        default:
+                            Log.w(TAG, "No valid year selected");
+                            message.getData().putString(RESULT, "No valid year selected");
+                            error = true;
+                            break;
+                        case 2014:
+                            if (Arrays.equals(header, MoveTeamScouting2014.FIELD_MAPPING)) {
+                                this.type = Type.TEAMSCOUTING2014;
+                                Log.d(TAG, "import "+this.type);
+                                // write the beans
+                                MoveTeamScouting2014 move;
+                                while ((move = beanReader.read(MoveTeamScouting2014.class, header, MoveTeamScouting2014.readProcessor)) != null) {
+                                    Log.d(TAG, "lineNo=" + beanReader.getLineNumber() + ", rowNo=" + beanReader.getRowNumber() + ", data=" + move);
+                                    move.save(new Season(prefs.getSeason()), this.competition);
+                                }
+                            } else if (Arrays.equals(header, MatchScouting2014.FIELD_MAPPING)) {
+                                this.type = Type.MATCHSCOUTING2014;
+                                Log.d(TAG, "import "+this.type);
+                                // write the beans
+                                MatchScouting2014 match;
+                                while ((match = beanReader.read(MatchScouting2014.class, header, MatchScouting2014.readProcessor)) != null) {
+                                    Log.d(TAG, "lineNo=" + beanReader.getLineNumber() + ", rowNo=" + beanReader.getRowNumber() + ", data=" + match);
+                                    match.setCompetition(this.competition);
+                                    match.getCompetitionTeam().save();
+                                    match.getMatch().save();
+                                    match.save();
+                                }
+                            } else {
+                                Log.w(TAG, "Invalid file columns: " + filename);
+                                message.getData().putString(RESULT, "Invalid file columns: " + filename);
+                                error = true;
+                            }
+                            break;
                     }
-                } else if(Arrays.equals(header, MatchScouting2014.FIELD_MAPPING)) {
-                    Log.d(TAG,"import match scouting 2014");
-                    // write the beans
-                    MatchScouting2014 match;
-                    while( (match = beanReader.read(MatchScouting2014.class, header, MatchScouting2014.readProcessor)) != null ) {
-                        Log.d(TAG,"lineNo="+beanReader.getLineNumber()+", rowNo="+beanReader.getRowNumber()+", data="+match);
-                        match.setCompetition(new Competition(prefs.getComp()));
-                        match.getCompetitionTeam().save();
-                        match.getMatch().save();
-                        match.save();
+                } catch (FileNotFoundException e) {
+                    Log.e(TAG, e.toString());
+                    message.getData().putString(RESULT, "File does not exist: " + filename);
+                    error = true;
+                } catch (IOException e) {
+                    Log.e(TAG, e.toString());
+                    message.getData().putString(RESULT, "Error reading file: " + filename);
+                    error = true;
+                } finally {
+                    if (beanReader != null) {
+                        try {
+                            beanReader.close();
+                        } catch (IOException e) {
+                            Log.e(TAG, e.toString());
+                            message.getData().putString(RESULT, "Error closing reader");
+                            error = true;
+                        }
                     }
+                }
+            }
+            if(!error) {
+                if (fileRead) {
+                    message.getData().putString(RESULT, "Imported "+type+" from " + filename);
                 } else {
-                    Log.w(TAG, "Invalid file columns: "+filename);
-                    message.getData().putString(RESULT,"Invalid file columns: "+filename);
+                    message.getData().putString(RESULT, "Received "+type+" from " + deviceName);
                 }
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, e.toString());
-                message.getData().putString(RESULT,"File does not exist: "+filename);
-            } catch (IOException e) {
-                Log.e(TAG, e.toString());
-                message.getData().putString(RESULT,"Error reading file: "+filename);
-            } finally {
-                if( beanReader != null ) {
-                    try {
-                        beanReader.close();
-                    } catch (IOException e) {
-                        Log.e(TAG,e.toString());
-                        message.getData().putString(RESULT,"Error closing reader");
-                    }
-                }
-            }
-            if(Type.BLUETOOTH==type) {
-                message.getData().putString(RESULT,"received scouting info from "+deviceName);
-            } else {
-                message.getData().putString(RESULT,"imported scouting info from "+filename);
             }
             handler.sendMessage(message);
         }

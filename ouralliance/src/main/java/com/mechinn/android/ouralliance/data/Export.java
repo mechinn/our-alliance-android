@@ -39,11 +39,11 @@ public abstract class Export extends BackgroundProgress {
 
 	public Export(Activity activity) {
 		super(activity, FLAG_EXPORT);
+        prefs = new Prefs(getActivity());
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             directory = getActivity().getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getYear()+File.separator;
         }
         fileWrite = true;
-        prefs = new Prefs(getActivity());
 	}
     public Export(Activity activity, OutputStream output) {
         super(activity, FLAG_EXPORT);
@@ -82,12 +82,12 @@ public abstract class Export extends BackgroundProgress {
     @Override
     protected void onPreExecute() {
         this.setTitle("Export data");
-        this.setProgressFlag(INDETERMINATE);
         if(!fileWrite || null!=directory) {
             super.onPreExecute();
         } else {
             this.cancel(true);
         }
+        this.setProgressFlag(INDETERMINATE);
     }
 
     @Override

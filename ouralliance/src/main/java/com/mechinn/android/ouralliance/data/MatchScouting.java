@@ -6,6 +6,8 @@ import se.emilsjolander.sprinkles.annotations.Column;
 import se.emilsjolander.sprinkles.annotations.ForeignKey;
 import se.emilsjolander.sprinkles.annotations.UniqueCombo;
 
+import java.util.Date;
+
 public abstract class MatchScouting extends AOurAllianceData implements Comparable<MatchScouting>  {
     public static final String TAG = "MatchScouting";
 	private static final long serialVersionUID = 2234995463512680398L;
@@ -50,6 +52,12 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
 	public void setMatch(Match match) {
 		this.match = match;
 	}
+    public Date getMatchmodified() {
+        return match.getModified();
+    }
+    public void setMatchmodified(Date modified) {
+        this.match.setModified(modified);
+    }
     public int getMatchNum() {
         return match.getMatchNum();
     }

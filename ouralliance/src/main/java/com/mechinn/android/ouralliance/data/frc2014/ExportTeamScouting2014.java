@@ -32,67 +32,76 @@ public class ExportTeamScouting2014 extends Export {
     }
 
 	public String work() {
+        String result = null;
         if(isFileWrite()) {
-            setFilename(getDirectory()+ Import.Type.TEAMSCOUTING2014);
+            setFilename(getDirectory()+ Import.Type.TEAMSCOUTING2014.path());
             new File(getFilename()).mkdirs();
             setFilename(getFilename()+File.separator+getCompetition().getCode()+CSV);
             try {
                 setWriter(new FileWriter(getFilename()));
             } catch (IOException e) {
                 Log.e(TAG, e.toString());
-                return "Error opening writable file: "+getFilename();
+                result = "Error opening writable file: "+getFilename();
             }
         }
-        CursorList<TeamScouting2014> teams = Query.many(TeamScouting2014.class,
-                "SELECT "+TeamScouting2014.TAG+".*" +
-                        " FROM " + TeamScouting2014.TAG +
-                        " INNER JOIN " + CompetitionTeam.TAG+
-                        " ON " + TeamScouting2014.TAG+"."+TeamScouting2014.TEAM+"="+CompetitionTeam.TAG+"."+CompetitionTeam.TEAM+
-                        " AND "+CompetitionTeam.COMPETITION+"="+getPrefs().getComp()).get();
-        List<MoveTeamScouting2014> movingTeams = new ArrayList<MoveTeamScouting2014>();
-        CursorList<TeamScoutingWheel> wheels;
-        for(TeamScouting2014 team : teams) {
-            wheels = Query.many(TeamScoutingWheel.class,
-                    "SELECT *" +
-                            " FROM " + TeamScoutingWheel.TAG +
-                            " WHERE " + TeamScoutingWheel.SEASON + "="+getPrefs().getSeason()+
-                            " AND "+TeamScoutingWheel.TEAM+"="+team.getTeam().getId()).get();
-            if(null!=wheels && wheels.size()>0) {
-                for(TeamScoutingWheel wheel : wheels) {
-                    movingTeams.add(new MoveTeamScouting2014(team, wheel));
-                }
-            } else {
-                movingTeams.add(new MoveTeamScouting2014(team));
-            }
-        }
-        CsvBeanWriter beanWriter = null;
-        try {
-            beanWriter = new CsvBeanWriter(getWriter(), CsvPreference.EXCEL_PREFERENCE);
-
-            // write the header
-            beanWriter.writeHeader(MoveTeamScouting2014.FIELD_MAPPING);
-
-            // write the beans
-            for( MoveTeamScouting2014 move : movingTeams ) {
-                Log.d(TAG,"writing: "+move.toString());
-                beanWriter.write(move, MoveTeamScouting2014.FIELD_MAPPING, MoveTeamScouting2014.writeProcessor);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, e.toString());
-            if(isFileWrite()) {
-                return "Error writing to : "+getFilename();
-            }
-            return "Error sending to bluetooth device";
-        } finally {
-            if( beanWriter != null ) {
-                try {
-                    beanWriter.close();
-                } catch (IOException e) {
-                    Log.e(TAG,e.toString());
-                    return "Error closing writer";
+        if(null==result) {
+            CursorList<TeamScouting2014> teams = Query.many(TeamScouting2014.class,
+                    "SELECT " + TeamScouting2014.TAG + ".*" +
+                            " FROM " + TeamScouting2014.TAG +
+                            " INNER JOIN " + CompetitionTeam.TAG +
+                            " ON " + TeamScouting2014.TAG + "." + TeamScouting2014.TEAM + "=" + CompetitionTeam.TAG + "." + CompetitionTeam.TEAM +
+                            " AND " + CompetitionTeam.COMPETITION + "=?", getPrefs().getComp()
+            ).get();
+            List<MoveTeamScouting2014> movingTeams = new ArrayList<MoveTeamScouting2014>();
+            CursorList<TeamScoutingWheel> wheels;
+            for (TeamScouting2014 team : teams) {
+                wheels = Query.many(TeamScoutingWheel.class,
+                        "SELECT *" +
+                                " FROM " + TeamScoutingWheel.TAG +
+                                " WHERE " + TeamScoutingWheel.SEASON + "=?" +
+                                " AND " + TeamScoutingWheel.TEAM + "=?",
+                        getPrefs().getSeason(), team.getTeam().getId()
+                ).get();
+                if (null != wheels && wheels.size() > 0) {
+                    for (TeamScoutingWheel wheel : wheels) {
+                        movingTeams.add(new MoveTeamScouting2014(team, wheel));
+                    }
+                } else {
+                    movingTeams.add(new MoveTeamScouting2014(team));
                 }
             }
+            CsvBeanWriter beanWriter = null;
+            try {
+                beanWriter = new CsvBeanWriter(getWriter(), CsvPreference.EXCEL_PREFERENCE);
+
+                // write the header
+                beanWriter.writeHeader(MoveTeamScouting2014.FIELD_MAPPING);
+
+                // write the beans
+                for (MoveTeamScouting2014 move : movingTeams) {
+                    Log.d(TAG, "writing: " + move.toString());
+                    beanWriter.write(move, MoveTeamScouting2014.FIELD_MAPPING, MoveTeamScouting2014.writeProcessor);
+                }
+            } catch (IOException e) {
+                Log.e(TAG, e.toString());
+                if (isFileWrite()) {
+                    result = "Error writing to : " + getFilename();
+                } else {
+                    result = "Error sending to bluetooth device";
+                }
+            } finally {
+                if (beanWriter != null) {
+                    try {
+                        beanWriter.close();
+                    } catch (IOException e) {
+                        Log.e(TAG, e.toString());
+                        if (null == result) {
+                            result = "Error closing writer";
+                        }
+                    }
+                }
+            }
         }
-        return null;
+        return result;
 	}
 }

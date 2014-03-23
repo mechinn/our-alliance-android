@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 public class BluetoothReceive extends Thread {
     public static final String TAG = "BluetoothReceive";
-    public static final String STATUS = "status";
+    public static final String STATUS = "Status";
 
     private Handler uiHandler;
     private Application application;
@@ -30,6 +30,9 @@ public class BluetoothReceive extends Thread {
     private BluetoothServerSocket serverSocket;
     private BluetoothAdapter adapter;
     private Prefs prefs;
+    private BluetoothSocket socket;
+    private Message message;
+    private boolean serverOn;
 
     public BluetoothReceive(Application application,Handler handler) {
         super(TAG);
@@ -43,36 +46,49 @@ public class BluetoothReceive extends Thread {
         setDaemon(true);
     }
 
+    public boolean isServerOn() {
+        return serverOn;
+    }
+
     @Override
     public void run () {
         if(adapter != null) {
             while(!Thread.currentThread().isInterrupted()) {
                 if (adapter.isEnabled()) {
                     Log.d(TAG, "bluetooth server enabled");
+                    if(!serverOn) {
+                        message = new Message();
+                        message.getData().putString(STATUS,"Listening for bluetooth connections");
+                        uiHandler.sendMessage(message);
+                        serverOn = true;
+                    }
                     try {
                         serverSocket = adapter.listenUsingRfcommWithServiceRecord(serviceName, uuid);
-                        BluetoothSocket socket = serverSocket.accept();
+                        socket = serverSocket.accept();
                         if(prefs.getComp()>0) {
                             InputStream input = socket.getInputStream();
-                            new Import(application, uiHandler, socket.getRemoteDevice().getName(), input).start();
-//                        } else {
-//                            socket.getOutputStream().write("Receiver must select competition first".getBytes());
-//                            while(socket.isConnected()) {
-//                                try {
-//                                    Thread.sleep(100);
-//                                } catch (InterruptedException e) {
-//                                    Log.d(TAG,"sleep interrupted",e);
-//                                }
-//                            }
+                            new Import(application, uiHandler, socket.getRemoteDevice().getName(), input).execute();
                         }
-                        socket.close();
                     } catch (IOException e) {
                         Log.w(TAG, "unable to find connection", e);
+                    } finally {
+                        try {
+                            socket.close();
+                            serverSocket.close();
+                        } catch (Exception e) {
+                            Log.w(TAG, "Bluetooth was disabled on device", e);
+                            message = new Message();
+                            message.getData().putString(STATUS,"Bluetooth was disabled on device");
+                            uiHandler.sendMessage(message);
+                        }
+                        Log.d(TAG, "bluetooth server closed");
                     }
                 } else {
                     Log.d(TAG, "bluetooth server disabled");
+                    serverOn = false;
                     try {
-                        Thread.sleep(10000);
+                        //check every second if bluetooth is enabled again
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         Log.d(TAG, "interrupted");
                     }

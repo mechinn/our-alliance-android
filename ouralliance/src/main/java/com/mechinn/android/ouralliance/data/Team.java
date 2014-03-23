@@ -96,13 +96,12 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
         Log.d(TAG, "id: " + getId());
         Team item = Query.one(Team.class, "SELECT * FROM " + TAG + " WHERE " + NUMBER + "=? LIMIT 1", getTeamNumber()).get();
         if(null!=item) {
+            this.setId(item.getId());
             Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
             Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
             if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
                 return false;
             }
-            Log.d(TAG, "id: " + getId());
-            this.setId(item.getId());
         }
         return true;
     }

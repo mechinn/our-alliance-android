@@ -86,13 +86,12 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
         Log.d(TAG, "id: " + getId());
         Season item = Query.one(Season.class, "SELECT * FROM " + TAG + " WHERE " + YEAR + "=? LIMIT 1", getYear()).get();
         if(null!=item) {
+            this.setId(item.getId());
             Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
             Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
             if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
                 return false;
             }
-            Log.d(TAG, "id: " + getId());
-            this.setId(item.getId());
         }
         return true;
     }

@@ -1,8 +1,12 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
+import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.data.Import;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
@@ -52,6 +56,30 @@ public class TeamListFragment extends Fragment {
 	private Competition comp;
     private Team saving;
     private BluetoothAdapter bluetoothAdapter;
+    private boolean bluetoothOn;
+
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+                        bluetoothOn = false;
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        bluetoothOn = true;
+                        break;
+                }
+                getActivity().invalidateOptionsMenu();
+            }
+        }
+    };
+
 	public void setComp(Competition comp) {
 		this.comp = comp;
         this.getActivity().invalidateOptionsMenu();
@@ -218,7 +246,15 @@ public class TeamListFragment extends Fragment {
         if(null!=adapter) {
             adapter.notifyDataSetChanged();
         }
+        bluetoothOn = bluetoothAdapter.isEnabled();
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        this.getActivity().registerReceiver(broadcastReceiver, filter);
+    }
 
+    public void onStop() {
+        super.onStop();
+        // Unregister broadcast listeners
+        this.getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -276,7 +312,12 @@ public class TeamListFragment extends Fragment {
         menu.findItem(R.id.insertTeamScouting).setVisible(null!=comp);
         menu.findItem(R.id.importTeamScouting).setVisible(null!=comp);
         menu.findItem(R.id.exportTeamScouting).setVisible(null!=adapter && adapter.getCount()>0);
-        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null!=adapter && adapter.getCount()>0 && bluetoothAdapter!=null);
+        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != adapter && adapter.getCount() > 0 && bluetoothAdapter != null);
+        if(bluetoothOn) {
+            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
+        } else {
+            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
+        }
     }
 
     private void bluetoothTransfer() {

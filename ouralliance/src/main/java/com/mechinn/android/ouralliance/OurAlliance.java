@@ -161,4 +161,7 @@ public class OurAlliance extends Application {
     public void stopBluetoothReceiver() {
         receiver.interrupt();
     }
+    public boolean isBluetoothReceiverState() {
+        return receiver.isServerOn();
+    }
 }

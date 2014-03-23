@@ -71,7 +71,7 @@ public class MoveTeamScouting2014 {
     }
 
     public static final String[] FIELD_MAPPING = new String[] {
-            TeamScouting2014.MODIFIED
+            TeamScouting2014.TAG+TeamScouting2014.MODIFIED
             ,TeamScouting2014.TEAM
             ,TeamScouting2014.NOTES
             ,TeamScouting2014.ORIENTATION
@@ -94,6 +94,7 @@ public class MoveTeamScouting2014 {
             ,TeamScouting2014.BLOCKER
             ,TeamScouting2014.HUMANPLAYER
             ,TeamScouting2014.AUTOMODE
+            ,TeamScoutingWheel.TAG+TeamScoutingWheel.MODIFIED
             ,TeamScoutingWheel.TYPE
             ,TeamScoutingWheel.SIZE
             ,TeamScoutingWheel.COUNT
@@ -123,6 +124,7 @@ public class MoveTeamScouting2014 {
             ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //BLOCKER
             ,null                               //HUMANPLAYER
             ,new HashMapper(autoModesWrite,0)   //AUTOMODE
+            ,new FmtDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
             ,null
             ,null
             ,null
@@ -152,6 +154,7 @@ public class MoveTeamScouting2014 {
             ,new ParseBool()          //BLOCKER
             ,new ParseDouble()                  //HUMANPLAYER
             ,new HashMapper(autoModesRead,0)    //AUTOMODE
+            ,new ParseDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
             ,null
             ,new ParseDouble()
             ,new ParseInt()
@@ -171,10 +174,10 @@ public class MoveTeamScouting2014 {
         this.team = team;
         this.wheel = wheel;
     }
-    public Date getModified() {
+    public Date getTeamScouting2014modified() {
         return team.getModified();
     }
-    public void setModified(Date modified) {
+    public void setTeamScouting2014modified(Date modified) {
         this.team.setModified(modified);
     }
     public Team getTeam() {
@@ -321,6 +324,12 @@ public class MoveTeamScouting2014 {
     }
     public String getWheelType() {
         return wheel.getWheelType();
+    }
+    public Date getTeamScoutingWheelmodified() {
+        return wheel.getModified();
+    }
+    public void setTeamScoutingWheelmodified(Date modified) {
+        this.wheel.setModified(modified);
     }
     public void setWheelType(String type) {
         wheel.setWheelType(type);

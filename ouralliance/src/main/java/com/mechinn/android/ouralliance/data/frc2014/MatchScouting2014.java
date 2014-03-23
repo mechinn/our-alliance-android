@@ -36,11 +36,12 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     public static final String HIGH = "high";
 
     public static final String[] FIELD_MAPPING = new String[] {
-            MODIFIED
+            Match.TAG+Match.MODIFIED
             ,Match.MATCHTYPE
             ,Match.MATCHSET
             ,Match.MATCHOF
             ,Match.NUMBER
+            ,MODIFIED
             ,TEAM
             ,ALLIANCE
             ,NOTES
@@ -65,6 +66,7 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
             ,null                     //Match.MATCHSET
             ,null                     //Match.MATCHOF
             ,null                     //Match.NUMBER
+            ,new FmtDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
             ,new FmtTeam()                      //TEAM
             ,null                       //ALLIANCE
             ,null                               //NOTES
@@ -89,6 +91,7 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
             ,new ParseInt()                     //Match.MATCHSET
             ,new ParseInt()                     //Match.MATCHOF
             ,new ParseInt()                     //Match.NUMBER
+            ,new ParseDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
             ,new ParseTeam()                      //TEAM
             ,new ParseBool("blue","red")            //ALLIANCE
             ,null                                 //NOTES
@@ -244,11 +247,10 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
         if(null!=item) {
             Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
             Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
+            this.setId(item.getId());
             if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
                 return false;
             }
-            Log.d(TAG, "id: " + getId());
-            this.setId(item.getId());
         }
         return true;
     }

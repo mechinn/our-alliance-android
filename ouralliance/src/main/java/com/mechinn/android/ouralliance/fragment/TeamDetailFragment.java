@@ -349,7 +349,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
         super.onResume();
         if (prefs.getSeason() != 0 && teamId != 0) {
             Query.one(Competition.class, "select * from Competition where _id=?",prefs.getComp()).getAsync(this.getLoaderManager(),onCompetitionLoaded);
-            Query.many(TeamScoutingWheel.class, "select * from TeamScoutingWheel group by wheelType", prefs.getComp()).getAsync(this.getLoaderManager(), onWheelTypesLoaded);
+            Query.many(TeamScoutingWheel.class, "select * from TeamScoutingWheel group by wheelType").getAsync(this.getLoaderManager(), onWheelTypesLoaded);
             Query.many(TeamScoutingWheel.class, "select * from TeamScoutingWheel where season=? and team=?", prefs.getSeason(), getTeamId()).getAsync(this.getLoaderManager(), onTeamWheelsLoaded);
         }
     }
