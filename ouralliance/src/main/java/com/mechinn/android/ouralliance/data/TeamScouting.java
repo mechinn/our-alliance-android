@@ -45,7 +45,11 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 		return notes;
 	}
     public void setNotes(String notes) {
-            this.notes = notes.toString();
+        if(null==notes) {
+            this.notes = "";
+        } else {
+            this.notes = notes;
+        }
     }
 	public void setNotes(CharSequence notes) {
         if(null==notes) {

@@ -113,7 +113,11 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
         return orientation;
     }
 	public void setOrientation(String orientation) {
-		this.orientation = orientation;
+        if(null==orientation) {
+            this.orientation="";
+        } else {
+            this.orientation=orientation;
+        }
 	}
     public void setOrientation(CharSequence orientation) {
         if(null==orientation) {
@@ -129,7 +133,11 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
         return driveTrain;
     }
 	public void setDriveTrain(String driveTrain) {
-		this.driveTrain = driveTrain;
+        if(null==driveTrain) {
+            this.driveTrain="";
+        } else {
+            this.driveTrain=driveTrain;
+        }
 	}
     public void setDriveTrain(CharSequence driveTrain) {
         if(null==driveTrain) {
@@ -297,5 +305,29 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 
     public AOurAllianceData validate() {
         return Query.one(TeamScouting2014.class,"SELECT * FROM "+TAG+" WHERE "+TEAM+"=? LIMIT 1",getTeam().getId()).get();
+    }
+    public boolean empty() {
+        return (null==getTeam() || getTeam().empty())
+                && getNotes()==""
+                && getOrientation()==""
+                && getDriveTrain()==""
+                && getWidth()==0
+                && getLength()==0
+                && getHeightShooter()==0
+                && getHeightMax()==0
+                && getShooterType()==0
+                && isLowGoal()==false
+                && isHighGoal()==false
+                && isHotGoal()==false
+                && getShootingDistance()==0
+                && isPassGround()==false
+                && isPassAir()==false
+                && isPassTruss()==false
+                && isPickupGround()==false
+                && isPickupCatch()==false
+                && isPusher()==false
+                && isBlocker()==false
+                && getHumanPlayer()==0
+                && getAutoMode()==0;
     }
 }

@@ -1,13 +1,16 @@
 package com.mechinn.android.ouralliance.fragment;
 
-import com.mechinn.android.ouralliance.Export;
-import com.mechinn.android.ouralliance.Import;
+import android.bluetooth.BluetoothAdapter;
+import android.os.Handler;
+import android.os.Message;
+import com.mechinn.android.ouralliance.data.Import;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.CompetitionTeamDragSortListAdapter;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.frc2014.ExportTeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
 import com.mobeta.android.dslv.DragSortListView;
@@ -48,9 +51,10 @@ public class TeamListFragment extends Fragment {
 	private CompetitionTeamDragSortListAdapter adapter;
 	private Competition comp;
     private Team saving;
+    private BluetoothAdapter bluetoothAdapter;
 	public void setComp(Competition comp) {
 		this.comp = comp;
-		setHasOptionsMenu(null!=comp);
+        this.getActivity().invalidateOptionsMenu();
 	}
 
     public interface Listener {
@@ -166,6 +170,7 @@ public class TeamListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
     
     @Override
@@ -237,6 +242,15 @@ public class TeamListFragment extends Fragment {
         dslv.setItemChecked(position, true);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == R.id.action_request_enable_bluetooth) {
+            if (resultCode == Activity.RESULT_OK) {
+                bluetoothTransfer();
+            }
+        }
+    }
+
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -255,39 +269,57 @@ public class TeamListFragment extends Fragment {
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.team_list, menu);
 	}
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.matchList).setVisible(null!=comp);
+        menu.findItem(R.id.insertTeamScouting).setVisible(null!=comp);
+        menu.findItem(R.id.importTeamScouting).setVisible(null!=comp);
+        menu.findItem(R.id.exportTeamScouting).setVisible(null!=adapter && adapter.getCount()>0);
+        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null!=adapter && adapter.getCount()>0 && bluetoothAdapter!=null);
+    }
+
+    private void bluetoothTransfer() {
+        DialogFragment newFragment = new TransferBluetoothDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(TransferBluetoothDialogFragment.TYPE, Import.Type.TEAMSCOUTING2014);
+        newFragment.setArguments(bundle);
+        newFragment.show(this.getFragmentManager(), "Bluetooth Transfer Team Scouting");
+    }
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	        case R.id.matchList:
-	        	if(null!=comp) {
-		        	Intent intent = new Intent(this.getActivity(), MatchScoutingActivity.class);
-		            startActivity(intent);
-	        	} else {
-	        		noCompetition();
-	        	}
+                Intent intent = new Intent(this.getActivity(), MatchScoutingActivity.class);
+                startActivity(intent);
 	            return true;
 	        case R.id.insertTeamScouting:
-	        	if(null!=comp) {
-		            DialogFragment newFragment = new InsertTeamDialogFragment();
-		    		newFragment.show(this.getFragmentManager(), "Add Team");
-	        	} else {
-	        		noCompetition();
-	        	}
+                DialogFragment newFragment = new InsertTeamDialogFragment();
+                newFragment.show(this.getFragmentManager(), "Add Team");
 	            return true;
 	        case R.id.exportTeamScouting:
-	        	if(null!=adapter && adapter.getCount()>0) {
-	        		new Export(this.getActivity(),Export.Types.TEAMSCOUTING2014).execute();
-	        	} else {
-                    noTeams();
-	        	}
+                new ExportTeamScouting2014(this.getActivity()).execute();
 	            return true;
             case R.id.importTeamScouting:
-                if(null!=comp) {
-                    new Import(this.getActivity(),Import.Types.TEAMSCOUTING2014).execute();
+                new Import(this.getActivity(),new Handler(new Handler.Callback(){
+                    @Override
+                    public boolean handleMessage(Message msg) {
+                        if(null!=msg.getData().getString(Import.RESULT)) {
+                            Toast.makeText(getActivity(),msg.getData().getString(Import.RESULT),Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                        return false;
+                    }
+                }),Import.Type.TEAMSCOUTING2014).start();
+                return true;
+            case R.id.bluetoothTeamScouting:
+                if(!bluetoothAdapter.isEnabled()) {
+                    Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBluetoothIntent, R.id.action_request_enable_bluetooth);
                 } else {
-                    noCompetition();
+                    bluetoothTransfer();
                 }
                 return true;
 	        default:
@@ -322,30 +354,14 @@ public class TeamListFragment extends Fragment {
 //		    	}
 //	            return true;
 	        case R.id.delete:
-	        	if(null!=comp) {
-		        	dialog = new DeleteTeamDialogFragment();
-		            Bundle deleteArgs = new Bundle();
-		            deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.getItem(position));
-		            dialog.setArguments(deleteArgs);
-		            dialog.show(this.getFragmentManager(), "Delete Team");
-				} else {
-	        		noCompetition();
-				}
+                dialog = new DeleteTeamDialogFragment();
+                Bundle deleteArgs = new Bundle();
+                deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.getItem(position));
+                dialog.setArguments(deleteArgs);
+                dialog.show(this.getFragmentManager(), "Delete Team");
 	            return true;
 	        default:
 	            return super.onContextItemSelected(item);
 	    }
-	}
-
-    private void noTeams() {
-        String message = "Add a team first";
-        Log.i(TAG, message);
-        Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-	
-	private void noCompetition() {
-		String message = "Select a competition in settings first";
-		Log.i(TAG, message);
-		Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
 	}
 }

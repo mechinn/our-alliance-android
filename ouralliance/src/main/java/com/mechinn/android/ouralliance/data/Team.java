@@ -94,4 +94,8 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
     public AOurAllianceData validate() {
         return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE " + NUMBER + "=? LIMIT 1", getTeamNumber()).get();
     }
+    public boolean empty() {
+        return getTeamNumber()==0
+                && getName()=="";
+    }
 }

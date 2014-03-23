@@ -225,6 +225,15 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	}
 
     public AOurAllianceData validate() {
-        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE "+COMPETITION+"=? AND " + NUMBER + "=? LIMIT 1", getCompetition(), getMatchNum()).get();
+        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE "+COMPETITION+"=? AND " + NUMBER + "=? LIMIT 1", getCompetition().getId(), getMatchNum()).get();
+    }
+    public boolean empty() {
+        return (null==getCompetition() || getCompetition().empty())
+                && getMatchNum()==0
+                && getRedScore()==-1
+                && getBlueScore()==-1
+                && getMatchType().equals(Type.QUALIFIER)
+                && getMatchSet()==0
+                && getMatchOf()==0;
     }
 }

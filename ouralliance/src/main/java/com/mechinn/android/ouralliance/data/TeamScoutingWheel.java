@@ -82,10 +82,17 @@ public class TeamScoutingWheel extends AOurAllianceData {
 		this.team = team;
 	}
 	public String getWheelType() {
-		return wheelType;
+		if(null==wheelType) {
+            return "";
+        }
+        return wheelType;
 	}
     public void setWheelType(String type) {
-        this.wheelType = type;
+        if(null==type) {
+            this.wheelType = "";
+        } else {
+            this.wheelType = type;
+        }
     }
     public void setWheelType(CharSequence type) {
         if(null==type) {
@@ -122,6 +129,13 @@ public class TeamScoutingWheel extends AOurAllianceData {
 	}
 
     public AOurAllianceData validate() {
-        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE " + SEASON + "=? AND " + TEAM + "=? AND "+TYPE+"=? LIMIT 1", getSeason(),getTeam(),getWheelType()).get();
+        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE " + SEASON + "=? AND " + TEAM + "=? AND "+TYPE+"='?' LIMIT 1", getSeason().getId(),getTeam().getId(),getWheelType()).get();
+    }
+    public boolean empty() {
+        return (null==getSeason() || getSeason().empty())
+                && (null==getTeam() || getTeam().empty())
+                && (getWheelType()==null || getWheelType()=="")
+                && getWheelSize()==0
+                && getWheelCount()==0;
     }
 }

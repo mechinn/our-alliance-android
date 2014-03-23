@@ -240,4 +240,23 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     public AOurAllianceData validate() {
         return Query.one(MatchScouting2014.class, "SELECT * FROM " + TAG + " WHERE " + MATCH + "=? AND " + TEAM + "=? LIMIT 1", getMatch().getId(), getCompetitionTeam().getId()).get();
     }
+    public boolean empty() {
+        return (null==getMatch() || getMatch().empty())
+                && (null==getCompetitionTeam() || getCompetitionTeam().empty())
+                && isAlliance()==false
+                && getNotes()==""
+                && getHotShots()==0
+                && getShotsMade()==0
+                && getShotsMissed()==0
+                && getMoveForward()==0
+                && isShooter()==false
+                && isCatcher()==false
+                && isPasser()==false
+                && getDriveTrainRating()==0
+                && getBallAccuracyRating()==0
+                && isGround()==false
+                && isOverTruss()==false
+                && isLow()==false
+                && isHigh()==false;
+    }
 }

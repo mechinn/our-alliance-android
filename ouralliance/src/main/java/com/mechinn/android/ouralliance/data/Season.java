@@ -84,4 +84,8 @@ public class Season extends AOurAllianceData implements Comparable<Season> {
     public AOurAllianceData validate() {
         return Query.one(Season.class, "SELECT * FROM " + TAG + " WHERE " + YEAR + "=? LIMIT 1", getYear()).get();
     }
+    public boolean empty() {
+        return getYear()==0
+                && getTitle()=="";
+    }
 }

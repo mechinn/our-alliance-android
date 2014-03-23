@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 	<item
         android:id="@+id/settings"
+        android:icon="@drawable/ic_action_settings"
         android:showAsAction="ifRoom"
         android:title="Settings" android:menuCategory="system" android:orderInCategory="999">
     </item>

@@ -25,6 +25,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 	private Integer version;
 	private CharSequence status;
     private Listener listener;
+    private Activity activity;
 
     public interface Listener {
         public void complete(int flag);
@@ -32,6 +33,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
     }
 	
 	public BackgroundProgress(Activity activity, int flag) {
+        this.activity = activity;
         try {
         	listener = (Listener) activity;
         } catch (ClassCastException e) {
@@ -41,6 +43,9 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 		title = "";
 		this.fragmentManager = activity.getFragmentManager();
 	}
+    public Activity getActivity() {
+        return activity;
+    }
 	protected String getTitle() {
 		return title;
 	}
@@ -83,22 +88,38 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 	
 	@Override
 	protected void onProgressUpdate(Object... progress) {
-		int progressFlag = (Integer)progress[0];
-		int primary = (Integer)progress[1];
-		int total = (Integer)progress[2];
+        if(progress.length<5) {
+            dialog.setProgressStatus("Error");
+            dialog.setProgressIndeterminate();
+            return;
+        }
+        Integer progressFlag = (Integer)progress[0];
+        Integer primary = (Integer)progress[1];
+        Integer total = (Integer)progress[2];
 		Integer version = (Integer)progress[3];
+        String status = (String)progress[4];
+        if(null==status) {
+            status = "";
+        }
 		if(null!=version) {
-			dialog.setProgressStatus(version+": "+ progress[4]);
+			dialog.setProgressStatus(version+": "+ status);
 		} else {
-			dialog.setProgressStatus((String)progress[4]);
+			dialog.setProgressStatus(status);
 		}
-		switch(progressFlag) {
-			case INDETERMINATE:
-				dialog.setProgressIndeterminate();
-			case NORMAL:
-			default:
-				dialog.setProgressPercent(primary,total);
-		}
+        if(null!=primary && null!=total) {
+            if (null != progressFlag) {
+                switch (progressFlag) {
+                    case INDETERMINATE:
+                        dialog.setProgressIndeterminate();
+                    default:
+                        dialog.setProgressPercent(primary, total);
+                }
+            } else {
+                dialog.setProgressPercent(primary, total);
+            }
+        } else {
+            dialog.setProgressIndeterminate();
+        }
     }
 	
 	@Override
@@ -133,7 +154,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
     }
 	
 	protected void increaseVersion() {
-        publishProgress(progressFlag, primary, progressTotal, (++version), status);
+        publishProgress(progressFlag, primary, progressTotal, ++version, status);
 	}
 	
 	protected void setTotal(int total) {

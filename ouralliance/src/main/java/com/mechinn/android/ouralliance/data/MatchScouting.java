@@ -113,7 +113,11 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
 		return notes;
 	}
 	public void setNotes(String notes) {
-		this.notes = notes;
+		if(null==notes) {
+            this.notes = "";
+        } else {
+            this.notes = notes;
+        }
 	}
     public void setNotes(CharSequence notes) {
         if(null==notes) {

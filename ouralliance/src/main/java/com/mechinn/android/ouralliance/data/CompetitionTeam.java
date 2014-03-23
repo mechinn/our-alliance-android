@@ -41,8 +41,9 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	private boolean scouted;
 	public CompetitionTeam() {
 		super();
-        competition = new Competition();
-        team = new Team();
+        this.setCompetition(new Competition());
+        this.setTeam(new Team());
+        this.setRank(999);
 	}
     public CompetitionTeam(long id) {
         super(id);
@@ -99,5 +100,11 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 
     public AOurAllianceData validate() {
         return Query.one(CompetitionTeam.class, "SELECT * FROM " + TAG + " WHERE "+COMPETITION+"=? AND " + TEAM + "=? LIMIT 1",getCompetition().getId(), getTeam().getId()).get();
+    }
+    public boolean empty() {
+        return (null==getCompetition() || getCompetition().empty())
+                && (getTeam()==null || getTeam().empty())
+                && getRank()==999
+                && isScouted()==false;
     }
 }

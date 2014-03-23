@@ -7,6 +7,7 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.Menu;
 
+import android.view.MenuItem;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.fragment.PreferenceFragment;

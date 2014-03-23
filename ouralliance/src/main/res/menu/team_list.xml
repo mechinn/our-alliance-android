@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-	<item android:id="@+id/matchList"
-          android:orderInCategory="1"
-          android:menuCategory="system"
-          android:showAsAction="ifRoom"
-          android:title="Match List">
-    </item>
+	<item
+        android:id="@+id/matchList"
+        android:icon="@drawable/ic_action_view_as_list"
+        android:orderInCategory="1"
+        android:menuCategory="system"
+        android:showAsAction="ifRoom"
+        android:title="Match List"/>
     <item
         android:id="@+id/insertTeamScouting"
+        android:icon="@drawable/ic_action_new"
         android:showAsAction="ifRoom"
         android:title="Add Team"
         android:menuCategory="system"
-        android:orderInCategory="2">
-    </item>
-    <item android:id="@+id/exportTeamScouting"
-          android:orderInCategory="3"
-          android:menuCategory="system"
-          android:title="Export Team Scouting"
-          android:showAsAction="ifRoom">
-    </item>
+        android:orderInCategory="2"/>
     <item
-        android:id="@+id/importTeamScouting"
+        android:id="@+id/bluetoothTeamScouting"
+        android:icon="@drawable/ic_action_bluetooth"
+        android:orderInCategory="3"
+        android:menuCategory="system"
+        android:title="Bluetooth Transfer Team Scouting"
+        android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/exportTeamScouting"
+        android:icon="@drawable/ic_action_upload"
         android:orderInCategory="4"
         android:menuCategory="system"
+        android:title="Export Team Scouting"
+        android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/importTeamScouting"
+        android:icon="@drawable/ic_action_download"
+        android:orderInCategory="5"
+        android:menuCategory="system"
         android:title="Import Team Scouting"
-        android:showAsAction="ifRoom">
-    </item>
+        android:showAsAction="ifRoom"/>
 </menu>

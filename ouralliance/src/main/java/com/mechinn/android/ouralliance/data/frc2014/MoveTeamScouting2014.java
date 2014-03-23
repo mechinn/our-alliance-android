@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.data.frc2014;
 
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.processor.FmtTeam;
@@ -17,6 +18,7 @@ import java.util.Map;
  * Created by mechinn on 3/10/14.
  */
 public class MoveTeamScouting2014 {
+    public static final String TAG = "MoveTeamScouting2014";
     public static final Map shootersWrite;
     public static final Map shootersRead;
 

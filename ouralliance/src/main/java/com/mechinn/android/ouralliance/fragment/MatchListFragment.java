@@ -1,7 +1,11 @@
 package com.mechinn.android.ouralliance.fragment;
 
-import com.mechinn.android.ouralliance.Export;
-import com.mechinn.android.ouralliance.Import;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
+import com.mechinn.android.ouralliance.data.Export;
+import com.mechinn.android.ouralliance.data.Import;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchAdapter;
@@ -26,6 +30,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.mechinn.android.ouralliance.data.frc2014.ExportMatchScouting2014;
 import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.ManyQuery;
 import se.emilsjolander.sprinkles.ModelList;
@@ -35,6 +40,7 @@ import se.emilsjolander.sprinkles.Query;
 public class MatchListFragment extends ListFragment {
     public static final String TAG = "MatchListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
+
     private Listener mCallback;
 	private Prefs prefs;
 	private MatchAdapter adapter;
@@ -42,6 +48,7 @@ public class MatchListFragment extends ListFragment {
 	private long compId;
     private ModelList<CompetitionTeam> teams;
 	private boolean matchesLoaded;
+    private BluetoothAdapter bluetoothAdapter;
 	public Competition getComp() {
 		return comp;
 	}
@@ -131,6 +138,7 @@ public class MatchListFragment extends ListFragment {
         matchesLoaded = false;
 		prefs = new Prefs(this.getActivity());
 		compId = this.prefs.getComp();
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
     
     @Override
@@ -184,6 +192,15 @@ public class MatchListFragment extends ListFragment {
         getListView().setItemChecked(position, true);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == R.id.action_request_enable_bluetooth) {
+            if (resultCode == Activity.RESULT_OK) {
+                bluetoothTransfer();
+            }
+        }
+    }
+
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -201,12 +218,23 @@ public class MatchListFragment extends ListFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.match_list, menu);
-	    menu.findItem(R.id.practice).setChecked(prefs.getPractice());
 	}
+
+    private void bluetoothTransfer() {
+        DialogFragment newFragment = new TransferBluetoothDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(TransferBluetoothDialogFragment.TYPE, Import.Type.MATCHSCOUTING2014);
+        newFragment.setArguments(bundle);
+        newFragment.show(this.getFragmentManager(), "Bluetooth Transfer Match Scouting");
+    }
 	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 	    menu.findItem(R.id.practice).setChecked(prefs.getPractice());
+        menu.findItem(R.id.insert).setVisible(null != comp && null != teams && teams.size() > 5);
+        menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && bluetoothAdapter!=null);
+        menu.findItem(R.id.importMatchScouting).setVisible(null!=comp);
+        menu.findItem(R.id.exportMatchScouting).setVisible(null!=adapter && adapter.getCount()>0);
 	}
 	
 	@Override
@@ -222,32 +250,33 @@ public class MatchListFragment extends ListFragment {
             	prefs.setPractice(item.isChecked());
 	            return true;
 	        case R.id.insert:
-	        	if(null!=comp) {
-	        		if(null!=teams && teams.size()>5) {
-			            DialogFragment newFragment = new InsertMatchDialogFragment();
-			            Bundle args = new Bundle();
-			            args.putSerializable(InsertMatchDialogFragment.TEAMS_ARG, teams);
-			            newFragment.setArguments(args);
-			    		newFragment.show(this.getFragmentManager(), "Add Match");
-	        		} else {
-	        			notEnoughTeams();
-	        		}
-	        	} else {
-	        		noCompetition();
-	        	}
+                DialogFragment newFragment = new InsertMatchDialogFragment();
+                Bundle args = new Bundle();
+                args.putSerializable(InsertMatchDialogFragment.TEAMS_ARG, teams);
+                newFragment.setArguments(args);
+                newFragment.show(this.getFragmentManager(), "Add Match");
 	            return true;
             case R.id.exportMatchScouting:
-                if(null!=adapter && adapter.getCount()>0) {
-                    new Export(this.getActivity(),Export.Types.MATCHSCOUTING2014).execute();
-                } else {
-                    noMatches();
-                }
+                new ExportMatchScouting2014(this.getActivity()).execute();
                 return true;
             case R.id.importMatchScouting:
-                if(null!=comp) {
-                    new Import(this.getActivity(),Import.Types.MATCHSCOUTING2014).execute();
+                new Import(this.getActivity(),new Handler(new Handler.Callback(){
+                    @Override
+                    public boolean handleMessage(Message msg) {
+                        if(null!=msg.getData().getString(Import.RESULT)) {
+                            Toast.makeText(getActivity(),msg.getData().getString(Import.RESULT),Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                        return false;
+                    }
+                }),Import.Type.MATCHSCOUTING2014).start();
+                return true;
+            case R.id.bluetoothMatchScouting:
+                if(!bluetoothAdapter.isEnabled()) {
+                    Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBluetoothIntent, R.id.action_request_enable_bluetooth);
                 } else {
-                    noCompetition();
+                    bluetoothTransfer();
                 }
                 return true;
 	        default:
@@ -282,36 +311,14 @@ public class MatchListFragment extends ListFragment {
 //		    	}
 //	            return true;
 	        case R.id.delete:
-	        	if(null!=comp) {
-		        	dialog = new DeleteMatchDialogFragment();
-		            Bundle deleteArgs = new Bundle();
-		            deleteArgs.putSerializable(DeleteMatchDialogFragment.MATCH_ARG, (Match)adapter.getItem(position));
-		            dialog.setArguments(deleteArgs);
-		            dialog.show(this.getFragmentManager(), "Delete Team");
-				} else {
-	        		noCompetition();
-				}
+                dialog = new DeleteMatchDialogFragment();
+                Bundle deleteArgs = new Bundle();
+                deleteArgs.putSerializable(DeleteMatchDialogFragment.MATCH_ARG, (Match)adapter.getItem(position));
+                dialog.setArguments(deleteArgs);
+                dialog.show(this.getFragmentManager(), "Delete Team");
 	            return true;
 	        default:
 	            return super.onContextItemSelected(item);
 	    }
-	}
-
-    private void noMatches() {
-        String message = "Add a match first.";
-        Log.i(TAG, message);
-        Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-	
-	private void notEnoughTeams() {
-		String message = "Please add at least 6 teams to the competition first.";
-		Log.i(TAG, message);
-		Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
-	}
-	
-	private void noCompetition() {
-		String message = "Select a competition in settings first";
-		Log.i(TAG, message);
-		Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
 	}
 }

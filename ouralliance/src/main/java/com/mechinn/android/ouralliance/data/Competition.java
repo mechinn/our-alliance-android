@@ -57,7 +57,11 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 		return name;
 	}
 	public void setName(String name) {
-		this.name = name;
+        if(null==name) {
+            this.name = "";
+        } else {
+            this.name = name;
+        }
 	}
     public void setName(CharSequence name) {
         if(null==name) {
@@ -70,7 +74,11 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 		return code;
 	}
     public void setCode(String code) {
-        this.code = code;
+        if(null==code) {
+            this.code = "";
+        } else {
+            this.code = code;
+        }
     }
     public void setCode(CharSequence code) {
         if(null==code) {
@@ -93,6 +101,11 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 	}
 
     public AOurAllianceData validate() {
-        return Query.one(Competition.class, "SELECT * FROM " + TAG + " WHERE "+SEASON+"=? AND " + CODE + "=? LIMIT 1", getSeason(), getCode()).get();
+        return Query.one(Competition.class, "SELECT * FROM " + TAG + " WHERE "+SEASON+"=? AND " + CODE + "=? LIMIT 1", getSeason().getId(), getCode()).get();
+    }
+    public boolean empty() {
+        return (null==getSeason() || getSeason().empty())
+                && (getName()==null || getName()=="")
+                && (getCode()==null || getCode()=="");
     }
 }

@@ -167,33 +167,33 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.settings, menu);
 	}
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.newComp).setVisible(null!=selectedSeason);
+        menu.findItem(R.id.deleteComp).setVisible(null!=selectedComp);
+    }
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
+        DialogFragment dialog;
+        Bundle dialogArgs;
 	    switch (item.getItemId()) {
 	        case R.id.newComp:
-	        	if(null!=selectedSeason) {
-		            DialogFragment dialog = new InsertCompDialogFragment();
-					Bundle dialogArgs = new Bundle();
-					dialogArgs.putSerializable(InsertCompDialogFragment.SEASON_ARG, selectedSeason);
-					dialog.setArguments(dialogArgs);
-					dialog.show(this.getFragmentManager(), "Add Competition");
-	        	} else {
-	        		noSeason();
-	        	}
+                dialog = new InsertCompDialogFragment();
+                dialogArgs = new Bundle();
+                dialogArgs.putSerializable(InsertCompDialogFragment.SEASON_ARG, selectedSeason);
+                dialog.setArguments(dialogArgs);
+                dialog.show(this.getFragmentManager(), "Add Competition");
 	            return true;
 	        case R.id.deleteComp:
-	        	if(null!=selectedComp) {
-					DialogFragment dialog = new GenericDialogFragment();
-					Bundle dialogArgs = new Bundle();
-					dialogArgs.putInt(GenericDialogFragment.FLAG, DIALOG_DELETECOMP);
-					dialogArgs.putInt(GenericDialogFragment.MESSAGE, R.string.deleteComp);
-					dialog.setArguments(dialogArgs);
-		            dialog.show(SettingsFragment.this.getFragmentManager(), "Delete selected compeittion?");
-	        	} else {
-	        		noCompetition();
-	        	}
+                dialog = new GenericDialogFragment();
+                dialogArgs = new Bundle();
+                dialogArgs.putInt(GenericDialogFragment.FLAG, DIALOG_DELETECOMP);
+                dialogArgs.putInt(GenericDialogFragment.MESSAGE, R.string.deleteComp);
+                dialog.setArguments(dialogArgs);
+                dialog.show(SettingsFragment.this.getFragmentManager(), "Delete selected compeittion?");
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
@@ -216,18 +216,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			default:
 				dialog.dismiss();
 		}
-	}
-	
-	private void noSeason() {
-		String message = "Select a season first";
-		Log.i(TAG, message);
-		Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
-	}
-	
-	private void noCompetition() {
-		String message = "Select a competition first";
-		Log.i(TAG, message);
-		Toast.makeText(this.getActivity(), message, Toast.LENGTH_SHORT).show();
 	}
 
 	public void insertCompetition(Competition competition) {

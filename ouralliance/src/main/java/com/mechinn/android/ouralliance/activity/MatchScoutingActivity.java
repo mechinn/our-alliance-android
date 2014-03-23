@@ -3,8 +3,6 @@ package com.mechinn.android.ouralliance.activity;
 import com.mechinn.android.ouralliance.BackgroundProgress;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.fragment.InsertMatchDialogFragment;
 import com.mechinn.android.ouralliance.fragment.MatchDetailFragment;
 import com.mechinn.android.ouralliance.fragment.MatchListFragment;
 import com.mechinn.android.ouralliance.fragment.MatchTeamDialogFragment;

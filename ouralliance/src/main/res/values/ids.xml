@@ -2,4 +2,5 @@
 <resources>
     <item type="id" name="drag_handle" />
     <item type="id" name="click_remove" />
+    <item type="id" name="action_request_enable_bluetooth" />
 </resources>

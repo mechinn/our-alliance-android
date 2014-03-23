@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="uuid">17fd491b-9455-4c1e-b52d-709c9161d6b4</string>
     <string name="app_name">Our Alliance</string>
 
     <string name="title_section1">Section 1</string>

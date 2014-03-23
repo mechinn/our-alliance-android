@@ -2,18 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@+id/open"
+        android:icon="@drawable/ic_action_forward"
         android:showAsAction="always"
         android:title="Open">
     </item>
     <!--
     <item
         android:id="@+id/edit"
+        android:icon="@drawable/ic_action_edit"
         android:showAsAction="always"
         android:title="Edit">
     </item>
     -->
     <item
         android:id="@+id/delete"
+        android:icon="@drawable/ic_action_discard"
         android:showAsAction="always"
         android:title="Remove">
     </item>

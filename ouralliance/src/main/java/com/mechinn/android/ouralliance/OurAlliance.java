@@ -3,17 +3,14 @@ package com.mechinn.android.ouralliance;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.BaseColumns;
 
 import android.util.Log;
+import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
-import com.mechinn.android.ouralliance.data.AOurAllianceData;
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
+import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.serializers.*;
@@ -27,6 +24,7 @@ import se.emilsjolander.sprinkles.*;
  */
 public class OurAlliance extends Application {
     public static final String TAG = "OurAlliance";
+    BluetoothReceive receiver;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -137,5 +135,30 @@ public class OurAlliance extends Application {
         v3.addRawStatement("INSERT INTO " + Team.TAG + "("+ v3TeamColumns +") SELECT " + v3TeamColumns + " FROM " + Team.TAG + "_OLD;");
         v3.addRawStatement("DROP TABLE " + Team.TAG + "_OLD;");
         sprinkles.addMigration(v3);
+
+        Log.d(TAG,"starting bluetooth receiver");
+        receiver = new BluetoothReceive(this,new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                if(null!=msg.getData().getString(Import.RESULT)) {
+                    Toast.makeText(OurAlliance.this,msg.getData().getString(Import.RESULT),Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                if(null!=msg.getData().getString(BluetoothReceive.STATUS)) {
+                    Toast.makeText(OurAlliance.this,msg.getData().getString(BluetoothReceive.STATUS),Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        }));
+        startBluetoothReceiver();
+    }
+
+    public void startBluetoothReceiver() {
+        receiver.start();
+    }
+
+    public void stopBluetoothReceiver() {
+        receiver.interrupt();
     }
 }
