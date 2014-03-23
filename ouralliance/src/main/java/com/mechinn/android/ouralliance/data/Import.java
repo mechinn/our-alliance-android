@@ -1,4 +1,4 @@
-package com.mechinn.android.ouralliance;
+package com.mechinn.android.ouralliance.data;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
+import com.mechinn.android.ouralliance.BackgroundProgress;
+import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Season;

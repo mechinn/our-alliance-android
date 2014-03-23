@@ -1,4 +1,4 @@
-package com.mechinn.android.ouralliance;
+package com.mechinn.android.ouralliance.data;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -16,6 +16,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mechinn.android.ouralliance.BackgroundProgress;
+import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.MoveTeamScouting2014;
