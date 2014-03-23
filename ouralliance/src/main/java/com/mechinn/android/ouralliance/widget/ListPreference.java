@@ -60,11 +60,10 @@ public class ListPreference<A extends AOurAllianceData> extends android.preferen
 
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
-        builder.setPositiveButton(null,null).setSingleChoiceItems(listPreferenceAdapter, listPreferenceAdapter.getPosition(this.getValue()), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(null,null).setAdapter(listPreferenceAdapter, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                listPreferenceAdapter.setChecked(which);
                 ListPreference.this.setValue(listPreferenceAdapter.getValue(which).toString());
-                dialog.dismiss();
+                setSummary(listPreferenceAdapter.getEntry(which));
             }
         });
     }

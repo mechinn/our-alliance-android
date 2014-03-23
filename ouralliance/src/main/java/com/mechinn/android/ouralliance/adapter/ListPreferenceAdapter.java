@@ -22,7 +22,6 @@ public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapt
     private long id;
     private Context context;
     private ModelList<A> list;
-    private ArrayList<CheckedTextView> buttons;
     private CharSequence[] entries;
     private CharSequence[] values;
     private String defaultSummary;
@@ -39,7 +38,6 @@ public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapt
     public void swapList(ModelList<A> list, long id) {
         this.id = id;
         this.list = list;
-        buttons = new ArrayList<CheckedTextView>();
         if(!isEmpty()) {
             this.entries = new CharSequence[list.size()];
             this.values = new CharSequence[list.size()];
@@ -49,20 +47,17 @@ public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapt
             }
         } else {
             this.entries = new CharSequence[1];
-            this.entries[0] = ("Loading");
+            this.entries[0] = ("");
             this.values = new CharSequence[1];
             this.values[0] = ("0");
         }
         this.notifyDataSetChanged();
     }
-    public void setChecked(int which) {
-        for(CheckedTextView button : buttons) {
-            button.setChecked(false);
-        }
-        buttons.get(which).setChecked(true);
-    }
     public CharSequence[] getEntries() {
         return this.entries;
+    }
+    public CharSequence getEntry(int which) {
+        return this.entries[which];
     }
     public CharSequence getEntry(CharSequence value) {
         for(int i=0;i<this.values.length;++i) {
@@ -132,14 +127,6 @@ public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapt
                 container = (CheckedTextView) inflater.inflate(android.R.layout.select_dialog_singlechoice, parent, false);
             }
             container.setText(entries[position]);
-            if(Long.toString(id)==values[position]){
-                container.setChecked(true);
-            }
-            try {
-                buttons.set(position,container);
-            } catch (IndexOutOfBoundsException e) {
-                buttons.add(position,container);
-            }
         }
         return container;
     }
