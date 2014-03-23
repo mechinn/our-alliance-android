@@ -52,13 +52,10 @@ public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter i
         for(CompetitionTeam team : this.getTeams()) {
             Log.d(TAG,"team: "+team);
         }
-        Log.d(TAG, "team: " + getItem(from) + " new rank: " + to);
-        getItem(from).setRank(to);
-        Log.d(TAG,"team: "+getItem(from));
         if(from>to) {
-            for(int i=to+1;i<=from;++i) {
-                Log.d(TAG,"team: "+getItem(i)+" new rank: "+(i-1));
-                getItem(i).setRank(i - 1);
+            for(int i=to;i<from;++i) {
+                Log.d(TAG,"team: "+getItem(i)+" new rank: "+(i+1));
+                getItem(i).setRank(i + 1);
                 Log.d(TAG, "team: " + getItem(i));
             }
         } else {
@@ -68,6 +65,9 @@ public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter i
                 Log.d(TAG, "team: " + getItem(i));
             }
         }
+        Log.d(TAG, "team: " + getItem(from) + " new rank: " + to);
+        getItem(from).setRank(to);
+        Log.d(TAG,"team: "+getItem(from));
         this.getTeams().saveAll();
     }
 }
