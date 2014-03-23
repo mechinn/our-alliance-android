@@ -54,7 +54,6 @@ public class TeamListFragment extends Fragment {
 	private Prefs prefs;
 	private CompetitionTeamDragSortListAdapter adapter;
 	private Competition comp;
-    private Team saving;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
 
@@ -111,20 +110,6 @@ public class TeamListFragment extends Fragment {
                 }
             };
 
-    private OneQuery.ResultHandler<Team> onTeamLoaded =
-            new OneQuery.ResultHandler<Team>() {
-                @Override
-                public boolean handleResult(Team result) {
-                    if(null!=result) {
-                        saving = result;
-                        saveCompetitionTeam();
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            };
-
     private OneQuery.ResultHandler<Competition> onCompetitionLoaded =
             new OneQuery.ResultHandler<Competition>() {
                 @Override
@@ -138,48 +123,6 @@ public class TeamListFragment extends Fragment {
                 }
             };
 
-    private OneQuery.ResultHandler<TeamScouting2014> onTeamScouting2014Loaded =
-            new OneQuery.ResultHandler<TeamScouting2014>() {
-                @Override
-                public boolean handleResult(TeamScouting2014 result) {
-                    if(null==result) {
-                        new TeamScouting2014(saving).save();
-                    }
-                    return false;
-                }
-            };
-
-    private OneQuery.ResultHandler<CompetitionTeam> onCompetitionTeamLoaded =
-            new OneQuery.ResultHandler<CompetitionTeam>() {
-                @Override
-                public boolean handleResult(CompetitionTeam result) {
-                    if(null==result) {
-                        new CompetitionTeam(new Competition(prefs.getComp()),saving).save();
-                    }
-                    return false;
-                }
-            };
-
-    public void saveTeam(Team team) {
-        saving = team;
-        saving.save();
-        Log.d(TAG,"saving id: "+saving.getId());
-        if(saving.getId()==0) {
-            Query.one(Team.class, "select * from Team where teamNumber=? LIMIT 1",saving.getTeamNumber()).getAsync(this.getLoaderManager(),onTeamLoaded);
-        } else {
-            saveCompetitionTeam();
-        }
-    }
-
-    public void saveCompetitionTeam() {
-        switch(comp.getSeason().getYear()) {
-            case 2014:
-                Query.one(TeamScouting2014.class, "select * from TeamScouting2014 where team=? LIMIT 1",saving.getId()).getAsync(this.getLoaderManager(), onTeamScouting2014Loaded);
-                break;
-
-        }
-        Query.one(CompetitionTeam.class, "select * from CompetitionTeam where competition=? AND team=? LIMIT 1",prefs.getComp(),saving.getId()).getAsync(this.getLoaderManager(),onCompetitionTeamLoaded);
-    }
 
     @Override
     public void onAttach(Activity activity) {

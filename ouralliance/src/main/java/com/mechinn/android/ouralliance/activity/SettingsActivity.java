@@ -75,14 +75,6 @@ public class SettingsActivity extends PreferenceActivity implements Setup.Listen
 	public void onGenericDialogNegativeClick(int flag, DialogInterface dialog, int id) {
 		frag.onGenericDialogNegativeClick(flag, dialog, id);
 	}
-
-	public void onInsertCompDialogPositiveClick(boolean update, Competition competition) {
-		if(update) {
-//			frag.updateCompetition(competition);
-		} else {
-			frag.insertCompetition(competition);
-		}
-	}
 	
 //	public void onBuildHeaders(List<PreferenceActivity.Header> target) {
 //		this.loadHeadersFromResource(R.xml.preference_headers, target);

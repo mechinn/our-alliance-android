@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.mechinn.android.ouralliance.Prefs;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import se.emilsjolander.sprinkles.Model;
 import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.AutoIncrementPrimaryKey;
@@ -58,5 +60,14 @@ public abstract class AOurAllianceData extends Model implements Serializable {
 	}
     protected void beforeSave() {
         setModified(new Date());
+    }
+    public void asyncSave() {
+        new AsyncSave().run();
+    }
+
+    private class AsyncSave extends Thread {
+        public void run() {
+            AOurAllianceData.this.save();
+        }
     }
 }

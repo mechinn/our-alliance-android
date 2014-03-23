@@ -94,9 +94,9 @@ public class ExportTeamScouting2014 extends Export {
                     try {
                         beanWriter.close();
                     } catch (IOException e) {
-                        Log.e(TAG, e.toString());
+                        Log.e(TAG, "error closing writer",e);
                         if (null == result) {
-                            result = "Error closing writer";
+                            result = "Error transfering data";
                         }
                     }
                 }

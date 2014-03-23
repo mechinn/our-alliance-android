@@ -218,12 +218,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		}
 	}
 
-	public void insertCompetition(Competition competition) {
-		Log.d(TAG, "id: "+competition);
-		//try inserting the team first in case it doesnt exist
-        competition.save();
-	}
-
 	public void deleteCompetition() {
 		Log.d(TAG, "id: "+selectedComp);
 		//try inserting the team first in case it doesnt exist

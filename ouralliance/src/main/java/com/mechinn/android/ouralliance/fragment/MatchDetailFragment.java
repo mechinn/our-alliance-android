@@ -167,6 +167,6 @@ public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragm
 	}
 
     public void commitUpdatedMatch() {
-        this.getMatch().save();
+        this.getMatch().asyncSave();
     }
 }

@@ -458,12 +458,12 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 			CharSequence count = ((TextView) theWheelView.getChildAt(TeamScoutingWheel.FIELD_COUNT)).getText();
 			theWheel.setWheelCount(Utility.getIntFromText(count));
 			//see if we should update or insert or just tell the user there isnt enough info
-            theWheel.save();
+            theWheel.asyncSave();
 		}
 		scouting.setNotes(notes.getText());
 	}
 	
 	public void commitUpdatedScouting() {
-        this.getScouting().save();
+        this.getScouting().asyncSave();
 	}
 }

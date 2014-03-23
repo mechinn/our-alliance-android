@@ -6,41 +6,34 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.HandlerThread;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
+import com.mechinn.android.ouralliance.data.Competition;
+import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import se.emilsjolander.sprinkles.Query;
 
 public class InsertTeamDialogFragment extends DialogFragment {
     public static final String TAG = "InsertTeamDialogFragment";
 	public static final String TEAM_ARG = "team";
-    /* The activity that creates an instance of this dialog fragment must
-     * implement this interface in order to receive event callbacks.
-     * Each method passes the DialogFragment in case the host needs to query it. */
-    public interface Listener {
-        public void onInsertTeamDialogPositiveClick(Team team);
-    }
 
-    Listener listener;
     private View dialog;
     private TextView teamNumber;
     private Team team;
+    private Prefs prefs;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            listener = (Listener) activity;
-        } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString() + " must implement "+TAG+".Listener");
-        }
+        prefs = new Prefs(activity);
     }
 	
 	@Override
@@ -66,7 +59,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					team.setTeamNumber(Utility.getIntFromText(teamNumber.getText()));
-                    listener.onInsertTeamDialogPositiveClick(team);
+                    new SaveTeam().run();
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
@@ -76,4 +69,20 @@ public class InsertTeamDialogFragment extends DialogFragment {
 		// Create the AlertDialog object and return it
 		return builder.create();
 	}
+
+    private class SaveTeam extends Thread {
+        public void run() {
+            Log.d(TAG,"saving: "+team);
+            team.save();
+            Log.d(TAG,"saving id: "+team.getId());
+            switch(prefs.getYear()) {
+                case 2014:
+                    new TeamScouting2014(team).save();
+                    break;
+
+            }
+            Log.d(TAG,"competition id: "+prefs.getComp());
+            new CompetitionTeam(new Competition(prefs.getComp()),team).save();
+        }
+    }
 }

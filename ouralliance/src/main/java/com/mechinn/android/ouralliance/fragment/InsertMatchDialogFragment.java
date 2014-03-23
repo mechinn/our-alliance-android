@@ -195,19 +195,9 @@ public class InsertMatchDialogFragment extends DialogFragment {
                     match.setRedScore(-1);
                     match.setBlueScore(-1);
                     match.setCompetition(((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()).getCompetition());
-                    match.save();
-                    switch (prefs.getYear()) {
-                        case 2014:
-                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()), false).save();
-                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) red2.getAdapter()).getItem(red2.getSelectedItemPosition()), false).save();
-                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) red3.getAdapter()).getItem(red3.getSelectedItemPosition()), false).save();
-                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue1.getAdapter()).getItem(blue1.getSelectedItemPosition()), true).save();
-                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue2.getAdapter()).getItem(blue2.getSelectedItemPosition()), true).save();
-                            new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue3.getAdapter()).getItem(blue3.getSelectedItemPosition()), true).save();
-                            break;
-                    }
-                }
-            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    new SaveMatch().run();
+            }
+    }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
             }
@@ -215,4 +205,20 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		// Create the AlertDialog object and return it
 		return builder.create();
 	}
+
+    private class SaveMatch extends Thread {
+        public void run() {
+            match.save();
+            switch (prefs.getYear()) {
+                case 2014:
+                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()), false).save();
+                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) red2.getAdapter()).getItem(red2.getSelectedItemPosition()), false).save();
+                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) red3.getAdapter()).getItem(red3.getSelectedItemPosition()), false).save();
+                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue1.getAdapter()).getItem(blue1.getSelectedItemPosition()), true).save();
+                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue2.getAdapter()).getItem(blue2.getSelectedItemPosition()), true).save();
+                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue3.getAdapter()).getItem(blue3.getSelectedItemPosition()), true).save();
+                    break;
+            }
+        }
+    }
 }

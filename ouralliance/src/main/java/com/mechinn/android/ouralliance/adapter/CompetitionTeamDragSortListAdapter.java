@@ -40,7 +40,7 @@ public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter i
                     CheckBox check = (CheckBox) v;
                     CompetitionTeam team = (CompetitionTeam) v.getTag();
                     team.setScouted(check.isChecked());
-                    team.save();
+                    team.asyncSave();
                 }
             });
         }
