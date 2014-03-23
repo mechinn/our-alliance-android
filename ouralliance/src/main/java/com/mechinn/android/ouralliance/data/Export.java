@@ -1,8 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,144 +25,90 @@ import org.supercsv.prefs.CsvPreference;
 import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.Query;
 
-public class Export extends BackgroundProgress {
+public abstract class Export extends BackgroundProgress {
     public static final String TAG = "Export";
-    private static final String CSV = ".csv";
-	private String directory;
+    protected static final String CSV = ".csv";
+
+    private String directory;
     private String filename;
-	private Context context;
-    private Types type;
+    private boolean fileWrite;
+    private Writer writer;
+    private Prefs prefs;
+    private Competition competition;
+    private String result;
 
-    public enum Types {TEAMSCOUTING2014, MATCHSCOUTING2014};
-	
-	private Prefs prefs;
-	public Export(Activity activity, Types type) {
+	public Export(Activity activity) {
 		super(activity, FLAG_EXPORT);
-		context = activity;
-		prefs = new Prefs(activity);
-        this.type = type;
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            directory = activity.getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getYear()+File.separator;
+            directory = getActivity().getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getYear()+File.separator;
         }
+        fileWrite = true;
+        prefs = new Prefs(getActivity());
 	}
-	
-	@Override
-	protected void onPreExecute() {
-		this.setTitle("Export data");
-		if(null!=directory) {
-			super.onPreExecute();
-		} else {
-			this.cancel(true);
-		}
-	}
+    public Export(Activity activity, OutputStream output) {
+        super(activity, FLAG_EXPORT);
+        setWriter(output);
+        prefs = new Prefs(getActivity());
+    }
+    public boolean isFileWrite() {
+        return fileWrite;
+    }
+    public Writer getWriter() {
+        return writer;
+    }
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+    public void setWriter(OutputStream output) {
+        writer = new BufferedWriter(new OutputStreamWriter(output));
+    }
+    public String getFilename() {
+        return filename;
+    }
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+    public String getDirectory() {
+        return directory;
+    }
+    public Prefs getPrefs() {
+        return prefs;
+    }
+    public Competition getCompetition() {
+        return competition;
+    }
+    public abstract String work();
 
-	@Override
-	protected Boolean doInBackground(Void... params) {
-        Competition competition = Query.one(Competition.class, "SELECT * FROM "+Competition.TAG+" WHERE "+Competition._ID+"=?",prefs.getComp()).get();
-        CsvBeanWriter beanWriter = null;
-        switch(type) {
-            case TEAMSCOUTING2014:
-                filename = directory+"teamScouting";
-                new File(filename).mkdirs();
-                filename += File.separator+competition.getCode()+CSV;
-                CursorList<TeamScouting2014> teams = Query.many(TeamScouting2014.class,
-                        "SELECT "+TeamScouting2014.TAG+".*" +
-                                " FROM " + TeamScouting2014.TAG +
-                                " INNER JOIN " + CompetitionTeam.TAG+
-                                " ON " + TeamScouting2014.TAG+"."+TeamScouting2014.TEAM+"="+CompetitionTeam.TAG+"."+CompetitionTeam.TEAM+
-                                " AND "+CompetitionTeam.COMPETITION+"="+prefs.getComp()).get();
-                List<MoveTeamScouting2014> movingTeams = new ArrayList<MoveTeamScouting2014>();
-                CursorList<TeamScoutingWheel> wheels;
-                for(TeamScouting2014 team : teams) {
-                    wheels = Query.many(TeamScoutingWheel.class,
-                            "SELECT *" +
-                                    " FROM " + TeamScoutingWheel.TAG +
-                                    " WHERE " + TeamScoutingWheel.SEASON + "="+prefs.getSeason()+
-                                    " AND "+TeamScoutingWheel.TEAM+"="+team.getTeam().getId()).get();
-                    if(null!=wheels && wheels.size()>0) {
-                        for(TeamScoutingWheel wheel : wheels) {
-                            movingTeams.add(new MoveTeamScouting2014(team, wheel));
-                        }
-                    } else {
-                        movingTeams.add(new MoveTeamScouting2014(team));
-                    }
-                }
-                try {
-                    beanWriter = new CsvBeanWriter(new FileWriter(filename), CsvPreference.EXCEL_PREFERENCE);
-
-                    // write the header
-                    beanWriter.writeHeader(MoveTeamScouting2014.FIELD_MAPPING);
-
-                    // write the beans
-                    for( MoveTeamScouting2014 move : movingTeams ) {
-                        Log.d(TAG,"writing: "+move.toString());
-                        beanWriter.write(move, MoveTeamScouting2014.FIELD_MAPPING, MoveTeamScouting2014.writeProcessor);
-                    }
-                } catch (IOException e) {
-                    Log.e(TAG,e.toString());
-                    setStatus("Error writing to file: "+filename);
-                    return false;
-                } finally {
-                    if( beanWriter != null ) {
-                        try {
-                            beanWriter.close();
-                        } catch (IOException e) {
-                            Log.e(TAG,e.toString());
-                            setStatus("Error closing writer");
-                            return false;
-                        }
-                    }
-                }
-                break;
-            case MATCHSCOUTING2014:
-                filename = directory+"matchScouting";
-                new File(filename).mkdirs();
-                filename += File.separator+competition.getCode()+CSV;
-                CursorList<MatchScouting2014> matches = Query.many(MatchScouting2014.class,
-                        "SELECT "+MatchScouting2014.TAG+".*" +
-                                " FROM " + MatchScouting2014.TAG +
-                                " INNER JOIN " + Match.TAG+
-                                " ON " + MatchScouting2014.TAG+"."+MatchScouting2014.MATCH+"="+Match.TAG+"."+Match._ID+
-                                " AND "+Match.COMPETITION+"="+prefs.getComp()).get();
-                try {
-                    beanWriter = new CsvBeanWriter(new FileWriter(filename), CsvPreference.EXCEL_PREFERENCE);
-
-                    // write the header
-                    beanWriter.writeHeader(MatchScouting2014.FIELD_MAPPING);
-
-                    // write the beans
-                    for( MatchScouting2014 match : matches ) {
-                        Log.d(TAG,"writing: "+match.toString());
-                        beanWriter.write(match, MatchScouting2014.FIELD_MAPPING, MatchScouting2014.writeProcessor);
-                    }
-                } catch (IOException e) {
-                    Log.e(TAG,e.toString());
-                    setStatus("Error writing to file: "+filename);
-                    return false;
-                } finally {
-                    if( beanWriter != null ) {
-                        try {
-                            beanWriter.close();
-                        } catch (IOException e) {
-                            Log.e(TAG,e.toString());
-                            setStatus("Error closing writer");
-                            return false;
-                        }
-                    }
-                }
-                break;
+    @Override
+    protected void onPreExecute() {
+        this.setTitle("Export data");
+        this.setProgressFlag(INDETERMINATE);
+        if(!fileWrite || null!=directory) {
+            super.onPreExecute();
+        } else {
+            this.cancel(true);
         }
+    }
 
+    @Override
+    protected Boolean doInBackground(Void... params) {
+        competition = Query.one(Competition.class, "SELECT * FROM "+Competition.TAG+" WHERE "+Competition._ID+"=?",prefs.getComp()).get();
+        result = work();
+        return null==result;
+    }
 
-
-        setStatus("Finished");
-		return true;
-	}
+    public String run() {
+        doInBackground();
+        return result;
+    }
 
 	@Override
     protected void onPostExecute(Boolean result) {
-		getDialog().dismiss();
-        if(result) {
+        getDialog().dismiss();
+        if(!result) {
+            Toast.makeText(getActivity(),this.result,Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), "No known viewer for this file type", Toast.LENGTH_LONG).show();
             Log.d(TAG, filename);
             String type = URLConnection.guessContentTypeFromName(filename);
             Log.d(TAG, type);
@@ -172,12 +116,10 @@ public class Export extends BackgroundProgress {
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse("file://"+filename), type);
             try {
-                context.startActivity(intent);
+                getActivity().startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                Toast.makeText(context, "No known viewer for this file type", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "No known viewer for this file type", Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(context,getDialog().getProgressStatus(),Toast.LENGTH_SHORT).show();
         }
     }
 }
