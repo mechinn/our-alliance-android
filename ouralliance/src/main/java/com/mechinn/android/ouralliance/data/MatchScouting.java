@@ -139,4 +139,10 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
 	public int compareTo(MatchScouting another) {
 		return this.getCompetitionTeam().compareTo(another.getCompetitionTeam());
 	}
+    public boolean empty() {
+        return (null==getMatch() || getMatch().empty())
+                && (null==getCompetitionTeam() || getCompetitionTeam().empty())
+                && isAlliance()==false
+                && getNotes()=="";
+    }
 }

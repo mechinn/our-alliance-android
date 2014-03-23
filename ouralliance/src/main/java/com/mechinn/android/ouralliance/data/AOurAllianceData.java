@@ -59,22 +59,4 @@ public abstract class AOurAllianceData extends Model implements Serializable {
     protected void beforeSave() {
         setModified(new Date());
     }
-    public abstract AOurAllianceData validate();
-    public abstract boolean empty();
-
-    public boolean isValid() {
-        Log.d(TAG, "id: " + getId());
-        if(getId()<1) {
-            AOurAllianceData item = validate();
-            if(null!=item) {
-                Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified());
-                if(this.getModified().after(item.getModified()) && !item.empty()) {
-                    return false;
-                }
-                Log.d(TAG, "id: " + getId());
-                this.setId(item.getId());
-            }
-        }
-        return true;
-    }
 }

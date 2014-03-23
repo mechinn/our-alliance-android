@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
+import android.util.Log;
 import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.*;
 
@@ -100,8 +101,19 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 		return this.getName().toString().compareTo(another.getName().toString());
 	}
 
-    public AOurAllianceData validate() {
-        return Query.one(Competition.class, "SELECT * FROM " + TAG + " WHERE "+SEASON+"=? AND " + CODE + "=? LIMIT 1", getSeason().getId(), getCode()).get();
+    public boolean isValid() {
+        Log.d(TAG, "id: " + getId());
+        Competition item = Query.one(Competition.class, "SELECT * FROM " + TAG + " WHERE "+SEASON+"=? AND " + CODE + "=? LIMIT 1", getSeason().getId(), getCode()).get();
+        if(null!=item) {
+            Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
+            Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
+            if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
+                return false;
+            }
+            Log.d(TAG, "id: " + getId());
+            this.setId(item.getId());
+        }
+        return true;
     }
     public boolean empty() {
         return (null==getSeason() || getSeason().empty())

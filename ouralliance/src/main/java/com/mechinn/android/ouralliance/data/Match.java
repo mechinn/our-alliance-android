@@ -224,8 +224,19 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 		return this.getDisplayNum() - another.getDisplayNum();
 	}
 
-    public AOurAllianceData validate() {
-        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE "+COMPETITION+"=? AND " + NUMBER + "=? LIMIT 1", getCompetition().getId(), getMatchNum()).get();
+    public boolean isValid() {
+        Log.d(TAG, "id: " + getId());
+        Match item = Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE "+COMPETITION+"=? AND " + NUMBER + "=? LIMIT 1", getCompetition().getId(), getMatchNum()).get();
+        if(null!=item) {
+            Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
+            Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
+            if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
+                return false;
+            }
+            Log.d(TAG, "id: " + getId());
+            this.setId(item.getId());
+        }
+        return true;
     }
     public boolean empty() {
         return (null==getCompetition() || getCompetition().empty())

@@ -66,4 +66,8 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 	public int compareTo(TeamScouting another) {
 		return this.getTeam().compareTo(another.getTeam());
 	}
+    public boolean empty() {
+        return (null==getTeam() || getTeam().empty())
+                && getNotes()=="";
+    }
 }

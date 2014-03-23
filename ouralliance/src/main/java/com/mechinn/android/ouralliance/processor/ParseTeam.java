@@ -32,7 +32,7 @@ public class ParseTeam extends CellProcessorAdaptor {
 
         int number = Integer.parseInt(numString);
 
-        Team team = Query.one(Team.class, "select * from ? where ?=? LIMIT 1", Team.TAG, Team.NUMBER, number).get();
+        Team team = Query.one(Team.class, "select * from "+Team.TAG+" where "+Team.NUMBER+"=? LIMIT 1", number).get();
 
         if(null==team) {
             team = new Team(number);

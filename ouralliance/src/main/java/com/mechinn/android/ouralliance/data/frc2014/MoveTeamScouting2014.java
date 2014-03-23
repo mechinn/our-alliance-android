@@ -8,7 +8,6 @@ import com.mechinn.android.ouralliance.processor.FmtTeam;
 import com.mechinn.android.ouralliance.processor.ParseTeam;
 import org.supercsv.cellprocessor.*;
 import org.supercsv.cellprocessor.ift.CellProcessor;
-import se.emilsjolander.sprinkles.annotations.Column;
 
 import java.util.Date;
 import java.util.List;

@@ -16,7 +16,7 @@ import java.io.*;
 import java.util.Arrays;
 
 public class Import extends Thread {
-    public static final String TAG = "Export";
+    public static final String TAG = "Import";
     protected static final String CSV = ".csv";
     public static final String RESULT = "Result";
 
@@ -103,6 +103,7 @@ public class Import extends Thread {
                 final String[] header = beanReader.getHeader(true);
 
                 if(Arrays.equals(header, MoveTeamScouting2014.FIELD_MAPPING)) {
+                    Log.d(TAG,"import team scouting 2014");
                     // write the beans
                     MoveTeamScouting2014 move;
                     while( (move = beanReader.read(MoveTeamScouting2014.class, header, MoveTeamScouting2014.readProcessor)) != null ) {
@@ -110,6 +111,7 @@ public class Import extends Thread {
                         move.save(new Season(prefs.getSeason()), new Competition(prefs.getComp()));
                     }
                 } else if(Arrays.equals(header, MatchScouting2014.FIELD_MAPPING)) {
+                    Log.d(TAG,"import match scouting 2014");
                     // write the beans
                     MatchScouting2014 match;
                     while( (match = beanReader.read(MatchScouting2014.class, header, MatchScouting2014.readProcessor)) != null ) {

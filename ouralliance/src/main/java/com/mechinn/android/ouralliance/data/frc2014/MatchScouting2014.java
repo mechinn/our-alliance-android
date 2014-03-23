@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.data.frc2014;
 
+import android.util.Log;
 import com.mechinn.android.ouralliance.data.*;
 
 import com.mechinn.android.ouralliance.processor.FmtSeason;
@@ -237,14 +238,22 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
                 isHigh()==data.isHigh();
     }
 
-    public AOurAllianceData validate() {
-        return Query.one(MatchScouting2014.class, "SELECT * FROM " + TAG + " WHERE " + MATCH + "=? AND " + TEAM + "=? LIMIT 1", getMatch().getId(), getCompetitionTeam().getId()).get();
+    public boolean isValid() {
+        Log.d(TAG, "id: " + getId());
+        MatchScouting2014 item = Query.one(MatchScouting2014.class, "SELECT * FROM " + TAG + " WHERE " + MATCH + "=? AND " + TEAM + "=? LIMIT 1", getMatch().getId(), getCompetitionTeam().getId()).get();
+        if(null!=item) {
+            Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
+            Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
+            if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
+                return false;
+            }
+            Log.d(TAG, "id: " + getId());
+            this.setId(item.getId());
+        }
+        return true;
     }
     public boolean empty() {
-        return (null==getMatch() || getMatch().empty())
-                && (null==getCompetitionTeam() || getCompetitionTeam().empty())
-                && isAlliance()==false
-                && getNotes()==""
+        return super.empty()
                 && getHotShots()==0
                 && getShotsMade()==0
                 && getShotsMissed()==0

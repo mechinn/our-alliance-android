@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
+import android.util.Log;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.supercsv.cellprocessor.FmtBool;
@@ -91,8 +92,19 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 				getName().equals(getName());
 	}
 
-    public AOurAllianceData validate() {
-        return Query.one(Match.class, "SELECT * FROM " + TAG + " WHERE " + NUMBER + "=? LIMIT 1", getTeamNumber()).get();
+    public boolean isValid() {
+        Log.d(TAG, "id: " + getId());
+        Team item = Query.one(Team.class, "SELECT * FROM " + TAG + " WHERE " + NUMBER + "=? LIMIT 1", getTeamNumber()).get();
+        if(null!=item) {
+            Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
+            Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
+            if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
+                return false;
+            }
+            Log.d(TAG, "id: " + getId());
+            this.setId(item.getId());
+        }
+        return true;
     }
     public boolean empty() {
         return getTeamNumber()==0
