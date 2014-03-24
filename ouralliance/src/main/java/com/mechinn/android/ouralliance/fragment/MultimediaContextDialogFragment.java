@@ -2,6 +2,8 @@ package com.mechinn.android.ouralliance.fragment;
 
 import java.io.File;
 
+import android.graphics.Point;
+import android.view.Display;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
 import com.squareup.picasso.Callback;
@@ -32,6 +34,8 @@ public class MultimediaContextDialogFragment extends DialogFragment implements C
     private ImageView image;
     private Button delete;
     private Button open;
+    private int width;
+    private int height;
 
     @Override
     public void onSuccess() {
@@ -60,6 +64,11 @@ public class MultimediaContextDialogFragment extends DialogFragment implements C
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString() + " must implement "+TAG+".Listener");
         }
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        width = Math.round(size.x*0.9f);
+        height = Math.round(size.y*0.9f);
     }
 	
 	@Override
@@ -71,12 +80,15 @@ public class MultimediaContextDialogFragment extends DialogFragment implements C
         file = (File) this.getArguments().getSerializable(IMAGE);
 		dialog = inflater.inflate(R.layout.multimedia_context_menu, null);
         image = (ImageView) dialog.findViewById(R.id.image);
+        image.setMaxWidth(width);
+        image.setMaxHeight(height);
         image.setTag(R.string.file, file);
         image.setScaleType(CENTER_INSIDE);
         waiting = (ProgressBar) dialog.findViewById(R.id.loading);
         waiting.setVisibility(View.VISIBLE);
         Picasso.with(getActivity())
                 .load(file)
+                .fit().centerInside()
                 .placeholder(R.drawable.ic_empty)
                 .error(R.drawable.ic_error)
                 .into(image,this);

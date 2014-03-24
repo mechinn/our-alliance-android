@@ -380,7 +380,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	
 	public void setView() {
 		this.getActivity().setTitle(Integer.toString(scouting.getTeam().getTeamNumber())+": "+scouting.getTeam().getName());
-		multimedia = new MultimediaAdapter(this.getActivity(),scouting);
+		multimedia = new MultimediaAdapter(this.getActivity(),scouting,gallery);
 		Log.d(TAG,"thumbs: "+multimedia.getCount());
 		gallery.setAdapter(multimedia);
 		Log.d(TAG,"imageviews: "+gallery.getChildCount());

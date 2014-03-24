@@ -3,6 +3,7 @@ package com.mechinn.android.ouralliance.adapter;
 import java.io.File;
 import java.net.URLConnection;
 
+import android.util.TypedValue;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.TeamScouting;
@@ -43,7 +44,7 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
 		this.teamFileDirectory = teamFileDirectory;
 	}
 
-	public MultimediaAdapter(Activity activity, TeamScouting team) {
+	public MultimediaAdapter(Activity activity, TeamScouting team, ViewGroup group) {
 		this.activity = activity;
 		prefs = new Prefs(activity);
 		Log.d(TAG, team.toString());
@@ -88,6 +89,8 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
         if (view == null) {
             view = new ImageView(activity);
         }
+        view.setMaxWidth(Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 93, activity.getResources().getDisplayMetrics())));
+        view.setMaxHeight(Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 165, activity.getResources().getDisplayMetrics())));
         view.setScaleType(FIT_START);
         view.setAdjustViewBounds(true);
         view.setOnClickListener(this);
@@ -102,6 +105,7 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
         final float scale = activity.getResources().getDisplayMetrics().density;
         Picasso.with(activity) //
                 .load(file) //
+                .fit().centerInside()
                 .placeholder(R.drawable.ic_empty) //
                 .error(R.drawable.ic_error) //
                 .into(view, this);
