@@ -131,7 +131,7 @@ public class TeamScoutingWheel extends AOurAllianceData {
 
     public boolean isValid() {
         Log.d(TAG, "id: " + getId());
-        TeamScoutingWheel item = Query.one(TeamScoutingWheel.class, "SELECT * FROM " + TAG + " WHERE " + SEASON + "=? AND " + TEAM + "=? AND "+TYPE+"='?' LIMIT 1", getSeason().getId(),getTeam().getId(),getWheelType()).get();
+        TeamScoutingWheel item = Query.one(TeamScoutingWheel.class, "SELECT * FROM " + TAG + " WHERE " + SEASON + "=? AND " + TEAM + "=? AND "+TYPE+"=? LIMIT 1", getSeason().getId(),getTeam().getId(),getWheelType()).get();
         if(null!=item) {
             this.setId(item.getId());
             Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
