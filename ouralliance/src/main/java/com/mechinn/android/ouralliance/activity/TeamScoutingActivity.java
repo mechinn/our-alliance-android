@@ -86,6 +86,14 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
             this.getActionBar().setDisplayHomeAsUpEnabled(true);
         }
 	}
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(prefs.getComp()<1) {
+            openPreferences();
+        }
+    }
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,13 +114,17 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 	        	}
             return true;
 	        case R.id.settings:
-	        	Intent intent = new Intent(this, SettingsActivity.class);
-	            startActivity(intent);
+                openPreferences();
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+
+    private void openPreferences() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
 
 	public void onTeamSelected(long team) {
         Bundle args = new Bundle();

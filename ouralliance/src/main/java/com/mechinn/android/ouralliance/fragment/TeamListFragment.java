@@ -53,9 +53,9 @@ public class TeamListFragment extends Fragment {
     private int selectedPosition;
 	private Prefs prefs;
 	private CompetitionTeamDragSortListAdapter adapter;
-	private Competition comp;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
+    private int competitionLoader;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -79,11 +79,6 @@ public class TeamListFragment extends Fragment {
         }
     };
 
-	public void setComp(Competition comp) {
-		this.comp = comp;
-        this.getActivity().invalidateOptionsMenu();
-	}
-
     public interface Listener {
         public void onTeamSelected(long team);
     }
@@ -98,26 +93,10 @@ public class TeamListFragment extends Fragment {
                         ModelList<CompetitionTeam> teams = ModelList.from(result);
                         result.close();
                         adapter.swapList(teams);
-                        if(teams.size()<1) {
-                            Query.one(Competition.class, "select * from Competition where _id=?",prefs.getComp()).getAsync(getLoaderManager(),onCompetitionLoaded);
-                        } else {
-                            setComp(teams.get(0).getCompetition());
-                        }
+                        getActivity().invalidateOptionsMenu();
                         return true;
                     } else {
-                        return false;
-                    }
-                }
-            };
-
-    private OneQuery.ResultHandler<Competition> onCompetitionLoaded =
-            new OneQuery.ResultHandler<Competition>() {
-                @Override
-                public boolean handleResult(Competition result) {
-                    if(null!=result) {
-                        setComp(result);
-                        return true;
-                    } else {
+                        getActivity().invalidateOptionsMenu();
                         return false;
                     }
                 }
@@ -155,6 +134,7 @@ public class TeamListFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
     	setRetainInstance(true);
 		registerForContextMenu(dslv);
 		dslv.setOnItemClickListener(new OnItemClickListener() {
@@ -206,10 +186,12 @@ public class TeamListFragment extends Fragment {
         Log.d(TAG,"resume");
         Log.d(TAG,"CompID: "+prefs.getComp());
         if(prefs.getComp()>0) {
-            setHasOptionsMenu(true);
-            Query.many(CompetitionTeam.class, "select * from CompetitionTeam where competition=? ORDER BY rank", prefs.getComp()).getAsync(this.getLoaderManager(),onCompetitionTeamsLoaded);
+            competitionLoader = Query.many(CompetitionTeam.class, "select * from CompetitionTeam where competition=? ORDER BY rank", prefs.getComp()).getAsync(this.getLoaderManager(),onCompetitionTeamsLoaded);
         } else {
-            setHasOptionsMenu(false);
+            if(competitionLoader>0) {
+                getLoaderManager().destroyLoader(competitionLoader);
+                competitionLoader = 0;
+            }
         }
     }
     
@@ -251,9 +233,9 @@ public class TeamListFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.matchList).setVisible(null!=comp && null!=adapter && adapter.getCount() > 5);
-        menu.findItem(R.id.insertTeamScouting).setVisible(null!=comp);
-        menu.findItem(R.id.importTeamScouting).setVisible(null!=comp);
+        menu.findItem(R.id.matchList).setVisible(prefs.getComp()>0 && null!=adapter && adapter.getCount() > 5);
+        menu.findItem(R.id.insertTeamScouting).setVisible(prefs.getComp()>0);
+        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp()>0);
         menu.findItem(R.id.exportTeamScouting).setVisible(null!=adapter && adapter.getCount()>0);
         menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != adapter && adapter.getCount() > 0 && bluetoothAdapter != null);
         if(bluetoothOn) {
@@ -330,15 +312,11 @@ public class TeamListFragment extends Fragment {
 	        	selectItem(position);
 	            return true;
 //	        case R.id.edit:
-//	        	if(null!=comp) {
 //		        	dialog = new InsertTeamDialogFragment();
 //		            Bundle updateArgs = new Bundle();
 //		            updateArgs.putSerializable(InsertTeamDialogFragment.TEAM_ARG, adapter.get(position).getTeam());
 //		            dialog.setArguments(updateArgs);
 //		        	dialog.show(this.getFragmentManager(), "Edit Team");
-//		    	} else {
-//	        		noCompetition();
-//		    	}
 //	            return true;
 	        case R.id.delete:
                 dialog = new DeleteTeamDialogFragment();

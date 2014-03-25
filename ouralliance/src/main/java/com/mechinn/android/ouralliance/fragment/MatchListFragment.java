@@ -48,10 +48,7 @@ public class MatchListFragment extends ListFragment {
     private Listener mCallback;
 	private Prefs prefs;
 	private MatchAdapter adapter;
-	private Competition comp;
-	private long compId;
     private ModelList<CompetitionTeam> teams;
-	private boolean matchesLoaded;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
 
@@ -77,31 +74,9 @@ public class MatchListFragment extends ListFragment {
         }
     };
 
-	public Competition getComp() {
-		return comp;
-	}
-	public void setComp(Competition comp) {
-		this.comp = comp;
-		setHasOptionsMenu(null!=comp);
-	}
-
     public interface Listener {
         public void onMatchSelected(long match);
     }
-
-    private OneQuery.ResultHandler<Competition> onCompetitionLoaded =
-            new OneQuery.ResultHandler<Competition>() {
-                @Override
-                public boolean handleResult(Competition result) {
-                    if(null!=result) {
-                        Log.d(TAG, "result: " + result);
-                        setComp(result);
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            };
 
     private ManyQuery.ResultHandler<Match> onMatchesLoaded =
             new ManyQuery.ResultHandler<Match>() {
@@ -114,12 +89,10 @@ public class MatchListFragment extends ListFragment {
                         result.close();
                         adapter.swapList(matches);
                         Log.d(TAG, "Count: " + matches.size());
-                        matchesLoaded = true;
-                        if(null==getComp()) {
-                            setComp(adapter.getComp());
-                        }
+                        getActivity().invalidateOptionsMenu();
                         return true;
                     } else {
+                        getActivity().invalidateOptionsMenu();
                         return false;
                     }
                 }
@@ -133,13 +106,10 @@ public class MatchListFragment extends ListFragment {
                     Log.d(TAG, "Count: " + result.size());
                     if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
                         teams = ModelList.from(result);
+                        if(teams.size()<6) {
+                            getActivity().finish();
+                        }
                         result.close();
-                        if(teams.size()>0) {
-                            setComp(teams.get(0).getCompetition());
-                        }
-                        if(matchesLoaded && null==comp) {
-                            Query.one(Competition.class, "select * from Competition where _id=?", compId).getAsync(getLoaderManager(), onCompetitionLoaded);
-                        }
                     } else {
                         teams = null;
                     }
@@ -163,15 +133,14 @@ public class MatchListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        matchesLoaded = false;
 		prefs = new Prefs(this.getActivity());
-		compId = this.prefs.getComp();
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-    	super.onActivityCreated(savedInstanceState);
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
     	setRetainInstance(true);
 		registerForContextMenu(getListView());
 		getListView().setOnItemClickListener(new OnItemClickListener() {
@@ -216,8 +185,8 @@ public class MatchListFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        Query.many(CompetitionTeam.class, "select * from CompetitionTeam where competition=?", compId).getAsync(getLoaderManager(),onTeamsLoaded);
-        Query.many(Match.class, prefs.getPractice() ? "select * from Match where competition=? AND matchType=-1" : "select * from Match where competition=? AND matchType!=-1", compId).getAsync(getLoaderManager(),onMatchesLoaded);
+        Query.many(CompetitionTeam.class, "select * from CompetitionTeam where competition=?", prefs.getComp()).getAsync(getLoaderManager(),onTeamsLoaded);
+        Query.many(Match.class, prefs.getPractice() ? "select * from Match where competition=? AND matchType=-1" : "select * from Match where competition=? AND matchType!=-1", prefs.getComp()).getAsync(getLoaderManager(),onMatchesLoaded);
     }
     
     private void selectItem(int position) {
@@ -268,9 +237,9 @@ public class MatchListFragment extends ListFragment {
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 	    menu.findItem(R.id.practice).setChecked(prefs.getPractice());
-        menu.findItem(R.id.insert).setVisible(null != comp && null != teams && teams.size() > 5);
+        menu.findItem(R.id.insert).setVisible(prefs.getComp()>0 && null != teams && teams.size() > 5);
         menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && bluetoothAdapter!=null);
-        menu.findItem(R.id.importMatchScouting).setVisible(null!=comp);
+        menu.findItem(R.id.importMatchScouting).setVisible(prefs.getComp()>0);
         menu.findItem(R.id.exportMatchScouting).setVisible(null!=adapter && adapter.getCount()>0);
         if(bluetoothOn) {
             menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
@@ -342,15 +311,11 @@ public class MatchListFragment extends ListFragment {
 	        	selectItem(position);
 	            return true;
 //	        case R.id.edit:
-//	        	if(null!=comp) {
 //		        	dialog = new InsertTeamDialogFragment();
 //		            Bundle updateArgs = new Bundle();
 //		            updateArgs.putSerializable(InsertTeamDialogFragment.TEAM_ARG, adapter.get(position).getTeam());
 //		            dialog.setArguments(updateArgs);
 //		        	dialog.show(this.getFragmentManager(), "Edit Team");
-//		    	} else {
-//	        		noCompetition();
-//		    	}
 //	            return true;
 	        case R.id.delete:
                 dialog = new DeleteMatchDialogFragment();

@@ -67,11 +67,13 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                         ModelList<Season> seasons = ModelList.from(result);
                         result.close();
                         season.swapAdapter(seasons, prefs.getSeason());
+                        if(prefs.getSeason()>0) {
+                            selectedSeason = season.get();
+                        }
                         return true;
                     } else {
                         season.setSummary(getActivity().getString(R.string.pref_season_summary));
                         comp.setEnabled(false);
-                        setHasOptionsMenu(false);
                         return false;
                     }
                 }
@@ -86,6 +88,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                         ModelList<Competition> competitions = ModelList.from(result);
                         result.close();
                         comp.swapAdapter(competitions, prefs.getComp());
+                        if(prefs.getComp()>0) {
+                            selectedComp = comp.get();
+                        }
                         return true;
                     } else {
                         comp.setSummary(getActivity().getString(R.string.pref_comp_summary));
@@ -145,8 +150,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     }
 
     @Override
-    public void onActivityCreated (Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
         // Set up a listener whenever a key changes
         season.setValue(Long.toString(prefs.getSeason()));
         comp.setValue(Long.toString(prefs.getComp()));
@@ -227,14 +233,18 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		Log.d(TAG, key);
 		if(key.equals(seasonPrefString)) {
+            Log.d(TAG,"selected season");
             selectedSeason = season.get();
             prefs.setYear(Integer.toString(selectedSeason.getYear()));
 			comp.setValue("0");
             comp.setEnabled(true);
+            getActivity().invalidateOptionsMenu();
             Query.many(Competition.class, "select * from competition where season=? ORDER BY name",Long.parseLong(season.getValue())).getAsync(this.getLoaderManager(),onCompetitionsLoaded);
 		} else if(key.equals(compPrefString)) {
+            Log.d(TAG,"selected competition");
             selectedComp = comp.get();
 		} else if(key.equals(measurePrefString)) {
+            Log.d(TAG,"selected measure");
 
 		}
 	}

@@ -68,6 +68,9 @@ public class MatchScoutingActivity extends Activity implements BackgroundProgres
 	public void onResume() {
 	    super.onResume();
 	    prefs.setChangeListener(this);
+        if(prefs.getComp()<1) {
+            this.finish();
+        }
 	}
 	
 	@Override
