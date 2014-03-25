@@ -86,14 +86,6 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
             this.getActionBar().setDisplayHomeAsUpEnabled(true);
         }
 	}
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(prefs.getComp()<1) {
-            openPreferences();
-        }
-    }
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
