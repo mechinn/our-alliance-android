@@ -54,7 +54,15 @@ public class ExportTeamScouting2014 extends Export {
             ).get();
             List<MoveTeamScouting2014> movingTeams = new ArrayList<MoveTeamScouting2014>();
             CursorList<TeamScoutingWheel> wheels;
+            CompetitionTeam competitionTeam;
             for (TeamScouting2014 team : teams) {
+                competitionTeam = Query.one(CompetitionTeam.class,
+                        "SELECT *" +
+                                " FROM " + CompetitionTeam.TAG +
+                                " WHERE " + CompetitionTeam.COMPETITION + "=?" +
+                                " AND " + CompetitionTeam.TEAM + "=?",
+                        getPrefs().getComp(), team.getTeam().getId()
+                ).get();
                 wheels = Query.many(TeamScoutingWheel.class,
                         "SELECT *" +
                                 " FROM " + TeamScoutingWheel.TAG +
@@ -64,10 +72,10 @@ public class ExportTeamScouting2014 extends Export {
                 ).get();
                 if (null != wheels && wheels.size() > 0) {
                     for (TeamScoutingWheel wheel : wheels) {
-                        movingTeams.add(new MoveTeamScouting2014(team, wheel));
+                        movingTeams.add(new MoveTeamScouting2014(team, wheel,competitionTeam));
                     }
                 } else {
-                    movingTeams.add(new MoveTeamScouting2014(team));
+                    movingTeams.add(new MoveTeamScouting2014(team,competitionTeam));
                 }
             }
             CsvBeanWriter beanWriter = null;

@@ -8,18 +8,19 @@
         android:menuCategory="system"
         android:orderInCategory="1" />
     <item
+        android:id="@+id/bluetoothMatchScouting"
+        android:icon="@drawable/ic_action_bluetooth"
+        android:orderInCategory="2"
+        android:menuCategory="system"
+        android:title="Bluetooth Transfer Match Scouting"
+        android:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/exportMatchScouting"
         android:icon="@drawable/ic_action_upload"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:menuCategory="system"
         android:title="Export Match Scouting"
         android:showAsAction="ifRoom" />
-    <item android:id="@+id/bluetoothMatchScouting"
-          android:icon="@drawable/ic_action_bluetooth"
-          android:orderInCategory="3"
-          android:menuCategory="system"
-          android:title="Bluetooth Transfer Match Scouting"
-          android:showAsAction="ifRoom"/>
     <item
         android:id="@+id/importMatchScouting"
         android:icon="@drawable/ic_action_download"

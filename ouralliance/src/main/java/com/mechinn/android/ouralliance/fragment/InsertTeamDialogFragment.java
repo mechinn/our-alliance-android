@@ -24,6 +24,7 @@ import se.emilsjolander.sprinkles.Query;
 public class InsertTeamDialogFragment extends DialogFragment {
     public static final String TAG = "InsertTeamDialogFragment";
 	public static final String TEAM_ARG = "team";
+    public static final String NEXT = "next";
 
     private View dialog;
     private TextView teamNumber;
@@ -79,10 +80,9 @@ public class InsertTeamDialogFragment extends DialogFragment {
                 case 2014:
                     new TeamScouting2014(team).save();
                     break;
-
             }
             Log.d(TAG,"competition id: "+prefs.getComp());
-            new CompetitionTeam(new Competition(prefs.getComp()),team).save();
+            new CompetitionTeam(new Competition(prefs.getComp()),team,getArguments().getInt(NEXT,999)).save();
         }
     }
 }

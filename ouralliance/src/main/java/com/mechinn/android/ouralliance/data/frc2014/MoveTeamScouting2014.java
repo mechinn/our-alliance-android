@@ -51,6 +51,9 @@ public class MoveTeamScouting2014 {
             ,TeamScoutingWheel.TYPE
             ,TeamScoutingWheel.SIZE
             ,TeamScoutingWheel.COUNT
+            ,CompetitionTeam.TAG+CompetitionTeam.MODIFIED
+            ,CompetitionTeam.RANK
+            ,CompetitionTeam.SCOUTED
     };
 
     public static final CellProcessor[] writeProcessor = new CellProcessor[] {
@@ -85,6 +88,9 @@ public class MoveTeamScouting2014 {
             ,null
             ,null
             ,null
+            ,new FmtDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
+            ,null
+            ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //HOTAUTO
     };
 
     public static final CellProcessor[] readProcessor = new CellProcessor[] {
@@ -119,21 +125,34 @@ public class MoveTeamScouting2014 {
             ,null
             ,new ParseDouble()
             ,new ParseInt()
+            ,new ParseDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
+            ,new ParseInt()
+            ,new ParseBool()
     };
 
     private TeamScouting2014 team;
     private TeamScoutingWheel wheel;
+    private Date modified;
+    private int rank;
+    private boolean scouted;
     public MoveTeamScouting2014() {
         this.team = new TeamScouting2014();
         this.wheel = new TeamScoutingWheel();
+        this.modified = new Date(0);
     }
-    public MoveTeamScouting2014(TeamScouting2014 team) {
+    public MoveTeamScouting2014(TeamScouting2014 team,CompetitionTeam competitionTeam) {
         this.team = team;
         this.wheel = new TeamScoutingWheel();
+        this.modified = competitionTeam.getModified();
+        this.rank = competitionTeam.getRank();
+        this.scouted = competitionTeam.isScouted();
     }
-    public MoveTeamScouting2014(TeamScouting2014 team, TeamScoutingWheel wheel) {
+    public MoveTeamScouting2014(TeamScouting2014 team, TeamScoutingWheel wheel,CompetitionTeam competitionTeam) {
         this.team = team;
         this.wheel = wheel;
+        this.modified = competitionTeam.getModified();
+        this.rank = competitionTeam.getRank();
+        this.scouted = competitionTeam.isScouted();
     }
     public Date getTeamScouting2014modified() {
         return team.getModified();
@@ -334,6 +353,24 @@ public class MoveTeamScouting2014 {
     public void setWheelCount(int count) {
         wheel.setWheelCount(count);
     }
+    public Date getCompetitionTeammodified() {
+        return modified;
+    }
+    public void setCompetitionTeammodified(Date modified) {
+        this.modified = modified;
+    }
+    public int getRank() {
+        return rank;
+    }
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+    public boolean isScouted() {
+        return scouted;
+    }
+    public void setScouted(boolean scouted) {
+        this.scouted = scouted;
+    }
     public String toString() {
         return "team: "+team.toString()+" wheel: "+wheel.toString();
     }
@@ -343,6 +380,6 @@ public class MoveTeamScouting2014 {
             wheel.setSeason(season);
             wheel.save();
         }
-        new CompetitionTeam(competition,team.getTeam()).save();
+        new CompetitionTeam(modified,competition,team.getTeam(),rank,scouted).save();
     }
 }

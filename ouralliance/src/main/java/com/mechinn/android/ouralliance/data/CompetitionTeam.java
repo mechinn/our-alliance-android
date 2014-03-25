@@ -4,6 +4,8 @@ import android.util.Log;
 import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.*;
 
+import java.util.Date;
+
 @Table(CompetitionTeam.TAG)
 @UniqueComboConflictClause(ConflictClause.IGNORE)
 public class CompetitionTeam extends AOurAllianceData implements Comparable<CompetitionTeam> {
@@ -48,10 +50,10 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
     public CompetitionTeam(long id) {
         super(id);
     }
-	public CompetitionTeam(Competition competition, Team team) {
+	public CompetitionTeam(Competition competition, Team team, int rank) {
         this.setCompetition(competition);
         this.setTeam(team);
-        this.setRank(999);
+        this.setRank(rank);
         this.setScouted(false);
 	}
 	public CompetitionTeam(Competition competition, Team team, int rank, boolean scouted) {
@@ -60,6 +62,13 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
         this.setRank(rank);
         this.setScouted(scouted);
 	}
+    public CompetitionTeam(Date modified, Competition competition, Team team, int rank, boolean scouted) {
+        this.setModified(modified);
+        this.setCompetition(competition);
+        this.setTeam(team);
+        this.setRank(rank);
+        this.setScouted(scouted);
+    }
 	public Competition getCompetition() {
 		return competition;
 	}

@@ -8,6 +8,7 @@ import android.util.Log;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.MoveTeamScouting2014;
+import org.supercsv.exception.SuperCsvException;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 import se.emilsjolander.sprinkles.Query;
@@ -145,12 +146,18 @@ public class Import extends Thread {
                                 Log.d(TAG, "import "+this.type);
                                 // write the beans
                                 MatchScouting2014 match;
-                                while ((match = beanReader.read(MatchScouting2014.class, header, MatchScouting2014.readProcessor)) != null) {
-                                    Log.d(TAG, "lineNo=" + beanReader.getLineNumber() + ", rowNo=" + beanReader.getRowNumber() + ", data=" + match);
-                                    match.setCompetition(this.competition);
-                                    match.getCompetitionTeam().save();
-                                    match.getMatch().save();
-                                    match.save();
+                                try {
+                                    while ((match = beanReader.read(MatchScouting2014.class, header, MatchScouting2014.readProcessor)) != null) {
+                                        Log.d(TAG, "lineNo=" + beanReader.getLineNumber() + ", rowNo=" + beanReader.getRowNumber() + ", data=" + match);
+                                        match.setCompetition(this.competition);
+                                        match.getCompetitionTeam().save();
+                                        match.getMatch().save();
+                                        match.save();
+                                    }
+                                } catch (SuperCsvException e) {
+                                    Log.e(TAG,"incomplete transfer",e);
+                                    message.getData().putString(RESULT, "Transfer did not complete correctly, try again");
+                                    error = true;
                                 }
                             } else {
                                 Log.w(TAG, "Invalid file columns: " + filename);
