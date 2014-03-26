@@ -1,19 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mobeta.android.dslv.DragSortListView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dslv="http://schemas.android.com/apk/res-auto"
-    android:id="@android:id/list"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:padding="3dp"
-    android:layout_margin="3dp"
-    android:dividerHeight="1dp"
-    dslv:drag_enabled="true"
-    dslv:collapsed_height="1dp"
-    dslv:drag_scroll_start="0.33"
-    dslv:float_alpha="0.6"
-    dslv:slide_shuffle_speed="0.3"
-    dslv:drag_start_mode="onDown"
-    dslv:drag_handle_id="@id/drag_handle"
-    android:choiceMode="none" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_vertical"
+              android:orientation="vertical" >
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Sort: "
+            />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sortTeams"/>
+    </LinearLayout>
+
+    <com.mobeta.android.dslv.DragSortListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:dslv="http://schemas.android.com/apk/res-auto"
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="3dp"
+        android:layout_margin="3dp"
+        android:dividerHeight="1dp"
+        dslv:drag_enabled="true"
+        dslv:collapsed_height="1dp"
+        dslv:drag_scroll_start="0.33"
+        dslv:float_alpha="0.6"
+        dslv:slide_shuffle_speed="0.3"
+        dslv:drag_start_mode="onDown"
+        dslv:drag_handle_id="@id/drag_handle"
+        android:choiceMode="none" />
+
+</LinearLayout>
+
 

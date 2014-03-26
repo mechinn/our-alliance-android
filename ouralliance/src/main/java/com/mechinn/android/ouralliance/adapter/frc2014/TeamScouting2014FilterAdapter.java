@@ -16,17 +16,16 @@ import java.util.List;
 
 import se.emilsjolander.sprinkles.ModelList;
 
-public class TeamScouting2014Adapter extends BaseAdapter implements Filterable {
-    public static final String TAG = "TeamScouting2014Adapter";
-    public static final int ORIENTATION = 0;
-    public static final int DRIVETRAIN = 1;
+public class TeamScouting2014FilterAdapter extends BaseAdapter implements Filterable {
+    public static final String TAG = "TeamScouting2014FilterAdapter";
+    public enum Type {ORIENTATION,DRIVETRAIN}
 	Context context;
     ModelList<TeamScouting2014> teams;
-    int field;
+    Type field;
 	List<CharSequence> original;
     List<CharSequence> filtered;
 
-	public TeamScouting2014Adapter(Context context, ModelList<TeamScouting2014> teams, int field) {
+	public TeamScouting2014FilterAdapter(Context context, ModelList<TeamScouting2014> teams, Type field) {
 		this.context = context;
         this.field = field;
         swapList(teams);
@@ -66,7 +65,7 @@ public class TeamScouting2014Adapter extends BaseAdapter implements Filterable {
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public CharSequence getItem(int position) {
 		if(isEmpty()||null==filtered) {
 			return null;
 		}

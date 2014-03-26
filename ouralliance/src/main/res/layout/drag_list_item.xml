@@ -5,8 +5,6 @@
     android:gravity="center_vertical"
     android:orientation="horizontal" >
 
-  <!-- android:layout_height="@dimen/item_height" -->
-
 	<ImageView
 	    android:id="@id/drag_handle"
 	    android:layout_width="wrap_content"

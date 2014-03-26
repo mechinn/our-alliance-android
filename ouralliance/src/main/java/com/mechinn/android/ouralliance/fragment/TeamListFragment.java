@@ -6,15 +6,14 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.*;
 import com.mechinn.android.ouralliance.OurAlliance;
-import com.mechinn.android.ouralliance.data.Import;
+import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.CompetitionTeamDragSortListAdapter;
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2014.ExportTeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
 import com.mobeta.android.dslv.DragSortListView;
@@ -33,10 +32,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import se.emilsjolander.sprinkles.CursorList;
@@ -44,6 +40,8 @@ import se.emilsjolander.sprinkles.ManyQuery;
 import se.emilsjolander.sprinkles.ModelList;
 import se.emilsjolander.sprinkles.OneQuery;
 import se.emilsjolander.sprinkles.Query;
+
+import java.util.ArrayList;
 
 public class TeamListFragment extends Fragment {
     public static final String TAG = "TeamListFragment";
@@ -56,6 +54,8 @@ public class TeamListFragment extends Fragment {
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
     private int competitionLoader;
+    private Sort2014 sort;
+    private Spinner sortTeams;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -92,6 +92,11 @@ public class TeamListFragment extends Fragment {
                         Log.d(TAG,"cursor size: "+result.size());
                         ModelList<CompetitionTeam> teams = ModelList.from(result);
                         result.close();
+                        switch(prefs.getYear()) {
+                            case 2014:
+                                adapter.showDrag(sort.equals(Sort2014.RANK));
+                                break;
+                        }
                         adapter.swapList(teams);
                         getActivity().invalidateOptionsMenu();
                         return true;
@@ -121,12 +126,36 @@ public class TeamListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        sort = Sort2014.RANK;
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_team_list, container, false);
+        sortTeams = (Spinner) rootView.findViewById(R.id.sortTeams);
+        switch(prefs.getYear()) {
+            case 2014:
+                ArrayAdapter<Sort2014> sort2014Adapter = new ArrayAdapter<Sort2014>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2014List);
+                sortTeams.setAdapter(sort2014Adapter);
+                break;
+        }
+        sortTeams.setSelection(0);
+        sortTeams.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch(prefs.getYear()) {
+                    case 2014:
+                        sort = Sort.sort2014List.get(position);
+                        break;
+                }
+                reloadTeams();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
         dslv = (DragSortListView) rootView.findViewById(android.R.id.list);
     	return rootView;
     }
@@ -186,12 +215,30 @@ public class TeamListFragment extends Fragment {
         Log.d(TAG,"resume");
         Log.d(TAG,"CompID: "+prefs.getComp());
         if(prefs.getComp()>0) {
-            competitionLoader = Query.many(CompetitionTeam.class, "select * from CompetitionTeam where competition=? ORDER BY rank", prefs.getComp()).getAsync(this.getLoaderManager(),onCompetitionTeamsLoaded);
+            reloadTeams();
         } else {
-            if(competitionLoader>0) {
-                getLoaderManager().destroyLoader(competitionLoader);
-                competitionLoader = 0;
-            }
+            emptyTeams();
+        }
+    }
+
+    private void emptyTeams() {
+        if(competitionLoader>0) {
+            getLoaderManager().destroyLoader(competitionLoader);
+            competitionLoader = 0;
+        }
+    }
+
+    private void reloadTeams() {
+        switch(prefs.getYear()) {
+            case 2014:
+                competitionLoader = Query.many(CompetitionTeam.class,
+                        "SELECT " + CompetitionTeam.TAG + ".*" +
+                                " FROM " + CompetitionTeam.TAG +
+                                " INNER JOIN " + TeamScouting2014.TAG +
+                                " ON " + TeamScouting2014.TAG + "." + TeamScouting2014.TEAM + "=" + CompetitionTeam.TAG + "." + CompetitionTeam.TEAM +
+                                " AND " + CompetitionTeam.COMPETITION + "=?" +
+                                " ORDER BY "+sort.getValue(), prefs.getComp()).getAsync(getLoaderManager(), onCompetitionTeamsLoaded);
+                break;
         }
     }
     

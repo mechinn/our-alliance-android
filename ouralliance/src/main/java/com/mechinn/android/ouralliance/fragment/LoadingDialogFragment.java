@@ -45,24 +45,29 @@ public class LoadingDialogFragment extends DialogFragment {
 	}
 
 	@Override
-	public void onStart () {
+	public void onStart() {
 		super.onStart();
-		CharSequence title = this.getArguments().getCharSequence(TITLE);
-		if(null==title) {
-			this.getDialog().setTitle("");
-		} else {
-			this.getDialog().setTitle(title);
-		}
-		// Disable the back button
-		OnKeyListener keyListener = new OnKeyListener() {
-			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                return keyCode == KeyEvent.KEYCODE_BACK;
+        try {
+            CharSequence title = this.getArguments().getCharSequence(TITLE);
+            if (null == title) {
+                this.getDialog().setTitle("");
+            } else {
+                this.getDialog().setTitle(title);
             }
- 
-		
-		};
-		this.getDialog().setOnKeyListener(keyListener);
-		this.getDialog().setCanceledOnTouchOutside(false);
+            // Disable the back button
+            OnKeyListener keyListener = new OnKeyListener() {
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    return keyCode == KeyEvent.KEYCODE_BACK;
+                }
+
+
+            };
+            this.getDialog().setOnKeyListener(keyListener);
+            this.getDialog().setCanceledOnTouchOutside(false);
+        } catch(NullPointerException e) {
+            Log.e(TAG,"Unable to find dialog",e);
+            this.dismiss();
+        }
 	}
 	public void setProgressIndeterminate() {
 		progress.setIndeterminate(true);

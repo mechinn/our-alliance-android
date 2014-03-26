@@ -32,7 +32,6 @@ public class MoveTeamScouting2014 {
             ,TeamScouting2014.SHOOTERTYPE
             ,TeamScouting2014.LOWGOAL
             ,TeamScouting2014.HIGHGOAL
-            ,TeamScouting2014.HOTGOAL
             ,TeamScouting2014.SHOOTINGDISTANCE
             ,TeamScouting2014.PASSGROUND
             ,TeamScouting2014.PASSAIR
@@ -69,7 +68,6 @@ public class MoveTeamScouting2014 {
             ,new HashMapper(TeamScouting2014.shootersWrite,0)    //SHOOTERTYPE
             ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //LOWGOAL
             ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //HIGHGOAL
-            ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //HOTGOAL
             ,null                               //SHOOTINGDISTANCE
             ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //PASSGROUND
             ,new FmtBool(TeamScouting2014.TRUE,TeamScouting2014.FALSE)            //PASSAIR
@@ -106,7 +104,6 @@ public class MoveTeamScouting2014 {
             ,new HashMapper(TeamScouting2014.shootersRead,0)     //SHOOTERTYPE
             ,new ParseBool()          //LOWGOAL
             ,new ParseBool()          //HIGHGOAL
-            ,new ParseBool()          //HOTGOAL
             ,new ParseDouble()                  //SHOOTINGDISTANCE
             ,new ParseBool()          //PASSGROUND
             ,new ParseBool()          //PASSAIR
@@ -235,12 +232,6 @@ public class MoveTeamScouting2014 {
     }
     public void setHighGoal(boolean highGoal) {
         team.setHighGoal(highGoal);
-    }
-    public boolean isHotGoal() {
-        return team.isHotGoal();
-    }
-    public void setHotGoal(boolean hotGoal) {
-        team.setHotGoal(hotGoal);
     }
     public double getShootingDistance() {
         return team.getShootingDistance();

@@ -23,6 +23,7 @@ import se.emilsjolander.sprinkles.annotations.ConflictClause;
 import se.emilsjolander.sprinkles.annotations.Table;
 import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
@@ -40,7 +41,6 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
     public static final String SHOOTERTYPE = "shooterType";
     public static final String LOWGOAL = "lowGoal";
     public static final String HIGHGOAL = "highGoal";
-    public static final String HOTGOAL = "hotGoal";
     public static final String SHOOTINGDISTANCE = "shootingDistance";
     public static final String PASSGROUND = "passGround";
     public static final String PASSAIR = "passAir";
@@ -88,6 +88,7 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
         }
         shootersWrite = shootersWriteTemp;
         shootersRead = shootersReadTemp;
+
     }
 
     @Column(ORIENTATION)
@@ -108,8 +109,6 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 	private boolean lowGoal;
     @Column(HIGHGOAL)
 	private boolean highGoal;
-    @Column(HOTGOAL)
-    private boolean hotGoal;
     @Column(SHOOTINGDISTANCE)
     private double shootingDistance;
     @Column(PASSGROUND)
@@ -230,12 +229,6 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 	public void setHighGoal(boolean highGoal) {
 		this.highGoal = highGoal;
 	}
-    public boolean isHotGoal() {
-        return hotGoal;
-    }
-    public void setHotGoal(boolean hotGoal) {
-        this.hotGoal = hotGoal;
-    }
     public double getShootingDistance() {
         return shootingDistance;
     }
@@ -333,7 +326,6 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
                 " Shooter Type: "+this.getShooterType()+
                 " Low Goal: "+this.isLowGoal()+
                 " High Goal: "+this.isHighGoal()+
-                " Hot Goal: "+this.isHotGoal()+
                 " Shooting Distance: "+this.getShootingDistance()+
                 " Pass Ground: "+this.isPassGround()+
                 " Pass Air: "+this.isPassAir()+
@@ -360,7 +352,6 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
 				getShooterType()==data.getShooterType() &&
 				isLowGoal()==data.isLowGoal() &&
 				isHighGoal()==data.isHighGoal() &&
-                isHotGoal()==data.isHotGoal() &&
                 getShootingDistance()==data.getShootingDistance() &&
                 isPassGround()==data.isPassGround() &&
                 isPassAir()==data.isPassAir() &&
@@ -401,7 +392,6 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
                 && getShooterType()==0
                 && isLowGoal()==false
                 && isHighGoal()==false
-                && isHotGoal()==false
                 && getShootingDistance()==0
                 && isPassGround()==false
                 && isPassAir()==false

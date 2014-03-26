@@ -6,20 +6,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mobeta.android.dslv.DragSortListView;
 
 import se.emilsjolander.sprinkles.ModelList;
 
+import java.util.ArrayList;
+
 public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter implements DragSortListView.DropListener {
     public static final String TAG = "CompetitionTeamDragSortListAdapter";
+    private int dragable;
 
     public CompetitionTeamDragSortListAdapter(Context context, ModelList<CompetitionTeam> teams) {
         super(context,teams);
+        showDrag(true);
     }
 
     @Override
@@ -27,10 +33,12 @@ public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter i
         LinearLayout container = (LinearLayout) view;
         if(!isEmpty()) {
             if(null==view) {
-                container = (LinearLayout) getInflater().inflate(R.layout.list_item, viewGroup, false);
+                container = (LinearLayout) getInflater().inflate(R.layout.drag_list_item, viewGroup, false);
             }
             TextView summary = (TextView)container.findViewById(R.id.text);
             summary.setText(getItem(position).getTeam().toString());
+            ImageView dragHandle = (ImageView)container.findViewById(R.id.drag_handle);
+            dragHandle.setVisibility(dragable);
             CheckBox scouted = (CheckBox)container.findViewById(R.id.scouted);
             scouted.setTag(getItem(position));
             scouted.setChecked(getItem(position).isScouted());
@@ -69,5 +77,14 @@ public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter i
         getItem(from).setRank(to);
         Log.d(TAG,"team: "+getItem(from));
         this.getTeams().saveAll();
+    }
+
+    public void showDrag(boolean yes) {
+        if(yes) {
+            dragable = ImageView.VISIBLE;
+        } else {
+            dragable = ImageView.GONE;
+        }
+        this.notifyDataSetChanged();
     }
 }

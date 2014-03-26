@@ -121,7 +121,6 @@ public class OurAlliance extends Application {
                 +","+TeamScouting2014.SHOOTERTYPE
                 +","+TeamScouting2014.LOWGOAL
                 +","+TeamScouting2014.HIGHGOAL
-                +","+TeamScouting2014.HOTGOAL
                 +","+TeamScouting2014.SHOOTINGDISTANCE
                 +","+TeamScouting2014.PASSGROUND
                 +","+TeamScouting2014.PASSAIR
@@ -137,6 +136,35 @@ public class OurAlliance extends Application {
         v4.addRawStatement("INSERT INTO " + TeamScouting2014.TAG + "("+ v4teamScouting2014Columns +") SELECT " + v4teamScouting2014Columns + " FROM " + TeamScouting2014.TAG + "_OLD;");
         v4.addRawStatement("DROP TABLE " + TeamScouting2014.TAG + "_OLD;");
         sprinkles.addMigration(v4);
+
+        String v5teamScouting2014Columns = TeamScouting2014._ID
+                +","+TeamScouting2014.MODIFIED
+                +","+TeamScouting2014.TEAM
+                +","+TeamScouting2014.NOTES
+                +","+TeamScouting2014.ORIENTATION
+                +","+TeamScouting2014.DRIVETRAIN
+                +","+TeamScouting2014.WIDTH
+                +","+TeamScouting2014.LENGTH
+                +","+TeamScouting2014.HEIGHTSHOOTER
+                +","+TeamScouting2014.HEIGHTMAX
+                +","+TeamScouting2014.SHOOTERTYPE
+                +","+TeamScouting2014.LOWGOAL
+                +","+TeamScouting2014.HIGHGOAL
+                +","+TeamScouting2014.SHOOTINGDISTANCE
+                +","+TeamScouting2014.PASSGROUND
+                +","+TeamScouting2014.PASSAIR
+                +","+TeamScouting2014.PASSTRUSS
+                +","+TeamScouting2014.PICKUPGROUND
+                +","+TeamScouting2014.PICKUPCATCH
+                +","+TeamScouting2014.PUSHER
+                +","+TeamScouting2014.BLOCKER
+                +","+TeamScouting2014.HUMANPLAYER;
+        Migration v5 = new Migration();
+        v5.renameTable(TeamScouting2014.TAG, TeamScouting2014.TAG+"_OLD");
+        v5.createTable(TeamScouting2014.class);
+        v5.addRawStatement("INSERT INTO " + TeamScouting2014.TAG + "("+ v5teamScouting2014Columns +") SELECT " + v5teamScouting2014Columns + " FROM " + TeamScouting2014.TAG + "_OLD;");
+        v5.addRawStatement("DROP TABLE " + TeamScouting2014.TAG + "_OLD;");
+        sprinkles.addMigration(v5);
 
         Log.d(TAG,"starting bluetooth receiver");
         receiver = new BluetoothReceive(this,new Handler(new Handler.Callback() {

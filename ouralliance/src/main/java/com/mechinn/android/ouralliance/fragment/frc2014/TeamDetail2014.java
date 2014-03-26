@@ -20,10 +20,9 @@ import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
-import com.mechinn.android.ouralliance.adapter.frc2014.TeamScouting2014Adapter;
+import com.mechinn.android.ouralliance.adapter.frc2014.TeamScouting2014FilterAdapter;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;
-import com.mechinn.android.ouralliance.widget.UncheckableRadioButton;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroup;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroupOnCheckedChangeListener;
 
@@ -62,8 +61,8 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     private CheckBox highAuto;
     private CheckBox hotAuto;
 
-	private TeamScouting2014Adapter orientationsAdapter;
-	private TeamScouting2014Adapter driveTrainsAdapter;
+	private TeamScouting2014FilterAdapter orientationsAdapter;
+	private TeamScouting2014FilterAdapter driveTrainsAdapter;
 
     private ManyQuery.ResultHandler<TeamScouting2014> onOrientationsLoaded =
             new ManyQuery.ResultHandler<TeamScouting2014>() {
@@ -241,7 +240,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
                             highGoal.setVisibility(View.VISIBLE);
                             highGoal.setChecked(getScouting().isHighGoal());
                             hotGoal.setVisibility(View.VISIBLE);
-                            hotGoal.setChecked(getScouting().isHotGoal());
                             shootingDistanceGroup.setVisibility(View.VISIBLE);
                             if(0!=getScouting().getShootingDistance()) {
                                 shootingDistance.setText(Double.toString(getScouting().getShootingDistance()));
@@ -260,7 +258,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         shooterGroup = (LinearLayout) seasonView.findViewById(R.id.team2014shooterGroup);
 		lowGoal = (CheckBox) seasonView.findViewById(R.id.team2014lowGoal);
 		highGoal = (CheckBox) seasonView.findViewById(R.id.team2014highGoal);
-		hotGoal = (CheckBox) seasonView.findViewById(R.id.team2014hotGoal);
         shootingDistanceGroup = (LinearLayout) seasonView.findViewById(R.id.team2014shootingDistanceGroup);
         shootingDistance = (EditText) seasonView.findViewById(R.id.team2014shootingDistance);
         shootingDistance.setOnEditorActionListener(new OnEditorActionListener() {
@@ -305,10 +302,10 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        orientationsAdapter = new TeamScouting2014Adapter(getActivity(), null, TeamScouting2014Adapter.ORIENTATION);
+        orientationsAdapter = new TeamScouting2014FilterAdapter(getActivity(), null, TeamScouting2014FilterAdapter.Type.ORIENTATION);
         orientation.setAdapter(orientationsAdapter);
         orientation.setThreshold(1);
-        driveTrainsAdapter = new TeamScouting2014Adapter(getActivity(), null, TeamScouting2014Adapter.DRIVETRAIN);
+        driveTrainsAdapter = new TeamScouting2014FilterAdapter(getActivity(), null, TeamScouting2014FilterAdapter.Type.DRIVETRAIN);
         driveTrain.setAdapter(driveTrainsAdapter);
         driveTrain.setThreshold(1);
     }
@@ -364,7 +361,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         }
 		lowGoal.setChecked(getScouting().isLowGoal());
         highGoal.setChecked(getScouting().isHighGoal());
-        hotGoal.setChecked(getScouting().isHotGoal());
         if(0!=getScouting().getShootingDistance()) {
             num = Double.toString(getScouting().getShootingDistance());
             shootingDistance.setText(num);
@@ -406,7 +402,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         }
 		getScouting().setLowGoal(lowGoal.isChecked());
         getScouting().setHighGoal(highGoal.isChecked());
-		getScouting().setHotGoal(hotGoal.isChecked());
         getScouting().setShootingDistance(Utility.getFloatFromText(shootingDistance.getText()));
 		getScouting().setPassGround(passGround.isChecked());
 		getScouting().setPassAir(passAir.isChecked());

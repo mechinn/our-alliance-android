@@ -8,6 +8,7 @@ import android.util.Log;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.MoveTeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import org.supercsv.exception.SuperCsvException;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
@@ -150,6 +151,7 @@ public class Import extends Thread {
                                     while ((match = beanReader.read(MatchScouting2014.class, header, MatchScouting2014.readProcessor)) != null) {
                                         Log.d(TAG, "lineNo=" + beanReader.getLineNumber() + ", rowNo=" + beanReader.getRowNumber() + ", data=" + match);
                                         match.setCompetition(this.competition);
+                                        new TeamScouting2014(match.getTeam()).save();
                                         match.getCompetitionTeam().save();
                                         match.getMatch().save();
                                         match.save();
