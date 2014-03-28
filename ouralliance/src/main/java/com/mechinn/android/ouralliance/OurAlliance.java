@@ -1,6 +1,11 @@
 package com.mechinn.android.ouralliance;
 
 import android.app.Application;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Handler;
@@ -24,7 +29,27 @@ import se.emilsjolander.sprinkles.*;
  */
 public class OurAlliance extends Application {
     public static final String TAG = "OurAlliance";
-    BluetoothReceive receiver;
+    private BluetoothReceive receiver;
+
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+                        stopBluetoothReceiver();
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        startBluetoothReceiver();
+                        break;
+                }
+            }
+        }
+    };
     @Override
     public void onCreate() {
         super.onCreate();
@@ -166,7 +191,14 @@ public class OurAlliance extends Application {
         v5.addRawStatement("DROP TABLE " + TeamScouting2014.TAG + "_OLD;");
         sprinkles.addMigration(v5);
 
-        Log.d(TAG,"starting bluetooth receiver");
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        this.registerReceiver(broadcastReceiver, filter);
+        if(null==receiver && null!=BluetoothAdapter.getDefaultAdapter() && BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            startBluetoothReceiver();
+        }
+    }
+
+    public void startBluetoothReceiver() {
         receiver = new BluetoothReceive(this,new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
@@ -175,23 +207,26 @@ public class OurAlliance extends Application {
                     return true;
                 }
                 if(null!=msg.getData().getString(BluetoothReceive.STATUS)) {
-                    Toast.makeText(OurAlliance.this,msg.getData().getString(BluetoothReceive.STATUS),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OurAlliance.this,"Bluetooth was disabled on device",Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
             }
         }));
-        startBluetoothReceiver();
-    }
-
-    public void startBluetoothReceiver() {
         receiver.start();
+        Toast.makeText(OurAlliance.this,"Listening for bluetooth connections",Toast.LENGTH_SHORT).show();
     }
 
     public void stopBluetoothReceiver() {
-        receiver.interrupt();
+        if(null!=receiver) {
+            receiver.interrupt();
+        }
+        Toast.makeText(OurAlliance.this,"Bluetooth was disabled on device",Toast.LENGTH_SHORT).show();
     }
     public boolean isBluetoothReceiverState() {
-        return receiver.isServerOn();
+        if(null!=receiver) {
+            return receiver.isServerOn();
+        }
+        return false;
     }
 }

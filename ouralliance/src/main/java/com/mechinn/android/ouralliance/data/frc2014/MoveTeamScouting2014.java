@@ -8,6 +8,7 @@ import com.mechinn.android.ouralliance.processor.FmtTeam;
 import com.mechinn.android.ouralliance.processor.ParseTeam;
 import org.supercsv.cellprocessor.*;
 import org.supercsv.cellprocessor.ift.CellProcessor;
+import se.emilsjolander.sprinkles.Transaction;
 
 import java.util.Date;
 import java.util.List;
@@ -365,12 +366,12 @@ public class MoveTeamScouting2014 {
     public String toString() {
         return "team: "+team.toString()+" wheel: "+wheel.toString();
     }
-    public void save(Season season, Competition competition) {
-        team.save();
+    public void save(Transaction t, Season season, Competition competition) {
+        team.save(t);
         if(wheel.getWheelType()!="") {
             wheel.setSeason(season);
-            wheel.save();
+            wheel.save(t);
         }
-        new CompetitionTeam(modified,competition,team.getTeam(),rank,scouted).save();
+        new CompetitionTeam(modified,competition,team.getTeam(),rank,scouted).save(t);
     }
 }

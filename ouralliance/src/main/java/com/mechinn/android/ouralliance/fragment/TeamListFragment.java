@@ -134,13 +134,6 @@ public class TeamListFragment extends Fragment {
     	super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_team_list, container, false);
         sortTeams = (Spinner) rootView.findViewById(R.id.sortTeams);
-        switch(prefs.getYear()) {
-            case 2014:
-                ArrayAdapter<Sort2014> sort2014Adapter = new ArrayAdapter<Sort2014>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2014List);
-                sortTeams.setAdapter(sort2014Adapter);
-                break;
-        }
-        sortTeams.setSelection(0);
         sortTeams.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -215,7 +208,13 @@ public class TeamListFragment extends Fragment {
         Log.d(TAG,"resume");
         Log.d(TAG,"CompID: "+prefs.getComp());
         if(prefs.getComp()>0) {
-            reloadTeams();
+            switch(prefs.getYear()) {
+                case 2014:
+                    ArrayAdapter<Sort2014> sort2014Adapter = new ArrayAdapter<Sort2014>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2014List);
+                    sortTeams.setAdapter(sort2014Adapter);
+                    break;
+            }
+            sortTeams.setSelection(0);
         } else {
             emptyTeams();
         }

@@ -31,7 +31,6 @@ public class BluetoothReceive extends Thread {
     private BluetoothAdapter adapter;
     private Prefs prefs;
     private BluetoothSocket socket;
-    private Message message;
     private boolean serverOn;
 
     public BluetoothReceive(Application application,Handler handler) {
@@ -43,11 +42,16 @@ public class BluetoothReceive extends Thread {
         adapter = BluetoothAdapter.getDefaultAdapter();
         serverSocket = null;
         this.prefs = new Prefs(application);
-        setDaemon(true);
     }
 
     public boolean isServerOn() {
         return serverOn;
+    }
+
+    @Override
+    public synchronized void start() {
+        super.start();
+        Log.d(TAG,"bluetooth server started");
     }
 
     @Override
@@ -56,12 +60,6 @@ public class BluetoothReceive extends Thread {
             while(!Thread.currentThread().isInterrupted()) {
                 if (adapter.isEnabled()) {
                     Log.d(TAG, "bluetooth server enabled");
-                    if(!serverOn) {
-                        message = new Message();
-                        message.getData().putString(STATUS,"Listening for bluetooth connections");
-                        uiHandler.sendMessage(message);
-                        serverOn = true;
-                    }
                     try {
                         serverSocket = adapter.listenUsingRfcommWithServiceRecord(serviceName, uuid);
                         socket = serverSocket.accept();
@@ -77,23 +75,17 @@ public class BluetoothReceive extends Thread {
                             serverSocket.close();
                         } catch (Exception e) {
                             Log.w(TAG, "Bluetooth was disabled on device", e);
-                            message = new Message();
-                            message.getData().putString(STATUS,"Bluetooth was disabled on device");
-                            uiHandler.sendMessage(message);
                         }
                         Log.d(TAG, "bluetooth server closed");
                     }
-                } else {
-                    Log.d(TAG, "bluetooth server disabled");
-                    serverOn = false;
-                    try {
-                        //check every second if bluetooth is enabled again
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Log.d(TAG, "interrupted");
-                    }
                 }
-                Thread.yield();
+                if (Thread.interrupted()) {
+                    Log.d(TAG, "bluetooth server shutting down");
+                    serverOn = false;
+                    return;
+                } else {
+                    Thread.yield();
+                }
             }
         } else {
             Log.d(TAG,"bluetooth is not available on this device");

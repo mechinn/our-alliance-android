@@ -76,13 +76,13 @@ public enum Sort2014 {
             case SHOOTERTYPE:
                 return TeamScouting2014.TAG+"."+TeamScouting2014.SHOOTERTYPE+" DESC";
             case SHOOTGOAL:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.HIGHGOAL+","+TeamScouting2014.TAG+"."+TeamScouting2014.LOWGOAL+" DESC";
+                return TeamScouting2014.TAG+"."+TeamScouting2014.HIGHGOAL+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.LOWGOAL+" DESC";
             case SHOOTINGDISTANCE:
                 return TeamScouting2014.TAG+"."+TeamScouting2014.SHOOTINGDISTANCE+" DESC";
             case PASS:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.PASSTRUSS+","+TeamScouting2014.TAG+"."+TeamScouting2014.PASSAIR+","+TeamScouting2014.TAG+"."+TeamScouting2014.PASSGROUND+" DESC";
+                return TeamScouting2014.TAG+"."+TeamScouting2014.PASSTRUSS+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.PASSAIR+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.PASSGROUND+" DESC";
             case PICKUP:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.PICKUPCATCH+","+TeamScouting2014.TAG+"."+TeamScouting2014.PICKUPGROUND+" DESC";
+                return TeamScouting2014.TAG+"."+TeamScouting2014.PICKUPCATCH+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.PICKUPGROUND+" DESC";
             case PUSHER:
                 return TeamScouting2014.TAG+"."+TeamScouting2014.PUSHER;
             case BLOCKER:
@@ -90,7 +90,7 @@ public enum Sort2014 {
             case HUMANPLAYER:
                 return TeamScouting2014.TAG+"."+TeamScouting2014.HUMANPLAYER;
             case AUTONOMOUS:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.HOTAUTO+","+TeamScouting2014.TAG+"."+TeamScouting2014.HIGHAUTO+","+TeamScouting2014.TAG+"."+TeamScouting2014.LOWAUTO+","+TeamScouting2014.TAG+"."+TeamScouting2014.DRIVEAUTO+","+TeamScouting2014.TAG+"."+TeamScouting2014.NOAUTO+" DESC";
+                return TeamScouting2014.TAG+"."+TeamScouting2014.HOTAUTO+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.HIGHAUTO+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.LOWAUTO+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.DRIVEAUTO+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.NOAUTO+" DESC";
             default:
                 return CompetitionTeam.TAG+"."+CompetitionTeam.RANK;
         }

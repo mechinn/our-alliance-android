@@ -44,7 +44,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 	private LinearLayout shooterGroup;
 	private CheckBox lowGoal;
 	private CheckBox highGoal;
-	private CheckBox hotGoal;
     private LinearLayout shootingDistanceGroup;
     private EditText shootingDistance;
     private CheckBox passGround;
@@ -208,7 +207,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
                             shooterGroup.setVisibility(View.GONE);
                             lowGoal.setChecked(false);
                             highGoal.setChecked(false);
-                            hotGoal.setChecked(false);
                             shootingDistanceGroup.setVisibility(View.GONE);
                             shootingDistance.setText("");
                             lowAuto.setVisibility(View.GONE);
@@ -223,8 +221,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
                             lowGoal.setChecked(getScouting().isLowGoal());
                             highGoal.setVisibility(View.GONE);
                             highGoal.setChecked(false);
-                            hotGoal.setVisibility(View.GONE);
-                            hotGoal.setChecked(false);
                             shootingDistanceGroup.setVisibility(View.GONE);
                             shootingDistance.setText("");
                             lowAuto.setVisibility(View.VISIBLE);
@@ -239,7 +235,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
                             lowGoal.setChecked(getScouting().isLowGoal());
                             highGoal.setVisibility(View.VISIBLE);
                             highGoal.setChecked(getScouting().isHighGoal());
-                            hotGoal.setVisibility(View.VISIBLE);
                             shootingDistanceGroup.setVisibility(View.VISIBLE);
                             if(0!=getScouting().getShootingDistance()) {
                                 shootingDistance.setText(Double.toString(getScouting().getShootingDistance()));

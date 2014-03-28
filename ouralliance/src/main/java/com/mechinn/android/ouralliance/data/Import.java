@@ -13,6 +13,7 @@ import org.supercsv.exception.SuperCsvException;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 import se.emilsjolander.sprinkles.Query;
+import se.emilsjolander.sprinkles.Transaction;
 
 import java.io.*;
 import java.util.Arrays;
@@ -105,6 +106,9 @@ public class Import extends Thread {
     }
 
     public void execute() {
+        message.getData().putString(RESULT,"Importing...");
+        handler.sendMessage(message);
+        message = new Message();
         if(!fileRead || null!=directory) {
             this.competition = Query.one(Competition.class, "SELECT * FROM "+Competition.TAG+" WHERE "+Competition._ID+"=?",prefs.getComp()).get();
             if(fileRead) {
@@ -121,6 +125,7 @@ public class Import extends Thread {
             }
             if(!error) {
                 CsvBeanReader beanReader = null;
+                Transaction t = new Transaction();
                 try {
                     beanReader = new CsvBeanReader(reader, CsvPreference.EXCEL_PREFERENCE);
 
@@ -140,7 +145,7 @@ public class Import extends Thread {
                                 MoveTeamScouting2014 move;
                                 while ((move = beanReader.read(MoveTeamScouting2014.class, header, MoveTeamScouting2014.readProcessor)) != null) {
                                     Log.d(TAG, "lineNo=" + beanReader.getLineNumber() + ", rowNo=" + beanReader.getRowNumber() + ", data=" + move);
-                                    move.save(new Season(prefs.getSeason()), this.competition);
+                                    move.save(t,new Season(prefs.getSeason()), this.competition);
                                 }
                             } else if (Arrays.equals(header, MatchScouting2014.FIELD_MAPPING)) {
                                 this.type = Type.MATCHSCOUTING2014;
@@ -151,10 +156,10 @@ public class Import extends Thread {
                                     while ((match = beanReader.read(MatchScouting2014.class, header, MatchScouting2014.readProcessor)) != null) {
                                         Log.d(TAG, "lineNo=" + beanReader.getLineNumber() + ", rowNo=" + beanReader.getRowNumber() + ", data=" + match);
                                         match.setCompetition(this.competition);
-                                        new TeamScouting2014(match.getTeam()).save();
-                                        match.getCompetitionTeam().save();
-                                        match.getMatch().save();
-                                        match.save();
+                                        new TeamScouting2014(match.getTeam()).save(t);
+                                        match.getCompetitionTeam().save(t);
+                                        match.getMatch().save(t);
+                                        match.save(t);
                                     }
                                 } catch (SuperCsvException e) {
                                     Log.e(TAG,"incomplete transfer",e);
@@ -168,6 +173,7 @@ public class Import extends Thread {
                             }
                             break;
                     }
+                    t.setSuccessful(true);
                 } catch (FileNotFoundException e) {
                     Log.e(TAG, e.toString());
                     message.getData().putString(RESULT, "File does not exist: " + filename);
@@ -177,6 +183,7 @@ public class Import extends Thread {
                     message.getData().putString(RESULT, "Error reading file: " + filename);
                     error = true;
                 } finally {
+                    t.finish();
                     if (beanReader != null) {
                         try {
                             beanReader.close();

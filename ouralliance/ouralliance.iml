@@ -81,9 +81,9 @@
     <orderEntry type="library" exported="" name="slf4j-api-1.7.6" level="project" />
     <orderEntry type="library" exported="" name="jackson-annotations-2.1.1" level="project" />
     <orderEntry type="library" exported="" name="super-csv-2.1.0" level="project" />
+    <orderEntry type="library" exported="" name="crashlytics-1.1.11" level="project" />
     <orderEntry type="library" exported="" name="slf4j-android-1.7.6" level="project" />
     <orderEntry type="library" exported="" name="commons-lang3-3.3" level="project" />
-    <orderEntry type="library" exported="" name="crashlytics-1.1.10" level="project" />
     <orderEntry type="module" module-name="lib" exported="" />
     <orderEntry type="module" module-name="picasso-picasso" exported="" />
     <orderEntry type="module" module-name="library" exported="" />
