@@ -25,10 +25,10 @@ Thumbs.db
 ###############
 bin/
 gen/
+.idea/
+.gradle/
 
 # IDE STUFF #
 #############
 local.properties
-.idea/workspace.xml
-.gradle
-com_crashlytics_export_strings.xml
+gradle.properties

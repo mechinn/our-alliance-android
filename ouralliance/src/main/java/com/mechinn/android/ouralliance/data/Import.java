@@ -70,7 +70,10 @@ public class Import extends Thread {
     public Import(Context context, Handler handler, String deviceName, InputStream input) {
         common(context,handler);
         this.deviceName = deviceName;
-        final File file = new File(context.getCacheDir(), "from_"+deviceName.replace(" ","_").toLowerCase()+".csv");
+        if(null==this.deviceName) {
+            this.deviceName="unknown_device";
+        }
+        final File file = new File(context.getCacheDir(), "from_"+this.deviceName.replace(" ","_").toLowerCase()+".csv");
         try {
             final OutputStream output = new FileOutputStream(file);
             final byte[] buffer = new byte[1024];
