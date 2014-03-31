@@ -7,12 +7,10 @@
     <string name="pref_practice_default">false</string>
     
     <string name="pref_category_location">Location</string>
-    <string name="pref_season">season</string>
-    <string name="pref_season_title">FRC Season</string>
-    <string name="pref_season_summary">Select the season to scout.</string>
-    <string name="pref_season_dialogTitle">FRC Season</string>
-    <string name="pref_season_default">0</string>
     <string name="pref_year">year</string>
+    <string name="pref_year_title">FRC Season</string>
+    <string name="pref_year_summary">Select the season to scout.</string>
+    <string name="pref_year_dialogTitle">FRC Season</string>
     <string name="pref_year_default">0</string>
     <string name="pref_comp">competition</string>
     <string name="pref_comp_title">FRC Competition</string>

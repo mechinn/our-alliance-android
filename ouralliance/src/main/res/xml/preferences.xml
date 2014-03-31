@@ -9,11 +9,11 @@
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_category_location">
 		<ListPreference
-			android:key="@string/pref_season"
-			android:title="@string/pref_season_title"
-			android:summary="@string/pref_season_summary"
-			android:dialogTitle="@string/pref_season_dialogTitle"
-			android:defaultValue="@string/pref_season_default"
+			android:key="@string/pref_year"
+			android:title="@string/pref_year_title"
+			android:summary="@string/pref_year_summary"
+			android:dialogTitle="@string/pref_year_dialogTitle"
+			android:defaultValue="@string/pref_year_default"
             android:entries="@array/list_year_display"
             android:entryValues="@array/list_year"/>
 		<com.mechinn.android.ouralliance.widget.CompetitionListPreference

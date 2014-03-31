@@ -43,7 +43,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	public static final int DIALOG_RESET = 0;
 	public static final int DIALOG_DELETECOMP = 1;
 	private Prefs prefs;
-	private String seasonPrefString;
+	private String yearPrefString;
 	private String compPrefString;
 	private String measurePrefString;
 	private String resetDBPrefString;
@@ -83,7 +83,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
         prefs = new Prefs(this.getActivity());
-        seasonPrefString = this.getString(R.string.pref_season);
+        yearPrefString = this.getString(R.string.pref_year);
         compPrefString = this.getString(R.string.pref_comp);
         measurePrefString = this.getString(R.string.pref_measure);
         resetDBPrefString = this.getString(R.string.pref_resetDB);
@@ -93,7 +93,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         for(int i=0;i<yearSummaryArray.length;++i) {
             yearArray.put(Integer.parseInt(yearNumberArray[i]),yearSummaryArray[i]);
         }
-        year = (ListPreference) getPreferenceScreen().findPreference(seasonPrefString);
+        year = (ListPreference) getPreferenceScreen().findPreference(yearPrefString);
         comp = (CompetitionListPreference) getPreferenceScreen().findPreference(compPrefString);
 //        measure = (CompetitionListPreference) getPreferenceScreen().findPreference(measurePrefString);
         resetDB = getPreferenceScreen().findPreference(resetDBPrefString);
@@ -222,7 +222,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		Log.d(TAG, key);
-		if(key.equals(seasonPrefString)) {
+		if(key.equals(yearPrefString)) {
             Log.d(TAG,"selected season");
             year.setSummary(yearArray.get(prefs.getSeason()));
 			comp.setValue("0");
