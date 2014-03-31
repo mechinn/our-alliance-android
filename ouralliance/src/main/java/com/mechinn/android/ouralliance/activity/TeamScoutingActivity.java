@@ -63,7 +63,7 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
             	if(listFrag==detailFrag) {
             		onTeamSelected(loadTeam);
             	} else {
-                    switch(prefs.getYear()) {
+                    switch(prefs.getSeason()) {
                         case 2014:
                             matchTeamListFrag = new MatchTeamList2014Fragment();
                             break;
@@ -123,7 +123,7 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
         args.putLong(TeamDetailFragment.TEAM_ARG, team);
         
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		switch(prefs.getYear()) {
+		switch(prefs.getSeason()) {
 			case 2014:
 				teamDetailFragment = new TeamDetail2014();
 	            break;

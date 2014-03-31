@@ -11,22 +11,23 @@ import com.mechinn.android.ouralliance.data.AOurAllianceData;
 
 import java.util.ArrayList;
 
+import com.mechinn.android.ouralliance.data.Competition;
 import se.emilsjolander.sprinkles.ModelList;
 
 /**
  * Created by mechinn on 2/19/14.
  */
-public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapter {
-    public static final String TAG = "ListPreferenceAdapter";
+public class CompetitionListPreferenceAdapter extends BaseAdapter {
+    public static final String TAG = "CompetitionListPreferenceAdapter";
 
     private long id;
     private Context context;
-    private ModelList<A> list;
+    private ModelList<Competition> list;
     private CharSequence[] entries;
     private CharSequence[] values;
     private String defaultSummary;
 
-    public ListPreferenceAdapter(Context context) {
+    public CompetitionListPreferenceAdapter(Context context) {
         this.context = context;
         swapList(null, 0);
     }
@@ -35,7 +36,7 @@ public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapt
         defaultSummary = summary;
     }
 
-    public void swapList(ModelList<A> list, long id) {
+    public void swapList(ModelList<Competition> list, long id) {
         this.id = id;
         this.list = list;
         if(!isEmpty()) {
@@ -81,7 +82,7 @@ public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapt
         }
         return -1;
     }
-    public A getSelected(CharSequence value) {
+    public Competition getSelected(CharSequence value) {
         if(!isEmpty()) {
             for(int i=0;i<values.length;++i) {
                 if(value.equals(values[i])) {
@@ -106,7 +107,7 @@ public class ListPreferenceAdapter<A extends AOurAllianceData> extends BaseAdapt
     }
 
     @Override
-    public A getItem(int position) {
+    public Competition getItem(int position) {
         if(isEmpty()) {
             return null;
         }

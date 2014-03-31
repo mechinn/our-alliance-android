@@ -13,8 +13,6 @@ public class Prefs {
 	private int currentVersion;
 	private String dbSetupPref;
 	private String dbSetupDefault;
-	private String seasonPref;
-	private String seasonDefault;
 	private String compPref;
 	private String compDefault;
 	private String measurePref;
@@ -29,8 +27,6 @@ public class Prefs {
 	public Prefs(Context context) {
 		this.dbSetupPref = context.getString(R.string.pref_resetDB);
 		this.dbSetupDefault = context.getString(R.string.pref_resetDB_default);
-		this.seasonPref = context.getString(R.string.pref_season);
-		this.seasonDefault = context.getString(R.string.pref_season_default);
 		this.compPref = context.getString(R.string.pref_comp);
 		this.compDefault = context.getString(R.string.pref_comp_default);
 		this.measurePref = context.getString(R.string.pref_measure);
@@ -64,20 +60,12 @@ public class Prefs {
 	public boolean getDbSetup() {
 		return Boolean.parseBoolean(prefs.getString(dbSetupPref, dbSetupDefault));
 	}
-	public void setSeason(String season) {
-		Editor editor = prefs.edit();
-		editor.putString(seasonPref, season);
-		editor.apply();
-	}
-	public long getSeason() {
-		return Long.parseLong(prefs.getString(seasonPref, seasonDefault));
-	}
-	public void setYear(String year) {
+	public void setSeason(String year) {
 		Editor editor = prefs.edit();
 		editor.putString(yearPref, year);
 		editor.apply();
 	}
-	public int getYear() {
+	public int getSeason() {
 		return Integer.parseInt(prefs.getString(yearPref, yearDefault));
 	}
 	public long getComp() {

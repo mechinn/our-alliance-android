@@ -9,23 +9,23 @@ import se.emilsjolander.sprinkles.annotations.*;
 public class Competition extends AOurAllianceData implements Comparable<Competition> {
     public static final String TAG = "Competition";
 	private static final long serialVersionUID = -5179493838272851750L;
-	public static final String SEASON = Season.TAG;
+	public static final String SEASON = "Season";
     public static final String NAME = "name";
     public static final String CODE = "code";
+    public static final String LOCATION = "location";
+    public static final String OFFICIAL = "official";
 
     public static final String[] FIELD_MAPPING = new String[] {
             MODIFIED
-            ,SEASON+"."+Season.YEAR
+            ,SEASON
             ,NAME
             ,CODE
     };
 
     @Column(SEASON)
     @UniqueCombo
-    @ForeignKey(SEASON+"("+_ID+")")
-    @CascadeDelete
     @Check(SEASON+" > 0")
-	private Season season;
+	private int season;
     @Column(NAME)
     @NotNull
     @Check(NAME+" != ''")
@@ -35,23 +35,26 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
     @NotNull
     @Check(CODE+" != ''")
 	private String code;
+    @Column(LOCATION)
+    private String location;
+    @Column(OFFICIAL)
+    private boolean official;
 
 	public Competition() {
 		super();
-        season = new Season();
 	}
     public Competition(long id) {
         super(id);
     }
-	public Competition(Season season, String name, String code) {
+	public Competition(int season, String name, String code) {
         this.setSeason(season);
         this.setName(name);
         this.setCode(code);
 	}
-	public Season getSeason() {
+	public int getSeason() {
 		return season;
 	}
-	public void setSeason(Season season) {
+	public void setSeason(int season) {
 		this.season = season;
 	}
 	public String getName() {
@@ -88,8 +91,31 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
             setCode(code.toString());
         }
     }
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String location) {
+        if(null==location) {
+            this.location = "";
+        } else {
+            this.location = location;
+        }
+    }
+    public void setLocation(CharSequence location) {
+        if(null==location) {
+            setLocation("");
+        } else {
+            setLocation(location.toString());
+        }
+    }
+    public boolean isOfficial() {
+        return official;
+    }
+    public void setOfficial(boolean official) {
+        this.official = official;
+    }
 	public String toString() {
-		return ""+this.name;
+		return isOfficial()?"Official":"Unofficial"+" | "+this.name;
 	}
 	public boolean equals(Competition data) {
 		return super.equals(data) && 
@@ -103,7 +129,7 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 
     public boolean isValid() {
         Log.d(TAG, "id: " + getId());
-        Competition item = Query.one(Competition.class, "SELECT * FROM " + TAG + " WHERE "+SEASON+"=? AND " + CODE + "=? LIMIT 1", getSeason().getId(), getCode()).get();
+        Competition item = Query.one(Competition.class, "SELECT * FROM " + TAG + " WHERE "+SEASON+"=? AND " + CODE + "=? LIMIT 1", getSeason(), getCode()).get();
         if(null!=item) {
             this.setId(item.getId());
             Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
@@ -115,7 +141,7 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
         return true;
     }
     public boolean empty() {
-        return (null==getSeason() || getSeason().empty())
+        return 0==getSeason()
                 && (getName()==null || getName()=="")
                 && (getCode()==null || getCode()=="");
     }

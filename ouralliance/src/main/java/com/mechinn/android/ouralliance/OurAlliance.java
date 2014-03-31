@@ -58,7 +58,6 @@ public class OurAlliance extends Application {
         Sprinkles sprinkles = Sprinkles.init(getApplicationContext());
         sprinkles.registerType(CharSequence.class, new CharSequenceSerializer());
         sprinkles.registerType(Team.class, new TeamSerializer());
-        sprinkles.registerType(Season.class, new SeasonSerializer());
         sprinkles.registerType(Competition.class, new CompetitionSerializer());
         sprinkles.registerType(CompetitionTeam.class, new CompetitionTeamSerializer());
         sprinkles.registerType(TeamScoutingWheel.class, new TeamScoutingWheelSerializer());
@@ -69,7 +68,6 @@ public class OurAlliance extends Application {
 
         Migration v1 = new Migration();
         v1.createTable(Team.class);
-        v1.createTable(Season.class);
         v1.createTable(Competition.class);
         v1.createTable(CompetitionTeam.class);
         v1.createTable(TeamScoutingWheel.class);
@@ -92,7 +90,6 @@ public class OurAlliance extends Application {
 
         String v3TeamScoutingWheelColumns = TeamScoutingWheel._ID
                 +","+TeamScoutingWheel.MODIFIED
-                +","+TeamScoutingWheel.SEASON
                 +","+TeamScoutingWheel.TEAM
                 +","+TeamScoutingWheel.TYPE
                 +","+TeamScoutingWheel.SIZE
@@ -102,10 +99,6 @@ public class OurAlliance extends Application {
                 +","+Competition.SEASON
                 +","+Competition.NAME
                 +","+Competition.CODE;
-        String v3SeasonColumns = Season._ID
-                +","+Season.MODIFIED
-                +","+Season.YEAR
-                +","+Season.TITLE;
         String v3TeamColumns = Team._ID
                 +","+Team.MODIFIED
                 +","+Team.NUMBER
@@ -117,16 +110,12 @@ public class OurAlliance extends Application {
         v3.createTable(Match.class);
         v3.renameTable(TeamScoutingWheel.TAG, TeamScoutingWheel.TAG + "_OLD");
         v3.createTable(TeamScoutingWheel.class);
-        v3.addRawStatement("INSERT INTO " + TeamScoutingWheel.TAG + "(" + v3TeamScoutingWheelColumns + ") SELECT " + v3TeamScoutingWheelColumns + " FROM " + TeamScoutingWheel.TAG + "_OLD;");
+        v3.addRawStatement("INSERT INTO " + TeamScoutingWheel.TAG + "(" + v3TeamScoutingWheelColumns + ","+Competition.SEASON+") SELECT " + v3TeamScoutingWheelColumns + ",2014 FROM " + TeamScoutingWheel.TAG + "_OLD;");
         v3.addRawStatement("DROP TABLE " + TeamScoutingWheel.TAG + "_OLD;");
         v3.renameTable(Competition.TAG, Competition.TAG + "_OLD");
         v3.createTable(Competition.class);
         v3.addRawStatement("INSERT INTO " + Competition.TAG + "(" + v3CompetitionColumns + ") SELECT " + v3CompetitionColumns + " FROM " + Competition.TAG + "_OLD;");
         v3.addRawStatement("DROP TABLE " + Competition.TAG + "_OLD;");
-        v3.renameTable(Season.TAG, Season.TAG + "_OLD");
-        v3.createTable(Season.class);
-        v3.addRawStatement("INSERT INTO " + Season.TAG + "(" + v3SeasonColumns + ") SELECT " + v3SeasonColumns + " FROM " + Season.TAG + "_OLD;");
-        v3.addRawStatement("DROP TABLE " + Season.TAG + "_OLD;");
         v3.renameTable(Team.TAG, Team.TAG + "_OLD");
         v3.createTable(Team.class);
         v3.addRawStatement("INSERT INTO " + Team.TAG + "("+ v3TeamColumns +") SELECT " + v3TeamColumns + " FROM " + Team.TAG + "_OLD;");
@@ -190,6 +179,42 @@ public class OurAlliance extends Application {
         v5.addRawStatement("INSERT INTO " + TeamScouting2014.TAG + "("+ v5teamScouting2014Columns +") SELECT " + v5teamScouting2014Columns + " FROM " + TeamScouting2014.TAG + "_OLD;");
         v5.addRawStatement("DROP TABLE " + TeamScouting2014.TAG + "_OLD;");
         sprinkles.addMigration(v5);
+
+        String v6competitionColumns = Competition._ID
+                +","+Competition.MODIFIED
+                +","+Competition.NAME
+                +","+Competition.CODE;
+        Migration v6 = new Migration();
+        v6.renameTable(Competition.TAG, Competition.TAG+"_OLD");
+        v6.createTable(Competition.class);
+        v6.addRawStatement("INSERT INTO " + Competition.TAG + "("+ v6competitionColumns +","+Competition.SEASON+","+Competition.OFFICIAL+") SELECT " + v6competitionColumns + ",2014,1 FROM " + Competition.TAG + "_OLD;");
+        v6.addRawStatement("DROP TABLE " + Competition.TAG + "_OLD;");
+
+        String v6TeamScoutingWheelColumns = TeamScoutingWheel._ID
+                +","+TeamScoutingWheel.MODIFIED
+                +","+TeamScoutingWheel.TEAM
+                +","+TeamScoutingWheel.TYPE
+                +","+TeamScoutingWheel.SIZE
+                +","+TeamScoutingWheel.COUNT;
+        v6.renameTable(TeamScoutingWheel.TAG, TeamScoutingWheel.TAG+"_OLD");
+        v6.createTable(TeamScoutingWheel.class);
+        v6.addRawStatement("INSERT INTO " + TeamScoutingWheel.TAG + "("+ v6TeamScoutingWheelColumns +","+Competition.SEASON+") SELECT " + v6TeamScoutingWheelColumns + ",2014 FROM " + TeamScoutingWheel.TAG + "_OLD;");
+        v6.addRawStatement("DROP TABLE " + TeamScoutingWheel.TAG + "_OLD;");
+
+        String v6matchColumns = Match._ID
+                +","+Match.MODIFIED
+                +","+Match.COMPETITION
+                +","+Match.NUMBER
+                +","+Match.REDSCORE
+                +","+Match.BLUESCORE
+                +","+Match.MATCHTYPE
+                +","+Match.MATCHSET;
+        v6.renameTable(Match.TAG, Match.TAG+"_OLD");
+        v6.createTable(Match.class);
+        v6.addRawStatement("INSERT INTO " + Match.TAG + "("+ v6matchColumns +") SELECT " + v6matchColumns + " FROM " + Match.TAG + "_OLD;");
+        v6.addRawStatement("DROP TABLE " + Match.TAG + "_OLD;");
+        v6.addRawStatement("DROP TABLE Season;");
+        sprinkles.addMigration(v6);
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         this.registerReceiver(broadcastReceiver, filter);

@@ -3,9 +3,7 @@ package com.mechinn.android.ouralliance.data.frc2014;
 import android.util.Log;
 import com.mechinn.android.ouralliance.data.*;
 
-import com.mechinn.android.ouralliance.processor.FmtSeason;
 import com.mechinn.android.ouralliance.processor.FmtTeam;
-import com.mechinn.android.ouralliance.processor.ParseSeason;
 import com.mechinn.android.ouralliance.processor.ParseTeam;
 
 import org.supercsv.cellprocessor.*;
@@ -39,7 +37,6 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
             Match.TAG+Match.MODIFIED
             ,Match.MATCHTYPE
             ,Match.MATCHSET
-            ,Match.MATCHOF
             ,Match.NUMBER
             ,MODIFIED
             ,TEAM
@@ -64,7 +61,6 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
             new FmtDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
             ,null                     //Match.MATCHTYPE
             ,null                     //Match.MATCHSET
-            ,null                     //Match.MATCHOF
             ,null                     //Match.NUMBER
             ,new FmtDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
             ,new FmtTeam()                      //TEAM
@@ -89,7 +85,6 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
             new ParseDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
             ,new ParseInt()                     //Match.MATCHTYPE
             ,new ParseInt()                     //Match.MATCHSET
-            ,new ParseInt()                     //Match.MATCHOF
             ,new ParseInt()                     //Match.NUMBER
             ,new ParseDate("yyyy.MM.dd.HH.mm.ss")  //MODIFIED
             ,new ParseTeam()                      //TEAM

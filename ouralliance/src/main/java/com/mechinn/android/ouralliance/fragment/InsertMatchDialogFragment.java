@@ -209,7 +209,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
     private class SaveMatch extends Thread {
         public void run() {
             match.save();
-            switch (prefs.getYear()) {
+            switch (prefs.getSeason()) {
                 case 2014:
                     new MatchScouting2014(match, ((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()), false).save();
                     new MatchScouting2014(match, ((MatchTeamSelectAdapter) red2.getAdapter()).getItem(red2.getSelectedItemPosition()), false).save();

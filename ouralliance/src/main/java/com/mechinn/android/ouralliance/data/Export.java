@@ -41,7 +41,7 @@ public abstract class Export extends BackgroundProgress {
 		super(activity, FLAG_EXPORT);
         prefs = new Prefs(getActivity());
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            directory = getActivity().getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getYear()+File.separator;
+            directory = getActivity().getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getSeason()+File.separator;
         }
         fileWrite = true;
 	}

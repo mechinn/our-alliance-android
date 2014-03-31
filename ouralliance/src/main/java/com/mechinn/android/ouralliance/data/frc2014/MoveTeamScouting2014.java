@@ -366,7 +366,7 @@ public class MoveTeamScouting2014 {
     public String toString() {
         return "team: "+team.toString()+" wheel: "+wheel.toString();
     }
-    public void save(Transaction t, Season season, Competition competition) {
+    public void save(Transaction t, int season, Competition competition) {
         team.save(t);
         if(wheel.getWheelType()!="") {
             wheel.setSeason(season);

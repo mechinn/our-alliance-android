@@ -6,16 +6,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
-
-import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.data.Team;
 
 public class MatchTeamDialogFragment extends DialogFragment {
     public static final String TAG = "MatchTeamDialogFragment";

@@ -3,15 +3,11 @@ package com.mechinn.android.ouralliance.data;
 import android.util.Log;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import org.supercsv.cellprocessor.FmtBool;
 import org.supercsv.cellprocessor.FmtDate;
-import org.supercsv.cellprocessor.HashMapper;
 import org.supercsv.cellprocessor.Optional;
-import org.supercsv.cellprocessor.constraint.*;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.*;
-import se.emilsjolander.sprinkles.annotations.NotNull;
 
 @JsonIgnoreProperties({"id","mod"})
 @Table(Team.TAG)
@@ -43,7 +39,7 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
     @Check("teamNumber > 0")
 	private int teamNumber;
     @Column(NAME)
-	private String name;
+	private String nickname;
 
 	public Team() {
 		super();
@@ -56,7 +52,7 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 	}
 	public Team(int number, String name) {
         this.setTeamNumber(number);
-        this.setName(name);
+        this.setNickName(name);
 	}
 	public int getTeamNumber() {
 		return teamNumber;
@@ -64,24 +60,24 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 	public void setTeamNumber(int teamNumber) {
 		this.teamNumber = teamNumber;
 	}
-	public String getName() {
-		if(null==name) {
+	public String getNickName() {
+		if(null==nickname) {
 			return "";
 		}
-		return name;
+		return nickname;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setNickName(String nickname) {
+		this.nickname = nickname;
 	}
-    public void setName(CharSequence name) {
-        if(null==name) {
-            setName("");
+    public void setNickName(CharSequence nickname) {
+        if(null==nickname) {
+            setNickName("");
         } else {
-            setName(name.toString());
+            setNickName(nickname.toString());
         }
     }
 	public String toString() {
-		return this.getTeamNumber()+": "+this.getName();
+		return this.getTeamNumber()+": "+this.getNickName();
 	}
 	public int compareTo(Team another) {
 		return this.getTeamNumber() - another.getTeamNumber();
@@ -89,7 +85,7 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 	public boolean equals(Team data) {
 		return super.equals(data) &&
 				getTeamNumber()==data.getTeamNumber() &&
-				getName().equals(getName());
+				getNickName().equals(getNickName());
 	}
 
     public boolean isValid() {
@@ -107,6 +103,6 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
     }
     public boolean empty() {
         return getTeamNumber()==0
-                && getName()=="";
+                && getNickName()=="";
     }
 }

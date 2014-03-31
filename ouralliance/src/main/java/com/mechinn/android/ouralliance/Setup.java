@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.JsonCompetition;
-import com.mechinn.android.ouralliance.data.Season;
 
 import se.emilsjolander.sprinkles.SqlStatement;
 import se.emilsjolander.sprinkles.Transaction;
@@ -128,9 +127,6 @@ public class Setup extends BackgroundProgress {
 
                     setStatus("Setting up 2014 competitions");
                     try {
-                        Season s2014 = new Season(2014, "Arial Assist");
-                        Log.d(TAG, s2014.toString());
-                        s2014.save();
                         //                    JsonCompetition[] getter = jsonMapper.readValue(assets.open("eventsDebug.json"),JsonCompetition[].class);
                         JsonCompetition[] getter = jsonMapper.readValue(assets.open("events2014.json"), JsonCompetition[].class);
                         Log.d(TAG, "competitions: " + getter.length);
@@ -156,7 +152,7 @@ public class Setup extends BackgroundProgress {
                             }
                             Log.d(TAG, "name: " + competitionName);
                             Log.d(TAG, "key: " + competitionKey);
-                            new Competition(s2014, competitionName, competitionKey).save(t);
+                            new Competition(2014, competitionName, competitionKey).save(t);
                             this.increasePrimary();
                         }
                     } catch (JsonMappingException e) {

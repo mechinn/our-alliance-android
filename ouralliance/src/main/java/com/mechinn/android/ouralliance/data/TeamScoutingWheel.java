@@ -16,7 +16,7 @@ import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 public class TeamScoutingWheel extends AOurAllianceData {
 	public static final String TAG = "TeamScoutingWheel";
 	private static final long serialVersionUID = -8710760990028670121L;
-	public static final String SEASON = Season.TAG;
+	public static final String SEASON = "Season";
 	public static final String TEAM = Team.TAG;
     public static final String TYPE = "wheelType";
     public static final String SIZE = "wheelSize";
@@ -38,10 +38,8 @@ public class TeamScoutingWheel extends AOurAllianceData {
 
     @Column(SEASON)
     @UniqueCombo
-    @ForeignKey(SEASON+"(_id)")
-    @CascadeDelete
     @Check(SEASON+" > 0")
-	private Season season;
+	private int season;
     @Column(TEAM)
     @UniqueCombo
     @ForeignKey(TEAM+"(_id)")
@@ -57,23 +55,22 @@ public class TeamScoutingWheel extends AOurAllianceData {
 	private int wheelCount;
 	public TeamScoutingWheel() {
 		super();
-        season = new Season();
         team = new Team();
 	}
     public TeamScoutingWheel(long id) {
         super(id);
     }
-	public TeamScoutingWheel(Season season, Team team, String type, float size, int count) {
+	public TeamScoutingWheel(int season, Team team, String type, float size, int count) {
         this.setSeason(season);
         this.setTeam(team);
         this.setWheelType(type);
         this.setWheelSize(size);
         this.setWheelCount(count);
 	}
-	public Season getSeason() {
+	public int getSeason() {
 		return season;
 	}
-	public void setSeason(Season season) {
+	public void setSeason(int season) {
 		this.season = season;
 	}
 	public Team getTeam() {
@@ -119,7 +116,7 @@ public class TeamScoutingWheel extends AOurAllianceData {
 	}
 	public boolean equals(TeamScoutingWheel data) {
 		return super.equals(data) &&
-				getSeason().equals(data.getSeason()) &&
+				getSeason()==data.getSeason() &&
 				getTeam().equals(data.getTeam()) &&
 				getWheelType().equals(data.getWheelType()) &&
 				getWheelSize()==data.getWheelSize() &&
@@ -131,7 +128,7 @@ public class TeamScoutingWheel extends AOurAllianceData {
 
     public boolean isValid() {
         Log.d(TAG, "id: " + getId());
-        TeamScoutingWheel item = Query.one(TeamScoutingWheel.class, "SELECT * FROM " + TAG + " WHERE " + SEASON + "=? AND " + TEAM + "=? AND "+TYPE+"=? LIMIT 1", getSeason().getId(),getTeam().getId(),getWheelType()).get();
+        TeamScoutingWheel item = Query.one(TeamScoutingWheel.class, "SELECT * FROM " + TAG + " WHERE " + SEASON + "=? AND " + TEAM + "=? AND "+TYPE+"=? LIMIT 1", getSeason(),getTeam().getId(),getWheelType()).get();
         if(null!=item) {
             this.setId(item.getId());
             Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
@@ -143,7 +140,7 @@ public class TeamScoutingWheel extends AOurAllianceData {
         return true;
     }
     public boolean empty() {
-        return (null==getSeason() || getSeason().empty())
+        return 0==getSeason()
                 && (null==getTeam() || getTeam().empty())
                 && (getWheelType()==null || getWheelType()=="")
                 && getWheelSize()==0

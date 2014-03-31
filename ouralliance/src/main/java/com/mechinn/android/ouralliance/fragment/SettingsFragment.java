@@ -5,29 +5,27 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
-import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.Season;
-import com.mechinn.android.ouralliance.widget.ListPreference;
+import com.mechinn.android.ouralliance.widget.CompetitionListPreference;
 
 import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.ManyQuery;
 import se.emilsjolander.sprinkles.ModelList;
 import se.emilsjolander.sprinkles.Query;
-import se.emilsjolander.sprinkles.SqlStatement;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -49,35 +47,14 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private String compPrefString;
 	private String measurePrefString;
 	private String resetDBPrefString;
-	private ListPreference<Season> season;
-	private ListPreference<Competition> comp;
-//	private ListPreference measure;
+    private SparseArray<String> yearArray;
+	private ListPreference year;
+	private CompetitionListPreference comp;
+//	private CompetitionListPreference measure;
 	private Preference resetDB;
 	private Preference changelog;
 	private Preference about;
-    private Season selectedSeason;
     private Competition selectedComp;
-
-    private ManyQuery.ResultHandler<Season> onSeasonsLoaded =
-            new ManyQuery.ResultHandler<Season>() {
-
-                @Override
-                public boolean handleResult(CursorList<Season> result) {
-                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
-                        ModelList<Season> seasons = ModelList.from(result);
-                        result.close();
-                        season.swapAdapter(seasons, prefs.getSeason());
-                        if(prefs.getSeason()>0) {
-                            selectedSeason = season.get();
-                        }
-                        return true;
-                    } else {
-                        season.setSummary(getActivity().getString(R.string.pref_season_summary));
-                        comp.setEnabled(false);
-                        return false;
-                    }
-                }
-            };
 
     private ManyQuery.ResultHandler<Competition> onCompetitionsLoaded =
             new ManyQuery.ResultHandler<Competition>() {
@@ -90,6 +67,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                         comp.swapAdapter(competitions, prefs.getComp());
                         if(prefs.getComp()>0) {
                             selectedComp = comp.get();
+                        } else {
+                            selectedComp = null;
                         }
                         return true;
                     } else {
@@ -108,9 +87,15 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         compPrefString = this.getString(R.string.pref_comp);
         measurePrefString = this.getString(R.string.pref_measure);
         resetDBPrefString = this.getString(R.string.pref_resetDB);
-        season = (ListPreference<Season>) getPreferenceScreen().findPreference(seasonPrefString);
-        comp = (ListPreference<Competition>) getPreferenceScreen().findPreference(compPrefString);
-//        measure = (ListPreference) getPreferenceScreen().findPreference(measurePrefString);
+        String[] yearNumberArray = this.getActivity().getResources().getStringArray(R.array.list_year);
+        String[] yearSummaryArray = this.getActivity().getResources().getStringArray(R.array.list_year_display);
+        yearArray = new SparseArray<String>(yearSummaryArray.length);
+        for(int i=0;i<yearSummaryArray.length;++i) {
+            yearArray.put(Integer.parseInt(yearNumberArray[i]),yearSummaryArray[i]);
+        }
+        year = (ListPreference) getPreferenceScreen().findPreference(seasonPrefString);
+        comp = (CompetitionListPreference) getPreferenceScreen().findPreference(compPrefString);
+//        measure = (CompetitionListPreference) getPreferenceScreen().findPreference(measurePrefString);
         resetDB = getPreferenceScreen().findPreference(resetDBPrefString);
         resetDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
@@ -154,11 +139,16 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         // Set up a listener whenever a key changes
-        season.setValue(Long.toString(prefs.getSeason()));
         comp.setValue(Long.toString(prefs.getComp()));
         prefs.setChangeListener(this);
-        Query.all(Season.class).getAsync(this.getLoaderManager(),onSeasonsLoaded);
-        Query.many(Competition.class, "select * from competition where season=? ORDER BY name",Long.parseLong(season.getValue())).getAsync(this.getLoaderManager(), onCompetitionsLoaded);
+        if(prefs.getSeason()>0) {
+            year.setSummary(yearArray.get(prefs.getSeason()));
+        }
+        if(prefs.getSeason() > 0) {
+            Query.many(Competition.class, "select * from competition where season=? ORDER BY name",prefs.getSeason()).getAsync(this.getLoaderManager(), onCompetitionsLoaded);
+        } else {
+            comp.setEnabled(false);
+        }
     }
 
 	@Override
@@ -176,7 +166,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.newComp).setVisible(null!=selectedSeason);
+        menu.findItem(R.id.newComp).setVisible(0!=prefs.getSeason());
         menu.findItem(R.id.deleteComp).setVisible(null!=selectedComp);
     }
 	
@@ -189,7 +179,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	        case R.id.newComp:
                 dialog = new InsertCompDialogFragment();
                 dialogArgs = new Bundle();
-                dialogArgs.putSerializable(InsertCompDialogFragment.SEASON_ARG, selectedSeason);
+                dialogArgs.putInt(InsertCompDialogFragment.SEASON_ARG, prefs.getSeason());
                 dialog.setArguments(dialogArgs);
                 dialog.show(this.getFragmentManager(), "Add Competition");
 	            return true;
@@ -234,12 +224,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		Log.d(TAG, key);
 		if(key.equals(seasonPrefString)) {
             Log.d(TAG,"selected season");
-            selectedSeason = season.get();
-            prefs.setYear(Integer.toString(selectedSeason.getYear()));
+            year.setSummary(yearArray.get(prefs.getSeason()));
 			comp.setValue("0");
             comp.setEnabled(true);
             getActivity().invalidateOptionsMenu();
-            Query.many(Competition.class, "select * from competition where season=? ORDER BY name",Long.parseLong(season.getValue())).getAsync(this.getLoaderManager(),onCompetitionsLoaded);
+            Query.many(Competition.class, "select * from competition where season=? ORDER BY name",prefs.getSeason()).getAsync(this.getLoaderManager(),onCompetitionsLoaded);
 		} else if(key.equals(compPrefString)) {
             Log.d(TAG,"selected competition");
             selectedComp = comp.get();

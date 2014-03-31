@@ -76,12 +76,6 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
     public void setMatchSet(int matchSet) {
         match.setMatchSet(matchSet);
     }
-    public int getMatchOf() {
-        return match.getMatchOf();
-    }
-    public void setMatchOf(int outof) {
-        match.setMatchOf(outof);
-    }
 	public CompetitionTeam getCompetitionTeam() {
         return team;
 	}

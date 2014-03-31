@@ -63,7 +63,7 @@ public class Import extends Thread {
         common(context,handler);
         this.type = type;
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            this.directory = context.getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getYear()+File.separator;
+            this.directory = context.getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getSeason()+File.separator;
         }
         fileRead = true;
 	}
@@ -134,7 +134,7 @@ public class Import extends Thread {
 
                     // write the header
                     final String[] header = beanReader.getHeader(true);
-                    switch (prefs.getYear()) {
+                    switch (prefs.getSeason()) {
                         default:
                             Log.w(TAG, "No valid year selected");
                             message.getData().putString(RESULT, "No valid year selected");
@@ -148,7 +148,7 @@ public class Import extends Thread {
                                 MoveTeamScouting2014 move;
                                 while ((move = beanReader.read(MoveTeamScouting2014.class, header, MoveTeamScouting2014.readProcessor)) != null) {
                                     Log.d(TAG, "lineNo=" + beanReader.getLineNumber() + ", rowNo=" + beanReader.getRowNumber() + ", data=" + move);
-                                    move.save(t,new Season(prefs.getSeason()), this.competition);
+                                    move.save(t,prefs.getSeason(), this.competition);
                                 }
                             } else if (Arrays.equals(header, MatchScouting2014.FIELD_MAPPING)) {
                                 this.type = Type.MATCHSCOUTING2014;

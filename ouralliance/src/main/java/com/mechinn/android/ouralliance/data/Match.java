@@ -23,7 +23,6 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
     public static final String BLUESCORE = "blueScore";
     public static final String MATCHTYPE = "matchType";
     public static final String MATCHSET = "matchSet";
-    public static final String MATCHOF = "matchOf";
 
     public static final String[] FIELD_MAPPING = new String[] {
             MODIFIED
@@ -33,7 +32,6 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
             ,BLUESCORE
             ,MATCHTYPE
             ,MATCHSET
-            ,MATCHOF
     };
 
     public enum Type {
@@ -82,8 +80,6 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	private Type matchType;
     @Column(MATCHSET)
 	private int matchSet;
-    @Column(MATCHOF)
-	private int outOf;
 
 	public Match() {
 		super();
@@ -106,7 +102,7 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
         this.setBlueScore(-1);
         this.setMatchType(type);
 	}
-	public Match(Competition competition, int number, Type type, int set, int of) {
+	public Match(Competition competition, int number, Type type, int set) {
 		super();
         this.setCompetition(competition);
         this.setMatchNum(number);
@@ -114,7 +110,6 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
         this.setBlueScore(-1);
         this.setMatchType(type);
         this.setMatchSet(set);
-        this.setMatchOf(of);
 	}
 	public Competition getCompetition() {
 		return competition;
@@ -173,27 +168,24 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	public void setMatchSet(int matchSet) {
 		this.matchSet = matchSet;
 	}
-	public int getMatchOf() {
-		return outOf;
-	}
-	public void setMatchOf(int outof) {
-		this.outOf = outof;
-
-		//set the match number stupid high
-		int level = 0;
-        switch(getMatchType()) {
-            case QUARTERFINAL:
-                level = 1000;
-                break;
-            case SEMIFINAL:
-                level = 10000;
-                break;
-            case FINAL:
-                level = 100000;
-                break;
-        }
-		this.matchNum = level+ getMatchOf()*10+ getMatchSet();
-	}
+//	public void setMatchOf(int outof) {
+//		this.outOf = outof;
+//
+//		//set the match number stupid high
+//		int level = 0;
+//        switch(getMatchType()) {
+//            case QUARTERFINAL:
+//                level = 1000;
+//                break;
+//            case SEMIFINAL:
+//                level = 10000;
+//                break;
+//            case FINAL:
+//                level = 100000;
+//                break;
+//        }
+//		this.matchNum = level+ getMatchOf()*10+ getMatchSet();
+//	}
 	@Override
 	public String toString() {
 		Log.d(TAG,"type: "+ getMatchType());
@@ -201,11 +193,11 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
             case PRACTICE:
                 return "Practice: "+this.getDisplayNum();
             case QUARTERFINAL:
-                return "Quarterfinal: "+ getMatchSet()+"-"+ getMatchOf();
+                return "Quarterfinal: "+ getMatchSet();
             case SEMIFINAL:
-                return "Semifinal: "+ getMatchSet()+"-"+ getMatchOf();
+                return "Semifinal: "+ getMatchSet();
             case FINAL:
-                return "Final: "+ getMatchOf();
+                return "Final: "+ getMatchSet();
             default:
                 return "Qualifier: "+this.getDisplayNum();
         }
@@ -217,8 +209,7 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 				getRedScore()==data.getRedScore() &&
 				getBlueScore()==data.getBlueScore() &&
 				getMatchType()==data.getMatchType() &&
-				getMatchSet()==data.getMatchSet() &&
-				getMatchOf()==data.getMatchOf();
+				getMatchSet()==data.getMatchSet();
 	}
 	public int compareTo(Match another) {
 		return this.getDisplayNum() - another.getDisplayNum();
@@ -243,7 +234,6 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
                 && getRedScore()==-1
                 && getBlueScore()==-1
                 && getMatchType().equals(Type.QUALIFIER)
-                && getMatchSet()==0
-                && getMatchOf()==0;
+                && getMatchSet()==0;
     }
 }

@@ -76,7 +76,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
             Log.d(TAG,"saving: "+team);
             team.save();
             Log.d(TAG,"saving id: "+team.getId());
-            switch(prefs.getYear()) {
+            switch(prefs.getSeason()) {
                 case 2014:
                     new TeamScouting2014(team).save();
                     break;
