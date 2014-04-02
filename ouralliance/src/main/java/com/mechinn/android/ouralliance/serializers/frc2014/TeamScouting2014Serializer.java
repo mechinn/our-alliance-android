@@ -15,6 +15,6 @@ public class TeamScouting2014Serializer extends AOurAllianceDataSerializer<TeamS
 
     @Override
     public TeamScouting2014 unpack(Cursor c, String name) {
-        return Query.one(TeamScouting2014.class, "select * from TeamScouting2014 where _id=?",c.getLong(c.getColumnIndexOrThrow(name))).get();
+        return Query.one(TeamScouting2014.class, "select * from "+TeamScouting2014.TAG+" where "+TeamScouting2014._ID+"=?",c.getLong(c.getColumnIndexOrThrow(name))).get();
     }
 }

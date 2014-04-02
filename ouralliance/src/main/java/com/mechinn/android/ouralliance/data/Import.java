@@ -63,7 +63,7 @@ public class Import extends Thread {
         common(context,handler);
         this.type = type;
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            this.directory = context.getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getSeason()+File.separator;
+            this.directory = context.getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getYear()+File.separator;
         }
         fileRead = true;
 	}
@@ -117,7 +117,7 @@ public class Import extends Thread {
             if(fileRead) {
                 filename = directory+type.path();
                 new File(filename).mkdirs();
-                filename += File.separator+competition.getCode()+CSV;
+                filename += File.separator+competition.getEventCode()+CSV;
                 try {
                     reader = new FileReader(filename);
                 } catch (IOException e) {
@@ -134,7 +134,7 @@ public class Import extends Thread {
 
                     // write the header
                     final String[] header = beanReader.getHeader(true);
-                    switch (prefs.getSeason()) {
+                    switch (prefs.getYear()) {
                         default:
                             Log.w(TAG, "No valid year selected");
                             message.getData().putString(RESULT, "No valid year selected");
@@ -148,7 +148,7 @@ public class Import extends Thread {
                                 MoveTeamScouting2014 move;
                                 while ((move = beanReader.read(MoveTeamScouting2014.class, header, MoveTeamScouting2014.readProcessor)) != null) {
                                     Log.d(TAG, "lineNo=" + beanReader.getLineNumber() + ", rowNo=" + beanReader.getRowNumber() + ", data=" + move);
-                                    move.save(t,prefs.getSeason(), this.competition);
+                                    move.save(t,prefs.getYear(), this.competition);
                                 }
                             } else if (Arrays.equals(header, MatchScouting2014.FIELD_MAPPING)) {
                                 this.type = Type.MATCHSCOUTING2014;

@@ -369,7 +369,7 @@ public class MoveTeamScouting2014 {
     public void save(Transaction t, int season, Competition competition) {
         team.save(t);
         if(wheel.getWheelType()!="") {
-            wheel.setSeason(season);
+            wheel.setYear(season);
             wheel.save(t);
         }
         new CompetitionTeam(modified,competition,team.getTeam(),rank,scouted).save(t);

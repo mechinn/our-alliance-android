@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.HandlerThread;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
-import se.emilsjolander.sprinkles.Query;
 
 public class InsertTeamDialogFragment extends DialogFragment {
     public static final String TAG = "InsertTeamDialogFragment";
@@ -76,7 +74,7 @@ public class InsertTeamDialogFragment extends DialogFragment {
             Log.d(TAG,"saving: "+team);
             team.save();
             Log.d(TAG,"saving id: "+team.getId());
-            switch(prefs.getSeason()) {
+            switch(prefs.getYear()) {
                 case 2014:
                     new TeamScouting2014(team).save();
                     break;

@@ -14,9 +14,10 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 	public static final int NORMAL = 0;
 	public static final int FLAG_SETUP = 0;
 	public static final int FLAG_EXPORT = 1;
+    public static final int FLAG_COMPETITION_LIST = 2;
 	private String title;
 	private int flag;
-
+    private Prefs prefs;
 	private LoadingDialogFragment dialog;
 	private FragmentManager fragmentManager;
 	private Integer progressFlag;
@@ -26,6 +27,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 	private CharSequence status;
     private Listener listener;
     private Activity activity;
+    private boolean complete;
 
     public interface Listener {
         public void complete(int flag);
@@ -34,6 +36,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 	
 	public BackgroundProgress(Activity activity, int flag) {
         this.activity = activity;
+        this.prefs = new Prefs(activity);
         try {
         	listener = (Listener) activity;
         } catch (ClassCastException e) {
@@ -42,6 +45,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
         this.flag = flag;
 		title = "";
 		this.fragmentManager = activity.getFragmentManager();
+        dialog = new LoadingDialogFragment(this);
 	}
     public Activity getActivity() {
         return activity;
@@ -73,26 +77,22 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 	
 	@Override
 	protected void onPreExecute() {
+        complete = false;
 		progressFlag = NORMAL;
 		primary = 0;
 		progressTotal = 100;
 		status = "Loading...";
-		dialog = new LoadingDialogFragment();
+        dialog.setCancelable(true);
 		Bundle dialogArgs = new Bundle();
 		if(null!=title) {
 			dialogArgs.putCharSequence(LoadingDialogFragment.TITLE, title);
 		}
 		dialog.setArguments(dialogArgs);
-        dialog.show(fragmentManager, "Setup Our Alliance");
+        dialog.show(fragmentManager, "Background Task");
 	}
 	
 	@Override
 	protected void onProgressUpdate(Object... progress) {
-        if(progress.length<5) {
-            dialog.setProgressStatus("Error");
-            dialog.setProgressIndeterminate();
-            return;
-        }
         Integer progressFlag = (Integer)progress[0];
         Integer primary = (Integer)progress[1];
         Integer total = (Integer)progress[2];
@@ -106,27 +106,16 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 		} else {
 			dialog.setProgressStatus(status);
 		}
-        if(null!=primary && null!=total) {
-            if (null != progressFlag) {
-                switch (progressFlag) {
-                    case INDETERMINATE:
-                        dialog.setProgressIndeterminate();
-                    default:
-                        dialog.setProgressPercent(primary, total);
-                }
-            } else {
+        switch (progressFlag) {
+            case INDETERMINATE:
+                dialog.setProgressIndeterminate();
+            default:
                 dialog.setProgressPercent(primary, total);
-            }
-        } else {
-            dialog.setProgressIndeterminate();
         }
     }
 	
 	@Override
 	protected void onCancelled(Boolean result) {
-		if(null!=dialog) {
-			dialog.dismiss();
-		}
 		listener.cancelled(flag);
 	}
 
@@ -138,6 +127,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
             Log.w(TAG,"error dismissing dialog",e);
         }
 		listener.complete(flag);
+        complete = true;
     }
 	
 	protected void setProgressFlag(int progressFlag) {
@@ -171,4 +161,10 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 		Log.d(TAG, status.toString());
         publishProgress(progressFlag, primary, progressTotal, version, status);
 	}
+    public Prefs getPrefs() {
+        return prefs;
+    }
+    public boolean isComplete() {
+        return complete;
+    }
 }

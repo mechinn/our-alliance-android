@@ -15,6 +15,6 @@ public class MatchScouting2014Serializer extends AOurAllianceDataSerializer<Matc
 
     @Override
     public MatchScouting2014 unpack(Cursor c, String name) {
-        return Query.one(MatchScouting2014.class, "select * from MatchScouting2014 where _id=?",c.getLong(c.getColumnIndexOrThrow(name))).get();
+        return Query.one(MatchScouting2014.class, "select * from "+MatchScouting2014.TAG+" where "+MatchScouting2014._ID+"=?",c.getLong(c.getColumnIndexOrThrow(name))).get();
     }
 }

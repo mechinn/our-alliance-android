@@ -6,6 +6,9 @@ import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
+import com.mechinn.android.ouralliance.data.Competition;
+import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.Match;
 
 public class Prefs {
     public static final String TAG = "Prefs";
@@ -23,6 +26,7 @@ public class Prefs {
 	private String practiceDefault;
 	private String yearPref;
 	private String yearDefault;
+    private Editor editor;
 	
 	public Prefs(Context context) {
 		this.dbSetupPref = context.getString(R.string.pref_resetDB);
@@ -43,29 +47,48 @@ public class Prefs {
 			this.currentVersion = 0;
 		}
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        editor = prefs.edit();
 	}
 	public int getCurrentVersion() {
 		return currentVersion;
 	}
 	public void clear() {
-		Editor editor = prefs.edit();
 		editor.clear();
 		editor.apply();
 	}
 	public void setDbSetup(Boolean setup) {
-		Editor editor = prefs.edit();
 		editor.putString(dbSetupPref, setup?"true":"false");
 		editor.apply();
 	}
 	public boolean getDbSetup() {
 		return Boolean.parseBoolean(prefs.getString(dbSetupPref, dbSetupDefault));
 	}
-	public void setSeason(String year) {
-		Editor editor = prefs.edit();
+    public void setCompetitionsDownloaded(Boolean downloaded) {
+        editor.putString(Competition.TAG+"_"+getYear(), downloaded?"true":"false");
+        editor.apply();
+    }
+    public boolean getCompetitionsDownloaded() {
+        return Boolean.parseBoolean(prefs.getString(Competition.TAG+"_"+getYear(), "false"));
+    }
+    public void setCompetitionTeamsDownloaded(Boolean downloaded) {
+        editor.putString(CompetitionTeam.TAG+"_"+getYear()+"_"+getComp(), downloaded?"true":"false");
+        editor.apply();
+    }
+    public boolean getCompetitionTeamsDownloaded() {
+        return Boolean.parseBoolean(prefs.getString(CompetitionTeam.TAG+"_"+getYear()+"_"+getComp(), "false"));
+    }
+    public void setMatchesDownloaded(Boolean downloaded) {
+        editor.putString(Match.TAG+"_"+getYear()+"_"+getComp(), downloaded?"true":"false");
+        editor.apply();
+    }
+    public boolean getMatchesDownloaded() {
+        return Boolean.parseBoolean(prefs.getString(Match.TAG+"_"+getYear()+"_"+getComp(), "false"));
+    }
+	public void setYear(String year) {
 		editor.putString(yearPref, year);
 		editor.apply();
 	}
-	public int getSeason() {
+	public int getYear() {
 		return Integer.parseInt(prefs.getString(yearPref, yearDefault));
 	}
 	public long getComp() {
@@ -81,7 +104,6 @@ public class Prefs {
 		return prefs.getBoolean(practicePref, Boolean.parseBoolean(practiceDefault));
 	}
 	public void setPractice(boolean practice) {
-		Editor editor = prefs.edit();
 		editor.putBoolean(practicePref, practice);
 		editor.apply();
 	}
@@ -89,7 +111,6 @@ public class Prefs {
 		return Integer.parseInt(prefs.getString(versionPref, versionDefault));
 	}
 	public void setVersion(int version) {
-		Editor editor = prefs.edit();
 		editor.putString(versionPref, Integer.toString(version));
 		editor.apply();
 	}

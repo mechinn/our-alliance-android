@@ -313,10 +313,10 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     @Override
     public void onResume() {
         super.onResume();
-        if (this.getPrefs().getSeason() != 0 && getTeamId() != 0) {
-            Query.one(TeamScouting2014.class, "select * from TeamScouting2014 where team=? LIMIT 1", getTeamId()).getAsync(this.getLoaderManager(), getOnScoutingLoaded());
-            Query.many(TeamScouting2014.class, "select * from TeamScouting2014 group by orientation").getAsync(this.getLoaderManager(), this.onOrientationsLoaded);
-            Query.many(TeamScouting2014.class, "select * from TeamScouting2014 group by driveTrain").getAsync(this.getLoaderManager(), this.onDriveTrainsLoaded);
+        if (this.getPrefs().getYear() != 0 && getTeamId() != 0) {
+            Query.one(TeamScouting2014.class, "select * from "+TeamScouting2014.TAG+" where "+TeamScouting2014.TEAM+"=? LIMIT 1", getTeamId()).getAsync(this.getLoaderManager(), getOnScoutingLoaded());
+            Query.many(TeamScouting2014.class, "select * from "+TeamScouting2014.TAG+" group by "+TeamScouting2014.ORIENTATION).getAsync(this.getLoaderManager(), this.onOrientationsLoaded);
+            Query.many(TeamScouting2014.class, "select * from "+TeamScouting2014.TAG+" group by "+TeamScouting2014.DRIVETRAIN).getAsync(this.getLoaderManager(), this.onDriveTrainsLoaded);
         }
     }
 	

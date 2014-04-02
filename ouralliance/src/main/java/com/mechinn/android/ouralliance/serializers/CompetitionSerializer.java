@@ -14,6 +14,6 @@ public class CompetitionSerializer extends AOurAllianceDataSerializer<Competitio
 
     @Override
     public Competition unpack(Cursor c, String name) {
-        return Query.one(Competition.class, "select * from Competition where _id=?",c.getLong(c.getColumnIndexOrThrow(name))).get();
+        return Query.one(Competition.class, "select * from "+Competition.TAG+" where "+Competition._ID+"=?",c.getLong(c.getColumnIndexOrThrow(name))).get();
     }
 }

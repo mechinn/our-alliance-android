@@ -185,8 +185,8 @@ public class MatchListFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        Query.many(CompetitionTeam.class, "select * from CompetitionTeam where competition=?", prefs.getComp()).getAsync(getLoaderManager(),onTeamsLoaded);
-        Query.many(Match.class, prefs.getPractice() ? "select * from Match where competition=? AND matchType=-1" : "select * from Match where competition=? AND matchType!=-1", prefs.getComp()).getAsync(getLoaderManager(),onMatchesLoaded);
+        Query.many(CompetitionTeam.class, "select * from "+CompetitionTeam.TAG+" where "+CompetitionTeam.COMPETITION+"=?", prefs.getComp()).getAsync(getLoaderManager(),onTeamsLoaded);
+        Query.many(Match.class, prefs.getPractice() ? "select * from "+Match.TAG+" where "+Match.COMPETITION+"=? AND "+Match.MATCHTYPE+"=-1" : "select * from "+Match.TAG+" where "+Match.COMPETITION+"=? AND "+Match.MATCHTYPE+"!=-1", prefs.getComp()).getAsync(getLoaderManager(),onMatchesLoaded);
     }
     
     private void selectItem(int position) {

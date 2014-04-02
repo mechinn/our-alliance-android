@@ -15,6 +15,7 @@ import com.mechinn.android.ouralliance.data.frc2014.ExportTeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
+import com.mechinn.android.ouralliance.rest.GetCompetitionTeams;
 import com.mobeta.android.dslv.DragSortListView;
 
 import android.app.Activity;
@@ -88,7 +89,7 @@ public class TeamListFragment extends Fragment {
                         Log.d(TAG,"cursor size: "+result.size());
                         ModelList<CompetitionTeam> teams = ModelList.from(result);
                         result.close();
-                        switch(prefs.getSeason()) {
+                        switch(prefs.getYear()) {
                             case 2014:
                                 adapter.showDrag(sort.equals(Sort2014.RANK));
                                 break;
@@ -133,7 +134,7 @@ public class TeamListFragment extends Fragment {
         sortTeams.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch(prefs.getSeason()) {
+                switch(prefs.getYear()) {
                     case 2014:
                         sort = Sort.sort2014List.get(position);
                         break;
@@ -204,7 +205,8 @@ public class TeamListFragment extends Fragment {
         Log.d(TAG,"resume");
         Log.d(TAG,"CompID: "+prefs.getComp());
         if(prefs.getComp()>0) {
-            switch(prefs.getSeason()) {
+            new GetCompetitionTeams(this.getActivity()).start();
+            switch(prefs.getYear()) {
                 case 2014:
                     ArrayAdapter<Sort2014> sort2014Adapter = new ArrayAdapter<Sort2014>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2014List);
                     sortTeams.setAdapter(sort2014Adapter);
@@ -224,7 +226,7 @@ public class TeamListFragment extends Fragment {
     }
 
     private void reloadTeams() {
-        switch(prefs.getSeason()) {
+        switch(prefs.getYear()) {
             case 2014:
                 competitionLoader = Query.many(CompetitionTeam.class,
                         "SELECT " + CompetitionTeam.TAG + ".*" +

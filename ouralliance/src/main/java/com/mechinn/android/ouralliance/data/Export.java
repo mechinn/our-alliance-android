@@ -2,12 +2,9 @@ package com.mechinn.android.ouralliance.data;
 
 import java.io.*;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -16,13 +13,6 @@ import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.BackgroundProgress;
 import com.mechinn.android.ouralliance.Prefs;
-import com.mechinn.android.ouralliance.data.*;
-import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
-import com.mechinn.android.ouralliance.data.frc2014.MoveTeamScouting2014;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
-import org.supercsv.io.CsvBeanWriter;
-import org.supercsv.prefs.CsvPreference;
-import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.Query;
 
 public abstract class Export extends BackgroundProgress {
@@ -41,7 +31,7 @@ public abstract class Export extends BackgroundProgress {
 		super(activity, FLAG_EXPORT);
         prefs = new Prefs(getActivity());
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            directory = getActivity().getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getSeason()+File.separator;
+            directory = getActivity().getExternalFilesDir(null).getAbsolutePath()+File.separator+prefs.getYear()+File.separator;
         }
         fileWrite = true;
 	}

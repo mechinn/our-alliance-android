@@ -1,15 +1,7 @@
 package com.mechinn.android.ouralliance.data.frc2014;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
-import com.mechinn.android.ouralliance.BackgroundProgress;
-import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.*;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
@@ -17,7 +9,6 @@ import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.Query;
 
 import java.io.*;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +27,7 @@ public class ExportTeamScouting2014 extends Export {
         if(isFileWrite()) {
             setFilename(getDirectory()+ Import.Type.TEAMSCOUTING2014.path());
             new File(getFilename()).mkdirs();
-            setFilename(getFilename()+File.separator+getCompetition().getCode()+CSV);
+            setFilename(getFilename()+File.separator+getCompetition().getEventCode()+CSV);
             try {
                 setWriter(new FileWriter(getFilename()));
             } catch (IOException e) {
@@ -66,9 +57,9 @@ public class ExportTeamScouting2014 extends Export {
                 wheels = Query.many(TeamScoutingWheel.class,
                         "SELECT *" +
                                 " FROM " + TeamScoutingWheel.TAG +
-                                " WHERE " + TeamScoutingWheel.SEASON + "=?" +
+                                " WHERE " + TeamScoutingWheel.YEAR + "=?" +
                                 " AND " + TeamScoutingWheel.TEAM + "=?",
-                        getPrefs().getSeason(), team.getTeam().getId()
+                        getPrefs().getYear(), team.getTeam().getId()
                 ).get();
                 if (null != wheels && wheels.size() > 0) {
                     for (TeamScoutingWheel wheel : wheels) {

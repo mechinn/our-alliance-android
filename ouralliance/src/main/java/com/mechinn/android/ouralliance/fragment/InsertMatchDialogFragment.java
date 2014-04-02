@@ -25,7 +25,6 @@ import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MatchTeamSelectAdapter;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
 import se.emilsjolander.sprinkles.ModelList;
@@ -209,7 +208,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
     private class SaveMatch extends Thread {
         public void run() {
             match.save();
-            switch (prefs.getSeason()) {
+            switch (prefs.getYear()) {
                 case 2014:
                     new MatchScouting2014(match, ((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()), false).save();
                     new MatchScouting2014(match, ((MatchTeamSelectAdapter) red2.getAdapter()).getItem(red2.getSelectedItemPosition()), false).save();

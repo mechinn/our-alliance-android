@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 
 /**
  * Created by mechinn on 3/7/14.

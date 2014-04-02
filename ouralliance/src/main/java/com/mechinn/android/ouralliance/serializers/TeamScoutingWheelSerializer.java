@@ -14,6 +14,6 @@ public class TeamScoutingWheelSerializer extends AOurAllianceDataSerializer<Team
 
     @Override
     public TeamScoutingWheel unpack(Cursor c, String name) {
-        return Query.one(TeamScoutingWheel.class, "select * from TeamScoutingWheel where _id=?",c.getLong(c.getColumnIndexOrThrow(name))).get();
+        return Query.one(TeamScoutingWheel.class, "select * from "+TeamScoutingWheel.TAG+" where "+TeamScoutingWheel._ID+"=?",c.getLong(c.getColumnIndexOrThrow(name))).get();
     }
 }

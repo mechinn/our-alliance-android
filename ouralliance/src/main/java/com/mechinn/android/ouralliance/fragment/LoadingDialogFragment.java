@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.fragment;
 
+import android.os.AsyncTask;
 import com.mechinn.android.ouralliance.R;
 
 import android.app.DialogFragment;
@@ -20,12 +21,15 @@ public class LoadingDialogFragment extends DialogFragment {
 	public static final String MAX = "max";
     private View dialog;
     private ProgressBar progress;
+    private AsyncTask task;
 
     private TextView status;
+    public LoadingDialogFragment(AsyncTask task) {
+        this.task = task;
+    }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	this.setCancelable(false);
 		setRetainInstance(true);
     	super.onCreate(savedInstanceState);
     }
@@ -84,5 +88,9 @@ public class LoadingDialogFragment extends DialogFragment {
 
     public CharSequence getProgressStatus() {
         return status.getText();
+    }
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        task.cancel(false);
     }
 }

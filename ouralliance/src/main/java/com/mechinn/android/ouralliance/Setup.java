@@ -2,45 +2,41 @@ package com.mechinn.android.ouralliance;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.JsonCompetition;
 
+import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import se.emilsjolander.sprinkles.SqlStatement;
 import se.emilsjolander.sprinkles.Transaction;
 
 public class Setup extends BackgroundProgress {
     public static final String TAG = "Setup";
 	public static final int VERSION = 16;
-	private ObjectMapper jsonMapper;
-	private AssetManager assets;
 	private Prefs prefs;
 	private String packageName;
 	private File dbPath;
-    private File sprinklesDbPath;
 	private boolean reset;
-	private Activity activity;
+	private final Activity activity;
 	
-	public Setup(Activity activity, boolean reset) {
+	public Setup(final Activity activity, boolean reset) {
 		super(activity, FLAG_SETUP);
 		this.reset = reset;
 		this.activity = activity;
-		assets = activity.getAssets();
-		jsonMapper = new ObjectMapper();
 		prefs = new Prefs(activity);
 		packageName = activity.getPackageName();
 		dbPath = activity.getDatabasePath("ourAlliance.db");
-        sprinklesDbPath = activity.getDatabasePath("sprinkles.db");
 	}
 	
 	@Override
@@ -59,6 +55,7 @@ public class Setup extends BackgroundProgress {
 		} else {
 			this.cancel(true);
 		}
+        getDialog().setCancelable(false);
 	}
 
 	@Override
@@ -72,7 +69,8 @@ public class Setup extends BackgroundProgress {
                 case 0:
                     increaseVersion();
                     //drop all the rows
-                    new SqlStatement("DELETE FROM season").execute();
+                    new SqlStatement("DELETE FROM "+ Team.TAG).execute();
+                    new SqlStatement("DELETE FROM "+ Competition.TAG).execute();
                     prefs.setVersion(0);
                 case 1:
                     increaseVersion();
@@ -122,47 +120,6 @@ public class Setup extends BackgroundProgress {
                         Log.d(TAG, "did not delete db");
                     }
                     if (this.isCancelled()) {
-                        return false;
-                    }
-
-                    setStatus("Setting up 2014 competitions");
-                    try {
-                        //                    JsonCompetition[] getter = jsonMapper.readValue(assets.open("eventsDebug.json"),JsonCompetition[].class);
-                        JsonCompetition[] getter = jsonMapper.readValue(assets.open("events2014.json"), JsonCompetition[].class);
-                        Log.d(TAG, "competitions: " + getter.length);
-                        this.setTotal(getter.length);
-                        if (this.isCancelled()) {
-                            return false;
-                        }
-                        String competitionName;
-                        String competitionKey;
-                        for (JsonCompetition competition : getter) {
-                            Log.d(TAG, competition.toString());
-                            competitionName = competition.getName().replaceAll(
-                                    String.format("%s|%s|%s",
-                                            "(?<=[A-Z])(?=[A-Z][a-z])",
-                                            "(?<=[^A-Z])(?=[A-Z])",
-                                            "(?<=[A-Za-z])(?=[^A-Za-z])"
-                                    ),
-                                    " "
-                            );
-                            competitionKey = competition.getKey().substring(4);
-                            if (this.isCancelled()) {
-                                return false;
-                            }
-                            Log.d(TAG, "name: " + competitionName);
-                            Log.d(TAG, "key: " + competitionKey);
-                            new Competition(2014, competitionName, competitionKey).save(t);
-                            this.increasePrimary();
-                        }
-                    } catch (JsonMappingException e) {
-                        e.printStackTrace();
-                        return false;
-                    } catch (JsonParseException e) {
-                        e.printStackTrace();
-                        return false;
-                    } catch (IOException e) {
-                        e.printStackTrace();
                         return false;
                     }
                     prefs.setVersion(16);

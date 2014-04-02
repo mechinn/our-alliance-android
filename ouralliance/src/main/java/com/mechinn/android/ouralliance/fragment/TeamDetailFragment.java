@@ -279,7 +279,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 		addWheel.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				TeamScoutingWheel newWheel = new TeamScoutingWheel();
-				newWheel.setSeason(getComp().getSeason());
+				newWheel.setYear(getComp().getYear());
 				newWheel.setTeam(scouting.getTeam());
 				createWheel(newWheel);
 		    }
@@ -347,10 +347,10 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
     @Override
     public void onResume() {
         super.onResume();
-        if (prefs.getSeason() != 0 && teamId != 0) {
-            Query.one(Competition.class, "select * from Competition where _id=?",prefs.getComp()).getAsync(this.getLoaderManager(),onCompetitionLoaded);
-            Query.many(TeamScoutingWheel.class, "select * from TeamScoutingWheel group by wheelType").getAsync(this.getLoaderManager(), onWheelTypesLoaded);
-            Query.many(TeamScoutingWheel.class, "select * from TeamScoutingWheel where season=? and team=?", prefs.getSeason(), getTeamId()).getAsync(this.getLoaderManager(), onTeamWheelsLoaded);
+        if (prefs.getYear() != 0 && teamId != 0) {
+            Query.one(Competition.class, "select * from "+Competition.TAG+" where "+Competition._ID+"=?",prefs.getComp()).getAsync(this.getLoaderManager(),onCompetitionLoaded);
+            Query.many(TeamScoutingWheel.class, "select * from " + TeamScoutingWheel.TAG + " group by " + TeamScoutingWheel.TYPE).getAsync(this.getLoaderManager(), onWheelTypesLoaded);
+            Query.many(TeamScoutingWheel.class, "select * from "+TeamScoutingWheel.TAG+" where "+TeamScoutingWheel.YEAR+"=? and "+TeamScoutingWheel.TEAM+"=?", prefs.getYear(), getTeamId()).getAsync(this.getLoaderManager(), onTeamWheelsLoaded);
         }
     }
 

@@ -8,6 +8,7 @@ public class JsonCompetition {
     private String end_date;
     private String key;
     private String name;
+    private String location;
     private boolean official;
     private String short_name;
     private String start_date;
@@ -37,6 +38,14 @@ public class JsonCompetition {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public boolean isOfficial() {

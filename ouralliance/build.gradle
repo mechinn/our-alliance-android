@@ -11,6 +11,7 @@ apply plugin: 'android'
 apply plugin: 'crashlytics'
 repositories {
     maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
 }
 
 android {
@@ -18,15 +19,18 @@ android {
     buildToolsVersion "19.0.2"
 
     packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
+//        exclude 'META-INF/LICENSE.txt'
+//        exclude 'META-INF/NOTICE.txt'
+//        exclude 'META-INF/ASL2.0'
+//        exclude 'META-INF/LICENSE'
+//        exclude 'META-INF/NOTICE'
     }
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
         versionCode 34
-        versionName "2014.5.4"
+        versionName "2014.6"
     }
     signingConfigs {
         release {
@@ -53,9 +57,7 @@ dependencies {
     compile 'org.slf4j:slf4j-android:1.7.6'
 //    compile 'commons-io:commons-io:2.4'
     compile 'org.apache.commons:commons-lang3:3.3'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.1.1'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.1.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.1.1'
+    compile 'com.squareup.retrofit:retrofit:1.5.0'
     compile 'net.sf.supercsv:super-csv:2.1.0'
     compile 'com.crashlytics.android:crashlytics:1.+'
     //compile 'se.emilsjolander:sprinkles:+'

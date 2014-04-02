@@ -11,8 +11,9 @@ import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
+import com.mechinn.android.ouralliance.rest.GetCompetitions;
 
-public class SettingsActivity extends PreferenceActivity implements Setup.Listener, GenericDialogFragment.Listener {
+public class SettingsActivity extends PreferenceActivity implements BackgroundProgress.Listener, GenericDialogFragment.Listener {
     public static final String TAG = "SettingsActivity";
 	private SettingsFragment frag;
 
@@ -21,19 +22,12 @@ public class SettingsActivity extends PreferenceActivity implements Setup.Listen
         super.onCreate(savedInstanceState);
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		frag = new SettingsFragment();
         // Display the fragment as the main content.
-        getFragmentManager().beginTransaction().replace(android.R.id.content, frag).commit();
-        
-//        String action = getIntent().getAction();
-//        if (action != null && action.equals(ACTION_PREFS_ONE)) {
-//            addPreferencesFromResource(R.xml.preferences);
-//        }
-        
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-//            // Load the legacy preferences headers
-//            addPreferencesFromResource(R.xml.preference_headers_legacy);
-//        }
+        frag = (SettingsFragment) getFragmentManager().findFragmentByTag(SettingsFragment.TAG);
+        if(null==frag) {
+            frag = new SettingsFragment();
+            getFragmentManager().beginTransaction().replace(android.R.id.content, frag, SettingsFragment.TAG).commit();
+        }
     }
 
 	public void cancelled(int flag) {
@@ -45,7 +39,7 @@ public class SettingsActivity extends PreferenceActivity implements Setup.Listen
 	}
 
 	public void complete(int flag) {
-		Log.d(TAG,"flag: "+flag);
+		Log.d(TAG, "flag: " + flag);
 		switch(flag) {
 			case Setup.FLAG_SETUP:
 				Utility.restartApp(this);

@@ -13,18 +13,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.*;
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
-import com.mechinn.android.ouralliance.fragment.InsertTeamDialogFragment;
 import com.mechinn.android.ouralliance.fragment.MatchTeamListFragment;
 import com.mechinn.android.ouralliance.fragment.MultimediaContextDialogFragment;
 import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;
 import com.mechinn.android.ouralliance.fragment.TeamListFragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.MatchTeamList2014Fragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.TeamDetail2014;
-import se.emilsjolander.sprinkles.OneQuery;
 
 public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, OnBackStackChangedListener, BackgroundProgress.Listener, MultimediaContextDialogFragment.Listener {
     public static final String TAG = "TeamScoutingActivity";
@@ -63,7 +57,7 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
             	if(listFrag==detailFrag) {
             		onTeamSelected(loadTeam);
             	} else {
-                    switch(prefs.getSeason()) {
+                    switch(prefs.getYear()) {
                         case 2014:
                             matchTeamListFrag = new MatchTeamList2014Fragment();
                             break;
@@ -123,7 +117,7 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
         args.putLong(TeamDetailFragment.TEAM_ARG, team);
         
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		switch(prefs.getSeason()) {
+		switch(prefs.getYear()) {
 			case 2014:
 				teamDetailFragment = new TeamDetail2014();
 	            break;

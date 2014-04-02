@@ -14,6 +14,6 @@ public class TeamSerializer extends AOurAllianceDataSerializer<Team> {
 
     @Override
     public Team unpack(Cursor c, String name) {
-        return Query.one(Team.class, "select * from Team where _id=?",c.getLong(c.getColumnIndexOrThrow(name))).get();
+        return Query.one(Team.class, "select * from "+Team.TAG+" where "+Team._ID+"=?",c.getLong(c.getColumnIndexOrThrow(name))).get();
     }
 }

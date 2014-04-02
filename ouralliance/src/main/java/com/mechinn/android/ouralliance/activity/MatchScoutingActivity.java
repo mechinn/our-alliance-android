@@ -104,7 +104,7 @@ public class MatchScoutingActivity extends Activity implements BackgroundProgres
         Bundle bundle = new Bundle();
         bundle.putLong(MatchTeamListFragment.MATCH_ARG, match);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        switch(prefs.getSeason()) {
+        switch(prefs.getYear()) {
             case 2014:
                 matchTeamListFrag = new MatchTeamList2014Fragment();
                 break;
@@ -126,7 +126,7 @@ public class MatchScoutingActivity extends Activity implements BackgroundProgres
         Bundle args = new Bundle();
         args.putLong(MatchDetailFragment.TEAM_ARG, team);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        switch(prefs.getSeason()) {
+        switch(prefs.getYear()) {
             case 2014:
                 matchDetailFragment = new MatchDetail2014();
                 break;
@@ -148,7 +148,7 @@ public class MatchScoutingActivity extends Activity implements BackgroundProgres
         args.putLong(TeamDetailFragment.TEAM_ARG, team);
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        switch(prefs.getSeason()) {
+        switch(prefs.getYear()) {
             case 2014:
                 teamDetailFragment = new TeamDetail2014();
                 break;

@@ -19,7 +19,7 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 
     public static final String[] FIELD_MAPPING = new String[] {
             MODIFIED
-            ,COMPETITION+"."+Competition.CODE
+            ,COMPETITION+"."+Competition.EVENT_CODE
             ,TEAM+"."+Team.NUMBER
             ,RANK
             ,SCOUTED

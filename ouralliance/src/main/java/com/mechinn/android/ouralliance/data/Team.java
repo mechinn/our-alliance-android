@@ -1,15 +1,14 @@
 package com.mechinn.android.ouralliance.data;
 
 import android.util.Log;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.google.gson.annotations.SerializedName;
 import org.supercsv.cellprocessor.FmtDate;
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.*;
 
-@JsonIgnoreProperties({"id","mod"})
 @Table(Team.TAG)
 @UniqueComboConflictClause(ConflictClause.IGNORE)
 public class Team extends AOurAllianceData implements Comparable<Team> {
@@ -37,6 +36,7 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
     @Column(NUMBER)
     @UniqueCombo()
     @Check("teamNumber > 0")
+    @SerializedName("team_number")
 	private int teamNumber;
     @Column(NAME)
 	private String nickname;

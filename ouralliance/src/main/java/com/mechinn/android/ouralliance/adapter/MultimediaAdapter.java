@@ -53,7 +53,7 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
 	}
     public void buildImageSet(TeamScouting team) {
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            teamFileDirectory = new File(activity.getExternalFilesDir(null).getAbsoluteFile() + File.separator + prefs.getSeason() + File.separator + team.getTeam().getTeamNumber());
+            teamFileDirectory = new File(activity.getExternalFilesDir(null).getAbsoluteFile() + File.separator + prefs.getYear() + File.separator + team.getTeam().getTeamNumber());
             Log.d(TAG, teamFileDirectory.getAbsolutePath());
             if(!teamFileDirectory.mkdirs()) {
                 multimedia = teamFileDirectory.listFiles();
