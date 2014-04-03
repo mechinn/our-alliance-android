@@ -66,25 +66,27 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 
     @Column(COMPETITION)
     @UniqueCombo
-    @ForeignKey("Competition(_id)")
+    @ForeignKey(COMPETITION+"(_id)")
     @CascadeDelete
-    @Check("competition > 0")
+    @Check(COMPETITION+" > 0")
 	private Competition competition;
     @Column(NUMBER)
     @UniqueCombo
     @SerializedName("match_number")
 	private int matchNum;
     @Column(REDSCORE)
+    @Check(REDSCORE+" > -2")
 	private int redScore;
     @Column(BLUESCORE)
+    @Check(BLUESCORE+" > -2")
 	private int blueScore;
     @Column(MATCHTYPE)
+    @Check(MATCHTYPE+" > -2")
 	private Type matchType;
     @Column(MATCHSET)
     @SerializedName("set_number")
 	private int matchSet;
     private Alliances alliances;
-
     @SerializedName("comp_level")
     private String compLevel;
 
@@ -155,6 +157,11 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
                     this.matchNum = number;
                     break;
                 default:
+                    //we are importing the finals match
+                    if(number>1000) {
+                        this.matchNum = number;
+                        break;
+                    }
                     //set the match number stupid high
                     int level = 0;
                     switch(getMatchType()) {
@@ -249,7 +256,7 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 				getMatchNum()==((Match)data).getMatchNum() &&
 				getRedScore()==((Match)data).getRedScore() &&
 				getBlueScore()==((Match)data).getBlueScore() &&
-				getMatchType()==((Match)data).getMatchType() &&
+				getMatchType().equals(((Match)data).getMatchType()) &&
 				getMatchSet()==((Match)data).getMatchSet();
 	}
 	public int compareTo(Match another) {
@@ -270,10 +277,8 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
         return true;
     }
     public boolean empty() {
-        return (null==getCompetition() || getCompetition().empty())
-                && getMatchNum()==0
-                && getRedScore()==-1
-                && getBlueScore()==-1
+        return getRedScore()<0
+                && getBlueScore()<0
                 && getMatchType().equals(Type.QUALIFIER)
                 && getMatchSet()==0;
     }

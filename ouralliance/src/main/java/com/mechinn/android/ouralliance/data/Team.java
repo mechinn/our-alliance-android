@@ -35,7 +35,7 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 
     @Column(NUMBER)
     @UniqueCombo()
-    @Check("teamNumber > 0")
+    @Check(NUMBER+" > 0")
     @SerializedName("team_number")
 	private int teamNumber;
     @Column(NAME)
@@ -86,7 +86,8 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
         if(!(data instanceof Team)) {
             return false;
         }
-		return  getTeamNumber()==((Team) data).getTeamNumber();
+		return  getTeamNumber()==((Team) data).getTeamNumber()
+                && getNickName().equals(((Team)data).getNickName());
 	}
 
     public boolean isValid() {
@@ -103,7 +104,6 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
         return true;
     }
     public boolean empty() {
-        return getTeamNumber()==0
-                && getNickName()=="";
+        return getNickName()=="";
     }
 }

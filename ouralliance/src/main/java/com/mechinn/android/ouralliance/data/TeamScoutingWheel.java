@@ -2,14 +2,7 @@ package com.mechinn.android.ouralliance.data;
 
 import android.util.Log;
 import se.emilsjolander.sprinkles.Query;
-import se.emilsjolander.sprinkles.annotations.CascadeDelete;
-import se.emilsjolander.sprinkles.annotations.Check;
-import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ConflictClause;
-import se.emilsjolander.sprinkles.annotations.ForeignKey;
-import se.emilsjolander.sprinkles.annotations.Table;
-import se.emilsjolander.sprinkles.annotations.UniqueCombo;
-import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
+import se.emilsjolander.sprinkles.annotations.*;
 
 @Table(TeamScoutingWheel.TAG)
 @UniqueComboConflictClause(ConflictClause.IGNORE)
@@ -48,6 +41,8 @@ public class TeamScoutingWheel extends AOurAllianceData {
 	private Team team;
     @Column(TYPE)
     @UniqueCombo
+    @NotNull
+    @Check(TYPE+" != ''")
 	private String wheelType;
     @Column(SIZE)
 	private double wheelSize;
@@ -142,10 +137,7 @@ public class TeamScoutingWheel extends AOurAllianceData {
         return true;
     }
     public boolean empty() {
-        return 0==getYear()
-                && (null==getTeam() || getTeam().empty())
-                && (getWheelType()==null || getWheelType()=="")
-                && getWheelSize()==0
+        return getWheelSize()==0
                 && getWheelCount()==0;
     }
 }

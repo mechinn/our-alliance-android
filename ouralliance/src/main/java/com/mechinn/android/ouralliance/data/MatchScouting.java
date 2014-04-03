@@ -18,13 +18,13 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
 
     @Column(MATCH)
     @UniqueCombo
-    @ForeignKey("Match(_id)")
+    @ForeignKey(MATCH+"(_id)")
     @CascadeDelete
     @Check("match > 0")
 	private Match match;
     @Column(TEAM)
     @UniqueCombo
-    @ForeignKey("CompetitionTeam(_id)")
+    @ForeignKey(TEAM+"(_id)")
     @CascadeDelete
     @Check("team > 0")
     private CompetitionTeam team;
@@ -144,9 +144,7 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
 		return this.getCompetitionTeam().compareTo(another.getCompetitionTeam());
 	}
     public boolean empty() {
-        return (null==getMatch() || getMatch().empty())
-                && (null==getCompetitionTeam() || getCompetitionTeam().empty())
-                && isAlliance()==false
+        return isAlliance()==false
                 && getNotes()=="";
     }
 }

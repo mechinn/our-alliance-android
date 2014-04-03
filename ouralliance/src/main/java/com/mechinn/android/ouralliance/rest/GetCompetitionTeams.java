@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.Toast;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.Competition;
@@ -91,15 +92,19 @@ public class GetCompetitionTeams extends HandlerThread {
                                 }
                             }
                             if(null!=competitionTeamList) {
+                                SparseArray<Team> teamMap = new SparseArray<Team>(teams.size());
+                                for (Team team : teams) {
+                                    teamMap.put(team.getTeamNumber(),team);
+                                }
                                 for(CompetitionTeam team : competitionTeamList) {
-                                    if(!teams.contains(team.getTeam())) {
+                                    if(null==teamMap.get(team.getTeam().getTeamNumber())) {
                                         Log.d(TAG,"deleting "+team);
                                         team.delete();
                                     }
                                 }
                             }
                             message = new Message();
-                            message.getData().putString(STATUS, "Finished downloading matches");
+                            message.getData().putString(STATUS, "Finished downloading teams");
                             message.getData().putBoolean(PROGRESS, false);
                             uiHandler.sendMessage(message);
                             prefs.setCompetitionTeamsDownloaded(true);

@@ -16,9 +16,9 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 
     @Column(TEAM)
     @UniqueCombo
-    @ForeignKey("Team(_id)")
+    @ForeignKey(TEAM+"(_id)")
     @CascadeDelete
-    @Check("team > 0")
+    @Check(TEAM+" > 0")
 	private Team team;
     @Column(NOTES)
 	private String notes;
@@ -69,7 +69,6 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
 		return this.getTeam().compareTo(another.getTeam());
 	}
     public boolean empty() {
-        return (null==getTeam() || getTeam().empty())
-                && getNotes()=="";
+        return getNotes()=="";
     }
 }

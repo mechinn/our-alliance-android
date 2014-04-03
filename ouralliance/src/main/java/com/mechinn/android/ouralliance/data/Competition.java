@@ -155,8 +155,6 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
         return true;
     }
     public boolean empty() {
-        return 0==getYear()
-                && (getName()==null || getName()=="")
-                && (getCode()==null || getCode()=="");
+        return true;
     }
 }

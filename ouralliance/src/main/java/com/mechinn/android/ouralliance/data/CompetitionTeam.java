@@ -27,17 +27,18 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 
     @Column(COMPETITION)
     @UniqueCombo
-    @ForeignKey("Competition(_id)")
+    @ForeignKey(COMPETITION+"(_id)")
     @CascadeDelete
-    @Check("competition > 0")
+    @Check(COMPETITION+" > 0")
 	private Competition competition;
     @Column(TEAM)
     @UniqueCombo
-    @ForeignKey("Team(_id)")
+    @ForeignKey(TEAM+"(_id)")
     @CascadeDelete
-    @Check("team > 0")
+    @Check(TEAM+" > 0")
 	private Team team;
     @Column(RANK)
+    @Check(RANK+" > -1")
 	private int rank;
     @Column(SCOUTED)
 	private boolean scouted;
@@ -100,8 +101,8 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
         if(!(data instanceof CompetitionTeam)) {
             return false;
         }
-		return  getCompetition()==((CompetitionTeam)data).getCompetition() &&
-				getTeam()==((CompetitionTeam)data).getTeam() &&
+		return  getCompetition().equals(((CompetitionTeam)data).getCompetition()) &&
+				getTeam().equals(((CompetitionTeam)data).getTeam()) &&
 				getRank() == ((CompetitionTeam)data).getRank() &&
 				isScouted() == ((CompetitionTeam)data).isScouted();
 	}
@@ -123,9 +124,7 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
         return true;
     }
     public boolean empty() {
-        return (null==getCompetition() || getCompetition().empty())
-                && (getTeam()==null || getTeam().empty())
-                && getRank()==999
+        return getRank()==999
                 && isScouted()==false;
     }
 }

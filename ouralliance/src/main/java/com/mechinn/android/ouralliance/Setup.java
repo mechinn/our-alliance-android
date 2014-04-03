@@ -1,23 +1,14 @@
 package com.mechinn.android.ouralliance;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.DialogInterface;
-import android.content.res.AssetManager;
 import android.os.Environment;
 import android.util.Log;
 
 import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.JsonCompetition;
 
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import se.emilsjolander.sprinkles.SqlStatement;
 import se.emilsjolander.sprinkles.Transaction;
 
