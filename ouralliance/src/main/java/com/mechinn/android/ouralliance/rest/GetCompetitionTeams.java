@@ -19,6 +19,7 @@ import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.SqlStatement;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -76,23 +77,25 @@ public class GetCompetitionTeams extends HandlerThread {
                         try {
                             List<Team> teams = TheBlueAlliance.getService().getEventTeams(prefs.getYear() + competition.getCode());
                             Collections.sort(teams);
-                            if(null!=competitionTeamList) {
-                                for(CompetitionTeam team : competitionTeamList) {
-                                    if(!teams.contains(team.getTeam())) {
-                                        Log.d(TAG,"deleting "+team);
-                                        team.delete();
-                                    }
-                                }
-                            }
+                            Date current = new Date();
                             for (int i = 0; i < teams.size(); ++i) {
                                 Log.d(TAG, "name: " + teams.get(i).getNickName());
                                 Log.d(TAG, "number: " + teams.get(i).getTeamNumber());
+                                teams.get(i).setModified(current);
                                 teams.get(i).save();
                                 new CompetitionTeam(competition, teams.get(i), i).save();
                                 switch (prefs.getYear()) {
                                     case 2014:
                                         new TeamScouting2014(teams.get(i)).save();
                                         break;
+                                }
+                            }
+                            if(null!=competitionTeamList) {
+                                for(CompetitionTeam team : competitionTeamList) {
+                                    if(!teams.contains(team.getTeam())) {
+                                        Log.d(TAG,"deleting "+team);
+                                        team.delete();
+                                    }
                                 }
                             }
                             message = new Message();

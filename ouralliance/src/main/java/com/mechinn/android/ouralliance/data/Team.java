@@ -86,8 +86,7 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
         if(!(data instanceof Team)) {
             return false;
         }
-		return  getTeamNumber()==((Team) data).getTeamNumber() &&
-				getNickName().equals(((Team) data).getNickName());
+		return  getTeamNumber()==((Team) data).getTeamNumber();
 	}
 
     public boolean isValid() {
