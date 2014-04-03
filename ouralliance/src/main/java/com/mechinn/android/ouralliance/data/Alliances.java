@@ -22,7 +22,7 @@ public class Alliances {
     }
     public class Alliance {
         public static final String TAG = "Alliance";
-        private int score;
+        private int score = -1;
         private List<String> teams;
         private List<Team> foundTeams;
 

@@ -39,6 +39,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
     private TextView practice;
     private Spinner type;
     private Spinner set;
+    private Spinner matchSpin;
     private LinearLayout numberContainer;
     private EditText number;
     private ArrayList<Spinner> spinners;
@@ -59,6 +60,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
     private MatchTeamSelectAdapter blue3Adapter;
     private ArrayAdapter<Integer> quarterfinals;
     private ArrayAdapter<Integer> semifinals;
+    private ArrayAdapter<Integer> matchAdapter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -80,6 +82,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
         prefs = new Prefs(activity);
         quarterfinals = new ArrayAdapter<Integer>(InsertMatchDialogFragment.this.getActivity(),android.R.layout.simple_list_item_1, new Integer[]{1,2,3,4});
     	semifinals = new ArrayAdapter<Integer>(InsertMatchDialogFragment.this.getActivity(),android.R.layout.simple_list_item_1, new Integer[]{1,2});
+        matchAdapter = new ArrayAdapter<Integer>(InsertMatchDialogFragment.this.getActivity(),android.R.layout.simple_list_item_1, new Integer[]{1,2,3});
     }
 	
 	@Override
@@ -92,6 +95,8 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		practice = (TextView) dialog.findViewById(R.id.practice);
 		type = (Spinner) dialog.findViewById(R.id.type);
 		set = (Spinner) dialog.findViewById(R.id.set);
+        matchSpin = (Spinner) dialog.findViewById(R.id.match);
+        matchSpin.setAdapter(matchAdapter);
 		numberContainer = (LinearLayout) dialog.findViewById(R.id.numberContainer);
 		number = (EditText) dialog.findViewById(R.id.number);
 		red1 = (Spinner) dialog.findViewById(R.id.red1);
@@ -129,8 +134,10 @@ public class InsertMatchDialogFragment extends DialogFragment {
 					}
 					if(Match.Type.QUALIFIER.getValue()==position) {
 						numberContainer.setVisibility(View.VISIBLE);
+                        matchSpin.setVisibility(View.GONE);
 					} else {
 						numberContainer.setVisibility(View.GONE);
+                        matchSpin.setVisibility(View.VISIBLE);
 					}
 				}
 				@Override
@@ -190,7 +197,11 @@ public class InsertMatchDialogFragment extends DialogFragment {
                             match.setMatchSet(set.getSelectedItemPosition() + 1);
                         }
                     }
-                    match.setMatchNum(Utility.getIntFromText(number.getText()));
+                    if (View.VISIBLE == matchSpin.getVisibility()) {
+                        match.setMatchNum(matchSpin.getSelectedItemPosition() + 1);
+                    } else {
+                        match.setMatchNum(Utility.getIntFromText(number.getText()));
+                    }
                     match.setRedScore(-1);
                     match.setBlueScore(-1);
                     match.setCompetition(((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()).getCompetition());
