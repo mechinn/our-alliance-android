@@ -68,6 +68,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                         ModelList<Competition> competitions = ModelList.from(result);
                         result.close();
                         comp.swapAdapter(competitions, prefs.getComp());
+                        if(competitions.size()>0) {
+                            comp.setEnabled(true);
+                        } else {
+                            comp.setEnabled(false);
+                        }
                         if(prefs.getComp()>0) {
                             selectedComp = comp.get();
                         } else {
@@ -135,8 +140,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 					return true;
 				}
 			});
-
-        getCompetitions();
+        if(!prefs.getCompetitionsDownloaded()) {
+            getCompetitions();
+        }
     }
 
     @Override
@@ -201,6 +207,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                 dialog.setArguments(dialogArgs);
                 dialog.show(SettingsFragment.this.getFragmentManager(), "Delete selected compeittion?");
 	            return true;
+            case R.id.refreshCompetitions:
+                getCompetitions();
+                return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -243,10 +252,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             Log.d(TAG,"selected season");
             year.setSummary(yearArray.get(prefs.getYear()));
 			comp.setValue("0");
-            comp.setEnabled(true);
             getActivity().invalidateOptionsMenu();
             queryCompetitions();
-            getCompetitions();
+            if(!prefs.getCompetitionsDownloaded()) {
+                getCompetitions();
+            }
 		} else if(key.equals(compPrefString)) {
             Log.d(TAG,"selected competition");
             selectedComp = comp.get();

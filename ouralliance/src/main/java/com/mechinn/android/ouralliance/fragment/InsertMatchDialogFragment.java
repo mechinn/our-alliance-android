@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -66,6 +67,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         teams = (ModelList<CompetitionTeam>) this.getArguments().getSerializable(TEAMS_ARG);
+        Collections.sort(teams);
         adapters = new ArrayList<MatchTeamSelectAdapter>(6);
         red1Adapter = new MatchTeamSelectAdapter(this.getActivity(),teams, MatchTeamSelectAdapter.RED1);
         red2Adapter = new MatchTeamSelectAdapter(this.getActivity(),teams, MatchTeamSelectAdapter.RED2);

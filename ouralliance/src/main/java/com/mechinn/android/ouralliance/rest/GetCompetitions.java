@@ -22,45 +22,43 @@ public class GetCompetitions extends BackgroundProgress {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        if(!getPrefs().getCompetitionsDownloaded()) {
-            Transaction t = new Transaction();
-            Log.d(TAG, "year: " + this.getPrefs().getYear());
-            try {
-                switch (this.getPrefs().getYear()) {
-                    case 2014:
-                        setStatus("Setting up 2014 competitions");
-                        List<String> events = TheBlueAlliance.getService().getEventList(2014);
-                        Competition competition;
-                        this.setTotal(events.size());
-                        for (String eventKey : events) {
-                            if (this.isCancelled()) {
-                                return false;
-                            }
-                            competition = TheBlueAlliance.getService().getEvent(eventKey);
-                            Log.d(TAG, "name: " + competition.getName());
-                            Log.d(TAG, "code: " + competition.getCode());
-                            Log.d(TAG, "location: " + competition.getLocation());
-                            Log.d(TAG, "season: " + competition.getYear());
-                            Log.d(TAG, "official: " + competition.isOfficial());
-                            competition.save(t);
-                            this.increasePrimary();
+        Transaction t = new Transaction();
+        Log.d(TAG, "year: " + this.getPrefs().getYear());
+        try {
+            switch (this.getPrefs().getYear()) {
+                case 2014:
+                    setStatus("Setting up 2014 competitions");
+                    List<String> events = TheBlueAlliance.getService().getEventList(2014);
+                    Competition competition;
+                    this.setTotal(events.size());
+                    for (String eventKey : events) {
+                        if (this.isCancelled()) {
+                            return false;
                         }
-                        break;
-                }
-                t.setSuccessful(true);
-            } catch (RetrofitError e) {
-                Log.e(TAG,"Error downloading competition teams",e);
-                if(e.isNetworkError()) {
-                    setStatus("Unable to connect");
-                    return false;
-                } else if(e.getResponse().getStatus()!=200) {
-                    setStatus("Error "+e.getResponse().getStatus()+" connecting");
-                    return false;
-                }
-            } finally {
-                t.finish();
-                getPrefs().setCompetitionsDownloaded(true);
+                        competition = TheBlueAlliance.getService().getEvent(eventKey);
+                        Log.d(TAG, "name: " + competition.getName());
+                        Log.d(TAG, "code: " + competition.getCode());
+                        Log.d(TAG, "location: " + competition.getLocation());
+                        Log.d(TAG, "season: " + competition.getYear());
+                        Log.d(TAG, "official: " + competition.isOfficial());
+                        competition.save(t);
+                        this.increasePrimary();
+                    }
+                    break;
             }
+            t.setSuccessful(true);
+            getPrefs().setCompetitionsDownloaded(true);
+        } catch (RetrofitError e) {
+            Log.e(TAG,"Error downloading competition teams",e);
+            if(e.isNetworkError()) {
+                setStatus("Unable to connect");
+                return false;
+            } else if(e.getResponse().getStatus()!=200) {
+                setStatus("Error "+e.getResponse().getStatus()+" connecting");
+                return false;
+            }
+        } finally {
+            t.finish();
         }
         return true;
     }

@@ -31,8 +31,10 @@ public class CompetitionListPreference extends android.preference.ListPreference
 
     public void swapAdapter(ModelList<Competition> list, long id) {
         listAdapter.swapList(list, id);
-        if(null!=list) {
+        if(null!=list && list.size()>0) {
             this.setSummary(listAdapter.getEntry(this.getValue()));
+        } else {
+            this.setSummary("Must download competitions");
         }
     }
 

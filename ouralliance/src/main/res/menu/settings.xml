@@ -14,4 +14,11 @@
         android:menuCategory="system"
         android:orderInCategory="2"
         android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/refreshCompetitions"
+        android:icon="@drawable/ic_action_refresh"
+        android:orderInCategory="3"
+        android:menuCategory="system"
+        android:title="Refresh Competitions"
+        android:showAsAction="ifRoom"/>
 </menu>
