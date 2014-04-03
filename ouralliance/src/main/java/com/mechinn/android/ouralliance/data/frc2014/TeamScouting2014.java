@@ -341,31 +341,34 @@ public class TeamScouting2014 extends TeamScouting implements Comparable<TeamSco
                 " High Autonomous Mode: "+this.isHighAuto()+
                 " Hot Autonomous Mode: "+this.isHotAuto();
 	}
-	public boolean equals(TeamScouting2014 data) {
+	public boolean equals(Object data) {
+        if(!(data instanceof TeamScouting2014)) {
+            return false;
+        }
 		return super.equals(data) &&
-				getOrientation().equals(data.getOrientation()) &&
-				getDriveTrain().equals(data.getDriveTrain()) &&
-				getWidth()==data.getWidth() &&
-				getLength()==data.getLength() &&
-				getHeightShooter()==data.getHeightShooter() &&
-				getHeightMax()==data.getHeightMax() &&
-				getShooterType()==data.getShooterType() &&
-				isLowGoal()==data.isLowGoal() &&
-				isHighGoal()==data.isHighGoal() &&
-                getShootingDistance()==data.getShootingDistance() &&
-                isPassGround()==data.isPassGround() &&
-                isPassAir()==data.isPassAir() &&
-                isPassTruss()==data.isPassTruss() &&
-                isPickupGround()==data.isPickupGround() &&
-                isPickupCatch()==data.isPickupCatch() &&
-                isPusher()==data.isPusher() &&
-				isBlocker()==data.isBlocker() &&
-                getHumanPlayer()==data.getHumanPlayer() &&
-                isNoAuto()==data.isNoAuto() &&
-                isDriveAuto()==data.isDriveAuto() &&
-                isLowAuto()==data.isLowAuto() &&
-                isHighAuto()==data.isHighAuto() &&
-                isHotAuto()==data.isHotAuto();
+				getOrientation().equals(((TeamScouting2014)data).getOrientation()) &&
+				getDriveTrain().equals(((TeamScouting2014)data).getDriveTrain()) &&
+				getWidth()==((TeamScouting2014)data).getWidth() &&
+				getLength()==((TeamScouting2014)data).getLength() &&
+				getHeightShooter()==((TeamScouting2014)data).getHeightShooter() &&
+				getHeightMax()==((TeamScouting2014)data).getHeightMax() &&
+				getShooterType()==((TeamScouting2014)data).getShooterType() &&
+				isLowGoal()==((TeamScouting2014)data).isLowGoal() &&
+				isHighGoal()==((TeamScouting2014)data).isHighGoal() &&
+                getShootingDistance()==((TeamScouting2014)data).getShootingDistance() &&
+                isPassGround()==((TeamScouting2014)data).isPassGround() &&
+                isPassAir()==((TeamScouting2014)data).isPassAir() &&
+                isPassTruss()==((TeamScouting2014)data).isPassTruss() &&
+                isPickupGround()==((TeamScouting2014)data).isPickupGround() &&
+                isPickupCatch()==((TeamScouting2014)data).isPickupCatch() &&
+                isPusher()==((TeamScouting2014)data).isPusher() &&
+				isBlocker()==((TeamScouting2014)data).isBlocker() &&
+                getHumanPlayer()==((TeamScouting2014)data).getHumanPlayer() &&
+                isNoAuto()==((TeamScouting2014)data).isNoAuto() &&
+                isDriveAuto()==((TeamScouting2014)data).isDriveAuto() &&
+                isLowAuto()==((TeamScouting2014)data).isLowAuto() &&
+                isHighAuto()==((TeamScouting2014)data).isHighAuto() &&
+                isHotAuto()==((TeamScouting2014)data).isHotAuto();
 	}
     public boolean isValid() {
         Log.d(TAG, "id: " + getId());

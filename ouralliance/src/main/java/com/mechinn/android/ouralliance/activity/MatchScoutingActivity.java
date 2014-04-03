@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.activity;
 
+import android.view.Window;
 import com.mechinn.android.ouralliance.BackgroundProgress;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
@@ -37,6 +38,7 @@ public class MatchScoutingActivity extends Activity implements BackgroundProgres
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_match_scouting);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		this.getFragmentManager().addOnBackStackChangedListener(this);

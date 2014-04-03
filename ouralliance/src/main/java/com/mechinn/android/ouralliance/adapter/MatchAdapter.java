@@ -71,7 +71,9 @@ public class MatchAdapter extends BaseAdapter {
             TextView summary = (TextView)container.findViewById(android.R.id.text1);
             TextView subText = (TextView)container.findViewById(android.R.id.text2);
             summary.setText(matches.get(position).toString());
-//            subText.setText(matches.get(position).getTeams());
+            if(matches.get(position).getRedScore()>-1 && matches.get(position).getRedScore()>-1) {
+                subText.setText("Red: "+matches.get(position).getRedScore()+" | Blue: "+matches.get(position).getBlueScore());
+            }
         }
         return container;
     }

@@ -2,6 +2,7 @@ package com.mechinn.android.ouralliance.serializers;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 import com.mechinn.android.ouralliance.data.Match;
 import se.emilsjolander.sprinkles.typeserializers.SqlType;
 import se.emilsjolander.sprinkles.typeserializers.TypeSerializer;
@@ -19,6 +20,7 @@ public class MatchTypeSerializer implements TypeSerializer<Match.Type> {
 
     @Override
     public void pack(Match.Type object, ContentValues cv, String name) {
+        Log.d("MatchTypeSerializer", name);
         cv.put(name, object.getValue());
     }
 

@@ -55,9 +55,6 @@ public abstract class AOurAllianceData extends Model implements Serializable {
 	public String toString() {
 		return getId()+" "+getModified();
 	}
-	public boolean equals(AOurAllianceData data) {
-		return getId()==data.getId() && getModified().equals(data.getModified());
-	}
     protected void beforeSave() {
         setModified(new Date());
     }

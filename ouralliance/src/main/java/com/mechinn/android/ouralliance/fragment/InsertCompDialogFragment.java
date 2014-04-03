@@ -36,7 +36,7 @@ public class InsertCompDialogFragment extends DialogFragment {
 		try {
 			competition = (Competition) this.getArguments().getSerializable(COMP_ARG);
 			compName.setText(competition.getName());
-			compCode.setText(competition.getEventCode());
+			compCode.setText(competition.getCode());
     		yes = R.string.update;
     		Log.d(TAG, "update");
 		} catch(NullPointerException e) {
@@ -50,7 +50,7 @@ public class InsertCompDialogFragment extends DialogFragment {
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					competition.setName(compName.getText());
-					competition.setEventCode(compCode.getText());
+					competition.setCode(compCode.getText());
                     competition.asyncSave();
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

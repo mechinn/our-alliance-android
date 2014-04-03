@@ -82,10 +82,12 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
 	public int compareTo(Team another) {
 		return this.getTeamNumber() - another.getTeamNumber();
 	}
-	public boolean equals(Team data) {
-		return super.equals(data) &&
-				getTeamNumber()==data.getTeamNumber() &&
-				getNickName().equals(getNickName());
+	public boolean equals(Object data) {
+        if(!(data instanceof Team)) {
+            return false;
+        }
+		return  getTeamNumber()==((Team) data).getTeamNumber() &&
+				getNickName().equals(((Team) data).getNickName());
 	}
 
     public boolean isValid() {

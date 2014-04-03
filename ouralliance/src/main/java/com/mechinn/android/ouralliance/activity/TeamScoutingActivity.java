@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.*;
@@ -38,6 +39,7 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 		super.onCreate(savedInstanceState);
 
 		new Setup(this, false).execute();
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_team_scouting);
 		this.getFragmentManager().addOnBackStackChangedListener(this);
 		prefs = new Prefs(this);

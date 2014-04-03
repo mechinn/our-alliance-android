@@ -219,21 +219,24 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
     public void setHigh(boolean high) {
         this.high = high;
     }
-    public boolean equals(MatchScouting2014 data) {
+    public boolean equals(Object data) {
+        if(!(data instanceof MatchScouting2014)) {
+            return false;
+        }
         return super.equals(data) &&
-                getHotShots()==data.getHotShots() &&
-                getShotsMade()==data.getShotsMade() &&
-                getShotsMissed()==data.getShotsMissed() &&
-                getMoveForward()==data.getMoveForward() &&
-                isShooter()==data.isShooter() &&
-                isCatcher()==data.isCatcher() &&
-                isPasser()==data.isPasser() &&
-                getDriveTrainRating()==data.getDriveTrainRating() &&
-                getBallAccuracyRating()==data.getBallAccuracyRating() &&
-                isGround()==data.isGround() &&
-                isOverTruss()==data.isOverTruss() &&
-                isLow()==data.isLow() &&
-                isHigh()==data.isHigh();
+                getHotShots()==((MatchScouting2014)data).getHotShots() &&
+                getShotsMade()==((MatchScouting2014)data).getShotsMade() &&
+                getShotsMissed()==((MatchScouting2014)data).getShotsMissed() &&
+                getMoveForward()==((MatchScouting2014)data).getMoveForward() &&
+                isShooter()==((MatchScouting2014)data).isShooter() &&
+                isCatcher()==((MatchScouting2014)data).isCatcher() &&
+                isPasser()==((MatchScouting2014)data).isPasser() &&
+                getDriveTrainRating()==((MatchScouting2014)data).getDriveTrainRating() &&
+                getBallAccuracyRating()==((MatchScouting2014)data).getBallAccuracyRating() &&
+                isGround()==((MatchScouting2014)data).isGround() &&
+                isOverTruss()==((MatchScouting2014)data).isOverTruss() &&
+                isLow()==((MatchScouting2014)data).isLow() &&
+                isHigh()==((MatchScouting2014)data).isHigh();
     }
 
     public boolean isValid() {

@@ -131,12 +131,14 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
 	public String toString() {
 		return this.match+" - "+this.getAlliance()+": "+this.team.getTeam();
 	}
-	public boolean equals(MatchScouting data) {
-		return super.equals(data) &&
-				getMatch().equals(data.getMatch()) &&
-				getCompetitionTeam().equals(data.getCompetitionTeam()) &&
-                isAlliance()==data.isAlliance() &&
-				getNotes().equals(data.getNotes());
+	public boolean equals(Object data) {
+        if(!(data instanceof MatchScouting)) {
+            return false;
+        }
+		return  getMatch().equals(((MatchScouting)data).getMatch()) &&
+				getCompetitionTeam().equals(((MatchScouting)data).getCompetitionTeam()) &&
+                isAlliance()==((MatchScouting)data).isAlliance() &&
+				getNotes().equals(((MatchScouting)data).getNotes());
 	}
 	public int compareTo(MatchScouting another) {
 		return this.getCompetitionTeam().compareTo(another.getCompetitionTeam());

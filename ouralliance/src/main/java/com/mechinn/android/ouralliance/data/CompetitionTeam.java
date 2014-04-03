@@ -19,7 +19,7 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 
     public static final String[] FIELD_MAPPING = new String[] {
             MODIFIED
-            ,COMPETITION+"."+Competition.EVENT_CODE
+            ,COMPETITION+"."+Competition.CODE
             ,TEAM+"."+Team.NUMBER
             ,RANK
             ,SCOUTED
@@ -96,12 +96,14 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 	public String toString() {
 		return this.competition+" # "+this.rank+" "+this.team;
 	}
-	public boolean equals(CompetitionTeam data) {
-		return super.equals(data) &&
-				getCompetition()==data.getCompetition() &&
-				getTeam()==data.getTeam() &&
-				getRank() == data.getRank() &&
-				isScouted() == data.isScouted();
+	public boolean equals(Object data) {
+        if(!(data instanceof CompetitionTeam)) {
+            return false;
+        }
+		return  getCompetition()==((CompetitionTeam)data).getCompetition() &&
+				getTeam()==((CompetitionTeam)data).getTeam() &&
+				getRank() == ((CompetitionTeam)data).getRank() &&
+				isScouted() == ((CompetitionTeam)data).isScouted();
 	}
 	public int compareTo(CompetitionTeam another) {
         return this.getRank() - another.getRank();

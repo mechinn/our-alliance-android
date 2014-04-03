@@ -1,10 +1,11 @@
 package com.mechinn.android.ouralliance.rest;
 
 import android.app.Activity;
-import android.content.DialogInterface;
+import android.os.Message;
 import android.util.Log;
 import com.mechinn.android.ouralliance.BackgroundProgress;
 import com.mechinn.android.ouralliance.data.Competition;
+import retrofit.RetrofitError;
 import se.emilsjolander.sprinkles.Transaction;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public class GetCompetitions extends BackgroundProgress {
                             }
                             competition = TheBlueAlliance.getService().getEvent(eventKey);
                             Log.d(TAG, "name: " + competition.getName());
-                            Log.d(TAG, "code: " + competition.getEventCode());
+                            Log.d(TAG, "code: " + competition.getCode());
                             Log.d(TAG, "location: " + competition.getLocation());
                             Log.d(TAG, "season: " + competition.getYear());
                             Log.d(TAG, "official: " + competition.isOfficial());
@@ -47,6 +48,15 @@ public class GetCompetitions extends BackgroundProgress {
                         break;
                 }
                 t.setSuccessful(true);
+            } catch (RetrofitError e) {
+                Log.e(TAG,"Error downloading competition teams",e);
+                if(e.isNetworkError()) {
+                    setStatus("Unable to connect");
+                    return false;
+                } else if(e.getResponse().getStatus()!=200) {
+                    setStatus("Error "+e.getResponse().getStatus()+" connecting");
+                    return false;
+                }
             } finally {
                 t.finish();
                 getPrefs().setCompetitionsDownloaded(true);

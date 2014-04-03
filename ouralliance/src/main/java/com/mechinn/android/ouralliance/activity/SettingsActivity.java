@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.activity;
 
+import android.view.Window;
 import com.mechinn.android.ouralliance.*;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.fragment.GenericDialogFragment;
@@ -19,10 +20,9 @@ public class SettingsActivity extends PreferenceActivity implements BackgroundPr
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
-		// Show the Up button in the action bar.
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-        // Display the fragment as the main content.
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         frag = (SettingsFragment) getFragmentManager().findFragmentByTag(SettingsFragment.TAG);
         if(null==frag) {
             frag = new SettingsFragment();

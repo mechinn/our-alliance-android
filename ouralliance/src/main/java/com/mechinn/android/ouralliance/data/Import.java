@@ -117,7 +117,7 @@ public class Import extends Thread {
             if(fileRead) {
                 filename = directory+type.path();
                 new File(filename).mkdirs();
-                filename += File.separator+competition.getEventCode()+CSV;
+                filename += File.separator+competition.getCode()+CSV;
                 try {
                     reader = new FileReader(filename);
                 } catch (IOException e) {

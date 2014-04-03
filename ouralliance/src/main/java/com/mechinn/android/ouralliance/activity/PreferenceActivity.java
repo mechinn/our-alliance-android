@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 
 import android.view.MenuItem;
+import android.view.Window;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.fragment.PreferenceFragment;
@@ -24,6 +25,7 @@ public class PreferenceActivity extends Activity implements PreferenceListFragme
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_preference);
         this.getFragmentManager().addOnBackStackChangedListener(this);
         prefs = new Prefs(this);

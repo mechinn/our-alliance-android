@@ -114,13 +114,15 @@ public class TeamScoutingWheel extends AOurAllianceData {
 	public String toString() {
 		return getYear()+" "+getTeam()+": "+ getWheelType()+" | "+ getWheelSize()+" | "+ getWheelCount();
 	}
-	public boolean equals(TeamScoutingWheel data) {
-		return super.equals(data) &&
-				getYear()==data.getYear() &&
-				getTeam().equals(data.getTeam()) &&
-				getWheelType().equals(data.getWheelType()) &&
-				getWheelSize()==data.getWheelSize() &&
-				getWheelCount()==data.getWheelCount();
+	public boolean equals(Object data) {
+        if(!(data instanceof TeamScoutingWheel)) {
+            return false;
+        }
+		return  getYear()==((TeamScoutingWheel)data).getYear() &&
+				getTeam().equals(((TeamScoutingWheel)data).getTeam()) &&
+				getWheelType().equals(((TeamScoutingWheel)data).getWheelType()) &&
+				getWheelSize()==((TeamScoutingWheel)data).getWheelSize() &&
+				getWheelCount()==((TeamScoutingWheel)data).getWheelCount();
 	}
 	public int compareTo(TeamScoutingWheel another) {
 		return this.getTeam().compareTo(another.getTeam());

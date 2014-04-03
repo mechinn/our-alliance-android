@@ -35,6 +35,8 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.mechinn.android.ouralliance.data.frc2014.ExportMatchScouting2014;
+import com.mechinn.android.ouralliance.rest.GetCompetitionTeams;
+import com.mechinn.android.ouralliance.rest.GetMatches;
 import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.ManyQuery;
 import se.emilsjolander.sprinkles.ModelList;
@@ -51,6 +53,7 @@ public class MatchListFragment extends ListFragment {
     private ModelList<CompetitionTeam> teams;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
+    private GetMatches downloadMatches;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -135,6 +138,7 @@ public class MatchListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        downloadMatches = new GetMatches(this.getActivity());
     }
 
     @Override
@@ -185,8 +189,17 @@ public class MatchListFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(!prefs.getMatchesDownloaded()) {
+            downloadMatches.refreshMatches();
+        }
         Query.many(CompetitionTeam.class, "select * from "+CompetitionTeam.TAG+" where "+CompetitionTeam.COMPETITION+"=?", prefs.getComp()).getAsync(getLoaderManager(),onTeamsLoaded);
         Query.many(Match.class, prefs.getPractice() ? "select * from "+Match.TAG+" where "+Match.COMPETITION+"=? AND "+Match.MATCHTYPE+"=-1" : "select * from "+Match.TAG+" where "+Match.COMPETITION+"=? AND "+Match.MATCHTYPE+"!=-1", prefs.getComp()).getAsync(getLoaderManager(),onMatchesLoaded);
+    }
+
+    @Override
+    public void onDestroy() {
+        downloadMatches.quit();
+        super.onDestroy();
     }
     
     private void selectItem(int position) {
@@ -289,6 +302,9 @@ public class MatchListFragment extends ListFragment {
                 } else {
                     bluetoothTransfer();
                 }
+                return true;
+            case R.id.refreshMatches:
+                downloadMatches.refreshMatches();
                 return true;
 	        default:
 	            return super.onOptionsItemSelected(item);

@@ -36,4 +36,11 @@
         android:checked="false"
         android:title="Practice Matches"
         android:showAsAction="never" />
+    <item
+        android:id="@+id/refreshMatches"
+        android:icon="@drawable/ic_action_refresh"
+        android:orderInCategory="6"
+        android:menuCategory="system"
+        android:title="Refresh Matches"
+        android:showAsAction="ifRoom"/>
 </menu>

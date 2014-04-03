@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
+import android.view.*;
 import android.widget.*;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
@@ -24,14 +25,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
@@ -53,6 +47,7 @@ public class TeamListFragment extends Fragment {
     private int competitionLoader;
     private Sort2014 sort;
     private Spinner sortTeams;
+    private GetCompetitionTeams downloadTeams;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -124,6 +119,7 @@ public class TeamListFragment extends Fragment {
 		prefs = new Prefs(this.getActivity());
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         sort = Sort2014.RANK;
+        downloadTeams = new GetCompetitionTeams(this.getActivity());
     }
     
     @Override
@@ -205,7 +201,9 @@ public class TeamListFragment extends Fragment {
         Log.d(TAG,"resume");
         Log.d(TAG,"CompID: "+prefs.getComp());
         if(prefs.getComp()>0) {
-            new GetCompetitionTeams(this.getActivity()).start();
+            if(prefs.getComp()>0 && !prefs.getCompetitionTeamsDownloaded()) {
+                downloadTeams.refreshCompetitionTeams();
+            }
             switch(prefs.getYear()) {
                 case 2014:
                     ArrayAdapter<Sort2014> sort2014Adapter = new ArrayAdapter<Sort2014>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2014List);
@@ -216,6 +214,12 @@ public class TeamListFragment extends Fragment {
         } else {
             emptyTeams();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        downloadTeams.quit();
+        super.onDestroy();
     }
 
     private void emptyTeams() {
@@ -287,6 +291,7 @@ public class TeamListFragment extends Fragment {
         } else {
             menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
         }
+        menu.findItem(R.id.refreshCompetitionTeams).setVisible(prefs.getComp()>0);
     }
 
     private void bluetoothTransfer() {
@@ -334,6 +339,9 @@ public class TeamListFragment extends Fragment {
                 } else {
                     bluetoothTransfer();
                 }
+                return true;
+            case R.id.refreshCompetitionTeams:
+                downloadTeams.refreshCompetitionTeams();
                 return true;
 	        default:
 	            return super.onOptionsItemSelected(item);

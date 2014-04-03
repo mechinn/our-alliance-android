@@ -58,10 +58,12 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
             setNotes(notes.toString());
         }
 	}
-	public boolean equals(TeamScouting data) {
-		return super.equals(data) &&
-				getTeam().equals(data.getTeam()) &&
-				getNotes().equals(data.getNotes());
+	public boolean equals(Object data) {
+        if(!(data instanceof TeamScouting)) {
+            return false;
+        }
+		return  getTeam().equals(((TeamScouting)data).getTeam()) &&
+				getNotes().equals(((TeamScouting)data).getNotes());
 	}
 	public int compareTo(TeamScouting another) {
 		return this.getTeam().compareTo(another.getTeam());

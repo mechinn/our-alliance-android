@@ -145,10 +145,11 @@ public class OurAlliance extends Application {
         Migration v6 = new Migration();
         String v6competitionColumns = Competition._ID
                 + "," + Competition.MODIFIED
-                + "," + Competition.NAME;
+                + "," + Competition.NAME
+                + "," + Competition.CODE;
         v6.renameTable(Competition.TAG, Competition.TAG + "_OLD");
         v6.createTable(Competition.class);
-        v6.addRawStatement("INSERT INTO " + Competition.TAG + "(" + v6competitionColumns + "," + Competition.EVENT_CODE + "," + Competition.YEAR + "," + Competition.OFFICIAL + ") SELECT " + v6competitionColumns + ","+Competition.CODE+",2014,1 FROM " + Competition.TAG + "_OLD;");
+        v6.addRawStatement("INSERT INTO " + Competition.TAG + "(" + v6competitionColumns + "," + Competition.YEAR + "," + Competition.OFFICIAL + ") SELECT " + v6competitionColumns +",2014,1 FROM " + Competition.TAG + "_OLD;");
         v6.addRawStatement("DROP TABLE " + Competition.TAG + "_OLD;");
 
         String v6TeamScoutingWheelColumns = TeamScoutingWheel._ID
@@ -172,7 +173,7 @@ public class OurAlliance extends Application {
                 +","+Match.MATCHSET;
         v6.renameTable(Match.TAG, Match.TAG+"_OLD");
         v6.createTable(Match.class);
-        v6.addRawStatement("INSERT INTO " + Match.TAG + "("+ v6matchColumns +") SELECT " + v6matchColumns + " FROM " + Match.TAG + "_OLD;");
+        v6.addRawStatement("INSERT INTO " + Match.TAG + "("+ v6matchColumns +") SELECT " + v6matchColumns +" FROM " + Match.TAG + "_OLD;");
         v6.addRawStatement("DROP TABLE " + Match.TAG + "_OLD;");
         v6.addRawStatement("DROP TABLE IF EXISTS Season;");
         sprinkles.addMigration(v6);
