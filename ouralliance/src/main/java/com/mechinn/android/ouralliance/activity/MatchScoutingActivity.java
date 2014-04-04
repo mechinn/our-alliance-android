@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 public class MatchScoutingActivity extends OurAllianceActivity implements OnBackStackChangedListener, MatchListFragment.Listener, MatchTeamListFragment.Listener, MatchTeamDialogFragment.Listener, OnSharedPreferenceChangeListener {
     public static final String TAG = "MatchScoutingActivity";
-	private Prefs prefs;
 	private MatchListFragment matchListFrag;
     private MatchTeamListFragment<?> matchTeamListFrag;
 	private MatchDetailFragment<?> matchDetailFragment;
@@ -44,7 +43,6 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
 		setContentView(R.layout.activity_match_scouting);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		this.getFragmentManager().addOnBackStackChangedListener(this);
-		prefs = new Prefs(this);
         // Add the fragment to the 'fragment_container' FrameLayout
         if (this.findViewById(R.id.fragment_container) != null) {
             matchFrag = R.id.fragment_container;
@@ -71,8 +69,8 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
 	@Override
 	public void onResume() {
 	    super.onResume();
-	    prefs.setChangeListener(this);
-        if(prefs.getComp()<1) {
+	    getPrefs().setChangeListener(this);
+        if(getPrefs().getComp()<1) {
             this.finish();
         }
 	}
@@ -108,7 +106,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         Bundle bundle = new Bundle();
         bundle.putLong(MatchTeamListFragment.MATCH_ARG, match);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        switch(prefs.getYear()) {
+        switch(getPrefs().getYear()) {
             case 2014:
                 matchTeamListFrag = new MatchTeamList2014Fragment();
                 break;
@@ -130,7 +128,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         Bundle args = new Bundle();
         args.putLong(MatchDetailFragment.TEAM_ARG, team);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        switch(prefs.getYear()) {
+        switch(getPrefs().getYear()) {
             case 2014:
                 matchDetailFragment = new MatchDetail2014();
                 break;
@@ -152,7 +150,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         args.putLong(TeamDetailFragment.TEAM_ARG, team);
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        switch(prefs.getYear()) {
+        switch(getPrefs().getYear()) {
             case 2014:
                 teamDetailFragment = new TeamDetail2014();
                 break;

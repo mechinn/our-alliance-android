@@ -37,7 +37,6 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
 	private int listFrag;
 	private int detailFrag;
 	private long loadTeam;
-	private Prefs prefs;
 	private String matchName;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +46,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_team_scouting);
 
-
 		this.getFragmentManager().addOnBackStackChangedListener(this);
-		prefs = new Prefs(this);
         // Add the fragment to the 'fragment_container' FrameLayout
         if (this.findViewById(R.id.fragment_container) != null) {
         	listFrag = R.id.fragment_container;
@@ -66,7 +63,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
             	if(listFrag==detailFrag) {
             		onTeamSelected(loadTeam);
             	} else {
-                    switch(prefs.getYear()) {
+                    switch(getPrefs().getYear()) {
                         case 2014:
                             matchTeamListFrag = new MatchTeamList2014Fragment();
                             break;
@@ -126,7 +123,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
         args.putLong(TeamDetailFragment.TEAM_ARG, team);
         
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		switch(prefs.getYear()) {
+		switch(getPrefs().getYear()) {
 			case 2014:
 				teamDetailFragment = new TeamDetail2014();
 	            break;

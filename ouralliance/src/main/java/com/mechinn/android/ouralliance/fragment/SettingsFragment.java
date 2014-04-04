@@ -140,7 +140,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 					return true;
 				}
 			});
-        if(!prefs.getCompetitionsDownloaded()) {
+        if(!prefs.isCompetitionsDownloaded()) {
             getCompetitions();
         }
     }
@@ -254,7 +254,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			comp.setValue("0");
             getActivity().invalidateOptionsMenu();
             queryCompetitions();
-            if(!prefs.getCompetitionsDownloaded()) {
+            if(!prefs.isCompetitionsDownloaded()) {
                 getCompetitions();
             }
 		} else if(key.equals(compPrefString)) {

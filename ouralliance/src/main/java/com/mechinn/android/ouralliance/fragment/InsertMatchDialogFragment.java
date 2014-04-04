@@ -114,7 +114,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
         spinners.add(blue1);
         spinners.add(blue2);
         spinners.add(blue3);
-		if(prefs.getPractice()) {
+		if(prefs.isPractice()) {
 			practice.setVisibility(View.VISIBLE);
 			type.setVisibility(View.GONE);
 			set.setVisibility(View.GONE);
@@ -191,7 +191,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    if (prefs.getPractice()) {
+                    if (prefs.isPractice()) {
                         match.setMatchType(Match.Type.PRACTICE);
                     } else {
                         match.setMatchType(type.getSelectedItemPosition());

@@ -6,6 +6,11 @@
 			android:title="@string/pref_practice_title"
 			android:summary="@string/pref_practice_summary"
 			android:defaultValue="@string/pref_practice_default" />
+        <CheckBoxPreference
+            android:key="@string/pref_ads"
+            android:title="@string/pref_ads_title"
+            android:summary="@string/pref_ads_summary"
+            android:defaultValue="@string/pref_ads_default" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_category_location">
 		<ListPreference

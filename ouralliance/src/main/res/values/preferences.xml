@@ -2,9 +2,13 @@
 <resources>
     <string name="pref_category_general">General</string>
     <string name="pref_practice">practice</string>
-    <string name="pref_practice_title">Practice</string>
-    <string name="pref_practice_summary">Check to display practice matches.</string>
+    <string name="pref_practice_title">Practice Matches</string>
+    <string name="pref_practice_summary">Display practice matches.</string>
     <string name="pref_practice_default">false</string>
+    <string name="pref_ads">ads</string>
+    <string name="pref_ads_title">Disable Ads</string>
+    <string name="pref_ads_summary">Please support the developer by keeping ads enabled.</string>
+    <string name="pref_ads_default">false</string>
     
     <string name="pref_category_location">Location</string>
     <string name="pref_year">year</string>

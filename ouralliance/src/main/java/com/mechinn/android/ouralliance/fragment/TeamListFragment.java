@@ -201,7 +201,7 @@ public class TeamListFragment extends Fragment {
         Log.d(TAG,"resume");
         Log.d(TAG,"CompID: "+prefs.getComp());
         if(prefs.getComp()>0) {
-            if(prefs.getComp()>0 && !prefs.getCompetitionTeamsDownloaded()) {
+            if(prefs.getComp()>0 && !prefs.isCompetitionTeamsDownloaded()) {
                 downloadTeams.refreshCompetitionTeams();
             }
             switch(prefs.getYear()) {

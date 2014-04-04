@@ -7,13 +7,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
-import com.mechinn.android.ouralliance.OurAlliance;
-import com.mechinn.android.ouralliance.data.Export;
 import com.mechinn.android.ouralliance.data.Import;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchAdapter;
-import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Match;
 
@@ -35,12 +32,10 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.mechinn.android.ouralliance.data.frc2014.ExportMatchScouting2014;
-import com.mechinn.android.ouralliance.rest.GetCompetitionTeams;
 import com.mechinn.android.ouralliance.rest.GetMatches;
 import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.ManyQuery;
 import se.emilsjolander.sprinkles.ModelList;
-import se.emilsjolander.sprinkles.OneQuery;
 import se.emilsjolander.sprinkles.Query;
 
 public class MatchListFragment extends ListFragment {
@@ -189,11 +184,11 @@ public class MatchListFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(!prefs.getMatchesDownloaded()) {
+        if(!prefs.isMatchesDownloaded()) {
             downloadMatches.refreshMatches();
         }
         Query.many(CompetitionTeam.class, "select * from "+CompetitionTeam.TAG+" where "+CompetitionTeam.COMPETITION+"=?", prefs.getComp()).getAsync(getLoaderManager(),onTeamsLoaded);
-        Query.many(Match.class, prefs.getPractice() ? "select * from "+Match.TAG+" where "+Match.COMPETITION+"=? AND "+Match.MATCHTYPE+"=-1" : "select * from "+Match.TAG+" where "+Match.COMPETITION+"=? AND "+Match.MATCHTYPE+"!=-1", prefs.getComp()).getAsync(getLoaderManager(),onMatchesLoaded);
+        Query.many(Match.class, prefs.isPractice() ? "select * from "+Match.TAG+" where "+Match.COMPETITION+"=? AND "+Match.MATCHTYPE+"=-1" : "select * from "+Match.TAG+" where "+Match.COMPETITION+"=? AND "+Match.MATCHTYPE+"!=-1", prefs.getComp()).getAsync(getLoaderManager(),onMatchesLoaded);
     }
 
     @Override
@@ -249,7 +244,7 @@ public class MatchListFragment extends ListFragment {
 	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-	    menu.findItem(R.id.practice).setChecked(prefs.getPractice());
+	    menu.findItem(R.id.practice).setChecked(prefs.isPractice());
         menu.findItem(R.id.insert).setVisible(prefs.getComp()>0 && null != teams && teams.size() > 5);
         menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && bluetoothAdapter!=null);
         menu.findItem(R.id.importMatchScouting).setVisible(prefs.getComp()>0);

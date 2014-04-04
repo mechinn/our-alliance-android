@@ -24,6 +24,8 @@ public class Prefs {
 	private String versionDefault;
 	private String practicePref;
 	private String practiceDefault;
+    private String adsPref;
+    private String adsDefault;
 	private String yearPref;
 	private String yearDefault;
     private Editor editor;
@@ -39,6 +41,8 @@ public class Prefs {
 		this.versionDefault = context.getString(R.string.pref_about_default);
 		this.practicePref = context.getString(R.string.pref_practice);
 		this.practiceDefault = context.getString(R.string.pref_practice_default);
+        this.adsPref = context.getString(R.string.pref_ads);
+        this.adsDefault = context.getString(R.string.pref_ads_default);
 		this.yearPref = context.getString(R.string.pref_year);
 		this.yearDefault = context.getString(R.string.pref_year_default);
 		try {
@@ -67,21 +71,21 @@ public class Prefs {
         editor.putString(Competition.TAG+"_"+getYear(), downloaded?"true":"false");
         editor.apply();
     }
-    public boolean getCompetitionsDownloaded() {
+    public boolean isCompetitionsDownloaded() {
         return Boolean.parseBoolean(prefs.getString(Competition.TAG+"_"+getYear(), "false"));
     }
     public void setCompetitionTeamsDownloaded(Boolean downloaded) {
         editor.putString(CompetitionTeam.TAG+"_"+getYear()+"_"+getComp(), downloaded?"true":"false");
         editor.apply();
     }
-    public boolean getCompetitionTeamsDownloaded() {
+    public boolean isCompetitionTeamsDownloaded() {
         return Boolean.parseBoolean(prefs.getString(CompetitionTeam.TAG+"_"+getYear()+"_"+getComp(), "false"));
     }
     public void setMatchesDownloaded(Boolean downloaded) {
         editor.putString(Match.TAG+"_"+getYear()+"_"+getComp(), downloaded?"true":"false");
         editor.apply();
     }
-    public boolean getMatchesDownloaded() {
+    public boolean isMatchesDownloaded() {
         return Boolean.parseBoolean(prefs.getString(Match.TAG+"_"+getYear()+"_"+getComp(), "false"));
     }
 	public void setYear(String year) {
@@ -100,13 +104,20 @@ public class Prefs {
 	public boolean isInches() {
 		return getMeasure().equals(measureDefault);
 	}
-	public boolean getPractice() {
+	public boolean isPractice() {
 		return prefs.getBoolean(practicePref, Boolean.parseBoolean(practiceDefault));
 	}
 	public void setPractice(boolean practice) {
 		editor.putBoolean(practicePref, practice);
 		editor.apply();
 	}
+    public boolean isAdsDisabled() {
+        return prefs.getBoolean(adsPref, Boolean.parseBoolean(adsDefault));
+    }
+    public void setAdsDisabled(boolean adsDisabled) {
+        editor.putBoolean(adsPref, adsDisabled);
+        editor.apply();
+    }
 	public int getVersion() {
 		return Integer.parseInt(prefs.getString(versionPref, versionDefault));
 	}
