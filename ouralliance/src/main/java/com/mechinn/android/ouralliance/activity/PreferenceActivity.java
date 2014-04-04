@@ -9,6 +9,8 @@ import android.view.Menu;
 
 import android.view.MenuItem;
 import android.view.Window;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.fragment.PreferenceFragment;
@@ -17,7 +19,7 @@ import com.mechinn.android.ouralliance.fragment.PreferenceListFragment;
 /**
  * Created by mechinn on 2/19/14.
  */
-public class PreferenceActivity extends Activity implements PreferenceListFragment.OnPreferenceAttachedListener, FragmentManager.OnBackStackChangedListener {
+public class PreferenceActivity extends OurAllianceActivity implements PreferenceListFragment.OnPreferenceAttachedListener, FragmentManager.OnBackStackChangedListener {
     public static final String TAG = "PreferenceActivity";
     private Prefs prefs;
     private PreferenceFragment preferenceFrag;

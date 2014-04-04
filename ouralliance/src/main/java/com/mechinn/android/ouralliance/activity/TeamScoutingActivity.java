@@ -13,6 +13,10 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.mechinn.android.ouralliance.*;
 import com.mechinn.android.ouralliance.fragment.MatchTeamListFragment;
 import com.mechinn.android.ouralliance.fragment.MultimediaContextDialogFragment;
@@ -21,11 +25,12 @@ import com.mechinn.android.ouralliance.fragment.TeamListFragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.MatchTeamList2014Fragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.TeamDetail2014;
 
-public class TeamScoutingActivity extends Activity implements TeamListFragment.Listener, OnBackStackChangedListener, BackgroundProgress.Listener, MultimediaContextDialogFragment.Listener {
+public class TeamScoutingActivity extends OurAllianceActivity implements TeamListFragment.Listener, OnBackStackChangedListener, MultimediaContextDialogFragment.Listener {
     public static final String TAG = "TeamScoutingActivity";
 	public static final String TEAM_ARG = "team";
 	public static final String MATCH_ARG = "match";
 	public static final String MATCHNAME_ARG = "matchname";
+    public static final int GOOGLE_PLAY_ERROR = 0;
 	private TeamListFragment teamListFrag;
 	private MatchTeamListFragment<?> matchTeamListFrag;
 	private TeamDetailFragment<?> teamDetailFragment;
@@ -41,6 +46,8 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 		new Setup(this, false).execute();
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_team_scouting);
+
+
 		this.getFragmentManager().addOnBackStackChangedListener(this);
 		prefs = new Prefs(this);
         // Add the fragment to the 'fragment_container' FrameLayout
@@ -82,7 +89,7 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
             this.getActionBar().setDisplayHomeAsUpEnabled(true);
         }
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -157,15 +164,4 @@ public class TeamScoutingActivity extends Activity implements TeamListFragment.L
 		teamDetailFragment.resetMultimediaAdapter();
 	}
 
-	public void cancelled(int flag) {
-		switch(flag) {
-			
-		}
-	}
-
-	public void complete(int flag) {
-		switch(flag) {
-			
-		}
-	}
 }

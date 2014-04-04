@@ -1,6 +1,8 @@
 package com.mechinn.android.ouralliance.activity;
 
 import android.view.Window;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.mechinn.android.ouralliance.BackgroundProgress;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
@@ -25,7 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MatchScoutingActivity extends Activity implements BackgroundProgress.Listener, OnBackStackChangedListener, MatchListFragment.Listener, MatchTeamListFragment.Listener, MatchTeamDialogFragment.Listener, OnSharedPreferenceChangeListener {
+public class MatchScoutingActivity extends OurAllianceActivity implements OnBackStackChangedListener, MatchListFragment.Listener, MatchTeamListFragment.Listener, MatchTeamDialogFragment.Listener, OnSharedPreferenceChangeListener {
     public static final String TAG = "MatchScoutingActivity";
 	private Prefs prefs;
 	private MatchListFragment matchListFrag;
@@ -189,19 +191,5 @@ public class MatchScoutingActivity extends Activity implements BackgroundProgres
     @Override
     public void onMatchTeamDialogNegativeClick(long team) {
         onMatchTeamSelected(team);
-    }
-
-    @Override
-    public void complete(int flag) {
-        switch(flag) {
-
-        }
-    }
-
-    @Override
-    public void cancelled(int flag) {
-        switch(flag) {
-
-        }
     }
 }

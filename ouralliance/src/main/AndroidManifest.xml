@@ -58,6 +58,10 @@
             android:name="com.mechinn.android.ouralliance.activity.PreferenceActivity"
             android:label="@string/settings">
         </activity>
+        <activity android:name="com.google.android.gms.ads.AdActivity"
+                  android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
+        </activity>
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
         <meta-data android:name="com.crashlytics.ApiKey" android:value="b0d52c1a1854fa2c1171de35d312d751fb817acd"/>
     </application>
 

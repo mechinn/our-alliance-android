@@ -1,6 +1,8 @@
 package com.mechinn.android.ouralliance.activity;
 
 import android.view.Window;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.mechinn.android.ouralliance.*;
 import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.fragment.GenericDialogFragment;
