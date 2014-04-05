@@ -32,7 +32,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.mechinn.android.ouralliance.data.frc2014.ExportMatchScouting2014;
-import com.mechinn.android.ouralliance.rest.GetMatches;
+import com.mechinn.android.ouralliance.rest.thebluealliance.GetMatches;
 import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.ManyQuery;
 import se.emilsjolander.sprinkles.ModelList;

@@ -1,7 +1,6 @@
-package com.mechinn.android.ouralliance.rest;
+package com.mechinn.android.ouralliance.rest.thebluealliance;
 
 import android.app.Activity;
-import android.database.Cursor;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -13,11 +12,11 @@ import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import retrofit.RetrofitError;
 import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.ModelList;
 import se.emilsjolander.sprinkles.Query;
-import se.emilsjolander.sprinkles.SqlStatement;
 
 import java.util.Collections;
 import java.util.Date;

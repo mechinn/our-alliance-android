@@ -10,7 +10,6 @@ import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.*;
 
 @Table(Team.TAG)
-@UniqueComboConflictClause(ConflictClause.IGNORE)
 public class Team extends AOurAllianceData implements Comparable<Team> {
 	public static final String TAG = "Team";
 	private static final long serialVersionUID = 6981108401294045422L;
@@ -34,7 +33,7 @@ public class Team extends AOurAllianceData implements Comparable<Team> {
     };
 
     @Column(NUMBER)
-    @UniqueCombo()
+    @Unique(ConflictClause.IGNORE)
     @Check(NUMBER+" > 0")
     @SerializedName("team_number")
 	private int teamNumber;

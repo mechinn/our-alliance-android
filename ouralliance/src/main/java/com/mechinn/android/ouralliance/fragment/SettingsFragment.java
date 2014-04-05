@@ -20,7 +20,7 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.rest.GetCompetitions;
+import com.mechinn.android.ouralliance.rest.thebluealliance.GetCompetitions;
 import com.mechinn.android.ouralliance.widget.CompetitionListPreference;
 
 import se.emilsjolander.sprinkles.CursorList;
@@ -140,7 +140,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 					return true;
 				}
 			});
-        if(!prefs.isCompetitionsDownloaded()) {
+        if(prefs.getYear()>0 && !prefs.isCompetitionsDownloaded()) {
             getCompetitions();
         }
     }

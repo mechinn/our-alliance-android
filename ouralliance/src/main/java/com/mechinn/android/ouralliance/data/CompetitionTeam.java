@@ -7,7 +7,6 @@ import se.emilsjolander.sprinkles.annotations.*;
 import java.util.Date;
 
 @Table(CompetitionTeam.TAG)
-@UniqueComboConflictClause(ConflictClause.IGNORE)
 public class CompetitionTeam extends AOurAllianceData implements Comparable<CompetitionTeam> {
     public static final String TAG = "CompetitionTeam";
 	private static final long serialVersionUID = 1458046534212642950L;
@@ -26,13 +25,13 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
     };
 
     @Column(COMPETITION)
-    @UniqueCombo
+    @Unique(value=ConflictClause.IGNORE,group="unique")
     @ForeignKey(COMPETITION+"(_id)")
     @CascadeDelete
     @Check(COMPETITION+" > 0")
 	private Competition competition;
     @Column(TEAM)
-    @UniqueCombo
+    @Unique(value=ConflictClause.IGNORE,group="unique")
     @ForeignKey(TEAM+"(_id)")
     @CascadeDelete
     @Check(TEAM+" > 0")

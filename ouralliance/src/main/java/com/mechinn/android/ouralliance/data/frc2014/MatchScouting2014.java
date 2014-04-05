@@ -10,12 +10,9 @@ import org.supercsv.cellprocessor.*;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ConflictClause;
 import se.emilsjolander.sprinkles.annotations.Table;
-import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 
 @Table(MatchScouting2014.TAG)
-@UniqueComboConflictClause(ConflictClause.IGNORE)
 public class MatchScouting2014 extends MatchScouting implements Comparable<MatchScouting>  {
     public static final String TAG = "MatchScouting2014";
 	private static final long serialVersionUID = 2234995463512680398L;

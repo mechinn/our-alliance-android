@@ -4,17 +4,9 @@ import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 import se.emilsjolander.sprinkles.Query;
-import se.emilsjolander.sprinkles.annotations.CascadeDelete;
-import se.emilsjolander.sprinkles.annotations.Check;
-import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ConflictClause;
-import se.emilsjolander.sprinkles.annotations.ForeignKey;
-import se.emilsjolander.sprinkles.annotations.Table;
-import se.emilsjolander.sprinkles.annotations.UniqueCombo;
-import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
+import se.emilsjolander.sprinkles.annotations.*;
 
 @Table(Match.TAG)
-@UniqueComboConflictClause(ConflictClause.IGNORE)
 public class Match extends AOurAllianceData implements Comparable<Match>{
     public static final String TAG = "Match";
 	private static final long serialVersionUID = -6220154246271261024L;
@@ -65,13 +57,13 @@ public class Match extends AOurAllianceData implements Comparable<Match>{
 	public static final String SELECTNOTPRACTICE = MATCHTYPE +" != "+Type.PRACTICE;
 
     @Column(COMPETITION)
-    @UniqueCombo
+    @Unique(value=ConflictClause.IGNORE,group="unique")
     @ForeignKey(COMPETITION+"(_id)")
     @CascadeDelete
     @Check(COMPETITION+" > 0")
 	private Competition competition;
     @Column(NUMBER)
-    @UniqueCombo
+    @Unique(value=ConflictClause.IGNORE,group="unique")
     @SerializedName("match_number")
 	private int matchNum;
     @Column(REDSCORE)

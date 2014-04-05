@@ -1,12 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
-import org.apache.commons.lang3.ArrayUtils;
-import se.emilsjolander.sprinkles.annotations.CascadeDelete;
-import se.emilsjolander.sprinkles.annotations.Check;
-import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ForeignKey;
-import se.emilsjolander.sprinkles.annotations.NotNull;
-import se.emilsjolander.sprinkles.annotations.UniqueCombo;
+import se.emilsjolander.sprinkles.annotations.*;
 
 public abstract class TeamScouting extends AOurAllianceData implements Comparable<TeamScouting>  {
 	public static final String TAG = "TeamScouting";
@@ -15,7 +9,7 @@ public abstract class TeamScouting extends AOurAllianceData implements Comparabl
     public static final String NOTES = "notes";
 
     @Column(TEAM)
-    @UniqueCombo
+    @Unique(ConflictClause.IGNORE)
     @ForeignKey(TEAM+"(_id)")
     @CascadeDelete
     @Check(TEAM+" > 0")

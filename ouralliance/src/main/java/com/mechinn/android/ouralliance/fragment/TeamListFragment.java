@@ -16,7 +16,7 @@ import com.mechinn.android.ouralliance.data.frc2014.ExportTeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
-import com.mechinn.android.ouralliance.rest.GetCompetitionTeams;
+import com.mechinn.android.ouralliance.rest.thebluealliance.GetCompetitionTeams;
 import com.mobeta.android.dslv.DragSortListView;
 
 import android.app.Activity;

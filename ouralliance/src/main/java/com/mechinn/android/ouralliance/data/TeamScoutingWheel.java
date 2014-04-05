@@ -5,7 +5,6 @@ import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.*;
 
 @Table(TeamScoutingWheel.TAG)
-@UniqueComboConflictClause(ConflictClause.IGNORE)
 public class TeamScoutingWheel extends AOurAllianceData {
 	public static final String TAG = "TeamScoutingWheel";
 	private static final long serialVersionUID = -8710760990028670121L;
@@ -30,17 +29,17 @@ public class TeamScoutingWheel extends AOurAllianceData {
 	public static final int FIELD_DELETE = 7;
 
     @Column(YEAR)
-    @UniqueCombo
+    @Unique(value=ConflictClause.IGNORE,group="unique")
     @Check(YEAR+" > 0")
 	private int year;
     @Column(TEAM)
-    @UniqueCombo
+    @Unique(value=ConflictClause.IGNORE,group="unique")
     @ForeignKey(TEAM+"(_id)")
     @CascadeDelete
     @Check(TEAM+" > 0")
 	private Team team;
     @Column(TYPE)
-    @UniqueCombo
+    @Unique(value=ConflictClause.IGNORE,group="unique")
     @NotNull
     @Check(TYPE+" != ''")
 	private String wheelType;

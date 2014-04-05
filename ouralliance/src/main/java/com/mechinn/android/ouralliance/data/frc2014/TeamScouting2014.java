@@ -2,33 +2,16 @@ package com.mechinn.android.ouralliance.data.frc2014;
 
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
-import android.util.SparseArray;
-import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.AOurAllianceData;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 
-import com.mechinn.android.ouralliance.processor.FmtTeam;
-import com.mechinn.android.ouralliance.processor.ParseTeam;
-import org.apache.commons.lang3.ArrayUtils;
-import org.supercsv.cellprocessor.*;
-import org.supercsv.cellprocessor.constraint.LMinMax;
-import org.supercsv.cellprocessor.constraint.NotNull;
-import org.supercsv.cellprocessor.ift.CellProcessor;
-import se.emilsjolander.sprinkles.Model;
 import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ConflictClause;
 import se.emilsjolander.sprinkles.annotations.Table;
-import se.emilsjolander.sprinkles.annotations.UniqueComboConflictClause;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 
 @Table(TeamScouting2014.TAG)
-@UniqueComboConflictClause(ConflictClause.IGNORE)
 public class TeamScouting2014 extends TeamScouting implements Comparable<TeamScouting>  {
     public static final String TAG = "TeamScouting2014";
 	private static final long serialVersionUID = 675330724134779728L;

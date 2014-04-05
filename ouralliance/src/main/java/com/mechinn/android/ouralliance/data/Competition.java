@@ -6,7 +6,6 @@ import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.*;
 
 @Table(Competition.TAG)
-@UniqueComboConflictClause(ConflictClause.IGNORE)
 public class Competition extends AOurAllianceData implements Comparable<Competition> {
     public static final String TAG = "Competition";
 	private static final long serialVersionUID = -5179493838272851750L;
@@ -24,7 +23,7 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
     };
 
     @Column(YEAR)
-    @UniqueCombo
+    @Unique(value=ConflictClause.IGNORE,group="unique")
     @Check(YEAR+" > 0")
 	private int year;
     @Column(NAME)
@@ -32,7 +31,7 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
     @Check(NAME+" != ''")
 	private String name;
     @Column(CODE)
-    @UniqueCombo
+    @Unique(value=ConflictClause.IGNORE,group="unique")
     @NotNull
     @Check(CODE+" != ''")
     @SerializedName("event_code")

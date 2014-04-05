@@ -1,10 +1,7 @@
 package com.mechinn.android.ouralliance.activity;
 
 import android.view.Window;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.mechinn.android.ouralliance.*;
-import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.fragment.GenericDialogFragment;
 import com.mechinn.android.ouralliance.fragment.SettingsFragment;
 
@@ -14,7 +11,6 @@ import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
-import com.mechinn.android.ouralliance.rest.GetCompetitions;
 
 public class SettingsActivity extends PreferenceActivity implements BackgroundProgress.Listener, GenericDialogFragment.Listener {
     public static final String TAG = "SettingsActivity";
@@ -37,14 +33,21 @@ public class SettingsActivity extends PreferenceActivity implements BackgroundPr
 			case Setup.FLAG_SETUP:
 				Log.wtf(TAG,"reset cancelled");
 				Toast.makeText(this, "Reset was cancelled please contact the developer", Toast.LENGTH_LONG).show();
+                break;
 		}
 	}
 
 	public void complete(int flag) {
 		Log.d(TAG, "flag: " + flag);
 		switch(flag) {
-			case Setup.FLAG_SETUP:
+			case BackgroundProgress.FLAG_SETUP:
 				Utility.restartApp(this);
+                break;
+            case BackgroundProgress.FLAG_COMPETITION_LIST:
+                if(null!=frag) {
+                    frag.queryCompetitions();
+                }
+                break;
 		}
 	}
 	

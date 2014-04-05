@@ -1,10 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
-import se.emilsjolander.sprinkles.annotations.CascadeDelete;
-import se.emilsjolander.sprinkles.annotations.Check;
-import se.emilsjolander.sprinkles.annotations.Column;
-import se.emilsjolander.sprinkles.annotations.ForeignKey;
-import se.emilsjolander.sprinkles.annotations.UniqueCombo;
+import se.emilsjolander.sprinkles.annotations.*;
 
 import java.util.Date;
 
@@ -17,13 +13,13 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
     public static final String NOTES = "notes";
 
     @Column(MATCH)
-    @UniqueCombo
+    @Unique(value= ConflictClause.IGNORE,group="unique")
     @ForeignKey(MATCH+"(_id)")
     @CascadeDelete
     @Check("match > 0")
 	private Match match;
     @Column(TEAM)
-    @UniqueCombo
+    @Unique(value=ConflictClause.IGNORE,group="unique")
     @ForeignKey(TEAM+"(_id)")
     @CascadeDelete
     @Check("team > 0")

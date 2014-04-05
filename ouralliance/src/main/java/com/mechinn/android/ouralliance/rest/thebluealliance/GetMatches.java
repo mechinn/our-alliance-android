@@ -1,4 +1,4 @@
-package com.mechinn.android.ouralliance.rest;
+package com.mechinn.android.ouralliance.rest.thebluealliance;
 
 import android.app.Activity;
 import android.os.Handler;
@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
+import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import retrofit.RetrofitError;
 import se.emilsjolander.sprinkles.Query;
 
