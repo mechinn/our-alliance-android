@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.mechinn.android.ouralliance.data.MatchScouting;
 import se.emilsjolander.sprinkles.ModelList;
 
+import java.util.Collections;
+
 public class MatchTeamAdapter<A extends MatchScouting> extends BaseAdapter {
     public static final String TAG = "MatchTeamAdapter";
 	Context context;
@@ -21,6 +23,9 @@ public class MatchTeamAdapter<A extends MatchScouting> extends BaseAdapter {
 	
 	public void swapMatch(ModelList<A> match) {
         teams = match;
+        if(null!=this.teams) {
+            Collections.sort(this.teams);
+        }
         this.notifyDataSetChanged();
 	}
 

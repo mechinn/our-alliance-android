@@ -5,7 +5,7 @@ import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.annotations.*;
 
 @Table(TeamScoutingWheel.TAG)
-public class TeamScoutingWheel extends AOurAllianceData {
+public class TeamScoutingWheel extends AOurAllianceData implements Comparable<TeamScoutingWheel> {
 	public static final String TAG = "TeamScoutingWheel";
 	private static final long serialVersionUID = -8710760990028670121L;
 	public static final String YEAR = "year";
@@ -119,7 +119,11 @@ public class TeamScoutingWheel extends AOurAllianceData {
 				getWheelCount()==((TeamScoutingWheel)data).getWheelCount();
 	}
 	public int compareTo(TeamScoutingWheel another) {
-		return this.getTeam().compareTo(another.getTeam());
+        int compare = this.getWheelType().compareTo(another.getWheelType());
+        if(0==compare) {
+            compare = this.getTeam().compareTo(another.getTeam());
+        }
+        return compare;
 	}
 
     public boolean isValid() {

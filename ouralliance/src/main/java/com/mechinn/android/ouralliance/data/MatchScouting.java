@@ -9,6 +9,7 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
 	private static final long serialVersionUID = 2234995463512680398L;
     public static final String MATCH = Match.TAG;
 	public static final String TEAM = Team.TAG;
+    public static final String COMPETITIONTEAM = CompetitionTeam.TAG;
     public static final String ALLIANCE = "alliance";
     public static final String NOTES = "notes";
 
@@ -16,13 +17,15 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
     @Unique(value= ConflictClause.IGNORE,group="unique")
     @ForeignKey(MATCH+"(_id)")
     @CascadeDelete
-    @Check("match > 0")
+    @Check(MATCH+" > 0")
 	private Match match;
     @Column(TEAM)
+    private long oldTeam;
+    @Column(COMPETITIONTEAM)
     @Unique(value=ConflictClause.IGNORE,group="unique")
-    @ForeignKey(TEAM+"(_id)")
+    @ForeignKey(COMPETITIONTEAM+"(_id)")
     @CascadeDelete
-    @Check("team > 0")
+    @Check(COMPETITIONTEAM+" > 0")
     private CompetitionTeam team;
     @Column(ALLIANCE)
     private boolean alliance;
@@ -137,7 +140,11 @@ public abstract class MatchScouting extends AOurAllianceData implements Comparab
 				getNotes().equals(((MatchScouting)data).getNotes());
 	}
 	public int compareTo(MatchScouting another) {
-		return this.getCompetitionTeam().compareTo(another.getCompetitionTeam());
+        int compare = (this.isAlliance()?1:0) - (another.isAlliance()?1:0);
+        if(0==compare) {
+            compare = this.getCompetitionTeam().getTeam().compareTo(another.getCompetitionTeam().getTeam());
+        }
+		return compare;
 	}
     public boolean empty() {
         return isAlliance()==false

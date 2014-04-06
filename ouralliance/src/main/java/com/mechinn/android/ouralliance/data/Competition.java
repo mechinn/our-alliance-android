@@ -137,7 +137,11 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 				getCode().equals(data.getCode());
 	}
 	public int compareTo(Competition another) {
-		return this.getName().toString().compareTo(another.getName().toString());
+        int compare = (this.isOfficial()?1:0)-(another.isOfficial()?1:0);
+        if(0==compare) {
+            compare = this.getName().compareTo(another.getName());
+        }
+        return compare;
 	}
 
     public boolean isValid() {

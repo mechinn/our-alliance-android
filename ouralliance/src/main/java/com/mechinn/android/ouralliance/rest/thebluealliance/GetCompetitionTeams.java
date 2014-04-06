@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.rest.thebluealliance;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -12,11 +13,13 @@ import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.rest.GetHandlerThread;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import retrofit.RetrofitError;
 import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.ModelList;
 import se.emilsjolander.sprinkles.Query;
+import se.emilsjolander.sprinkles.Transaction;
 
 import java.util.Collections;
 import java.util.Date;
@@ -25,68 +28,42 @@ import java.util.List;
 /**
  * Created by mechinn on 3/31/14.
  */
-public class GetCompetitionTeams extends HandlerThread {
+public class GetCompetitionTeams extends GetHandlerThread {
     public static final String TAG = "GetCompetitionTeams";
-    public static final String PROGRESS = "progress";
-    public static final String STATUS = "status";
-    private Prefs prefs;
-    private Handler threadHandler = null;
-    private Handler uiHandler = null;
-    private Message message;
-    private Activity activity;
 
-    public GetCompetitionTeams(Activity activity) {
-        super(TAG);
-        this.activity = activity;
-        prefs = new Prefs(activity);
-        message = new Message();
-        uiHandler = new Handler(
-                new Handler.Callback() {
-                    @Override
-                    public boolean handleMessage(Message msg) {
-                        GetCompetitionTeams.this.activity.setProgressBarIndeterminateVisibility(msg.getData().getBoolean(PROGRESS));
-                        if(null!=msg.getData().getString(STATUS)) {
-                            Toast.makeText(GetCompetitionTeams.this.activity,msg.getData().getString(STATUS),Toast.LENGTH_SHORT).show();
-                        }
-                        return true;
-                    }
-                }
-        );
-        start();
-        threadHandler = new Handler(getLooper());
+    public GetCompetitionTeams(Context context) {
+        super(TAG,context);
     }
 
     public void refreshCompetitionTeams() {
-        threadHandler.post(
+        getThreadHandler().post(
                 new Runnable() {
                     @Override
                     public void run() {
-                        message = new Message();
-                        message.getData().putString(STATUS, "Downloading competition teams...");
-                        message.getData().putBoolean(PROGRESS, true);
-                        uiHandler.sendMessage(message);
-                        Log.d(TAG, "year: " + prefs.getYear());
-                        CursorList<CompetitionTeam> competitionTeamCursorList = Query.many(CompetitionTeam.class, "SELECT * FROM "+CompetitionTeam.TAG+" WHERE "+CompetitionTeam.COMPETITION+"=?",prefs.getComp()).get();
+                        sendMessage("Downloading competition teams...",true);
+                        Log.d(TAG, "year: " + getPrefs().getYear());
+                        CursorList<CompetitionTeam> competitionTeamCursorList = Query.many(CompetitionTeam.class, "SELECT * FROM "+CompetitionTeam.TAG+" WHERE "+CompetitionTeam.COMPETITION+"=?",getPrefs().getComp()).get();
                         ModelList<CompetitionTeam> competitionTeamList = null;
                         if(null!=competitionTeamCursorList && null!=competitionTeamCursorList.getCursor() && !competitionTeamCursorList.getCursor().isClosed()) {
                             competitionTeamList = ModelList.from(competitionTeamCursorList);
                             competitionTeamCursorList.close();
                         }
-                        Competition competition = Query.one(Competition.class, "SELECT * FROM " + Competition.TAG + " WHERE " + Competition._ID + "=?", prefs.getComp()).get();
+                        Competition competition = Query.one(Competition.class, "SELECT * FROM " + Competition.TAG + " WHERE " + Competition._ID + "=?", getPrefs().getComp()).get();
                         Log.d(TAG, "Setting up teams");
+                        Transaction t = new Transaction();
                         try {
-                            List<Team> teams = TheBlueAlliance.getService().getEventTeams(prefs.getYear() + competition.getCode());
+                            List<Team> teams = TheBlueAlliance.getService().getEventTeams(getPrefs().getYear() + competition.getCode());
                             Collections.sort(teams);
                             Date current = new Date();
                             for (int i = 0; i < teams.size(); ++i) {
                                 Log.d(TAG, "name: " + teams.get(i).getNickName());
                                 Log.d(TAG, "number: " + teams.get(i).getTeamNumber());
                                 teams.get(i).setModified(current);
-                                teams.get(i).save();
-                                new CompetitionTeam(competition, teams.get(i), i).save();
-                                switch (prefs.getYear()) {
+                                teams.get(i).save(t);
+                                new CompetitionTeam(competition, teams.get(i), i).save(t);
+                                switch (getPrefs().getYear()) {
                                     case 2014:
-                                        new TeamScouting2014(teams.get(i)).save();
+                                        new TeamScouting2014(teams.get(i)).save(t);
                                         break;
                                 }
                             }
@@ -98,28 +75,22 @@ public class GetCompetitionTeams extends HandlerThread {
                                 for(CompetitionTeam team : competitionTeamList) {
                                     if(null==teamMap.get(team.getTeam().getTeamNumber())) {
                                         Log.d(TAG,"deleting "+team);
-                                        team.delete();
+                                        team.delete(t);
                                     }
                                 }
                             }
-                            message = new Message();
-                            message.getData().putString(STATUS, "Finished downloading teams");
-                            message.getData().putBoolean(PROGRESS, false);
-                            uiHandler.sendMessage(message);
-                            prefs.setCompetitionTeamsDownloaded(true);
+                            t.setSuccessful(true);
+                            sendMessage("Finished downloading teams",false);
+                            getPrefs().setCompetitionTeamsDownloaded(true);
                         } catch (RetrofitError e) {
                             Log.e(TAG,"Error downloading competition teams",e);
                             if(e.isNetworkError()) {
-                                message = new Message();
-                                message.getData().putString(STATUS, "Unable to connect");
-                                message.getData().putBoolean(PROGRESS, false);
-                                uiHandler.sendMessage(message);
+                                sendMessage("Unable to connect",false);
                             } else if(e.getResponse().getStatus()!=200) {
-                                message = new Message();
-                                message.getData().putString(STATUS, "Error "+e.getResponse().getStatus()+" connecting");
-                                message.getData().putBoolean(PROGRESS, false);
-                                uiHandler.sendMessage(message);
+                                sendMessage("Error "+e.getResponse().getStatus()+" connecting",false);
                             }
+                        } finally {
+                            t.finish();
                         }
                     }
                 }

@@ -14,7 +14,7 @@ import se.emilsjolander.sprinkles.Transaction;
 
 public class Setup extends BackgroundProgress {
     public static final String TAG = "Setup";
-	public static final int VERSION = 16;
+	public static final int VERSION = 17;
 	private Prefs prefs;
 	private String packageName;
 	private File dbPath;
@@ -114,6 +114,17 @@ public class Setup extends BackgroundProgress {
                         return false;
                     }
                     prefs.setVersion(16);
+                case 17:
+                    increaseVersion();
+                    if (this.isCancelled()) {
+                        return false;
+                    }
+                    setStatus("Deleting old matches");
+                    prefs.clearMatchesDownloaded();
+                    if (this.isCancelled()) {
+                        return false;
+                    }
+                    prefs.setVersion(17);
             }
             t.setSuccessful(true);
         } finally {

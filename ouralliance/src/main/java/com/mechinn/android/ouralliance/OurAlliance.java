@@ -6,30 +6,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.BaseColumns;
 
-import android.util.Log;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
-import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
+import com.mechinn.android.ouralliance.rest.thebluealliance.AlarmTheBlueAlliance;
 import com.mechinn.android.ouralliance.serializers.*;
 import com.mechinn.android.ouralliance.serializers.frc2014.MatchScouting2014Serializer;
 import com.mechinn.android.ouralliance.serializers.frc2014.TeamScouting2014Serializer;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import se.emilsjolander.sprinkles.*;
-
-import java.util.List;
 
 /**
  * Created by mechinn on 2/18/14.
@@ -178,11 +168,37 @@ public class OurAlliance extends Application {
         v6.addRawStatement("DROP TABLE IF EXISTS Season;");
         sprinkles.addMigration(v6);
 
+        String v7matchScouting2014Columns = MatchScouting2014._ID
+                +","+MatchScouting2014.MODIFIED
+                +","+MatchScouting2014.MATCH
+                +","+MatchScouting2014.NOTES
+                +","+MatchScouting2014.HOTSHOTS
+                +","+MatchScouting2014.SHOTSMADE
+                +","+MatchScouting2014.SHOTSMISSED
+                +","+MatchScouting2014.MOVEFWD
+                +","+MatchScouting2014.SHOOTER
+                +","+MatchScouting2014.CATCHER
+                +","+MatchScouting2014.PASSER
+                +","+MatchScouting2014.DRIVETRAIN
+                +","+MatchScouting2014.BALLACCURACY
+                +","+MatchScouting2014.GROUND
+                +","+MatchScouting2014.OVERTRUSS
+                +","+MatchScouting2014.LOW
+                +","+MatchScouting2014.HIGH;
+        Migration v7 = new Migration();
+        v7.renameTable(MatchScouting2014.TAG, MatchScouting2014.TAG+"_OLD");
+        v7.createTable(MatchScouting2014.class);
+        v7.addRawStatement("INSERT INTO " + MatchScouting2014.TAG + "("+ v7matchScouting2014Columns +","+MatchScouting2014.COMPETITIONTEAM+") SELECT " + v7matchScouting2014Columns +","+MatchScouting2014.TEAM+ " FROM " + MatchScouting2014.TAG + "_OLD;");
+        v7.addRawStatement("DROP TABLE " + MatchScouting2014.TAG + "_OLD;");
+        sprinkles.addMigration(v7);
+
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         this.registerReceiver(broadcastReceiver, filter);
         if(null==receiver && null!=BluetoothAdapter.getDefaultAdapter() && BluetoothAdapter.getDefaultAdapter().isEnabled()) {
             startBluetoothReceiver();
         }
+
+//        new AlarmTheBlueAlliance(this.getApplicationContext()).setAlarm();
     }
 
     public void startBluetoothReceiver() {

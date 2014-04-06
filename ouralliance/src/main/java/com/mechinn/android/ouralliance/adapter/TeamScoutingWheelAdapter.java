@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import se.emilsjolander.sprinkles.ModelList;
@@ -35,6 +36,7 @@ public class TeamScoutingWheelAdapter extends BaseAdapter implements Filterable 
         this.teams = teams;
         this.original = new ArrayList<CharSequence>();
         if(null!=this.teams) {
+            Collections.sort(this.teams);
             for(TeamScoutingWheel each : this.teams) {
                 switch(field) {
                     case TYPE:

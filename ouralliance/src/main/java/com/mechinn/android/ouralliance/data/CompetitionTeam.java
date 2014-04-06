@@ -106,7 +106,11 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 				isScouted() == ((CompetitionTeam)data).isScouted();
 	}
 	public int compareTo(CompetitionTeam another) {
-        return this.getTeam().compareTo(another.getTeam());
+        int compare = this.getRank() - another.getRank();
+        if(0==compare) {
+            compare = this.getTeam().compareTo(another.getTeam());
+        }
+        return compare;
 	}
 
     public boolean isValid() {

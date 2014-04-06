@@ -10,6 +10,8 @@ import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Match;
 
+import java.util.Map;
+
 public class Prefs {
     public static final String TAG = "Prefs";
 	private SharedPreferences prefs;
@@ -74,6 +76,15 @@ public class Prefs {
     public boolean isCompetitionsDownloaded() {
         return Boolean.parseBoolean(prefs.getString(Competition.TAG+"_"+getYear(), "false"));
     }
+    public void clearCompetitionsDownloaded() {
+        final Map<String, ?> all = prefs.getAll();
+        for(Map.Entry<String,?> entry : all.entrySet()) {
+            if(entry.getKey().startsWith(Competition.TAG+"_")) {
+                editor.remove(entry.getKey());
+            }
+        }
+        editor.apply();
+    }
     public void setCompetitionTeamsDownloaded(Boolean downloaded) {
         editor.putString(CompetitionTeam.TAG+"_"+getYear()+"_"+getComp(), downloaded?"true":"false");
         editor.apply();
@@ -81,12 +92,30 @@ public class Prefs {
     public boolean isCompetitionTeamsDownloaded() {
         return Boolean.parseBoolean(prefs.getString(CompetitionTeam.TAG+"_"+getYear()+"_"+getComp(), "false"));
     }
+    public void clearCompetitionTeamsDownloaded() {
+        final Map<String, ?> all = prefs.getAll();
+        for(Map.Entry<String,?> entry : all.entrySet()) {
+            if(entry.getKey().startsWith(CompetitionTeam.TAG+"_")) {
+                editor.remove(entry.getKey());
+            }
+        }
+        editor.apply();
+    }
     public void setMatchesDownloaded(Boolean downloaded) {
         editor.putString(Match.TAG+"_"+getYear()+"_"+getComp(), downloaded?"true":"false");
         editor.apply();
     }
     public boolean isMatchesDownloaded() {
         return Boolean.parseBoolean(prefs.getString(Match.TAG+"_"+getYear()+"_"+getComp(), "false"));
+    }
+    public void clearMatchesDownloaded() {
+        final Map<String, ?> all = prefs.getAll();
+        for(Map.Entry<String,?> entry : all.entrySet()) {
+            if(entry.getKey().startsWith(Match.TAG+"_")) {
+                editor.remove(entry.getKey());
+            }
+        }
+        editor.apply();
     }
 	public void setYear(String year) {
 		editor.putString(yearPref, year);

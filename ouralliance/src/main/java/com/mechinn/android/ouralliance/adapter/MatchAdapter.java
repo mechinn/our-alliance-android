@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import se.emilsjolander.sprinkles.ModelList;
 
+import java.util.Collections;
+
 public class MatchAdapter extends BaseAdapter {
     public static final String TAG = "MatchAdapter";
     Context context;
@@ -24,6 +26,9 @@ public class MatchAdapter extends BaseAdapter {
 
     public void swapList(ModelList<Match> matches) {
         this.matches = matches;
+        if(null!=this.matches) {
+            Collections.sort(this.matches);
+        }
         this.notifyDataSetChanged();
     }
     public boolean isEmpty() {

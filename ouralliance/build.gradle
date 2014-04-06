@@ -29,8 +29,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
-        versionCode 38
-        versionName "2014.6.4"
+        versionCode 40
+        versionName "2014.6.6"
     }
     signingConfigs {
         release {
@@ -56,14 +56,12 @@ dependencies {
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.google.android.gms:play-services:4.0.30'
     compile 'org.slf4j:slf4j-android:1.7.6'
-//    compile 'commons-io:commons-io:2.4'
     compile 'org.apache.commons:commons-lang3:3.3'
     compile 'com.squareup.retrofit:retrofit:1.5.0'
     compile 'net.sf.supercsv:super-csv:2.1.0'
     compile 'com.crashlytics.android:crashlytics:1.+'
-    //compile 'se.emilsjolander:sprinkles:+'
-    //compile 'com.googlecode.lambdaj:lambdaj:2.3.3'
-    //compile 'com.squareup.picasso:picasso:+'
+//    compile 'se.emilsjolander:sprinkles:+'
+//    compile 'com.squareup.picasso:picasso:+'
     compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     compile project(':sprinkles:library')
     compile project(':picasso:picasso')
