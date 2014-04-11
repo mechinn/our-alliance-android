@@ -184,9 +184,11 @@ public class TeamListFragment extends Fragment {
         if(null!=adapter) {
             adapter.notifyDataSetChanged();
         }
-        bluetoothOn = bluetoothAdapter.isEnabled();
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        this.getActivity().registerReceiver(broadcastReceiver, filter);
+        if(null!=bluetoothAdapter) {
+            bluetoothOn = bluetoothAdapter.isEnabled();
+            IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+            this.getActivity().registerReceiver(broadcastReceiver, filter);
+        }
     }
 
     public void onStop() {

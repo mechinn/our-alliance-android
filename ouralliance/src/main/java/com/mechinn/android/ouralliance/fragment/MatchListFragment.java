@@ -170,9 +170,11 @@ public class MatchListFragment extends ListFragment {
         if (getFragmentManager().findFragmentById(R.id.list_fragment) != null) {
         	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
-        bluetoothOn = bluetoothAdapter.isEnabled();
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        this.getActivity().registerReceiver(broadcastReceiver, filter);
+        if(null!=bluetoothAdapter) {
+            bluetoothOn = bluetoothAdapter.isEnabled();
+            IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+            this.getActivity().registerReceiver(broadcastReceiver, filter);
+        }
     }
 
     public void onStop() {
