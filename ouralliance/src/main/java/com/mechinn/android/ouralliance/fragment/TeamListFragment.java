@@ -239,7 +239,9 @@ public class TeamListFragment extends Fragment {
                                 " FROM " + CompetitionTeam.TAG +
                                 " INNER JOIN " + TeamScouting2014.TAG +
                                 " ON " + TeamScouting2014.TAG + "." + TeamScouting2014.TEAM + "=" + CompetitionTeam.TAG + "." + CompetitionTeam.TEAM +
-                                " AND " + CompetitionTeam.COMPETITION + "=?" +
+                                " INNER JOIN " + Team.TAG +
+                                " ON " + Team.TAG+"."+Team._ID + "=" + CompetitionTeam.TAG + "." + CompetitionTeam.TEAM +
+                                " WHERE " + CompetitionTeam.COMPETITION + "=?" +
                                 " ORDER BY "+sort.getValue(), prefs.getComp()).getAsync(getLoaderManager(), onCompetitionTeamsLoaded);
                 break;
         }

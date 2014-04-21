@@ -128,13 +128,15 @@ public class TeamScoutingWheel extends AOurAllianceData implements Comparable<Te
 
     public boolean isValid() {
         Log.d(TAG, "id: " + getId());
-        TeamScoutingWheel item = Query.one(TeamScoutingWheel.class, "SELECT * FROM " + TAG + " WHERE " + YEAR + "=? AND " + TEAM + "=? AND "+TYPE+"=? LIMIT 1", getYear(),getTeam().getId(),getWheelType()).get();
-        if(null!=item) {
-            this.setId(item.getId());
-            Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
-            Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
-            if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
-                return false;
+        if(this.getId()<1) {
+            TeamScoutingWheel item = Query.one(TeamScoutingWheel.class, "SELECT * FROM " + TAG + " WHERE " + YEAR + "=? AND " + TEAM + "=? AND " + TYPE + "=? LIMIT 1", getYear(), getTeam().getId(), getWheelType()).get();
+            if (null != item) {
+                this.setId(item.getId());
+                Log.d(TAG, "item: " + item + " is empty: " + item.empty() + " is equal: " + this.equals(item));
+                Log.d(TAG, "import mod: " + item.getModified() + " sql mod: " + this.getModified() + " after: " + this.getModified().before(item.getModified()));
+                if ((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
+                    return false;
+                }
             }
         }
         return true;

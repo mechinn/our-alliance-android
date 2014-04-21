@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.data.frc2014;
 
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
+import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 
 /**
@@ -10,6 +11,7 @@ import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 
 public enum Sort2014 {
     RANK
+    ,NUMBER
     ,ORIENTATION
     ,DRIVETRAIN
     ,WIDTH
@@ -28,6 +30,8 @@ public enum Sort2014 {
 
     public String toString() {
         switch(this) {
+            case NUMBER:
+                return "Team Number";
             case ORIENTATION:
                 return "Orientation";
             case DRIVETRAIN:
@@ -59,12 +63,14 @@ public enum Sort2014 {
             case AUTONOMOUS:
                 return "Autonomous";
             default:
-                return "Rank";
+                return "User Order";
         }
     }
 
     public String getValue() {
         switch(this) {
+            case NUMBER:
+                return Team.TAG+"."+Team.NUMBER;
             case ORIENTATION:
                 return TeamScouting2014.TAG+"."+TeamScouting2014.ORIENTATION;
             case DRIVETRAIN:

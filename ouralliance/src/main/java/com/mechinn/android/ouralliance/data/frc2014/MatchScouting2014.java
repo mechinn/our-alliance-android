@@ -238,13 +238,19 @@ public class MatchScouting2014 extends MatchScouting implements Comparable<Match
 
     public boolean isValid() {
         Log.d(TAG, "id: " + getId());
-        MatchScouting2014 item = Query.one(MatchScouting2014.class, "SELECT * FROM " + TAG + " WHERE " + MATCH + "=? AND " + TEAM + "=? LIMIT 1", getMatch().getId(), getCompetitionTeam().getId()).get();
-        if(null!=item) {
-            Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
-            Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
-            this.setId(item.getId());
-            if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
-                return false;
+        Log.d(TAG, "match id: "+getMatch().getId());
+        Log.d(TAG, "competition id: "+getCompetitionTeam().getId());
+        if(this.getId()<1) {
+            MatchScouting2014 item = Query.one(MatchScouting2014.class, "SELECT * FROM " + TAG + " WHERE " + MATCH + "=? AND " + COMPETITIONTEAM + "=? LIMIT 1", getMatch().getId(), getCompetitionTeam().getId()).get();
+            if (null != item) {
+                this.setId(item.getId());
+                Log.d(TAG, "this: " + this + " is empty: " + this.empty());
+                Log.d(TAG, "item: " + item + " is empty: " + item.empty());
+                Log.d(TAG, "equal: " + this.equals(item));
+                Log.d(TAG, "import mod: " + item.getModified() + " sql mod: " + this.getModified() + " after: " + this.getModified().before(item.getModified()));
+                if ((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
+                    return false;
+                }
             }
         }
         return true;

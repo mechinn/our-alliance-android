@@ -16,6 +16,7 @@ import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mobeta.android.dslv.DragSortListView;
 
 import se.emilsjolander.sprinkles.ModelList;
+import se.emilsjolander.sprinkles.Transaction;
 
 import java.util.ArrayList;
 
@@ -57,26 +58,34 @@ public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter i
 
     @Override
     public void drop(int from, int to) {
-        for(CompetitionTeam team : this.getTeams()) {
-            Log.d(TAG,"team: "+team);
-        }
-        if(from>to) {
-            for(int i=to;i<from;++i) {
-                Log.d(TAG,"team: "+getItem(i)+" new rank: "+(i+1));
-                getItem(i).setRank(i + 1);
-                Log.d(TAG, "team: " + getItem(i));
+//        for(CompetitionTeam team : this.getTeams()) {
+//            Log.d(TAG,"team: "+team);
+//        }
+        Transaction t = new Transaction();
+        try {
+            if (from > to) {
+                for (int i = to; i < from; ++i) {
+                    Log.d(TAG, "team: " + getItem(i) + " new rank: " + (i + 1));
+                    getItem(i).setRank(i + 1);
+                    Log.d(TAG, "team: " + getItem(i));
+                    getItem(i).save(t);
+                }
+            } else {
+                for (int i = from + 1; i <= to; ++i) {
+                    Log.d(TAG, "team: " + getItem(i) + " new rank: " + (i - 1));
+                    getItem(i).setRank(i - 1);
+                    Log.d(TAG, "team: " + getItem(i));
+                    getItem(i).save(t);
+                }
             }
-        } else {
-            for(int i=from+1;i<=to;++i) {
-                Log.d(TAG,"team: "+getItem(i)+" new rank: "+(i-1));
-                getItem(i).setRank(i - 1);
-                Log.d(TAG, "team: " + getItem(i));
-            }
+            Log.d(TAG, "team: " + getItem(from) + " new rank: " + to);
+            getItem(from).setRank(to);
+            Log.d(TAG, "team: " + getItem(from));
+            getItem(from).save(t);
+            t.setSuccessful(true);
+        } finally {
+            t.finish();
         }
-        Log.d(TAG, "team: " + getItem(from) + " new rank: " + to);
-        getItem(from).setRank(to);
-        Log.d(TAG,"team: "+getItem(from));
-        this.getTeams().saveAll();
     }
 
     public void showDrag(boolean yes) {

@@ -115,13 +115,10 @@ public class CompetitionTeam extends AOurAllianceData implements Comparable<Comp
 
     public boolean isValid() {
         Log.d(TAG, "id: " + getId());
-        CompetitionTeam item = Query.one(CompetitionTeam.class, "SELECT * FROM " + TAG + " WHERE "+COMPETITION+"=? AND " + TEAM + "=? LIMIT 1",getCompetition().getId(), getTeam().getId()).get();
-        if(null!=item) {
-            this.setId(item.getId());
-            Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
-            Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
-            if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
-                return false;
+        if(this.getId()<1) {
+            CompetitionTeam item = Query.one(CompetitionTeam.class, "SELECT * FROM " + TAG + " WHERE "+COMPETITION+"=? AND " + TEAM + "=? LIMIT 1",getCompetition().getId(), getTeam().getId()).get();
+            if(null!=item) {
+                this.setId(item.getId());
             }
         }
         return true;

@@ -146,13 +146,15 @@ public class Competition extends AOurAllianceData implements Comparable<Competit
 
     public boolean isValid() {
         Log.d(TAG, "id: " + getId());
-        Competition item = Query.one(Competition.class, "SELECT * FROM " + TAG + " WHERE "+YEAR+"=? AND " + CODE + "=? LIMIT 1", getYear(), getCode()).get();
-        if(null!=item) {
-            this.setId(item.getId());
-            Log.d(TAG, "item: "+item+" is empty: "+item.empty()+" is equal: "+this.equals(item));
-            Log.d(TAG, "import mod: " + item.getModified()+" sql mod: "+this.getModified()+" after: "+this.getModified().before(item.getModified()));
-            if((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
-                return false;
+        if(this.getId()<1) {
+            Competition item = Query.one(Competition.class, "SELECT * FROM " + TAG + " WHERE " + YEAR + "=? AND " + CODE + "=? LIMIT 1", getYear(), getCode()).get();
+            if (null != item) {
+                this.setId(item.getId());
+                Log.d(TAG, "item: " + item + " is empty: " + item.empty() + " is equal: " + this.equals(item));
+                Log.d(TAG, "import mod: " + item.getModified() + " sql mod: " + this.getModified() + " after: " + this.getModified().before(item.getModified()));
+                if ((this.getModified().before(item.getModified()) && !item.empty()) || this.equals(item)) {
+                    return false;
+                }
             }
         }
         return true;

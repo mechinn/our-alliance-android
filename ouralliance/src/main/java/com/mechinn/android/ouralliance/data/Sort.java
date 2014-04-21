@@ -12,6 +12,7 @@ public class Sort {
     static {
         ArrayList<Sort2014> temp2014List = new ArrayList<Sort2014>(16);
         temp2014List.add(Sort2014.RANK);
+        temp2014List.add(Sort2014.NUMBER);
         temp2014List.add(Sort2014.ORIENTATION);
         temp2014List.add(Sort2014.DRIVETRAIN);
         temp2014List.add(Sort2014.WIDTH);
