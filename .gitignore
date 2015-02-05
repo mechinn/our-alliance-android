@@ -32,3 +32,4 @@ gen/
 #############
 local.properties
 gradle.properties
+build/

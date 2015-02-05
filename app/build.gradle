@@ -1,0 +1,59 @@
+buildscript {
+    repositories {
+        maven { url 'http://download.crashlytics.com/maven' }
+    }
+
+    dependencies {
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'crashlytics'
+
+repositories {
+    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:support-v4:+'
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:gridlayout-v7:+'
+    compile 'com.google.android.gms:play-services:4.0.30'
+    compile 'org.slf4j:slf4j-android:1.7.6'
+    compile 'org.apache.commons:commons-lang3:3.3'
+    compile 'com.squareup.retrofit:retrofit:1.5.0'
+    compile 'net.sf.supercsv:super-csv:2.1.0'
+    compile 'com.crashlytics.android:crashlytics:1.+'
+    compile 'com.github.bumptech.glide:glide:3.5.1'
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "com.mechinn.android.ouralliance"
+        minSdkVersion 15
+        targetSdkVersion 21
+        versionCode 44
+        versionName "2015.0.0"
+    }
+//    signingConfigs {
+//        release {
+//            storeFile file(STOREFILE)
+//            storePassword STOREPASS
+//            keyAlias KEYALIAS
+//            keyPassword KEYPASS
+//        }
+//    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.release
+        }
+    }
+}

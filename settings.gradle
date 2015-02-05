@@ -1,5 +1,1 @@
-include ':ouralliance'
-include ':sprinkles:library'
-include ':two-way-gridview:lib'
-include ':picasso:picasso'
-include ':drag-sort-listview:dslv-library'
+include ':app'
