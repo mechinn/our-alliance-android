@@ -154,6 +154,10 @@ public class Prefs {
 		editor.putString(versionPref, Integer.toString(version));
 		editor.apply();
 	}
+    public void increaseVersion() {
+        editor.putString(versionPref, Integer.toString(getVersion()+1));
+        editor.apply();
+    }
 	public void setChangeListener(OnSharedPreferenceChangeListener listener) {
 		prefs.registerOnSharedPreferenceChangeListener(listener);
 	}

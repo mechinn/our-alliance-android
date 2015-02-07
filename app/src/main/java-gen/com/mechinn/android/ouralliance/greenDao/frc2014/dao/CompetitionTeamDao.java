@@ -31,8 +31,8 @@ public class CompetitionTeamDao extends AbstractDao<CompetitionTeam, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Modified = new Property(1, java.util.Date.class, "modified", false, "MODIFIED");
-        public final static Property Competition = new Property(2, Long.class, "competition", false, "COMPETITION");
-        public final static Property Team = new Property(3, Long.class, "team", false, "TEAM");
+        public final static Property Competition = new Property(2, long.class, "competition", false, "COMPETITION");
+        public final static Property Team = new Property(3, long.class, "team", false, "TEAM");
         public final static Property Rank = new Property(4, Integer.class, "rank", false, "RANK");
         public final static Property Scouted = new Property(5, Boolean.class, "scouted", false, "SCOUTED");
     };
@@ -54,11 +54,14 @@ public class CompetitionTeamDao extends AbstractDao<CompetitionTeam, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'COMPETITION_TEAM' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'MODIFIED' INTEGER," + // 1: modified
-                "'COMPETITION' INTEGER," + // 2: competition
-                "'TEAM' INTEGER," + // 3: team
+                "'MODIFIED' INTEGER NOT NULL ," + // 1: modified
+                "'COMPETITION' INTEGER NOT NULL ," + // 2: competition
+                "'TEAM' INTEGER NOT NULL ," + // 3: team
                 "'RANK' INTEGER," + // 4: rank
                 "'SCOUTED' INTEGER);"); // 5: scouted
+        // Add Indexes
+        db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_COMPETITION_TEAM_COMPETITION_TEAM ON COMPETITION_TEAM" +
+                " (COMPETITION,TEAM);");
     }
 
     /** Drops the underlying database table. */
@@ -76,21 +79,9 @@ public class CompetitionTeamDao extends AbstractDao<CompetitionTeam, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
- 
-        java.util.Date modified = entity.getModified();
-        if (modified != null) {
-            stmt.bindLong(2, modified.getTime());
-        }
- 
-        Long competition = entity.getCompetition();
-        if (competition != null) {
-            stmt.bindLong(3, competition);
-        }
- 
-        Long team = entity.getTeam();
-        if (team != null) {
-            stmt.bindLong(4, team);
-        }
+        stmt.bindLong(2, entity.getModified().getTime());
+        stmt.bindLong(3, entity.getCompetition());
+        stmt.bindLong(4, entity.getTeam());
  
         Integer rank = entity.getRank();
         if (rank != null) {
@@ -120,9 +111,9 @@ public class CompetitionTeamDao extends AbstractDao<CompetitionTeam, Long> {
     public CompetitionTeam readEntity(Cursor cursor, int offset) {
         CompetitionTeam entity = new CompetitionTeam( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)), // modified
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // competition
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // team
+            new java.util.Date(cursor.getLong(offset + 1)), // modified
+            cursor.getLong(offset + 2), // competition
+            cursor.getLong(offset + 3), // team
             cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // rank
             cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0 // scouted
         );
@@ -133,9 +124,9 @@ public class CompetitionTeamDao extends AbstractDao<CompetitionTeam, Long> {
     @Override
     public void readEntity(Cursor cursor, CompetitionTeam entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setModified(cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)));
-        entity.setCompetition(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
-        entity.setTeam(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setModified(new java.util.Date(cursor.getLong(offset + 1)));
+        entity.setCompetition(cursor.getLong(offset + 2));
+        entity.setTeam(cursor.getLong(offset + 3));
         entity.setRank(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setScouted(cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0);
      }
@@ -187,11 +178,15 @@ public class CompetitionTeamDao extends AbstractDao<CompetitionTeam, Long> {
         int offset = getAllColumns().length;
 
         Competition competition = loadCurrentOther(daoSession.getCompetitionDao(), cursor, offset);
-        entity.setCompetition(competition);
+         if(competition != null) {
+            entity.setCompetition(competition);
+        }
         offset += daoSession.getCompetitionDao().getAllColumns().length;
 
         Team team = loadCurrentOther(daoSession.getTeamDao(), cursor, offset);
-        entity.setTeam(team);
+         if(team != null) {
+            entity.setTeam(team);
+        }
 
         return entity;    
     }

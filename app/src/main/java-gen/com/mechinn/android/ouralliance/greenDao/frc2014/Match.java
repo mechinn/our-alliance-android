@@ -15,14 +15,16 @@ import com.mechinn.android.ouralliance.greenDao.frc2014.dao.MatchScoutingDao;
 /**
  * Entity mapped to table MATCH.
  */
-public class Match {
+public class Match extends com.mechinn.android.ouralliance.OurAllianceObject  {
 
     private Long id;
+    /** Not-null value. */
     private java.util.Date modified;
-    private Integer matchType;
+    private int matchType;
     private Integer matchSet;
     private Integer redScore;
     private Integer blueScore;
+    /** Not-null value. */
     private String compLevel;
     private String matchNum;
     private Long competition;
@@ -48,7 +50,7 @@ public class Match {
         this.id = id;
     }
 
-    public Match(Long id, java.util.Date modified, Integer matchType, Integer matchSet, Integer redScore, Integer blueScore, String compLevel, String matchNum, Long competition) {
+    public Match(Long id, java.util.Date modified, int matchType, Integer matchSet, Integer redScore, Integer blueScore, String compLevel, String matchNum, Long competition) {
         this.id = id;
         this.modified = modified;
         this.matchType = matchType;
@@ -74,19 +76,21 @@ public class Match {
         this.id = id;
     }
 
+    /** Not-null value. */
     public java.util.Date getModified() {
         return modified;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setModified(java.util.Date modified) {
         this.modified = modified;
     }
 
-    public Integer getMatchType() {
+    public int getMatchType() {
         return matchType;
     }
 
-    public void setMatchType(Integer matchType) {
+    public void setMatchType(int matchType) {
         this.matchType = matchType;
     }
 
@@ -114,10 +118,12 @@ public class Match {
         this.blueScore = blueScore;
     }
 
+    /** Not-null value. */
     public String getCompLevel() {
         return compLevel;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setCompLevel(String compLevel) {
         this.compLevel = compLevel;
     }

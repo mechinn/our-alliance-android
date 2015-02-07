@@ -14,12 +14,13 @@ import com.mechinn.android.ouralliance.greenDao.frc2014.dao.TeamDao;
 /**
  * Entity mapped to table COMPETITION_TEAM.
  */
-public class CompetitionTeam {
+public class CompetitionTeam extends com.mechinn.android.ouralliance.OurAllianceObject  {
 
     private Long id;
+    /** Not-null value. */
     private java.util.Date modified;
-    private Long competition;
-    private Long team;
+    private long competition;
+    private long team;
     private Integer rank;
     private Boolean scouted;
 
@@ -46,7 +47,7 @@ public class CompetitionTeam {
         this.id = id;
     }
 
-    public CompetitionTeam(Long id, java.util.Date modified, Long competition, Long team, Integer rank, Boolean scouted) {
+    public CompetitionTeam(Long id, java.util.Date modified, long competition, long team, Integer rank, Boolean scouted) {
         this.id = id;
         this.modified = modified;
         this.competition = competition;
@@ -69,27 +70,29 @@ public class CompetitionTeam {
         this.id = id;
     }
 
+    /** Not-null value. */
     public java.util.Date getModified() {
         return modified;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setModified(java.util.Date modified) {
         this.modified = modified;
     }
 
-    public Long getCompetition() {
+    public long getCompetition() {
         return competition;
     }
 
-    public void setCompetition(Long competition) {
+    public void setCompetition(long competition) {
         this.competition = competition;
     }
 
-    public Long getTeam() {
+    public long getTeam() {
         return team;
     }
 
-    public void setTeam(Long team) {
+    public void setTeam(long team) {
         this.team = team;
     }
 
@@ -111,7 +114,7 @@ public class CompetitionTeam {
 
     /** To-one relationship, resolved on first access. */
     public Competition getCompetition() {
-        Long __key = this.competition;
+        long __key = this.competition;
         if (competition__resolvedKey == null || !competition__resolvedKey.equals(__key)) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -127,16 +130,19 @@ public class CompetitionTeam {
     }
 
     public void setCompetition(Competition competition) {
+        if (competition == null) {
+            throw new DaoException("To-one property 'competition' has not-null constraint; cannot set to-one to null");
+        }
         synchronized (this) {
             this.competition = competition;
-            competition = competition == null ? null : competition.getId();
+            competition = competition.getId();
             competition__resolvedKey = competition;
         }
     }
 
     /** To-one relationship, resolved on first access. */
     public Team getTeam() {
-        Long __key = this.team;
+        long __key = this.team;
         if (team__resolvedKey == null || !team__resolvedKey.equals(__key)) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -152,9 +158,12 @@ public class CompetitionTeam {
     }
 
     public void setTeam(Team team) {
+        if (team == null) {
+            throw new DaoException("To-one property 'team' has not-null constraint; cannot set to-one to null");
+        }
         synchronized (this) {
             this.team = team;
-            team = team == null ? null : team.getId();
+            team = team.getId();
             team__resolvedKey = team;
         }
     }

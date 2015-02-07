@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.mechinn.android.ouralliance.data.MatchScouting;
-import se.emilsjolander.sprinkles.*;
 
 public abstract class MatchTeamListFragment<A extends MatchScouting> extends ListFragment {
     public static final String TAG = "MatchTeamListFragment";

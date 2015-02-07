@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import com.jess.ui.TwoWayGridView;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
@@ -36,11 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import se.emilsjolander.sprinkles.CursorList;
-import se.emilsjolander.sprinkles.ManyQuery;
-import se.emilsjolander.sprinkles.ModelList;
-import se.emilsjolander.sprinkles.OneQuery;
-import se.emilsjolander.sprinkles.Query;
+import org.lucasr.twowayview.widget.TwoWayView;
 
 public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragment {
     public static final String TAG = "TeamDetailFragment";
@@ -53,7 +48,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	private View rootView;
 	private Button picture;
 	private Button video;
-	private TwoWayGridView gallery;
+	private TwoWayView gallery;
 	private TextView notes;
 	private Button addWheel;
 	private LinearLayout wheels;
@@ -259,7 +254,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
 	        picture.setVisibility(View.GONE);
 	        video.setVisibility(View.GONE);
 	    }
-		gallery = (TwoWayGridView) rootView.findViewById(R.id.gallery);
+		gallery = (TwoWayView) rootView.findViewById(R.id.gallery);
 //		gallery.setOnScrollListener(new AbsListView.OnScrollListener() {
 //            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
 //                // Pause fetcher to ensure smoother scrolling when flinging

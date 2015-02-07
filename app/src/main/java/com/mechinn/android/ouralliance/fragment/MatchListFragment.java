@@ -33,10 +33,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.mechinn.android.ouralliance.data.frc2014.ExportMatchScouting2014;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetMatches;
-import se.emilsjolander.sprinkles.CursorList;
-import se.emilsjolander.sprinkles.ManyQuery;
-import se.emilsjolander.sprinkles.ModelList;
-import se.emilsjolander.sprinkles.Query;
 
 public class MatchListFragment extends ListFragment {
     public static final String TAG = "MatchListFragment";

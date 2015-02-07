@@ -28,8 +28,6 @@ import com.mechinn.android.ouralliance.data.CompetitionTeam;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
-import se.emilsjolander.sprinkles.ModelList;
-
 public class InsertMatchDialogFragment extends DialogFragment {
     public static final String TAG = "InsertMatchDialogFragment";
 	public static final String MATCH_ARG = "match";

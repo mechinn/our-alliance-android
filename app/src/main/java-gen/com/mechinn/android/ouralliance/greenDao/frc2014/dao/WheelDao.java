@@ -32,10 +32,10 @@ public class WheelDao extends AbstractDao<Wheel, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Modified = new Property(1, java.util.Date.class, "modified", false, "MODIFIED");
-        public final static Property Team = new Property(2, Long.class, "team", false, "TEAM");
+        public final static Property Team = new Property(2, long.class, "team", false, "TEAM");
         public final static Property WheelType = new Property(3, String.class, "wheelType", false, "WHEEL_TYPE");
-        public final static Property WheelSize = new Property(4, Double.class, "wheelSize", false, "WHEEL_SIZE");
-        public final static Property WheelCount = new Property(5, Integer.class, "wheelCount", false, "WHEEL_COUNT");
+        public final static Property WheelSize = new Property(4, double.class, "wheelSize", false, "WHEEL_SIZE");
+        public final static Property WheelCount = new Property(5, int.class, "wheelCount", false, "WHEEL_COUNT");
     };
 
     private DaoSession daoSession;
@@ -56,11 +56,14 @@ public class WheelDao extends AbstractDao<Wheel, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'WHEEL' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'MODIFIED' INTEGER," + // 1: modified
-                "'TEAM' INTEGER," + // 2: team
-                "'WHEEL_TYPE' TEXT," + // 3: wheelType
-                "'WHEEL_SIZE' REAL," + // 4: wheelSize
-                "'WHEEL_COUNT' INTEGER);"); // 5: wheelCount
+                "'MODIFIED' INTEGER NOT NULL ," + // 1: modified
+                "'TEAM' INTEGER NOT NULL ," + // 2: team
+                "'WHEEL_TYPE' TEXT NOT NULL ," + // 3: wheelType
+                "'WHEEL_SIZE' REAL NOT NULL ," + // 4: wheelSize
+                "'WHEEL_COUNT' INTEGER NOT NULL );"); // 5: wheelCount
+        // Add Indexes
+        db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_WHEEL_TEAM_WHEEL_TYPE ON WHEEL" +
+                " (TEAM,WHEEL_TYPE);");
     }
 
     /** Drops the underlying database table. */
@@ -78,31 +81,11 @@ public class WheelDao extends AbstractDao<Wheel, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
- 
-        java.util.Date modified = entity.getModified();
-        if (modified != null) {
-            stmt.bindLong(2, modified.getTime());
-        }
- 
-        Long team = entity.getTeam();
-        if (team != null) {
-            stmt.bindLong(3, team);
-        }
- 
-        String wheelType = entity.getWheelType();
-        if (wheelType != null) {
-            stmt.bindString(4, wheelType);
-        }
- 
-        Double wheelSize = entity.getWheelSize();
-        if (wheelSize != null) {
-            stmt.bindDouble(5, wheelSize);
-        }
- 
-        Integer wheelCount = entity.getWheelCount();
-        if (wheelCount != null) {
-            stmt.bindLong(6, wheelCount);
-        }
+        stmt.bindLong(2, entity.getModified().getTime());
+        stmt.bindLong(3, entity.getTeam());
+        stmt.bindString(4, entity.getWheelType());
+        stmt.bindDouble(5, entity.getWheelSize());
+        stmt.bindLong(6, entity.getWheelCount());
     }
 
     @Override
@@ -122,11 +105,11 @@ public class WheelDao extends AbstractDao<Wheel, Long> {
     public Wheel readEntity(Cursor cursor, int offset) {
         Wheel entity = new Wheel( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)), // modified
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // team
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // wheelType
-            cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4), // wheelSize
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5) // wheelCount
+            new java.util.Date(cursor.getLong(offset + 1)), // modified
+            cursor.getLong(offset + 2), // team
+            cursor.getString(offset + 3), // wheelType
+            cursor.getDouble(offset + 4), // wheelSize
+            cursor.getInt(offset + 5) // wheelCount
         );
         return entity;
     }
@@ -135,11 +118,11 @@ public class WheelDao extends AbstractDao<Wheel, Long> {
     @Override
     public void readEntity(Cursor cursor, Wheel entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setModified(cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)));
-        entity.setTeam(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
-        entity.setWheelType(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setWheelSize(cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4));
-        entity.setWheelCount(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
+        entity.setModified(new java.util.Date(cursor.getLong(offset + 1)));
+        entity.setTeam(cursor.getLong(offset + 2));
+        entity.setWheelType(cursor.getString(offset + 3));
+        entity.setWheelSize(cursor.getDouble(offset + 4));
+        entity.setWheelCount(cursor.getInt(offset + 5));
      }
     
     /** @inheritdoc */
@@ -166,7 +149,7 @@ public class WheelDao extends AbstractDao<Wheel, Long> {
     }
     
     /** Internal query to resolve the "wheels" to-many relationship of TeamScouting. */
-    public List<Wheel> _queryTeamScouting_Wheels(Long team) {
+    public List<Wheel> _queryTeamScouting_Wheels(long team) {
         synchronized (this) {
             if (teamScouting_WheelsQuery == null) {
                 QueryBuilder<Wheel> queryBuilder = queryBuilder();
@@ -201,7 +184,9 @@ public class WheelDao extends AbstractDao<Wheel, Long> {
         int offset = getAllColumns().length;
 
         TeamScouting teamScouting = loadCurrentOther(daoSession.getTeamScoutingDao(), cursor, offset);
-        entity.setTeamScouting(teamScouting);
+         if(teamScouting != null) {
+            entity.setTeamScouting(teamScouting);
+        }
 
         return entity;    
     }

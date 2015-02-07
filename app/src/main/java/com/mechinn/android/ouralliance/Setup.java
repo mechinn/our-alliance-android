@@ -6,15 +6,9 @@ import android.app.Activity;
 import android.os.Environment;
 import android.util.Log;
 
-import com.mechinn.android.ouralliance.data.Competition;
-
-import com.mechinn.android.ouralliance.data.Team;
-import se.emilsjolander.sprinkles.SqlStatement;
-import se.emilsjolander.sprinkles.Transaction;
-
 public class Setup extends BackgroundProgress {
     public static final String TAG = "Setup";
-	public static final int VERSION = 17;
+	public static final int VERSION = 18;
 	private Prefs prefs;
 	private String packageName;
 	private File dbPath;
@@ -27,7 +21,7 @@ public class Setup extends BackgroundProgress {
 		this.activity = activity;
 		prefs = new Prefs(activity);
 		packageName = activity.getPackageName();
-		dbPath = activity.getDatabasePath("ourAlliance.db");
+		dbPath = activity.getDatabasePath("sprinkles.db");
 	}
 	
 	@Override
@@ -53,17 +47,65 @@ public class Setup extends BackgroundProgress {
 	protected Boolean doInBackground(Void... params) {
 		setVersion(prefs.getVersion());
 		Log.d(TAG, "version: "+getVersion());
-        Transaction t = new Transaction();
         try {
             switch (getVersion() + 1) {
                 //reset
                 case 0:
-                    increaseVersion();
-                    //drop all the rows
-                    new SqlStatement("DELETE FROM "+ Team.TAG).execute();
-                    new SqlStatement("DELETE FROM "+ Competition.TAG).execute();
+                    setVersion(0);
+                    prefs.clear();
                     prefs.setVersion(0);
                 case 1:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 2:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 3:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 4:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 5:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 6:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 7:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 8:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 9:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 10:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 11:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 12:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 13:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 14:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 15:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 16:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 17:
+                    increaseVersion();
+                    prefs.increaseVersion();
+                case 18:
                     increaseVersion();
                     if (this.isCancelled()) {
                         return false;
@@ -76,31 +118,6 @@ public class Setup extends BackgroundProgress {
                         File fileDir = new File(externalPath.getAbsolutePath() + "/Android/data/" + packageName + "/files");
                         Utility.deleteRecursive(fileDir);
                     }
-                    prefs.setVersion(1);
-                case 2:
-                    increaseVersion();
-                    if (this.isCancelled()) {
-                        return false;
-                    }
-                    prefs.setVersion(2);
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                case 10:
-                case 11:
-                case 12:
-                case 13:
-                case 14:
-                case 15:
-                case 16:
-                    prefs.clear();
-                    prefs.setVersion(15);
-                    setVersion(15);
-                    increaseVersion();
                     if (this.isCancelled()) {
                         return false;
                     }
@@ -113,22 +130,10 @@ public class Setup extends BackgroundProgress {
                     if (this.isCancelled()) {
                         return false;
                     }
-                    prefs.setVersion(16);
-                case 17:
-                    increaseVersion();
-                    if (this.isCancelled()) {
-                        return false;
-                    }
-                    setStatus("Deleting old matches");
-                    prefs.clearMatchesDownloaded();
-                    if (this.isCancelled()) {
-                        return false;
-                    }
-                    prefs.setVersion(17);
+                    prefs.increaseVersion();
             }
-            t.setSuccessful(true);
         } finally {
-            t.finish();
+
         }
 		setStatus("Finished");
 		return true;

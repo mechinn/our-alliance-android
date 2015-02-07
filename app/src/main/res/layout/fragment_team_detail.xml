@@ -30,18 +30,13 @@
 		            android:text="Video" />
 	         </LinearLayout>
 
-            <com.jess.ui.TwoWayGridView
+            <org.lucasr.twowayview.widget.TwoWayView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="93dp"
+                android:layout_height="match_parent"
                 android:id="@+id/gallery"
-                android:numColumns="auto_fit"
-                app:rowHeight="93dp"
-                app:numRows="1"
-                app:horizontalSpacing="10dp"
-                app:scrollDirectionPortrait="horizontal"
-                app:scrollDirectionLandscape="horizontal"
-                app:gravity="center" />
+                android:orientation="horizontal"
+                app:twowayview_layoutManager="ListLayoutManager" />
 
         </LinearLayout>
 

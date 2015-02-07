@@ -25,7 +25,7 @@ public class TeamDao extends AbstractDao<Team, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Modified = new Property(1, java.util.Date.class, "modified", false, "MODIFIED");
-        public final static Property TeamNumber = new Property(2, Integer.class, "teamNumber", false, "TEAM_NUMBER");
+        public final static Property TeamNumber = new Property(2, int.class, "teamNumber", false, "TEAM_NUMBER");
         public final static Property Nickname = new Property(3, String.class, "nickname", false, "NICKNAME");
     };
 
@@ -46,8 +46,8 @@ public class TeamDao extends AbstractDao<Team, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'TEAM' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'MODIFIED' INTEGER," + // 1: modified
-                "'TEAM_NUMBER' INTEGER," + // 2: teamNumber
+                "'MODIFIED' INTEGER NOT NULL ," + // 1: modified
+                "'TEAM_NUMBER' INTEGER NOT NULL UNIQUE ," + // 2: teamNumber
                 "'NICKNAME' TEXT);"); // 3: nickname
     }
 
@@ -66,16 +66,8 @@ public class TeamDao extends AbstractDao<Team, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
- 
-        java.util.Date modified = entity.getModified();
-        if (modified != null) {
-            stmt.bindLong(2, modified.getTime());
-        }
- 
-        Integer teamNumber = entity.getTeamNumber();
-        if (teamNumber != null) {
-            stmt.bindLong(3, teamNumber);
-        }
+        stmt.bindLong(2, entity.getModified().getTime());
+        stmt.bindLong(3, entity.getTeamNumber());
  
         String nickname = entity.getNickname();
         if (nickname != null) {
@@ -100,8 +92,8 @@ public class TeamDao extends AbstractDao<Team, Long> {
     public Team readEntity(Cursor cursor, int offset) {
         Team entity = new Team( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)), // modified
-            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // teamNumber
+            new java.util.Date(cursor.getLong(offset + 1)), // modified
+            cursor.getInt(offset + 2), // teamNumber
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // nickname
         );
         return entity;
@@ -111,8 +103,8 @@ public class TeamDao extends AbstractDao<Team, Long> {
     @Override
     public void readEntity(Cursor cursor, Team entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setModified(cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)));
-        entity.setTeamNumber(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
+        entity.setModified(new java.util.Date(cursor.getLong(offset + 1)));
+        entity.setTeamNumber(cursor.getInt(offset + 2));
         entity.setNickname(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     

@@ -48,9 +48,9 @@ public class CompetitionDao extends AbstractDao<Competition, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'COMPETITION' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'MODIFIED' INTEGER," + // 1: modified
-                "'NAME' TEXT," + // 2: name
-                "'EVENT_CODE' TEXT," + // 3: eventCode
+                "'MODIFIED' INTEGER NOT NULL ," + // 1: modified
+                "'NAME' TEXT NOT NULL ," + // 2: name
+                "'EVENT_CODE' TEXT NOT NULL UNIQUE ," + // 3: eventCode
                 "'LOCATION' TEXT," + // 4: location
                 "'OFFICIAL' INTEGER);"); // 5: official
     }
@@ -70,21 +70,9 @@ public class CompetitionDao extends AbstractDao<Competition, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
- 
-        java.util.Date modified = entity.getModified();
-        if (modified != null) {
-            stmt.bindLong(2, modified.getTime());
-        }
- 
-        String name = entity.getName();
-        if (name != null) {
-            stmt.bindString(3, name);
-        }
- 
-        String eventCode = entity.getEventCode();
-        if (eventCode != null) {
-            stmt.bindString(4, eventCode);
-        }
+        stmt.bindLong(2, entity.getModified().getTime());
+        stmt.bindString(3, entity.getName());
+        stmt.bindString(4, entity.getEventCode());
  
         String location = entity.getLocation();
         if (location != null) {
@@ -114,9 +102,9 @@ public class CompetitionDao extends AbstractDao<Competition, Long> {
     public Competition readEntity(Cursor cursor, int offset) {
         Competition entity = new Competition( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)), // modified
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // eventCode
+            new java.util.Date(cursor.getLong(offset + 1)), // modified
+            cursor.getString(offset + 2), // name
+            cursor.getString(offset + 3), // eventCode
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // location
             cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0 // official
         );
@@ -127,9 +115,9 @@ public class CompetitionDao extends AbstractDao<Competition, Long> {
     @Override
     public void readEntity(Cursor cursor, Competition entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setModified(cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)));
-        entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setEventCode(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setModified(new java.util.Date(cursor.getLong(offset + 1)));
+        entity.setName(cursor.getString(offset + 2));
+        entity.setEventCode(cursor.getString(offset + 3));
         entity.setLocation(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setOfficial(cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0);
      }

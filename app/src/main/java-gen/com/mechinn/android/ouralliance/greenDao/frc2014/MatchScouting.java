@@ -14,12 +14,13 @@ import com.mechinn.android.ouralliance.greenDao.frc2014.dao.TeamScoutingDao;
 /**
  * Entity mapped to table MATCH_SCOUTING.
  */
-public class MatchScouting {
+public class MatchScouting extends com.mechinn.android.ouralliance.OurAllianceObject  {
 
     private Long id;
+    /** Not-null value. */
     private java.util.Date modified;
-    private Long match;
-    private Long team;
+    private long match;
+    private long team;
     private Boolean alliance;
     private Integer position;
     private String notes;
@@ -60,7 +61,7 @@ public class MatchScouting {
         this.id = id;
     }
 
-    public MatchScouting(Long id, java.util.Date modified, Long match, Long team, Boolean alliance, Integer position, String notes, Integer hotShots, Integer shotsMade, Integer shotsMissed, Double moveForward, Boolean shooter, Boolean catcher, Boolean passer, Double driveTrainRating, Double ballAccuracyRating, Boolean ground, Boolean overTruss, Boolean low, Boolean high) {
+    public MatchScouting(Long id, java.util.Date modified, long match, long team, Boolean alliance, Integer position, String notes, Integer hotShots, Integer shotsMade, Integer shotsMissed, Double moveForward, Boolean shooter, Boolean catcher, Boolean passer, Double driveTrainRating, Double ballAccuracyRating, Boolean ground, Boolean overTruss, Boolean low, Boolean high) {
         this.id = id;
         this.modified = modified;
         this.match = match;
@@ -97,27 +98,29 @@ public class MatchScouting {
         this.id = id;
     }
 
+    /** Not-null value. */
     public java.util.Date getModified() {
         return modified;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setModified(java.util.Date modified) {
         this.modified = modified;
     }
 
-    public Long getMatch() {
+    public long getMatch() {
         return match;
     }
 
-    public void setMatch(Long match) {
+    public void setMatch(long match) {
         this.match = match;
     }
 
-    public Long getTeam() {
+    public long getTeam() {
         return team;
     }
 
-    public void setTeam(Long team) {
+    public void setTeam(long team) {
         this.team = team;
     }
 
@@ -251,7 +254,7 @@ public class MatchScouting {
 
     /** To-one relationship, resolved on first access. */
     public Match getMatch() {
-        Long __key = this.match;
+        long __key = this.match;
         if (match__resolvedKey == null || !match__resolvedKey.equals(__key)) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -267,16 +270,19 @@ public class MatchScouting {
     }
 
     public void setMatch(Match match) {
+        if (match == null) {
+            throw new DaoException("To-one property 'match' has not-null constraint; cannot set to-one to null");
+        }
         synchronized (this) {
             this.match = match;
-            match = match == null ? null : match.getId();
+            match = match.getId();
             match__resolvedKey = match;
         }
     }
 
     /** To-one relationship, resolved on first access. */
     public TeamScouting getTeamScouting() {
-        Long __key = this.team;
+        long __key = this.team;
         if (teamScouting__resolvedKey == null || !teamScouting__resolvedKey.equals(__key)) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -292,9 +298,12 @@ public class MatchScouting {
     }
 
     public void setTeamScouting(TeamScouting teamScouting) {
+        if (teamScouting == null) {
+            throw new DaoException("To-one property 'team' has not-null constraint; cannot set to-one to null");
+        }
         synchronized (this) {
             this.teamScouting = teamScouting;
-            team = teamScouting == null ? null : teamScouting.getId();
+            team = teamScouting.getId();
             teamScouting__resolvedKey = team;
         }
     }

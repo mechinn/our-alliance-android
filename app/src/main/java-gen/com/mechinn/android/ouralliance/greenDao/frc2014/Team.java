@@ -12,11 +12,12 @@ import com.mechinn.android.ouralliance.greenDao.frc2014.dao.TeamDao;
 /**
  * Entity mapped to table TEAM.
  */
-public class Team {
+public class Team extends com.mechinn.android.ouralliance.OurAllianceObject  {
 
     private Long id;
+    /** Not-null value. */
     private java.util.Date modified;
-    private Integer teamNumber;
+    private int teamNumber;
     private String nickname;
 
     /** Used to resolve relations */
@@ -36,7 +37,7 @@ public class Team {
         this.id = id;
     }
 
-    public Team(Long id, java.util.Date modified, Integer teamNumber, String nickname) {
+    public Team(Long id, java.util.Date modified, int teamNumber, String nickname) {
         this.id = id;
         this.modified = modified;
         this.teamNumber = teamNumber;
@@ -57,19 +58,21 @@ public class Team {
         this.id = id;
     }
 
+    /** Not-null value. */
     public java.util.Date getModified() {
         return modified;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setModified(java.util.Date modified) {
         this.modified = modified;
     }
 
-    public Integer getTeamNumber() {
+    public int getTeamNumber() {
         return teamNumber;
     }
 
-    public void setTeamNumber(Integer teamNumber) {
+    public void setTeamNumber(int teamNumber) {
         this.teamNumber = teamNumber;
     }
 

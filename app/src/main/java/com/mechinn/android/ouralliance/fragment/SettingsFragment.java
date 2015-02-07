@@ -23,11 +23,6 @@ import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetCompetitions;
 import com.mechinn.android.ouralliance.widget.CompetitionListPreference;
 
-import se.emilsjolander.sprinkles.CursorList;
-import se.emilsjolander.sprinkles.ManyQuery;
-import se.emilsjolander.sprinkles.ModelList;
-import se.emilsjolander.sprinkles.Query;
-
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,

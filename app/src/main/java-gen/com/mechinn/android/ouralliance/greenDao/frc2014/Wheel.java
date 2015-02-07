@@ -13,14 +13,16 @@ import com.mechinn.android.ouralliance.greenDao.frc2014.dao.WheelDao;
 /**
  * Entity mapped to table WHEEL.
  */
-public class Wheel {
+public class Wheel extends com.mechinn.android.ouralliance.OurAllianceObject  {
 
     private Long id;
+    /** Not-null value. */
     private java.util.Date modified;
-    private Long team;
+    private long team;
+    /** Not-null value. */
     private String wheelType;
-    private Double wheelSize;
-    private Integer wheelCount;
+    private double wheelSize;
+    private int wheelCount;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -42,7 +44,7 @@ public class Wheel {
         this.id = id;
     }
 
-    public Wheel(Long id, java.util.Date modified, Long team, String wheelType, Double wheelSize, Integer wheelCount) {
+    public Wheel(Long id, java.util.Date modified, long team, String wheelType, double wheelSize, int wheelCount) {
         this.id = id;
         this.modified = modified;
         this.team = team;
@@ -65,49 +67,53 @@ public class Wheel {
         this.id = id;
     }
 
+    /** Not-null value. */
     public java.util.Date getModified() {
         return modified;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setModified(java.util.Date modified) {
         this.modified = modified;
     }
 
-    public Long getTeam() {
+    public long getTeam() {
         return team;
     }
 
-    public void setTeam(Long team) {
+    public void setTeam(long team) {
         this.team = team;
     }
 
+    /** Not-null value. */
     public String getWheelType() {
         return wheelType;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setWheelType(String wheelType) {
         this.wheelType = wheelType;
     }
 
-    public Double getWheelSize() {
+    public double getWheelSize() {
         return wheelSize;
     }
 
-    public void setWheelSize(Double wheelSize) {
+    public void setWheelSize(double wheelSize) {
         this.wheelSize = wheelSize;
     }
 
-    public Integer getWheelCount() {
+    public int getWheelCount() {
         return wheelCount;
     }
 
-    public void setWheelCount(Integer wheelCount) {
+    public void setWheelCount(int wheelCount) {
         this.wheelCount = wheelCount;
     }
 
     /** To-one relationship, resolved on first access. */
     public TeamScouting getTeamScouting() {
-        Long __key = this.team;
+        long __key = this.team;
         if (teamScouting__resolvedKey == null || !teamScouting__resolvedKey.equals(__key)) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -123,9 +129,12 @@ public class Wheel {
     }
 
     public void setTeamScouting(TeamScouting teamScouting) {
+        if (teamScouting == null) {
+            throw new DaoException("To-one property 'team' has not-null constraint; cannot set to-one to null");
+        }
         synchronized (this) {
             this.teamScouting = teamScouting;
-            team = teamScouting == null ? null : teamScouting.getId();
+            team = teamScouting.getId();
             teamScouting__resolvedKey = team;
         }
     }

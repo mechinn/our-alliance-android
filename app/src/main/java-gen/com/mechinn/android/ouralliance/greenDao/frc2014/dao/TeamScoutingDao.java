@@ -30,7 +30,7 @@ public class TeamScoutingDao extends AbstractDao<TeamScouting, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Modified = new Property(1, java.util.Date.class, "modified", false, "MODIFIED");
-        public final static Property Team = new Property(2, Long.class, "team", false, "TEAM");
+        public final static Property Team = new Property(2, long.class, "team", false, "TEAM");
         public final static Property Notes = new Property(3, String.class, "notes", false, "NOTES");
         public final static Property Orientation = new Property(4, String.class, "orientation", false, "ORIENTATION");
         public final static Property DriveTrain = new Property(5, String.class, "driveTrain", false, "DRIVE_TRAIN");
@@ -74,8 +74,8 @@ public class TeamScoutingDao extends AbstractDao<TeamScouting, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'TEAM_SCOUTING' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'MODIFIED' INTEGER," + // 1: modified
-                "'TEAM' INTEGER," + // 2: team
+                "'MODIFIED' INTEGER NOT NULL ," + // 1: modified
+                "'TEAM' INTEGER NOT NULL UNIQUE ," + // 2: team
                 "'NOTES' TEXT," + // 3: notes
                 "'ORIENTATION' TEXT," + // 4: orientation
                 "'DRIVE_TRAIN' TEXT," + // 5: driveTrain
@@ -117,16 +117,8 @@ public class TeamScoutingDao extends AbstractDao<TeamScouting, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
- 
-        java.util.Date modified = entity.getModified();
-        if (modified != null) {
-            stmt.bindLong(2, modified.getTime());
-        }
- 
-        Long team = entity.getTeam();
-        if (team != null) {
-            stmt.bindLong(3, team);
-        }
+        stmt.bindLong(2, entity.getModified().getTime());
+        stmt.bindLong(3, entity.getTeam());
  
         String notes = entity.getNotes();
         if (notes != null) {
@@ -266,8 +258,8 @@ public class TeamScoutingDao extends AbstractDao<TeamScouting, Long> {
     public TeamScouting readEntity(Cursor cursor, int offset) {
         TeamScouting entity = new TeamScouting( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)), // modified
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // team
+            new java.util.Date(cursor.getLong(offset + 1)), // modified
+            cursor.getLong(offset + 2), // team
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // notes
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // orientation
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // driveTrain
@@ -300,8 +292,8 @@ public class TeamScoutingDao extends AbstractDao<TeamScouting, Long> {
     @Override
     public void readEntity(Cursor cursor, TeamScouting entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setModified(cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)));
-        entity.setTeam(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.setModified(new java.util.Date(cursor.getLong(offset + 1)));
+        entity.setTeam(cursor.getLong(offset + 2));
         entity.setNotes(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setOrientation(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setDriveTrain(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
@@ -372,7 +364,9 @@ public class TeamScoutingDao extends AbstractDao<TeamScouting, Long> {
         int offset = getAllColumns().length;
 
         Team team = loadCurrentOther(daoSession.getTeamDao(), cursor, offset);
-        entity.setTeam(team);
+         if(team != null) {
+            entity.setTeam(team);
+        }
 
         return entity;    
     }

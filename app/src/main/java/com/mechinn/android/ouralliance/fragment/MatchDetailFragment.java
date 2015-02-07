@@ -2,27 +2,18 @@ package com.mechinn.android.ouralliance.fragment;
 
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.MatchScouting;
-import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.activity.TeamScoutingActivity;
-import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import se.emilsjolander.sprinkles.OneQuery;
 
 public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragment {
     public static final String TAG = "MatchDetailFragment";

@@ -14,11 +14,14 @@ import com.mechinn.android.ouralliance.greenDao.frc2014.dao.MatchDao;
 /**
  * Entity mapped to table COMPETITION.
  */
-public class Competition {
+public class Competition extends com.mechinn.android.ouralliance.OurAllianceObject  {
 
     private Long id;
+    /** Not-null value. */
     private java.util.Date modified;
+    /** Not-null value. */
     private String name;
+    /** Not-null value. */
     private String eventCode;
     private String location;
     private Boolean official;
@@ -64,26 +67,32 @@ public class Competition {
         this.id = id;
     }
 
+    /** Not-null value. */
     public java.util.Date getModified() {
         return modified;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setModified(java.util.Date modified) {
         this.modified = modified;
     }
 
+    /** Not-null value. */
     public String getName() {
         return name;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** Not-null value. */
     public String getEventCode() {
         return eventCode;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setEventCode(String eventCode) {
         this.eventCode = eventCode;
     }

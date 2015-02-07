@@ -1,7 +1,5 @@
 package com.mechinn.android.ouralliance.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.FragmentManager.OnBackStackChangedListener;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -13,10 +11,6 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.mechinn.android.ouralliance.*;
 import com.mechinn.android.ouralliance.fragment.MatchTeamListFragment;
 import com.mechinn.android.ouralliance.fragment.MultimediaContextDialogFragment;
@@ -141,7 +135,6 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
         transaction.commit();
 	}
 
-	@SuppressLint("NewApi")
 	public void onBackStackChanged() {
 		Log.i(TAG, "back stack changed ");
         if (getFragmentManager().getBackStackEntryCount() < 1){

@@ -33,8 +33,8 @@ public class MatchScoutingDao extends AbstractDao<MatchScouting, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Modified = new Property(1, java.util.Date.class, "modified", false, "MODIFIED");
-        public final static Property Match = new Property(2, Long.class, "match", false, "MATCH");
-        public final static Property Team = new Property(3, Long.class, "team", false, "TEAM");
+        public final static Property Match = new Property(2, long.class, "match", false, "MATCH");
+        public final static Property Team = new Property(3, long.class, "team", false, "TEAM");
         public final static Property Alliance = new Property(4, Boolean.class, "alliance", false, "ALLIANCE");
         public final static Property Position = new Property(5, Integer.class, "position", false, "POSITION");
         public final static Property Notes = new Property(6, String.class, "notes", false, "NOTES");
@@ -72,9 +72,9 @@ public class MatchScoutingDao extends AbstractDao<MatchScouting, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MATCH_SCOUTING' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'MODIFIED' INTEGER," + // 1: modified
-                "'MATCH' INTEGER," + // 2: match
-                "'TEAM' INTEGER," + // 3: team
+                "'MODIFIED' INTEGER NOT NULL ," + // 1: modified
+                "'MATCH' INTEGER NOT NULL ," + // 2: match
+                "'TEAM' INTEGER NOT NULL ," + // 3: team
                 "'ALLIANCE' INTEGER," + // 4: alliance
                 "'POSITION' INTEGER," + // 5: position
                 "'NOTES' TEXT," + // 6: notes
@@ -91,6 +91,9 @@ public class MatchScoutingDao extends AbstractDao<MatchScouting, Long> {
                 "'OVER_TRUSS' INTEGER," + // 17: overTruss
                 "'LOW' INTEGER," + // 18: low
                 "'HIGH' INTEGER);"); // 19: high
+        // Add Indexes
+        db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_MATCH_SCOUTING_MATCH_TEAM ON MATCH_SCOUTING" +
+                " (MATCH,TEAM);");
     }
 
     /** Drops the underlying database table. */
@@ -108,21 +111,9 @@ public class MatchScoutingDao extends AbstractDao<MatchScouting, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
- 
-        java.util.Date modified = entity.getModified();
-        if (modified != null) {
-            stmt.bindLong(2, modified.getTime());
-        }
- 
-        Long match = entity.getMatch();
-        if (match != null) {
-            stmt.bindLong(3, match);
-        }
- 
-        Long team = entity.getTeam();
-        if (team != null) {
-            stmt.bindLong(4, team);
-        }
+        stmt.bindLong(2, entity.getModified().getTime());
+        stmt.bindLong(3, entity.getMatch());
+        stmt.bindLong(4, entity.getTeam());
  
         Boolean alliance = entity.getAlliance();
         if (alliance != null) {
@@ -222,9 +213,9 @@ public class MatchScoutingDao extends AbstractDao<MatchScouting, Long> {
     public MatchScouting readEntity(Cursor cursor, int offset) {
         MatchScouting entity = new MatchScouting( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)), // modified
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // match
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // team
+            new java.util.Date(cursor.getLong(offset + 1)), // modified
+            cursor.getLong(offset + 2), // match
+            cursor.getLong(offset + 3), // team
             cursor.isNull(offset + 4) ? null : cursor.getShort(offset + 4) != 0, // alliance
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // position
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // notes
@@ -249,9 +240,9 @@ public class MatchScoutingDao extends AbstractDao<MatchScouting, Long> {
     @Override
     public void readEntity(Cursor cursor, MatchScouting entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setModified(cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)));
-        entity.setMatch(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
-        entity.setTeam(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setModified(new java.util.Date(cursor.getLong(offset + 1)));
+        entity.setMatch(cursor.getLong(offset + 2));
+        entity.setTeam(cursor.getLong(offset + 3));
         entity.setAlliance(cursor.isNull(offset + 4) ? null : cursor.getShort(offset + 4) != 0);
         entity.setPosition(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
         entity.setNotes(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
@@ -294,7 +285,7 @@ public class MatchScoutingDao extends AbstractDao<MatchScouting, Long> {
     }
     
     /** Internal query to resolve the "teams" to-many relationship of Match. */
-    public List<MatchScouting> _queryMatch_Teams(Long match) {
+    public List<MatchScouting> _queryMatch_Teams(long match) {
         synchronized (this) {
             if (match_TeamsQuery == null) {
                 QueryBuilder<MatchScouting> queryBuilder = queryBuilder();
@@ -309,7 +300,7 @@ public class MatchScoutingDao extends AbstractDao<MatchScouting, Long> {
     }
 
     /** Internal query to resolve the "matches" to-many relationship of TeamScouting. */
-    public List<MatchScouting> _queryTeamScouting_Matches(Long team) {
+    public List<MatchScouting> _queryTeamScouting_Matches(long team) {
         synchronized (this) {
             if (teamScouting_MatchesQuery == null) {
                 QueryBuilder<MatchScouting> queryBuilder = queryBuilder();
@@ -347,11 +338,15 @@ public class MatchScoutingDao extends AbstractDao<MatchScouting, Long> {
         int offset = getAllColumns().length;
 
         Match match = loadCurrentOther(daoSession.getMatchDao(), cursor, offset);
-        entity.setMatch(match);
+         if(match != null) {
+            entity.setMatch(match);
+        }
         offset += daoSession.getMatchDao().getAllColumns().length;
 
         TeamScouting teamScouting = loadCurrentOther(daoSession.getTeamScoutingDao(), cursor, offset);
-        entity.setTeamScouting(teamScouting);
+         if(teamScouting != null) {
+            entity.setTeamScouting(teamScouting);
+        }
 
         return entity;    
     }
