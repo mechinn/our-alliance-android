@@ -6,14 +6,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import com.mechinn.android.ouralliance.Prefs;
-import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.MoveTeamScouting2014;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+
 import org.supercsv.exception.SuperCsvException;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
-import se.emilsjolander.sprinkles.Query;
-import se.emilsjolander.sprinkles.Transaction;
+
+import de.greenrobot.common.io.FileUtils;
+import de.greenrobot.common.io.IoUtils;
 
 import java.io.*;
 import java.util.Arrays;
@@ -75,19 +75,7 @@ public class Import extends Thread {
         }
         final File file = new File(context.getCacheDir(), "from_"+this.deviceName.replace(" ","_").toLowerCase()+".csv");
         try {
-            final OutputStream output = new FileOutputStream(file);
-            final byte[] buffer = new byte[1024];
-            int read;
-            try {
-                while((read=input.read(buffer)) != -1) {
-                    output.write(buffer,0,read);
-                }
-                output.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                output.close();
-            }
+            FileUtils.writeBytes(file,IoUtils.readAllBytesAndClose(input));
             reader = new FileReader(file);
         } catch (FileNotFoundException e) {
             Log.wtf(TAG, "file not found", e);

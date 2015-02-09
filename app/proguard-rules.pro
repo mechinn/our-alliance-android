@@ -27,3 +27,13 @@
 
 # Squareup
     -dontwarn com.squareup.okhttp.**
+
+# EventBus
+    -keepclassmembers class ** {
+        public void onEvent*(**);
+    }
+
+    # Only required if you use AsyncExecutor
+    -keepclassmembers class * extends de.greenrobot.event.util.ThrowableFailureEvent {
+        (java.lang.Throwable);
+    }

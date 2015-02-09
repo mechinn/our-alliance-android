@@ -1,9 +1,6 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.view.*;
@@ -14,9 +11,9 @@ import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.CompetitionTeamDragSortListAdapter;
 import com.mechinn.android.ouralliance.data.frc2014.ExportTeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
-import com.mechinn.android.ouralliance.rest.thebluealliance.GetCompetitionTeams;
+import com.mechinn.android.ouralliance.event.BluetoothEvent;
+import com.mechinn.android.ouralliance.rest.thebluealliance.GetEventTeams;
 import com.mobeta.android.dslv.DragSortListView;
 
 import android.app.Activity;
@@ -28,6 +25,8 @@ import android.util.Log;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+
+import de.greenrobot.event.EventBus;
 
 public class TeamListFragment extends Fragment {
     public static final String TAG = "TeamListFragment";
@@ -42,29 +41,7 @@ public class TeamListFragment extends Fragment {
     private int competitionLoader;
     private Sort2014 sort;
     private Spinner sortTeams;
-    private GetCompetitionTeams downloadTeams;
-
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-
-            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-                switch (state) {
-                    case BluetoothAdapter.STATE_OFF:
-                    case BluetoothAdapter.STATE_TURNING_OFF:
-                        bluetoothOn = false;
-                        break;
-                    case BluetoothAdapter.STATE_ON:
-                    case BluetoothAdapter.STATE_TURNING_ON:
-                        bluetoothOn = true;
-                        break;
-                }
-                getActivity().invalidateOptionsMenu();
-            }
-        }
-    };
+    private GetEventTeams downloadTeams;
 
     public interface Listener {
         public void onTeamSelected(long team);
@@ -114,7 +91,7 @@ public class TeamListFragment extends Fragment {
 		prefs = new Prefs(this.getActivity());
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         sort = Sort2014.RANK;
-        downloadTeams = new GetCompetitionTeams(this.getActivity());
+        downloadTeams = new GetEventTeams(this.getActivity());
     }
     
     @Override
@@ -169,7 +146,8 @@ public class TeamListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG,"start");
+        Log.d(TAG, "start");
+        EventBus.getDefault().register(this);
 //		this.getActivity().registerForContextMenu(this.getListView());
         // When in two-pane layout, set the listview to highlight the selected list item
         // (We do this during onStart because at the point the listview is available.)
@@ -181,15 +159,26 @@ public class TeamListFragment extends Fragment {
         }
         if(null!=bluetoothAdapter) {
             bluetoothOn = bluetoothAdapter.isEnabled();
-            IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-            this.getActivity().registerReceiver(broadcastReceiver, filter);
         }
     }
 
+    public void onEventMainThread(BluetoothEvent event) {
+        switch (event.getState()) {
+            case STATE_OFF:
+            case STATE_TURNING_OFF:
+                bluetoothOn = false;
+                break;
+            case STATE_ON:
+            case STATE_TURNING_ON:
+                bluetoothOn = true;
+                break;
+        }
+        getActivity().invalidateOptionsMenu();
+    }
+
     public void onStop() {
+        EventBus.getDefault().unregister(this);
         super.onStop();
-        // Unregister broadcast listeners
-        this.getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     @Override

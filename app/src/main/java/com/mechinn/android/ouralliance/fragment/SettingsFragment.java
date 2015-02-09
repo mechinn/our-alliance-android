@@ -19,8 +19,7 @@ import android.view.MenuItem;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.rest.thebluealliance.GetCompetitions;
+import com.mechinn.android.ouralliance.rest.thebluealliance.GetEvents;
 import com.mechinn.android.ouralliance.widget.CompetitionListPreference;
 
 /**
@@ -52,7 +51,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private Preference changelog;
 	private Preference about;
     private Competition selectedComp;
-    private GetCompetitions dialog;
+    private GetEvents dialog;
 
     private ManyQuery.ResultHandler<Competition> onCompetitionsLoaded =
             new ManyQuery.ResultHandler<Competition>() {
@@ -236,7 +235,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
     public void getCompetitions() {
         if(dialog==null || dialog.isComplete()) {
-            dialog = new GetCompetitions(this.getActivity());
+            dialog = new GetEvents(this.getActivity());
             dialog.execute();
         }
     }

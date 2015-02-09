@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.Competition;
 
 public class InsertCompDialogFragment extends DialogFragment {
     public static final String TAG = "InsertCompDialogFragment";

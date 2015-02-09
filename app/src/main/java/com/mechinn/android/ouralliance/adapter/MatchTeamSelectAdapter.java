@@ -2,13 +2,11 @@ package com.mechinn.android.ouralliance.adapter;
 
 import android.content.Context;
 import android.util.SparseIntArray;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
 
 import se.emilsjolander.sprinkles.ModelList;
 

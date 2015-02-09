@@ -1,8 +1,5 @@
 package com.mechinn.android.ouralliance.adapter;
 
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.Match;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

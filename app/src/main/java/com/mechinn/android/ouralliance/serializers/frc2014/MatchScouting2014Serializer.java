@@ -2,7 +2,6 @@ package com.mechinn.android.ouralliance.serializers.frc2014;
 
 import android.database.Cursor;
 
-import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.serializers.AOurAllianceDataSerializer;
 
 import se.emilsjolander.sprinkles.Query;

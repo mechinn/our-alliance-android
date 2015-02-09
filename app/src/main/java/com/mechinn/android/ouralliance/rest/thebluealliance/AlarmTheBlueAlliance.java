@@ -5,21 +5,11 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-import com.mechinn.android.ouralliance.OurAllianceException;
+
 import com.mechinn.android.ouralliance.Prefs;
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Match;
-import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
-import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
+
 import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.Transaction;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by mechinn on 3/7/14.

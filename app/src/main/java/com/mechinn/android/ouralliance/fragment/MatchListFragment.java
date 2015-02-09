@@ -1,18 +1,13 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import com.mechinn.android.ouralliance.data.Import;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchAdapter;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Match;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -32,7 +27,10 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.mechinn.android.ouralliance.data.frc2014.ExportMatchScouting2014;
+import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetMatches;
+
+import de.greenrobot.event.EventBus;
 
 public class MatchListFragment extends ListFragment {
     public static final String TAG = "MatchListFragment";
@@ -45,28 +43,6 @@ public class MatchListFragment extends ListFragment {
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
     private GetMatches downloadMatches;
-
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-
-            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-                switch (state) {
-                    case BluetoothAdapter.STATE_OFF:
-                    case BluetoothAdapter.STATE_TURNING_OFF:
-                        bluetoothOn = false;
-                        break;
-                    case BluetoothAdapter.STATE_ON:
-                    case BluetoothAdapter.STATE_TURNING_ON:
-                        bluetoothOn = true;
-                        break;
-                }
-                getActivity().invalidateOptionsMenu();
-            }
-        }
-    };
 
     public interface Listener {
         public void onMatchSelected(long match);
@@ -160,6 +136,7 @@ public class MatchListFragment extends ListFragment {
     @Override
     public void onStart() {
         super.onStart();
+        EventBus.getDefault().register(this);
 //		this.getActivity().registerForContextMenu(this.getListView());
         // When in two-pane layout, set the listview to highlight the selected list item
         // (We do this during onStart because at the point the listview is available.)
@@ -168,15 +145,26 @@ public class MatchListFragment extends ListFragment {
         }
         if(null!=bluetoothAdapter) {
             bluetoothOn = bluetoothAdapter.isEnabled();
-            IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-            this.getActivity().registerReceiver(broadcastReceiver, filter);
         }
     }
 
+    public void onEventMainThread(BluetoothEvent event) {
+        switch (event.getState()) {
+            case STATE_OFF:
+            case STATE_TURNING_OFF:
+                bluetoothOn = false;
+                break;
+            case STATE_ON:
+            case STATE_TURNING_ON:
+                bluetoothOn = true;
+                break;
+        }
+        getActivity().invalidateOptionsMenu();
+    }
+
     public void onStop() {
+        EventBus.getDefault().unregister(this);
         super.onStop();
-        // Unregister broadcast listeners
-        this.getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     @Override

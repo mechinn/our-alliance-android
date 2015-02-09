@@ -1,9 +1,5 @@
 package com.mechinn.android.ouralliance.data.frc2014;
 
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
-
 /**
  * Created by mechinn on 3/26/14.
  */

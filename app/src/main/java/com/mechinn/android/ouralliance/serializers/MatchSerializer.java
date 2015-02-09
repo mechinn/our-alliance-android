@@ -1,9 +1,6 @@
 package com.mechinn.android.ouralliance.serializers;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-
-import com.mechinn.android.ouralliance.data.Match;
 
 import se.emilsjolander.sprinkles.Query;
 import se.emilsjolander.sprinkles.typeserializers.SqlType;

@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.processor;
 
-import com.mechinn.android.ouralliance.data.Team;
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.exception.SuperCsvCellProcessorException;

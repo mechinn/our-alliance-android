@@ -1,29 +1,15 @@
 package com.mechinn.android.ouralliance.fragment.frc2014;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.RadioGroup;
 import android.widget.RatingBar;
-import android.widget.TextView;
 
-import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.Utility;
-import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.fragment.MatchDetailFragment;
-import com.mechinn.android.ouralliance.widget.UncheckableRadioButton;
-import com.mechinn.android.ouralliance.widget.UncheckableRadioGroup;
-import com.mechinn.android.ouralliance.widget.UncheckableRadioGroupOnCheckedChangeListener;
 
 import se.emilsjolander.sprinkles.Query;
 

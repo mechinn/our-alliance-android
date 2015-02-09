@@ -2,7 +2,6 @@ package com.mechinn.android.ouralliance.adapter;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -11,14 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mobeta.android.dslv.DragSortListView;
 
 import se.emilsjolander.sprinkles.ModelList;
 import se.emilsjolander.sprinkles.Transaction;
-
-import java.util.ArrayList;
 
 public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter implements DragSortListView.DropListener {
     public static final String TAG = "CompetitionTeamDragSortListAdapter";

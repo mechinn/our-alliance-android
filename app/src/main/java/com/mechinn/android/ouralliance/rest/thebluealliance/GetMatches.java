@@ -1,16 +1,9 @@
 package com.mechinn.android.ouralliance.rest.thebluealliance;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
+
 import com.mechinn.android.ouralliance.OurAllianceException;
-import com.mechinn.android.ouralliance.Prefs;
-import com.mechinn.android.ouralliance.data.*;
-import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.rest.GetHandlerThread;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import retrofit.RetrofitError;

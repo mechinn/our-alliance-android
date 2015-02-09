@@ -1,18 +1,9 @@
 package com.mechinn.android.ouralliance.rest.thebluealliance;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
 import android.util.Log;
 import android.util.SparseArray;
-import android.widget.Toast;
-import com.mechinn.android.ouralliance.Prefs;
-import com.mechinn.android.ouralliance.data.Competition;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+
 import com.mechinn.android.ouralliance.rest.GetHandlerThread;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import retrofit.RetrofitError;
@@ -28,10 +19,10 @@ import java.util.List;
 /**
  * Created by mechinn on 3/31/14.
  */
-public class GetCompetitionTeams extends GetHandlerThread {
+public class GetEventTeams extends GetHandlerThread {
     public static final String TAG = "GetCompetitionTeams";
 
-    public GetCompetitionTeams(Context context) {
+    public GetEventTeams(Context context) {
         super(TAG,context);
     }
 

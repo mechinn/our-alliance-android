@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.BackgroundProgress;
 import com.mechinn.android.ouralliance.Prefs;
-import se.emilsjolander.sprinkles.Query;
 
 public abstract class Export extends BackgroundProgress {
     public static final String TAG = "Export";

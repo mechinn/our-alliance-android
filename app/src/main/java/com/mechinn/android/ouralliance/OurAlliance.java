@@ -13,8 +13,13 @@ import android.os.Message;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.mechinn.android.ouralliance.data.*;
-import com.mechinn.android.ouralliance.greenDaoObject.frc2014.dao.DaoMaster;
-import com.mechinn.android.ouralliance.greenDaoObject.frc2014.dao.DaoSession;
+import com.mechinn.android.ouralliance.event.BluetoothEvent;
+import com.mechinn.android.ouralliance.event.EventException;
+import com.mechinn.android.ouralliance.greenDao.frc2014.dao.DaoMaster;
+import com.mechinn.android.ouralliance.greenDao.frc2014.dao.DaoSession;
+
+import de.greenrobot.common.io.IoUtils;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by mechinn on 2/18/14.
@@ -28,17 +33,12 @@ public class OurAlliance extends Application {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-                switch (state) {
-                    case BluetoothAdapter.STATE_OFF:
-                    case BluetoothAdapter.STATE_TURNING_OFF:
-                        stopBluetoothReceiver();
-                        break;
-                    case BluetoothAdapter.STATE_ON:
-                        startBluetoothReceiver();
-                        break;
+                try {
+                    int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                    EventBus.getDefault().post(new BluetoothEvent(state));
+                } catch (EventException e) {
+                    Toast.makeText(OurAlliance.this,e.getMessage(),Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -48,18 +48,24 @@ public class OurAlliance extends Application {
         super.onCreate();
         Crashlytics.start(this);
         setupDatabase();
+        EventBus.getDefault().register(this);
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         this.registerReceiver(broadcastReceiver, filter);
         if(null==receiver && null!=BluetoothAdapter.getDefaultAdapter() && BluetoothAdapter.getDefaultAdapter().isEnabled()) {
             startBluetoothReceiver();
         }
-
 //        new AlarmTheBlueAlliance(this.getApplicationContext()).setAlarm();
     }
 
+    @Override
+    public void onTerminate() {
+        EventBus.getDefault().register(this);
+        super.onTerminate();
+    }
+
     private void setupDatabase() {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "greendao2014", null);
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "greendao", null);
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
@@ -67,6 +73,18 @@ public class OurAlliance extends Application {
 
     public DaoSession getDaoSession() {
         return daoSession;
+    }
+
+    public void onEvent(BluetoothEvent event) {
+        switch(event.getState()) {
+            case STATE_OFF:
+            case STATE_TURNING_OFF:
+                stopBluetoothReceiver();
+                break;
+            case STATE_ON:
+                startBluetoothReceiver();
+                break;
+        }
     }
 
     public void startBluetoothReceiver() {

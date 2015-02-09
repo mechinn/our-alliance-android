@@ -14,85 +14,120 @@ import de.greenrobot.daogenerator.ToMany;
 public class DaoGen {
     String schemaName = "com.mechinn.android.ouralliance.greenDao";
     String folder;
+    Entity team;
+    Entity multimedia;
+    Schema schema;
 
     public static void main(String args[]) throws Exception {
-        String exportFolder = args[0];
-        new DaoGen(exportFolder).frc2014();
+        new DaoGen(args[0]);
     }
 
-    public DaoGen(String folder){
+    public DaoGen(String folder) throws Exception {
         this.folder = folder;
-    }
-
-    public void frc2014() throws Exception {
-        String schemaName = this.schemaName+".frc2014";
-        Schema schema = new Schema(1, schemaName);
-        schema.setDefaultJavaPackageTest(schemaName+".test");
-        schema.setDefaultJavaPackageDao(schemaName+".dao");
+        schema = new Schema(1, this.schemaName);
+        schema.setDefaultJavaPackageTest(this.schemaName + ".test");
+        schema.setDefaultJavaPackageDao(this.schemaName + ".dao");
         schema.enableKeepSectionsByDefault();
         schema.enableActiveEntitiesByDefault();
 
-        Entity team = schema.addEntity("Team");
+        team = schema.addEntity("Team");
         team.addIdProperty();
         team.addDateProperty("modified").notNull();
         team.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        team.implementsInterface("Comparable<Team>");
         team.addIntProperty("teamNumber").notNull().unique();
         team.addStringProperty("nickname");
+        team.addStringProperty("website");
+        team.addStringProperty("locality");
+        team.addStringProperty("region");
+        team.addStringProperty("country");
+        team.addStringProperty("key");
+        team.addIntProperty("rookieYear");
 
-        Entity competition = schema.addEntity("Competition");
-        competition.addIdProperty();
-        competition.addDateProperty("modified").notNull();
-        competition.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
-        Property nameCompetitition = competition.addStringProperty("name").notNull().getProperty();
-        competition.addStringProperty("eventCode").notNull().unique();
-        competition.addStringProperty("location");
-        Property officialCompetitition = competition.addBooleanProperty("official").getProperty();
+        multimedia = schema.addEntity("Multimedia");
+        multimedia.addIdProperty();
+        multimedia.addDateProperty("modified").notNull();
+        multimedia.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        multimedia.implementsInterface("Comparable<Multimedia>");
+        multimedia.addIntProperty("teamNumber").notNull().unique();
+        multimedia.addStringProperty("type");
+        multimedia.addStringProperty("key");
+        this.frc2014();
+        new DaoGenerator().generateAll(schema, folder);
+    }
 
-        Entity competitionTeam = schema.addEntity("CompetitionTeam");
-        competitionTeam.addIdProperty();
-        competitionTeam.addDateProperty("modified").notNull();
-        competitionTeam.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
-        Property competitionTeamCompetition = competitionTeam.addLongProperty("competition").notNull().getProperty();
-        competitionTeam.addToOne(competition,competitionTeamCompetition);
-        Property competitionTeamTeam = competitionTeam.addLongProperty("team").notNull().getProperty();
-        competitionTeam.addToOne(team, competitionTeamTeam);
-        competitionTeam.addIntProperty("rank");
-        competitionTeam.addBooleanProperty("scouted");
+    public void frc2014() throws Exception {
+        Entity event = schema.addEntity("Event2014");
+        event.addIdProperty();
+        event.addDateProperty("modified").notNull();
+        event.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        event.implementsInterface("Comparable<Event2014>");
+        event.addStringProperty("shortName").notNull();
+        event.addStringProperty("eventCode").notNull().unique();
+        event.addIntProperty("eventType").notNull();
+        event.addIntProperty("eventDistrict").notNull();
+        event.addIntProperty("year").notNull();
+        event.addStringProperty("venueAddress");
+        event.addStringProperty("website");
+        event.addDateProperty("startDate");
+        event.addDateProperty("endDate");
+        event.addBooleanProperty("official");
 
-        Index competitionTeamUnique = new Index();
-        competitionTeamUnique.addProperty(competitionTeamCompetition);
-        competitionTeamUnique.addProperty(competitionTeamTeam);
-        competitionTeamUnique.makeUnique();
-        competitionTeam.addIndex(competitionTeamUnique);
+        Entity eventTeam = schema.addEntity("EventTeam2014");
+        eventTeam.addIdProperty();
+        eventTeam.addDateProperty("modified").notNull();
+        eventTeam.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        eventTeam.implementsInterface("Comparable<EventTeam2014>");
+        Property eventTeamEvent = eventTeam.addLongProperty("EventId").notNull().getProperty();
+        eventTeam.addToOne(event,eventTeamEvent);
+        Property eventTeamTeam = eventTeam.addLongProperty("teamId").notNull().getProperty();
+        eventTeam.addToOne(team, eventTeamTeam);
+        eventTeam.addIntProperty("rank");
+        eventTeam.addBooleanProperty("scouted");
 
-        Entity match = schema.addEntity("Match");
+        Index eventTeamUnique = new Index();
+        eventTeamUnique.addProperty(eventTeamEvent);
+        eventTeamUnique.addProperty(eventTeamTeam);
+        eventTeamUnique.makeUnique();
+        eventTeam.addIndex(eventTeamUnique);
+
+        ToMany eventToEventTeam = event.addToMany(eventTeam, eventTeamEvent);
+        eventToEventTeam.setName("teams");
+
+        ToMany teamToEventTeam = team.addToMany(eventTeam, eventTeamEvent);
+        teamToEventTeam.setName("events");
+
+        Entity match = schema.addEntity("Match2014");
         match.addIdProperty();
         match.addDateProperty("modified").notNull();
         match.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
-        match.addIntProperty("matchType").notNull();
-        match.addIntProperty("matchSet");
+        match.implementsInterface("Comparable<Match2014>");
+        match.addStringProperty("compLevel").notNull();
+        match.addIntProperty("setNumber");
+        match.addDateProperty("time");
         match.addIntProperty("redScore");
         match.addIntProperty("blueScore");
-        match.addStringProperty("compLevel").notNull();
-        Property matchNum = match.addStringProperty("matchNum").getProperty();
-        Property competitionMatch = match.addLongProperty("competition").getProperty();
-        match.addToOne(competition,competitionMatch);
+        Property matchNum = match.addIntProperty("matchNum").getProperty();
+        Property eventMatch = match.addLongProperty("eventId").getProperty();
+        match.addToOne(event,eventMatch);
+        Property matchMultimedia = match.addLongProperty("multimediaId").getProperty();
 
         Index matchUnique = new Index();
-        matchUnique.addProperty(competitionMatch);
+        matchUnique.addProperty(eventMatch);
         matchUnique.addProperty(matchNum);
         matchUnique.makeUnique();
         match.addIndex(matchUnique);
 
-        ToMany competitionToMatches = competition.addToMany(match, competitionMatch);
-        competitionToMatches.setName("matches");
-        competitionToMatches.orderAsc(matchNum);
+        ToMany eventToMatches = event.addToMany(match, eventMatch);
+        eventToMatches.setName("matches");
+        eventToMatches.orderAsc(matchNum);
 
-        Entity teamScouting = schema.addEntity("TeamScouting");
+        Entity teamScouting = schema.addEntity("TeamScouting2014");
         teamScouting.addIdProperty();
         teamScouting.addDateProperty("modified").notNull();
         teamScouting.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
-        Property teamScoutingteam = teamScouting.addLongProperty("team").notNull().unique().getProperty();
+        teamScouting.implementsInterface("Comparable<TeamScouting2014>");
+        Property teamScoutingteam = teamScouting.addLongProperty("teamId").notNull().unique().getProperty();
         teamScouting.addToOne(team,teamScoutingteam);
         teamScouting.addStringProperty("notes");
         teamScouting.addStringProperty("orientation");
@@ -118,12 +153,14 @@ public class DaoGen {
         teamScouting.addBooleanProperty("lowAuto");
         teamScouting.addBooleanProperty("highAuto");
         teamScouting.addBooleanProperty("hotAuto");
+        Property teamMultimedia = teamScouting.addLongProperty("multimediaId").getProperty();
 
-        Entity wheel = schema.addEntity("Wheel");
+        Entity wheel = schema.addEntity("Wheel2014");
         wheel.addIdProperty();
         wheel.addDateProperty("modified").notNull();
         wheel.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
-        Property teamScoutingWheel = wheel.addLongProperty("team").notNull().getProperty();
+        wheel.implementsInterface("Comparable<Wheel2014>");
+        Property teamScoutingWheel = wheel.addLongProperty("teamId").notNull().getProperty();
         wheel.addToOne(teamScouting,teamScoutingWheel);
         Property wheelType = wheel.addStringProperty("wheelType").notNull().getProperty();
         wheel.addDoubleProperty("wheelSize").notNull();
@@ -139,13 +176,14 @@ public class DaoGen {
         teamScoutingToWheels.setName("wheels");
         teamScoutingToWheels.orderAsc(wheelType);
 
-        Entity matchScouting = schema.addEntity("MatchScouting");
+        Entity matchScouting = schema.addEntity("MatchScouting2014");
         matchScouting.addIdProperty();
         matchScouting.addDateProperty("modified").notNull();
         matchScouting.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
-        Property matchScoutingmatch = matchScouting.addLongProperty("match").notNull().getProperty();
+        matchScouting.implementsInterface("Comparable<MatchScouting2014>");
+        Property matchScoutingmatch = matchScouting.addLongProperty("matchId").notNull().getProperty();
         matchScouting.addToOne(match,matchScoutingmatch);
-        Property matchScoutingteam = matchScouting.addLongProperty("team").notNull().getProperty();
+        Property matchScoutingteam = matchScouting.addLongProperty("teamId").notNull().getProperty();
         matchScouting.addToOne(teamScouting,matchScoutingteam);
         matchScouting.addBooleanProperty("alliance");
         matchScouting.addIntProperty("position");
@@ -178,6 +216,10 @@ public class DaoGen {
         teamScoutingToMatches.setName("matches");
         teamScoutingToMatches.orderAsc(matchScoutingmatch);
 
-        new DaoGenerator().generateAll(schema, folder);
+        ToMany matchToMultimedia = match.addToMany(multimedia, matchMultimedia);
+        matchToMultimedia.setName("multimedia");
+
+        ToMany teamToMultimedia = teamScouting.addToMany(multimedia, teamMultimedia);
+        teamToMultimedia.setName("multimedia");
     }
 }

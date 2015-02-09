@@ -6,7 +6,6 @@ import java.net.URLConnection;
 import android.util.TypedValue;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.fragment.MultimediaContextDialogFragment;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;

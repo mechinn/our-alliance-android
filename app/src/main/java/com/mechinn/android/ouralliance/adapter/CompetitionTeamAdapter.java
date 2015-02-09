@@ -1,9 +1,6 @@
 package com.mechinn.android.ouralliance.adapter;
 
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
-
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 

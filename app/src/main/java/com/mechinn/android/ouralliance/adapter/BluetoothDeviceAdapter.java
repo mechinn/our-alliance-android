@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
+
 import se.emilsjolander.sprinkles.ModelList;
 
 import java.util.Set;

@@ -1,7 +1,5 @@
 package com.mechinn.android.ouralliance.fragment.frc2014;
 
-import com.mechinn.android.ouralliance.data.MatchScouting;
-import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.fragment.MatchTeamListFragment;
 import se.emilsjolander.sprinkles.Query;
 

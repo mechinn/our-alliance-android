@@ -130,6 +130,10 @@ public class Setup extends BackgroundProgress {
                     if (this.isCancelled()) {
                         return false;
                     }
+
+                    if (this.isCancelled()) {
+                        return false;
+                    }
                     prefs.increaseVersion();
             }
         } finally {

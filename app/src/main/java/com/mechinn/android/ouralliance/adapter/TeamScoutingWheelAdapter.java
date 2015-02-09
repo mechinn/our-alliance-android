@@ -9,8 +9,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.mechinn.android.ouralliance.data.TeamScoutingWheel;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

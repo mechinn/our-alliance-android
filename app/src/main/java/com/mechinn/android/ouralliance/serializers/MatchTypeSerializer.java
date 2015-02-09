@@ -3,7 +3,7 @@ package com.mechinn.android.ouralliance.serializers;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
-import com.mechinn.android.ouralliance.data.Match;
+
 import se.emilsjolander.sprinkles.typeserializers.SqlType;
 import se.emilsjolander.sprinkles.typeserializers.TypeSerializer;
 

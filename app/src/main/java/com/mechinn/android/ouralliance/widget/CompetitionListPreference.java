@@ -5,11 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.AttributeSet;
 
-import android.widget.ListAdapter;
-import com.crashlytics.android.internal.A;
-import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.adapter.CompetitionListPreferenceAdapter;
-import com.mechinn.android.ouralliance.data.Competition;
 
 import se.emilsjolander.sprinkles.ModelList;
 

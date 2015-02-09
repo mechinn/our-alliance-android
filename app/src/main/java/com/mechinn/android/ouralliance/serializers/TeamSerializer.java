@@ -2,8 +2,6 @@ package com.mechinn.android.ouralliance.serializers;
 
 import android.database.Cursor;
 
-import com.mechinn.android.ouralliance.data.Team;
-
 import se.emilsjolander.sprinkles.Query;
 
 /**

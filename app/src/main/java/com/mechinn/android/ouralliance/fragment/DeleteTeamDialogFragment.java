@@ -1,7 +1,6 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.CompetitionTeam;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

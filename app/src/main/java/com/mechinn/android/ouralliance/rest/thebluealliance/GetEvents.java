@@ -1,10 +1,8 @@
 package com.mechinn.android.ouralliance.rest.thebluealliance;
 
 import android.app.Activity;
-import android.os.Message;
 import android.util.Log;
 import com.mechinn.android.ouralliance.BackgroundProgress;
-import com.mechinn.android.ouralliance.data.Competition;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import retrofit.RetrofitError;
 import se.emilsjolander.sprinkles.Transaction;
@@ -14,9 +12,9 @@ import java.util.List;
 /**
  * Created by mechinn on 3/31/14.
  */
-public class GetCompetitions extends BackgroundProgress {
-    public static final String TAG = "GetCompetitions";
-    public GetCompetitions(Activity activity) {
+public class GetEvents extends BackgroundProgress {
+    public static final String TAG = "GetEvents";
+    public GetEvents(Activity activity) {
         super(activity, FLAG_COMPETITION_LIST);
         setTitle("Downloading");
     }
