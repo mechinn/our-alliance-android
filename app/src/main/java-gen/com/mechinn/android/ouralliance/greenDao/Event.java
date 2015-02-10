@@ -43,6 +43,7 @@ public class Event extends com.mechinn.android.ouralliance.OurAllianceObject  im
     private List<Match> matches;
 
     // KEEP FIELDS - put your custom fields here
+    public final static String TAG = "Event";
     // KEEP FIELDS END
 
     public Event() {

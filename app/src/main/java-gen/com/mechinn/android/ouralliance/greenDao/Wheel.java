@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.greenDao;
 
-import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
 
@@ -36,6 +35,7 @@ public class Wheel extends com.mechinn.android.ouralliance.OurAllianceObject  im
 
 
     // KEEP FIELDS - put your custom fields here
+    public final static String TAG = "Wheel";
     // KEEP FIELDS END
 
     public Wheel() {

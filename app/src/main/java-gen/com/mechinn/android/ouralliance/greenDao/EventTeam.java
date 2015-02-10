@@ -38,6 +38,7 @@ public class EventTeam extends com.mechinn.android.ouralliance.OurAllianceObject
 
 
     // KEEP FIELDS - put your custom fields here
+    public final static String TAG = "EventTeam";
     // KEEP FIELDS END
 
     public EventTeam() {

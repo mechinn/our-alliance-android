@@ -52,6 +52,7 @@ public class MatchScouting2014 extends com.mechinn.android.ouralliance.OurAllian
 
 
     // KEEP FIELDS - put your custom fields here
+    public final static String TAG = "MatchScouting2014";
     // KEEP FIELDS END
 
     public MatchScouting2014() {

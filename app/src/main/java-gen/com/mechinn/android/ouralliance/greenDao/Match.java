@@ -1,7 +1,5 @@
 package com.mechinn.android.ouralliance.greenDao;
 
-import android.util.Log;
-
 import java.util.List;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
@@ -46,6 +44,7 @@ public class Match extends com.mechinn.android.ouralliance.OurAllianceObject  im
     private List<Multimedia> multimedia;
 
     // KEEP FIELDS - put your custom fields here
+    public final static String TAG = "Match";
     // KEEP FIELDS END
 
     public Match() {

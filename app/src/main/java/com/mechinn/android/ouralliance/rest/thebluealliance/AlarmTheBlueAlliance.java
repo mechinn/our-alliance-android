@@ -8,9 +8,6 @@ import android.content.Intent;
 
 import com.mechinn.android.ouralliance.Prefs;
 
-import se.emilsjolander.sprinkles.Query;
-import se.emilsjolander.sprinkles.Transaction;
-
 /**
  * Created by mechinn on 3/7/14.
  */

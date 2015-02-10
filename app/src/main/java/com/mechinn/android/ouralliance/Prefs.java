@@ -7,6 +7,10 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 
+import com.mechinn.android.ouralliance.greenDao.Event;
+import com.mechinn.android.ouralliance.greenDao.EventTeam;
+import com.mechinn.android.ouralliance.greenDao.Match;
+
 import java.util.Map;
 
 public class Prefs {

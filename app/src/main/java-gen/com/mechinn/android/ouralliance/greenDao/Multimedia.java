@@ -29,6 +29,7 @@ public class Multimedia extends com.mechinn.android.ouralliance.OurAllianceObjec
 
 
     // KEEP FIELDS - put your custom fields here
+    public final static String TAG = "Multimedia";
     // KEEP FIELDS END
 
     public Multimedia() {

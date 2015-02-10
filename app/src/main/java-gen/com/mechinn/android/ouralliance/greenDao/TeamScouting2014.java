@@ -63,6 +63,7 @@ public class TeamScouting2014 extends com.mechinn.android.ouralliance.OurAllianc
     private List<Multimedia> multimedia;
 
     // KEEP FIELDS - put your custom fields here
+    public final static String TAG = "TeamScouting2014";
     // KEEP FIELDS END
 
     public TeamScouting2014() {
