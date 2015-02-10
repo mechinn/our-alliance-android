@@ -66,33 +66,33 @@ public class Prefs {
 	public boolean getDbSetup() {
 		return Boolean.parseBoolean(prefs.getString(dbSetupPref, dbSetupDefault));
 	}
-    public void setCompetitionsDownloaded(Boolean downloaded) {
-        editor.putString(Competition.TAG+"_"+getYear(), downloaded?"true":"false");
+    public void setEventsDownloaded(Boolean downloaded) {
+        editor.putString(Event.TAG+"_"+getYear(), downloaded?"true":"false");
         editor.apply();
     }
-    public boolean isCompetitionsDownloaded() {
-        return Boolean.parseBoolean(prefs.getString(Competition.TAG+"_"+getYear(), "false"));
+    public boolean isEventsDownloaded() {
+        return Boolean.parseBoolean(prefs.getString(Event.TAG+"_"+getYear(), "false"));
     }
-    public void clearCompetitionsDownloaded() {
+    public void clearEventsDownloaded() {
         final Map<String, ?> all = prefs.getAll();
         for(Map.Entry<String,?> entry : all.entrySet()) {
-            if(entry.getKey().startsWith(Competition.TAG+"_")) {
+            if(entry.getKey().startsWith(Event.TAG+"_")) {
                 editor.remove(entry.getKey());
             }
         }
         editor.apply();
     }
-    public void setCompetitionTeamsDownloaded(Boolean downloaded) {
-        editor.putString(CompetitionTeam.TAG+"_"+getYear()+"_"+getComp(), downloaded?"true":"false");
+    public void setEventTeamsDownloaded(Boolean downloaded) {
+        editor.putString(EventTeam.TAG+"_"+getYear()+"_"+getComp(), downloaded?"true":"false");
         editor.apply();
     }
-    public boolean isCompetitionTeamsDownloaded() {
-        return Boolean.parseBoolean(prefs.getString(CompetitionTeam.TAG+"_"+getYear()+"_"+getComp(), "false"));
+    public boolean isEventTeamsDownloaded() {
+        return Boolean.parseBoolean(prefs.getString(EventTeam.TAG+"_"+getYear()+"_"+getComp(), "false"));
     }
-    public void clearCompetitionTeamsDownloaded() {
+    public void clearEventTeamsDownloaded() {
         final Map<String, ?> all = prefs.getAll();
         for(Map.Entry<String,?> entry : all.entrySet()) {
-            if(entry.getKey().startsWith(CompetitionTeam.TAG+"_")) {
+            if(entry.getKey().startsWith(EventTeam.TAG+"_")) {
                 editor.remove(entry.getKey());
             }
         }

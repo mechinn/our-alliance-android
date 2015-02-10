@@ -3,7 +3,7 @@ package com.mechinn.android.ouralliance.greenDao;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
 
-import com.mechinn.android.ouralliance.greenDao.dao.Match2014Dao;
+import com.mechinn.android.ouralliance.greenDao.dao.MatchDao;
 import com.mechinn.android.ouralliance.greenDao.dao.MatchScouting2014Dao;
 import com.mechinn.android.ouralliance.greenDao.dao.TeamScouting2014Dao;
 
@@ -44,8 +44,8 @@ public class MatchScouting2014 extends com.mechinn.android.ouralliance.OurAllian
     /** Used for active entity operations. */
     private transient MatchScouting2014Dao myDao;
 
-    private Match2014 match2014;
-    private Long match2014__resolvedKey;
+    private Match match;
+    private Long match__resolvedKey;
 
     private TeamScouting2014 teamScouting2014;
     private Long teamScouting2014__resolvedKey;
@@ -253,30 +253,30 @@ public class MatchScouting2014 extends com.mechinn.android.ouralliance.OurAllian
     }
 
     /** To-one relationship, resolved on first access. */
-    public Match2014 getMatch2014() {
+    public Match getMatch() {
         long __key = this.matchId;
-        if (match2014__resolvedKey == null || !match2014__resolvedKey.equals(__key)) {
+        if (match__resolvedKey == null || !match__resolvedKey.equals(__key)) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            Match2014Dao targetDao = daoSession.getMatch2014Dao();
-            Match2014 match2014New = targetDao.load(__key);
+            MatchDao targetDao = daoSession.getMatchDao();
+            Match matchNew = targetDao.load(__key);
             synchronized (this) {
-                match2014 = match2014New;
-            	match2014__resolvedKey = __key;
+                match = matchNew;
+            	match__resolvedKey = __key;
             }
         }
-        return match2014;
+        return match;
     }
 
-    public void setMatch2014(Match2014 match2014) {
-        if (match2014 == null) {
+    public void setMatch(Match match) {
+        if (match == null) {
             throw new DaoException("To-one property 'matchId' has not-null constraint; cannot set to-one to null");
         }
         synchronized (this) {
-            this.match2014 = match2014;
-            matchId = match2014.getId();
-            match2014__resolvedKey = matchId;
+            this.match = match;
+            matchId = match.getId();
+            match__resolvedKey = matchId;
         }
     }
 
@@ -334,7 +334,7 @@ public class MatchScouting2014 extends com.mechinn.android.ouralliance.OurAllian
 
     // KEEP METHODS - put your custom methods here
     public String toString() {
-        return this.getMatch2014()+" - "+this.getAlliance()+": "+this.getTeamScouting2014().getTeam();
+        return this.getMatch()+" - "+this.getAlliance()+": "+this.getTeamScouting2014().getTeam();
     }
     public int compareTo(MatchScouting2014 another) {
         int compare = (this.getAlliance()?1:0) - (another.getAlliance()?1:0);
@@ -347,7 +347,7 @@ public class MatchScouting2014 extends com.mechinn.android.ouralliance.OurAllian
         if(!(data instanceof MatchScouting2014)) {
             return false;
         }
-        return  getMatch2014().equals(((MatchScouting2014)data).getMatch2014()) &&
+        return  getMatch().equals(((MatchScouting2014)data).getMatch()) &&
                 getTeamScouting2014().equals(((MatchScouting2014)data).getTeamScouting2014()) &&
                 getAlliance()==((MatchScouting2014)data).getAlliance() &&
                 getNotes().equals(((MatchScouting2014)data).getNotes()) &&

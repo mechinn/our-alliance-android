@@ -6,8 +6,8 @@ import java.util.List;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
 
-import com.mechinn.android.ouralliance.greenDao.dao.Event2014Dao;
-import com.mechinn.android.ouralliance.greenDao.dao.Match2014Dao;
+import com.mechinn.android.ouralliance.greenDao.dao.EventDao;
+import com.mechinn.android.ouralliance.greenDao.dao.MatchDao;
 import com.mechinn.android.ouralliance.greenDao.dao.MatchScouting2014Dao;
 import com.mechinn.android.ouralliance.greenDao.dao.MultimediaDao;
 
@@ -16,9 +16,9 @@ import com.mechinn.android.ouralliance.greenDao.dao.MultimediaDao;
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
 /**
- * Entity mapped to table MATCH2014.
+ * Entity mapped to table MATCH.
  */
-public class Match2014 extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Match2014> {
+public class Match extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Match> {
 
     private Long id;
     /** Not-null value. */
@@ -37,26 +37,25 @@ public class Match2014 extends com.mechinn.android.ouralliance.OurAllianceObject
     private transient DaoSession daoSession;
 
     /** Used for active entity operations. */
-    private transient Match2014Dao myDao;
+    private transient MatchDao myDao;
 
-    private Event2014 event2014;
-    private Long event2014__resolvedKey;
+    private Event event;
+    private Long event__resolvedKey;
 
     private List<MatchScouting2014> teams;
     private List<Multimedia> multimedia;
 
     // KEEP FIELDS - put your custom fields here
-    public static final String TAG = "Match2014";
     // KEEP FIELDS END
 
-    public Match2014() {
+    public Match() {
     }
 
-    public Match2014(Long id) {
+    public Match(Long id) {
         this.id = id;
     }
 
-    public Match2014(Long id, java.util.Date modified, String compLevel, Integer setNumber, java.util.Date time, Integer redScore, Integer blueScore, Integer matchNum, Long eventId, Long multimediaId) {
+    public Match(Long id, java.util.Date modified, String compLevel, Integer setNumber, java.util.Date time, Integer redScore, Integer blueScore, Integer matchNum, Long eventId, Long multimediaId) {
         this.id = id;
         this.modified = modified;
         this.compLevel = compLevel;
@@ -72,7 +71,7 @@ public class Match2014 extends com.mechinn.android.ouralliance.OurAllianceObject
     /** called by internal mechanisms, do not call yourself. */
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getMatch2014Dao() : null;
+        myDao = daoSession != null ? daoSession.getMatchDao() : null;
     }
 
     public Long getId() {
@@ -160,27 +159,27 @@ public class Match2014 extends com.mechinn.android.ouralliance.OurAllianceObject
     }
 
     /** To-one relationship, resolved on first access. */
-    public Event2014 getEvent2014() {
+    public Event getEvent() {
         Long __key = this.eventId;
-        if (event2014__resolvedKey == null || !event2014__resolvedKey.equals(__key)) {
+        if (event__resolvedKey == null || !event__resolvedKey.equals(__key)) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            Event2014Dao targetDao = daoSession.getEvent2014Dao();
-            Event2014 event2014New = targetDao.load(__key);
+            EventDao targetDao = daoSession.getEventDao();
+            Event eventNew = targetDao.load(__key);
             synchronized (this) {
-                event2014 = event2014New;
-            	event2014__resolvedKey = __key;
+                event = eventNew;
+            	event__resolvedKey = __key;
             }
         }
-        return event2014;
+        return event;
     }
 
-    public void setEvent2014(Event2014 event2014) {
+    public void setEvent(Event event) {
         synchronized (this) {
-            this.event2014 = event2014;
-            eventId = event2014 == null ? null : event2014.getId();
-            event2014__resolvedKey = eventId;
+            this.event = event;
+            eventId = event == null ? null : event.getId();
+            event__resolvedKey = eventId;
         }
     }
 
@@ -191,7 +190,7 @@ public class Match2014 extends com.mechinn.android.ouralliance.OurAllianceObject
                 throw new DaoException("Entity is detached from DAO context");
             }
             MatchScouting2014Dao targetDao = daoSession.getMatchScouting2014Dao();
-            List<MatchScouting2014> teamsNew = targetDao._queryMatch2014_Teams(id);
+            List<MatchScouting2014> teamsNew = targetDao._queryMatch_Teams(id);
             synchronized (this) {
                 if(teams == null) {
                     teams = teamsNew;
@@ -213,7 +212,7 @@ public class Match2014 extends com.mechinn.android.ouralliance.OurAllianceObject
                 throw new DaoException("Entity is detached from DAO context");
             }
             MultimediaDao targetDao = daoSession.getMultimediaDao();
-            List<Multimedia> multimediaNew = targetDao._queryMatch2014_Multimedia(id);
+            List<Multimedia> multimediaNew = targetDao._queryMatch_Multimedia(id);
             synchronized (this) {
                 if(multimedia == null) {
                     multimedia = multimediaNew;
@@ -253,34 +252,83 @@ public class Match2014 extends com.mechinn.android.ouralliance.OurAllianceObject
     }
 
     // KEEP METHODS - put your custom methods here
+    public enum CompetitionLevel {
+        EIGHTH_FINALS,
+        QUARTER_FINALS,
+        SEMI_FINALS,
+        FINALS,
+        QUALIFIER,
+        PRACTICE;
+        public String getValue() {
+            switch(this) {
+                case EIGHTH_FINALS:
+                    return "ef";
+                case QUARTER_FINALS:
+                    return "qf";
+                case SEMI_FINALS:
+                    return "sf";
+                case FINALS:
+                    return "f";
+                default:
+                    return "qm";
+            }
+        }
+        public String toString() {
+            switch(this) {
+                case EIGHTH_FINALS:
+                    return "Eigtht Finals";
+                case QUARTER_FINALS:
+                    return "Quarter Finals";
+                case SEMI_FINALS:
+                    return "Semi Finals";
+                case FINALS:
+                    return "Finals";
+                default:
+                    return "Qualifier";
+            }
+        }
+    }
+    public CompetitionLevel getLevelFromCompLevel() {
+        if(this.getCompLevel().equals("ef")) {
+            return CompetitionLevel.EIGHTH_FINALS;
+        } else if(this.getCompLevel().equals("qf")) {
+            return CompetitionLevel.QUARTER_FINALS;
+        } else if(this.getCompLevel().equals("sf")) {
+            return CompetitionLevel.SEMI_FINALS;
+        } else if(this.getCompLevel().equals("f")) {
+            return CompetitionLevel.FINALS;
+        } else {
+            return CompetitionLevel.QUALIFIER;
+        }
+    }
     public String toString() {
-        Log.d(TAG, "type: " + getMatchType());
-        switch(getMatchType()) {
+        switch(getLevelFromCompLevel()) {
             case PRACTICE:
-                return "Practice: "+this.getDisplayNum();
-            case QUARTERFINAL:
-                return "Quarterfinal: "+getMatchSet()+" Match: "+(((getMatchNum()-1000)/10));
-            case SEMIFINAL:
-                return "Semifinal: "+ getMatchSet()+" Match: "+(((getMatchNum()-10000)/10));
-            case FINAL:
-                return "Final: "+(((getMatchNum()-100000)/10));
+                return "Practice: "+this.getMatchNum();
+            case QUARTER_FINALS:
+                return "Quarterfinal: "+getSetNumber()+" Match: "+getMatchNum();
+            case SEMI_FINALS:
+                return "Semifinal: "+ getSetNumber()+" Match: "+getMatchNum();
+            case FINALS:
+                return "Final: "+getMatchNum();
             default:
-                return "Qualifier: "+this.getDisplayNum();
+                return "Qualifier: "+this.getMatchNum();
         }
     }
     public boolean equals(Object data) {
-        if(!(data instanceof Match2014)) {
+        if(!(data instanceof Match)) {
             return false;
         }
-        return  getEvent2014().equals(((Match2014)data).getCompetition()) &&
-                getMatchNum()==((Match2014)data).getMatchNum() &&
-                getRedScore()==((Match2014)data).getRedScore() &&
-                getBlueScore()==((Match2014)data).getBlueScore() &&
-                getMatchType().equals(((Match2014)data).getMatchType()) &&
-                getMatchSet()==((Match2014)data).getMatchSet();
+        return  getEvent().equals(((Match)data).getEvent()) &&
+                getCompLevel().equals(((Match)data).getCompLevel()) &&
+                getSetNumber()==((Match)data).getSetNumber() &&
+                getTime().equals(((Match)data).getTime()) &&
+                getRedScore()==((Match)data).getRedScore() &&
+                getBlueScore()==((Match)data).getBlueScore() &&
+                getMatchNum()==((Match)data).getMatchNum();
     }
-    public int compareTo(Match2014 another) {
-        return this.getDisplayNum() - another.getDisplayNum();
+    public int compareTo(Match another) {
+        return this.getMatchNum() - another.getMatchNum();
     }
     // KEEP METHODS END
 

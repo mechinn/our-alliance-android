@@ -1,5 +1,10 @@
 package com.mechinn.android.ouralliance.rest;
 
+import com.mechinn.android.ouralliance.greenDao.Event;
+import com.mechinn.android.ouralliance.greenDao.Match;
+import com.mechinn.android.ouralliance.greenDao.Multimedia;
+import com.mechinn.android.ouralliance.greenDao.Team;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.GET;
@@ -20,11 +25,11 @@ public class TheBlueAlliance {
 
         @Headers(HEADER)
         @GET("/teams/{page}")
-        public Team getTeamPage(@Path("page") String page);
+        public List<Team> getTeamPage(@Path("page") String page);
 
         @Headers(HEADER)
         @GET("/teams/{page}")
-        public void getTeamPage(@Path("page") String page, Callback<Team> callback);
+        public void getTeamPage(@Path("page") String page, Callback<List<Team>> callback);
 
         @Headers(HEADER)
         @GET("/team/{team}")
@@ -36,59 +41,59 @@ public class TheBlueAlliance {
 
         @Headers(HEADER)
         @GET("/team/{team}/{year}/events")
-        public Team getTeamEvents(@Path("team") String team, @Path("year") int year);
+        public List<Event> getTeamEvents(@Path("team") String team, @Path("year") int year);
 
         @Headers(HEADER)
         @GET("/team/{team}/{year}/events")
-        public void getTeamEvents(@Path("team") String team, @Path("year") int year, Callback<Team> callback);
+        public void getTeamEvents(@Path("team") String team, @Path("year") int year, Callback<List<Event>> callback);
 
-        @Headers(HEADER)
-        @GET("/team/{team}/event/{event}/awards")
-        public Team getTeamEventAwards(@Path("team") String team, @Path("event") int event);
-
-        @Headers(HEADER)
-        @GET("/team/{team}/event/{event}/awards")
-        public void getTeamEventAwards(@Path("team") String team, @Path("event") int event, Callback<Team> callback);
-
-        @Headers(HEADER)
-        @GET("/team/{team}/event/{event}/matches")
-        public Team getTeamEventMatches(@Path("team") String team, @Path("event") int event);
+//        @Headers(HEADER)
+//        @GET("/team/{team}/event/{event}/awards")
+//        public Team getTeamEventAwards(@Path("team") String team, @Path("event") int event);
+//
+//        @Headers(HEADER)
+//        @GET("/team/{team}/event/{event}/awards")
+//        public void getTeamEventAwards(@Path("team") String team, @Path("event") int event, Callback<Team> callback);
 
         @Headers(HEADER)
         @GET("/team/{team}/event/{event}/matches")
-        public void getTeamEventMatches(@Path("team") String team, @Path("event") int event, Callback<Team> callback);
+        public List<Match> getTeamEventMatches(@Path("team") String team, @Path("event") int event);
+
+        @Headers(HEADER)
+        @GET("/team/{team}/event/{event}/matches")
+        public void getTeamEventMatches(@Path("team") String team, @Path("event") int event, Callback<List<Match>> callback);
 
         @Headers(HEADER)
         @GET("/team/{team}/years_participated")
-        public Team getTeamYearsParticipated(@Path("team") String team);
+        public int[] getTeamYearsParticipated(@Path("team") String team);
 
         @Headers(HEADER)
         @GET("/team/{team}/years_participated")
-        public void getTeamYearsParticipated(@Path("team") String team, Callback<Team> callback);
+        public void getTeamYearsParticipated(@Path("team") String team, Callback<int[]> callback);
 
         @Headers(HEADER)
         @GET("/team/{team}/{year}/media")
-        public Team getTeamMedia(@Path("team") String team, @Path("year") int year);
+        public List<Multimedia> getTeamMedia(@Path("team") String team, @Path("year") int year);
 
         @Headers(HEADER)
         @GET("/team/{team}/{year}/media")
-        public void getTeamMedia(@Path("team") String team, @Path("year") int year, Callback<Team> callback);
+        public void getTeamMedia(@Path("team") String team, @Path("year") int year, Callback<List<Multimedia>> callback);
 
         @Headers(HEADER)
         @GET("/events/{year}")
-        public List<String> getEventList(@Path("year") int year);
+        public List<Event> getEventList(@Path("year") int year);
 
         @Headers(HEADER)
         @GET("/events/{year}")
-        public void getEventList(@Path("year") int year, Callback<List<String>> callback);
+        public void getEventList(@Path("year") int year, Callback<List<Event>> callback);
 
         @Headers(HEADER)
         @GET("/event/{event}")
-        public Competition getEvent(@Path("event") String event);
+        public Event getEvent(@Path("event") String event);
 
         @Headers(HEADER)
         @GET("/event/{event}")
-        public void getEvent(@Path("event") String event, Callback<Competition> callback);
+        public void getEvent(@Path("event") String event, Callback<Event> callback);
 
         @Headers(HEADER)
         @GET("/event/{event}/teams")
@@ -106,69 +111,69 @@ public class TheBlueAlliance {
         @GET("/event/{event}/matches")
         public void getEventMatches(@Path("event") String event, Callback<List<Match>> callback);
 
-        @Headers(HEADER)
-        @GET("/event/{event}/stats")
-        public List<Match> getEventStats(@Path("event") String event);
+//        @Headers(HEADER)
+//        @GET("/event/{event}/stats")
+//        public List<Match> getEventStats(@Path("event") String event);
+//
+//        @Headers(HEADER)
+//        @GET("/event/{event}/stats")
+//        public void getEventStats(@Path("event") String event, Callback<List<Match>> callback);
 
-        @Headers(HEADER)
-        @GET("/event/{event}/stats")
-        public void getEventStats(@Path("event") String event, Callback<List<Match>> callback);
+//        @Headers(HEADER)
+//        @GET("/event/{event}/rankings")
+//        public List<Match> getEventRankings(@Path("event") String event);
+//
+//        @Headers(HEADER)
+//        @GET("/event/{event}/rankings")
+//        public void getEventRankings(@Path("event") String event, Callback<List<Match>> callback);
 
-        @Headers(HEADER)
-        @GET("/event/{event}/rankings")
-        public List<Match> getEventRankings(@Path("event") String event);
+//        @Headers(HEADER)
+//        @GET("/event/{event}/awards")
+//        public List<Match> getEventAwards(@Path("event") String event);
+//
+//        @Headers(HEADER)
+//        @GET("/event/{event}/awards")
+//        public void getEventAwards(@Path("event") String event, Callback<List<Match>> callback);
 
-        @Headers(HEADER)
-        @GET("/event/{event}/rankings")
-        public void getEventRankings(@Path("event") String event, Callback<List<Match>> callback);
-
-        @Headers(HEADER)
-        @GET("/event/{event}/awards")
-        public List<Match> getEventAwards(@Path("event") String event);
-
-        @Headers(HEADER)
-        @GET("/event/{event}/awards")
-        public void getEventAwards(@Path("event") String event, Callback<List<Match>> callback);
-
-        @Headers(HEADER)
-        @GET("/event/{event}/district_points")
-        public List<Match> getEventDistrictPoints(@Path("event") String event);
-
-        @Headers(HEADER)
-        @GET("/event/{event}/district_points")
-        public void getEventDistrictPoints(@Path("event") String event, Callback<List<Match>> callback);
-
-        @Headers(HEADER)
-        @GET("/match/{match}")
-        public List<Match> getMatch(@Path("match") String match);
+//        @Headers(HEADER)
+//        @GET("/event/{event}/district_points")
+//        public List<Match> getEventDistrictPoints(@Path("event") String event);
+//
+//        @Headers(HEADER)
+//        @GET("/event/{event}/district_points")
+//        public void getEventDistrictPoints(@Path("event") String event, Callback<List<Match>> callback);
 
         @Headers(HEADER)
         @GET("/match/{match}")
-        public void getMatch(@Path("match") String match, Callback<List<Match>> callback);
+        public Match getMatch(@Path("match") String match);
 
         @Headers(HEADER)
-        @GET("/districts/{year}")
-        public List<Match> getDistrictList(@Path("year") int year);
+        @GET("/match/{match}")
+        public void getMatch(@Path("match") String match, Callback<Match> callback);
 
-        @Headers(HEADER)
-        @GET("/districts/{year}")
-        public void getDistrictList(@Path("year") int year, Callback<List<Match>> callback);
+//        @Headers(HEADER)
+//        @GET("/districts/{year}")
+//        public List<Match> getDistrictList(@Path("year") int year);
+//
+//        @Headers(HEADER)
+//        @GET("/districts/{year}")
+//        public void getDistrictList(@Path("year") int year, Callback<List<Match>> callback);
 
         @Headers(HEADER)
         @GET("/district/{district}/{year}/events")
-        public List<Match> getDistrictEvents(@Path("district") District district,@Path("year") int year);
+        public List<Event> getDistrictEvents(@Path("district") District district,@Path("year") int year);
 
         @Headers(HEADER)
         @GET("/district/{district}/{year}/events")
-        public void getDistrictEvents(@Path("district") District district,@Path("year") int year, Callback<List<Match>> callback);
+        public void getDistrictEvents(@Path("district") District district,@Path("year") int year, Callback<List<Event>> callback);
 
-        @Headers(HEADER)
-        @GET("/district/{district}/{year}/rankings")
-        public List<Match> getDistrictRankings(@Path("district") District district, @Path("year") int year);
-
-        @Headers(HEADER)
-        @GET("/district/{district}/{year}/rankings")
-        public void getDistrictRankings(@Path("district") District district, @Path("year") int year, Callback<List<Match>> callback);
+//        @Headers(HEADER)
+//        @GET("/district/{district}/{year}/rankings")
+//        public List<Match> getDistrictRankings(@Path("district") District district, @Path("year") int year);
+//
+//        @Headers(HEADER)
+//        @GET("/district/{district}/{year}/rankings")
+//        public void getDistrictRankings(@Path("district") District district, @Path("year") int year, Callback<List<Match>> callback);
     }
     private static final RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(TheBlueAllianceAPIv2.URL).build();
     private static final TheBlueAllianceAPIv2 service = restAdapter.create(TheBlueAllianceAPIv2.class);

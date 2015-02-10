@@ -15,8 +15,8 @@ import com.crashlytics.android.Crashlytics;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.event.EventException;
-import com.mechinn.android.ouralliance.greenDao.frc2014.dao.DaoMaster;
-import com.mechinn.android.ouralliance.greenDao.frc2014.dao.DaoSession;
+import com.mechinn.android.ouralliance.greenDao.dao.DaoMaster;
+import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
 import de.greenrobot.common.io.IoUtils;
 import de.greenrobot.event.EventBus;

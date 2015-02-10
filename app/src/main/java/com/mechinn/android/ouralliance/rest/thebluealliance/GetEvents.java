@@ -3,9 +3,10 @@ package com.mechinn.android.ouralliance.rest.thebluealliance;
 import android.app.Activity;
 import android.util.Log;
 import com.mechinn.android.ouralliance.BackgroundProgress;
+import com.mechinn.android.ouralliance.OurAlliance;
+import com.mechinn.android.ouralliance.greenDao.Event;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import retrofit.RetrofitError;
-import se.emilsjolander.sprinkles.Transaction;
 
 import java.util.List;
 
@@ -22,34 +23,26 @@ public class GetEvents extends BackgroundProgress {
     @Override
     protected Boolean doInBackground(Void... params) {
         if(this.getPrefs().getYear()>0) {
-            Transaction t = new Transaction();
             Log.d(TAG, "year: " + this.getPrefs().getYear());
             try {
-                switch (this.getPrefs().getYear()) {
-                    case 2014:
-                        setStatus("Setting up 2014 competitions");
-                        List<String> events = TheBlueAlliance.getService().getEventList(2014);
-                        Competition competition;
-                        this.setTotal(events.size());
-                        for (String eventKey : events) {
-                            if (this.isCancelled()) {
-                                return false;
-                            }
-                            competition = TheBlueAlliance.getService().getEvent(eventKey);
-                            Log.d(TAG, "name: " + competition.getName());
-                            Log.d(TAG, "code: " + competition.getCode());
-                            Log.d(TAG, "location: " + competition.getLocation());
-                            Log.d(TAG, "season: " + competition.getYear());
-                            Log.d(TAG, "official: " + competition.isOfficial());
-                            competition.save(t);
-                            this.increasePrimary();
-                        }
-                        break;
+                int year = this.getPrefs().getYear();
+                setStatus("Setting up "+year+" events");
+                List<Event> events = TheBlueAlliance.getService().getEventList(year);
+                for (Event event : events) {
+                    if (this.isCancelled()) {
+                        return false;
+                    }
+                    Log.d(TAG, "name: " + event.getShortName());
+                    Log.d(TAG, "code: " + event.getEventCode());
+                    Log.d(TAG, "location: " + event.getVenueAddress());
+                    Log.d(TAG, "season: " + event.getYear());
+                    Log.d(TAG, "official: " + event.getOfficial());
+                    this.increasePrimary();
                 }
-                t.setSuccessful(true);
-                getPrefs().setCompetitionsDownloaded(true);
+                ((OurAlliance)this.getActivity().getApplication()).getDaoSession().getEventDao().insertInTx(events);
+                getPrefs().setEventsDownloaded(true);
             } catch (RetrofitError e) {
-                Log.e(TAG,"Error downloading competition teams",e);
+                Log.e(TAG,"Error downloading events",e);
                 if(e.isNetworkError()) {
                     setStatus("Unable to connect");
                     return false;
@@ -57,8 +50,6 @@ public class GetEvents extends BackgroundProgress {
                     setStatus("Error "+e.getResponse().getStatus()+" connecting");
                     return false;
                 }
-            } finally {
-                t.finish();
             }
         }
         setStatus("No season selected");
