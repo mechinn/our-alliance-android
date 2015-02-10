@@ -12,11 +12,11 @@ import se.emilsjolander.sprinkles.ModelList;
 /**
  * Created by mechinn on 2/19/14.
  */
-public class CompetitionListPreference extends android.preference.ListPreference {
+public class EventListPreference extends android.preference.ListPreference {
     public static final String TAG = "CompetitionListPreference";
     private CompetitionListPreferenceAdapter listAdapter = null;
 
-    public CompetitionListPreference(Context context, AttributeSet attrs) {
+    public EventListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         listAdapter = new CompetitionListPreferenceAdapter(context);
     }
@@ -57,7 +57,7 @@ public class CompetitionListPreference extends android.preference.ListPreference
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         builder.setPositiveButton(null,null).setAdapter(listAdapter, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                CompetitionListPreference.this.setValue(listAdapter.getValue(which).toString());
+                EventListPreference.this.setValue(listAdapter.getValue(which).toString());
                 setSummary(listAdapter.getEntry(which));
             }
         });
