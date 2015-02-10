@@ -18,21 +18,21 @@ public class GetHandlerThread extends HandlerThread {
     private Prefs prefs;
     private Handler threadHandler = null;
     private Handler uiHandler = null;
-    private Activity activity;
+    private Context context;
 
-    public GetHandlerThread(String tag, Activity activity) {
+    public GetHandlerThread(String tag, Context context) {
         super(tag);
-        this.activity = activity;
-        prefs = new Prefs(activity);
+        this.context = context;
+        prefs = new Prefs(context);
         uiHandler = new Handler(
                 new Handler.Callback() {
                     @Override
                     public boolean handleMessage(Message msg) {
-                        if(GetHandlerThread.this.activity instanceof Activity) {
-                            ((Activity) GetHandlerThread.this.activity).setProgressBarIndeterminateVisibility(msg.getData().getBoolean(PROGRESS));
+                        if(GetHandlerThread.this.getContext() instanceof Activity) {
+                            ((Activity) GetHandlerThread.this.getContext()).setProgressBarIndeterminateVisibility(msg.getData().getBoolean(PROGRESS));
                         }
                         if(null!=msg.getData().getString(STATUS)) {
-                            Toast.makeText(GetHandlerThread.this.activity, msg.getData().getString(STATUS), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GetHandlerThread.this.getContext(), msg.getData().getString(STATUS), Toast.LENGTH_SHORT).show();
                         }
                         return true;
                     }
@@ -57,7 +57,7 @@ public class GetHandlerThread extends HandlerThread {
         message.getData().putBoolean(PROGRESS, progress);
         getUiHandler().sendMessage(message);
     }
-    public Activity getActivity() {
-        return activity;
+    public Context getContext() {
+        return context;
     }
 }

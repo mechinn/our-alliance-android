@@ -20,7 +20,7 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetEvents;
-import com.mechinn.android.ouralliance.widget.CompetitionListPreference;
+import com.mechinn.android.ouralliance.widget.EventListPreference;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -45,7 +45,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private String resetDBPrefString;
     private SparseArray<String> yearArray;
 	private ListPreference year;
-	private CompetitionListPreference comp;
+	private EventListPreference comp;
 //	private CompetitionListPreference measure;
 	private Preference resetDB;
 	private Preference changelog;
@@ -96,7 +96,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             yearArray.put(Integer.parseInt(yearNumberArray[i]),yearSummaryArray[i]);
         }
         year = (ListPreference) getPreferenceScreen().findPreference(yearPrefString);
-        comp = (CompetitionListPreference) getPreferenceScreen().findPreference(compPrefString);
+        comp = (EventListPreference) getPreferenceScreen().findPreference(compPrefString);
 //        measure = (CompetitionListPreference) getPreferenceScreen().findPreference(measurePrefString);
         resetDB = getPreferenceScreen().findPreference(resetDBPrefString);
         resetDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {

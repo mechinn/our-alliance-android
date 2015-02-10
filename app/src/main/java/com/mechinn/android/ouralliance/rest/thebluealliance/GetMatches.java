@@ -20,8 +20,8 @@ import java.util.List;
 public class GetMatches extends GetHandlerThread {
     public static final String TAG = "GetMatches";
 
-    public GetMatches(Activity activity) {
-        super(TAG,activity);
+    public GetMatches(Context context) {
+        super(TAG,context);
     }
 
     public void refreshMatches() {
@@ -30,7 +30,7 @@ public class GetMatches extends GetHandlerThread {
                 @Override
                 public void run() {
                     sendMessage("Downloading matches...",true);
-                    DaoSession dao = ((OurAlliance) GetMatches.this.getActivity().getApplication()).getDaoSession();
+                    DaoSession dao = ((OurAlliance) GetMatches.this.getContext().getApplicationContext()).getDaoSession();
                     Event event = dao.getEventDao().load(getPrefs().getComp());
                     Log.d(TAG, "year: " + getPrefs().getYear());
                     Log.d(TAG, "getting matches "+getPrefs().getYear() + event.getEventCode());

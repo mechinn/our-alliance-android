@@ -6,8 +6,9 @@ import android.content.DialogInterface;
 import android.util.AttributeSet;
 
 import com.mechinn.android.ouralliance.adapter.CompetitionListPreferenceAdapter;
+import com.mechinn.android.ouralliance.greenDao.Event;
 
-import se.emilsjolander.sprinkles.ModelList;
+import java.util.List;
 
 /**
  * Created by mechinn on 2/19/14.
@@ -25,7 +26,7 @@ public class EventListPreference extends android.preference.ListPreference {
         listAdapter.setDefaultSummary(summary);
     }
 
-    public void swapAdapter(ModelList<Competition> list, long id) {
+    public void swapAdapter(List<Event> list, long id) {
         listAdapter.swapList(list, id);
         if(null!=list && list.size()>0) {
             this.setSummary(listAdapter.getEntry(this.getValue()));
@@ -34,7 +35,7 @@ public class EventListPreference extends android.preference.ListPreference {
         }
     }
 
-    public Competition get() {
+    public Event get() {
         return listAdapter.getSelected(this.getValue());
     }
 

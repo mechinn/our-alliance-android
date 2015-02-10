@@ -23,8 +23,8 @@ import java.util.List;
 public class GetEventTeams extends GetHandlerThread {
     public static final String TAG = "GetEventTeams";
 
-    public GetEventTeams(Activity activity) {
-        super(TAG,activity);
+    public GetEventTeams(Context context) {
+        super(TAG,context);
     }
 
     public void refreshEventTeams() {
@@ -33,7 +33,7 @@ public class GetEventTeams extends GetHandlerThread {
                     @Override
                     public void run() {
                         sendMessage("Downloading event teams...",true);
-                        DaoSession dao = ((OurAlliance) GetEventTeams.this.getActivity().getApplication()).getDaoSession();
+                        DaoSession dao = ((OurAlliance) GetEventTeams.this.getContext().getApplicationContext()).getDaoSession();
                         Event event = dao.getEventDao().load(getPrefs().getComp());
                         Log.d(TAG, "year: " + getPrefs().getYear());
                         Log.d(TAG, "Setting up teams");

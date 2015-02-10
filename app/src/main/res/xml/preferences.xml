@@ -21,7 +21,7 @@
 			android:defaultValue="@string/pref_year_default"
             android:entries="@array/list_year_display"
             android:entryValues="@array/list_year"/>
-		<com.mechinn.android.ouralliance.widget.CompetitionListPreference
+		<com.mechinn.android.ouralliance.widget.EventListPreference
 			android:key="@string/pref_comp"
 			android:title="@string/pref_comp_title"
 			android:summary="@string/pref_comp_summary"

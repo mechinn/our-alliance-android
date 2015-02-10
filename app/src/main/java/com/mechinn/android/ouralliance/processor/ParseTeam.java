@@ -1,10 +1,11 @@
 package com.mechinn.android.ouralliance.processor;
 
+import com.mechinn.android.ouralliance.greenDao.Team;
+
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.exception.SuperCsvCellProcessorException;
 import org.supercsv.util.CsvContext;
-import se.emilsjolander.sprinkles.Query;
 
 /**
  * Created by mechinn on 3/9/14.
