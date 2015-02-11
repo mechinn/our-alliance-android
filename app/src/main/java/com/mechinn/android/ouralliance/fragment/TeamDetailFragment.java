@@ -9,7 +9,7 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
-import com.mechinn.android.ouralliance.adapter.TeamScoutingWheelAdapter;
+import com.mechinn.android.ouralliance.adapter.WheelAdapter;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -51,7 +51,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
     private ModelList<TeamScoutingWheel> wheelCursor;
 	private MultimediaAdapter multimedia;
 
-	private TeamScoutingWheelAdapter wheelTypesAdapter;
+	private WheelAdapter wheelTypesAdapter;
 
 	private LinearLayout season;
 	private long teamId;
@@ -316,7 +316,7 @@ public abstract class TeamDetailFragment<A extends TeamScouting> extends Fragmen
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        wheelTypesAdapter = new TeamScoutingWheelAdapter(getActivity(), null, TeamScoutingWheelAdapter.TYPE);
+        wheelTypesAdapter = new WheelAdapter(getActivity(), null, WheelAdapter.TYPE);
     }
 
     @Override

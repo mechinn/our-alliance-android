@@ -12,7 +12,7 @@ import com.mechinn.android.ouralliance.greenDao.dao.MultimediaDao;
 /**
  * Entity mapped to table MULTIMEDIA.
  */
-public class Multimedia extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Multimedia> {
+public class Multimedia extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Multimedia>, java.io.Serializable {
 
     private Long id;
     /** Not-null value. */

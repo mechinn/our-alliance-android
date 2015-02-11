@@ -9,17 +9,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.greenDao.EventTeam;
 import com.mobeta.android.dslv.DragSortListView;
 
-import se.emilsjolander.sprinkles.ModelList;
-import se.emilsjolander.sprinkles.Transaction;
+import java.util.List;
 
-public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter implements DragSortListView.DropListener {
-    public static final String TAG = "CompetitionTeamDragSortListAdapter";
+public class EventTeamDragSortListAdapter extends EventTeamAdapter implements DragSortListView.DropListener {
+    public static final String TAG = "EventTeamDragSortListAdapter";
     private int dragable;
 
-    public CompetitionTeamDragSortListAdapter(Context context, ModelList<CompetitionTeam> teams) {
+    public EventTeamDragSortListAdapter(Context context, List<EventTeam> teams) {
         super(context,teams);
         showDrag(true);
     }
@@ -37,14 +38,14 @@ public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter i
             dragHandle.setVisibility(dragable);
             CheckBox scouted = (CheckBox)container.findViewById(R.id.scouted);
             scouted.setTag(getItem(position));
-            scouted.setChecked(getItem(position).isScouted());
+            scouted.setChecked(getItem(position).getScouted());
             scouted.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     CheckBox check = (CheckBox) v;
-                    CompetitionTeam team = (CompetitionTeam) v.getTag();
+                    EventTeam team = (EventTeam) v.getTag();
                     team.setScouted(check.isChecked());
-                    team.asyncSave();
+                    ((OurAlliance)getContext().getApplicationContext()).getAsyncSession().updateInTx(EventTeam.class,team);
                 }
             });
         }
@@ -53,34 +54,26 @@ public class CompetitionTeamDragSortListAdapter extends CompetitionTeamAdapter i
 
     @Override
     public void drop(int from, int to) {
-//        for(CompetitionTeam team : this.getTeams()) {
+//        for(EventTeam team : this.getTeams()) {
 //            Log.d(TAG,"team: "+team);
 //        }
-        Transaction t = new Transaction();
-        try {
-            if (from > to) {
-                for (int i = to; i < from; ++i) {
-                    Log.d(TAG, "team: " + getItem(i) + " new rank: " + (i + 1));
-                    getItem(i).setRank(i + 1);
-                    Log.d(TAG, "team: " + getItem(i));
-                    getItem(i).save(t);
-                }
-            } else {
-                for (int i = from + 1; i <= to; ++i) {
-                    Log.d(TAG, "team: " + getItem(i) + " new rank: " + (i - 1));
-                    getItem(i).setRank(i - 1);
-                    Log.d(TAG, "team: " + getItem(i));
-                    getItem(i).save(t);
-                }
+        if (from > to) {
+            for (int i = to; i < from; ++i) {
+                Log.d(TAG, "team: " + getItem(i) + " new rank: " + (i + 1));
+                getItem(i).setRank(i + 1);
+                Log.d(TAG, "team: " + getItem(i));
             }
-            Log.d(TAG, "team: " + getItem(from) + " new rank: " + to);
-            getItem(from).setRank(to);
-            Log.d(TAG, "team: " + getItem(from));
-            getItem(from).save(t);
-            t.setSuccessful(true);
-        } finally {
-            t.finish();
+        } else {
+            for (int i = from + 1; i <= to; ++i) {
+                Log.d(TAG, "team: " + getItem(i) + " new rank: " + (i - 1));
+                getItem(i).setRank(i - 1);
+                Log.d(TAG, "team: " + getItem(i));
+            }
         }
+        Log.d(TAG, "team: " + getItem(from) + " new rank: " + to);
+        getItem(from).setRank(to);
+        Log.d(TAG, "team: " + getItem(from));
+        ((OurAlliance)this.getContext().getApplicationContext()).getAsyncSession().updateInTx(EventTeam.class,this.getTeams());
     }
 
     public void showDrag(boolean yes) {

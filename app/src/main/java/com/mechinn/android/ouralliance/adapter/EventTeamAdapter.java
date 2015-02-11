@@ -4,16 +4,18 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 
-import se.emilsjolander.sprinkles.ModelList;
+import com.mechinn.android.ouralliance.greenDao.EventTeam;
 
-public abstract class CompetitionTeamAdapter extends BaseAdapter {
-    public static final String TAG = "CompetitionTeamAdapter";
+import java.util.List;
+
+public abstract class EventTeamAdapter extends BaseAdapter {
+    public static final String TAG = "EventTeamAdapter";
 
     private Context context;
-    private ModelList<CompetitionTeam> teams;
+    private List<EventTeam> teams;
     private LayoutInflater inflater;
 
-    public CompetitionTeamAdapter(Context context, ModelList<CompetitionTeam> teams) {
+    public EventTeamAdapter(Context context, List<EventTeam> teams) {
         this.context = context;
         inflater = LayoutInflater.from(getContext());
         swapList(teams);
@@ -23,11 +25,11 @@ public abstract class CompetitionTeamAdapter extends BaseAdapter {
         return inflater;
     }
 
-    public ModelList<CompetitionTeam> getTeams() {
+    public List<EventTeam> getTeams() {
         return teams;
     }
 
-    public void setTeams(ModelList<CompetitionTeam> teams) {
+    public void setTeams(List<EventTeam> teams) {
         this.teams = teams;
     }
 
@@ -39,7 +41,7 @@ public abstract class CompetitionTeamAdapter extends BaseAdapter {
         this.context = context;
     }
 
-    public void swapList(ModelList<CompetitionTeam> teams) {
+    public void swapList(List<EventTeam> teams) {
         this.teams = teams;
         this.notifyDataSetChanged();
     }
@@ -61,7 +63,7 @@ public abstract class CompetitionTeamAdapter extends BaseAdapter {
     }
 
     @Override
-    public CompetitionTeam getItem(int position) {
+    public EventTeam getItem(int position) {
         if(isEmpty()) {
             return null;
         }

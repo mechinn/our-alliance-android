@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.AttributeSet;
 
-import com.mechinn.android.ouralliance.adapter.CompetitionListPreferenceAdapter;
+import com.mechinn.android.ouralliance.adapter.EventListPreferenceAdapter;
 import com.mechinn.android.ouralliance.greenDao.Event;
 
 import java.util.List;
@@ -15,11 +15,11 @@ import java.util.List;
  */
 public class EventListPreference extends android.preference.ListPreference {
     public static final String TAG = "CompetitionListPreference";
-    private CompetitionListPreferenceAdapter listAdapter = null;
+    private EventListPreferenceAdapter listAdapter = null;
 
     public EventListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        listAdapter = new CompetitionListPreferenceAdapter(context);
+        listAdapter = new EventListPreferenceAdapter(context);
     }
 
     public void setDefaultSummary(String summary) {

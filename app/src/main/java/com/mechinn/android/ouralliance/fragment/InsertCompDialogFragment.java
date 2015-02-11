@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.greenDao.Event;
 
 public class InsertCompDialogFragment extends DialogFragment {
     public static final String TAG = "InsertCompDialogFragment";
@@ -20,7 +21,7 @@ public class InsertCompDialogFragment extends DialogFragment {
     private View dialog;
     private TextView compName;
     private TextView compCode;
-    private Competition competition;
+    private Event event;
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -33,24 +34,24 @@ public class InsertCompDialogFragment extends DialogFragment {
 		compCode = (TextView) dialog.findViewById(R.id.editCompCode);
 		int yes;
 		try {
-			competition = (Competition) this.getArguments().getSerializable(COMP_ARG);
-			compName.setText(competition.getName());
-			compCode.setText(competition.getCode());
+			event = (Event) this.getArguments().getSerializable(COMP_ARG);
+			compName.setText(event.getShortName());
+			compCode.setText(event.getEventCode());
     		yes = R.string.update;
     		Log.d(TAG, "update");
 		} catch(NullPointerException e) {
-			competition = new Competition();
+			event = new Event();
 			yes = R.string.create;
     		Log.d(TAG, "insert");
 		}
 		int season = this.getArguments().getInt(SEASON_ARG);
-		competition.setYear(season);
+		event.setYear(season);
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					competition.setName(compName.getText());
-					competition.setCode(compCode.getText());
-                    competition.asyncSave();
+					event.setShortName(compName.getText().toString());
+					event.setEventCode(compCode.getText().toString());
+                    event.asyncSave();
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {

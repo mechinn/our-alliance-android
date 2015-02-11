@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
 
-import se.emilsjolander.sprinkles.ModelList;
-
 import java.util.Set;
 
 public class BluetoothDeviceAdapter extends BaseAdapter {

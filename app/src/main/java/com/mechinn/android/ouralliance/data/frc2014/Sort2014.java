@@ -62,39 +62,4 @@ public enum Sort2014 {
                 return "User Order";
         }
     }
-
-    public String getValue() {
-        switch(this) {
-            case NUMBER:
-                return Team.TAG+"."+Team.NUMBER;
-            case ORIENTATION:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.ORIENTATION;
-            case DRIVETRAIN:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.DRIVETRAIN;
-            case HEIGHTSHOOTER:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.HEIGHTSHOOTER+" DESC";
-            case HEIGHTMAX:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.HEIGHTMAX+" DESC";
-            case SHOOTERTYPE:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.SHOOTERTYPE+" DESC";
-            case SHOOTGOAL:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.HIGHGOAL+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.LOWGOAL+" DESC";
-            case SHOOTINGDISTANCE:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.SHOOTINGDISTANCE+" DESC";
-            case PASS:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.PASSTRUSS+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.PASSAIR+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.PASSGROUND+" DESC";
-            case PICKUP:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.PICKUPCATCH+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.PICKUPGROUND+" DESC";
-            case PUSHER:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.PUSHER;
-            case BLOCKER:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.BLOCKER;
-            case HUMANPLAYER:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.HUMANPLAYER;
-            case AUTONOMOUS:
-                return TeamScouting2014.TAG+"."+TeamScouting2014.HOTAUTO+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.HIGHAUTO+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.LOWAUTO+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.DRIVEAUTO+" DESC,"+TeamScouting2014.TAG+"."+TeamScouting2014.NOAUTO+" DESC";
-            default:
-                return CompetitionTeam.TAG+"."+CompetitionTeam.RANK;
-        }
-    }
 }

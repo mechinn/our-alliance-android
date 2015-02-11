@@ -5,14 +5,23 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.*;
 import android.widget.*;
+
+import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.adapter.CompetitionTeamDragSortListAdapter;
+import com.mechinn.android.ouralliance.adapter.EventTeamDragSortListAdapter;
 import com.mechinn.android.ouralliance.data.frc2014.ExportTeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
+import com.mechinn.android.ouralliance.greenDao.EventTeam;
+import com.mechinn.android.ouralliance.greenDao.Team;
+import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
+import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
+import com.mechinn.android.ouralliance.greenDao.dao.EventTeamDao;
+import com.mechinn.android.ouralliance.greenDao.dao.TeamDao;
+import com.mechinn.android.ouralliance.greenDao.dao.TeamScouting2014Dao;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetEventTeams;
 import com.mobeta.android.dslv.DragSortListView;
 
@@ -26,51 +35,50 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import java.util.List;
+
+import de.greenrobot.dao.async.AsyncOperation;
+import de.greenrobot.dao.async.AsyncOperationListener;
+import de.greenrobot.dao.async.AsyncSession;
+import de.greenrobot.dao.query.QueryBuilder;
 import de.greenrobot.event.EventBus;
 
-public class TeamListFragment extends Fragment {
+public class TeamListFragment extends Fragment implements AsyncOperationListener {
     public static final String TAG = "TeamListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
     private DragSortListView dslv;
     private int selectedPosition;
 	private Prefs prefs;
-	private CompetitionTeamDragSortListAdapter adapter;
+	private EventTeamDragSortListAdapter adapter;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
-    private int competitionLoader;
+    private AsyncOperation eventLoader;
     private Sort2014 sort;
     private Spinner sortTeams;
     private GetEventTeams downloadTeams;
+    private AsyncSession async;
+    private DaoSession daoSession;
+
+    @Override
+    public void onAsyncOperationCompleted(AsyncOperation operation) {
+        if(eventLoader == operation && operation.isCompletedSucessfully() && operation.getType().equals(AsyncOperation.OperationType.QueryList)) {
+            List<EventTeam> teams = (List<EventTeam>) operation.getResult();
+            switch(prefs.getYear()) {
+                case 2014:
+                    adapter.showDrag(sort.equals(Sort2014.RANK));
+                    break;
+            }
+            adapter.swapList(teams);
+            getActivity().invalidateOptionsMenu();
+        } else {
+            getActivity().invalidateOptionsMenu();
+        }
+    }
 
     public interface Listener {
         public void onTeamSelected(long team);
     }
-
-    private ManyQuery.ResultHandler<CompetitionTeam> onCompetitionTeamsLoaded =
-            new ManyQuery.ResultHandler<CompetitionTeam>() {
-
-                @Override
-                public boolean handleResult(CursorList<CompetitionTeam> result) {
-                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
-                        Log.d(TAG,"cursor size: "+result.size());
-                        ModelList<CompetitionTeam> teams = ModelList.from(result);
-                        result.close();
-                        switch(prefs.getYear()) {
-                            case 2014:
-                                adapter.showDrag(sort.equals(Sort2014.RANK));
-                                break;
-                        }
-                        adapter.swapList(teams);
-                        getActivity().invalidateOptionsMenu();
-                        return true;
-                    } else {
-                        getActivity().invalidateOptionsMenu();
-                        return false;
-                    }
-                }
-            };
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -91,6 +99,9 @@ public class TeamListFragment extends Fragment {
 		prefs = new Prefs(this.getActivity());
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         sort = Sort2014.RANK;
+        async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
+        async.setListener(this);
+        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
         downloadTeams = new GetEventTeams(this.getActivity());
     }
     
@@ -139,7 +150,7 @@ public class TeamListFragment extends Fragment {
 			}
 			selectedPosition = position;
 		}
-        adapter = new CompetitionTeamDragSortListAdapter(getActivity(), null);
+        adapter = new EventTeamDragSortListAdapter(getActivity(), null);
         dslv.setAdapter(adapter);
     }
     
@@ -187,8 +198,8 @@ public class TeamListFragment extends Fragment {
         Log.d(TAG,"resume");
         Log.d(TAG,"CompID: "+prefs.getComp());
         if(prefs.getComp()>0) {
-            if(prefs.getComp()>0 && !prefs.isCompetitionTeamsDownloaded()) {
-                downloadTeams.refreshCompetitionTeams();
+            if(prefs.getComp()>0 && !prefs.isEventTeamsDownloaded()) {
+                downloadTeams.refreshEventTeams();
             }
             switch(prefs.getYear()) {
                 case 2014:
@@ -209,26 +220,66 @@ public class TeamListFragment extends Fragment {
     }
 
     private void emptyTeams() {
-        if(competitionLoader>0) {
-            getLoaderManager().destroyLoader(competitionLoader);
-            competitionLoader = 0;
-        }
+
     }
 
     private void reloadTeams() {
+        EventTeamDao eventTeamDao = daoSession.getEventTeamDao();
+
         switch(prefs.getYear()) {
             case 2014:
-                competitionLoader = Query.many(CompetitionTeam.class,
-                        "SELECT " + CompetitionTeam.TAG + ".*" +
-                                " FROM " + CompetitionTeam.TAG +
-                                " INNER JOIN " + TeamScouting2014.TAG +
-                                " ON " + TeamScouting2014.TAG + "." + TeamScouting2014.TEAM + "=" + CompetitionTeam.TAG + "." + CompetitionTeam.TEAM +
-                                " INNER JOIN " + Team.TAG +
-                                " ON " + Team.TAG+"."+Team._ID + "=" + CompetitionTeam.TAG + "." + CompetitionTeam.TEAM +
-                                " WHERE " + CompetitionTeam.COMPETITION + "=?" +
-                                " ORDER BY "+sort.getValue(), prefs.getComp()).getAsync(getLoaderManager(), onCompetitionTeamsLoaded);
+                QueryBuilder<EventTeam> builder = eventTeamDao.queryBuilder().where(EventTeamDao.Properties.EventId.eq(prefs.getComp()));
+                switch(sort) {
+                    case NUMBER:
+                        builder.orderDesc(TeamDao.Properties.TeamNumber);
+                        break;
+                    case ORIENTATION:
+                        builder.orderAsc(TeamScouting2014Dao.Properties.Orientation);
+                        break;
+                    case DRIVETRAIN:
+                        builder.orderAsc(TeamScouting2014Dao.Properties.DriveTrain);
+                        break;
+                    case HEIGHTSHOOTER:
+                        builder.orderDesc(TeamScouting2014Dao.Properties.HeightShooter);
+                        break;
+                    case HEIGHTMAX:
+                        builder.orderDesc(TeamScouting2014Dao.Properties.HeightMax);
+                        break;
+                    case SHOOTERTYPE:
+                        builder.orderDesc(TeamScouting2014Dao.Properties.ShooterType);
+                        break;
+                    case SHOOTGOAL:
+                        builder.orderDesc(TeamScouting2014Dao.Properties.HighGoal,TeamScouting2014Dao.Properties.LowGoal);
+                        break;
+                    case SHOOTINGDISTANCE:
+                        builder.orderDesc(TeamScouting2014Dao.Properties.ShootingDistance);
+                        break;
+                    case PASS:
+                        builder.orderDesc(TeamScouting2014Dao.Properties.PassTruss,TeamScouting2014Dao.Properties.PassAir,TeamScouting2014Dao.Properties.PassGround);
+                        break;
+                    case PICKUP:
+                        builder.orderDesc(TeamScouting2014Dao.Properties.PickupCatch,TeamScouting2014Dao.Properties.PickupGround);
+                        break;
+                    case PUSHER:
+                        builder.orderAsc(TeamScouting2014Dao.Properties.Pusher);
+                        break;
+                    case BLOCKER:
+                        builder.orderAsc(TeamScouting2014Dao.Properties.Blocker);
+                        break;
+                    case HUMANPLAYER:
+                        builder.orderAsc(TeamScouting2014Dao.Properties.HumanPlayer);
+                        break;
+                    case AUTONOMOUS:
+                        builder.orderDesc(TeamScouting2014Dao.Properties.HotAuto,TeamScouting2014Dao.Properties.HighAuto,TeamScouting2014Dao.Properties.LowAuto,TeamScouting2014Dao.Properties.DriveAuto,TeamScouting2014Dao.Properties.NoAuto);
+                        break;
+                    default:
+                        builder.orderAsc(EventTeamDao.Properties.Rank);
+                        break;
+                }
+                eventLoader = async.queryList(builder.build());
                 break;
         }
+
     }
     
     private void selectItem(int position) {
@@ -329,7 +380,7 @@ public class TeamListFragment extends Fragment {
                 }
                 return true;
             case R.id.refreshCompetitionTeams:
-                downloadTeams.refreshCompetitionTeams();
+                downloadTeams.refreshEventTeams();
                 return true;
 	        default:
 	            return super.onOptionsItemSelected(item);

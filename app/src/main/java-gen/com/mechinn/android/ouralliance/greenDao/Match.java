@@ -16,7 +16,7 @@ import com.mechinn.android.ouralliance.greenDao.dao.MultimediaDao;
 /**
  * Entity mapped to table MATCH.
  */
-public class Match extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Match> {
+public class Match extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Match>, java.io.Serializable {
 
     private Long id;
     /** Not-null value. */
@@ -252,13 +252,20 @@ public class Match extends com.mechinn.android.ouralliance.OurAllianceObject  im
 
     // KEEP METHODS - put your custom methods here
     public enum CompetitionLevel {
-        EIGHTH_FINALS,
-        QUARTER_FINALS,
-        SEMI_FINALS,
-        FINALS,
-        QUALIFIER,
-        PRACTICE;
-        public String getValue() {
+        EIGHTH_FINALS(8),
+        QUARTER_FINALS(4),
+        SEMI_FINALS(2),
+        FINALS(1),
+        QUALIFIER(0),
+        PRACTICE(-1);
+        private int value;
+        private CompetitionLevel(int value) {
+            this.value = value;
+        }
+        public int getValue() {
+            return this.value;
+        }
+        public String getAbbr() {
             switch(this) {
                 case EIGHTH_FINALS:
                     return "ef";

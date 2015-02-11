@@ -7,6 +7,7 @@ import android.util.TypedValue;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.fragment.MultimediaContextDialogFragment;
+import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -43,14 +44,14 @@ public class MultimediaAdapter extends BaseAdapter implements OnClickListener, O
 		this.teamFileDirectory = teamFileDirectory;
 	}
 
-	public MultimediaAdapter(Activity activity, TeamScouting team, ViewGroup group) {
+	public MultimediaAdapter(Activity activity, TeamScouting2014 team, ViewGroup group) {
 		this.activity = activity;
 		prefs = new Prefs(activity);
 		Log.d(TAG, team.toString());
         Log.d(TAG,"find images");
         buildImageSet(team);
 	}
-    public void buildImageSet(TeamScouting team) {
+    public void buildImageSet(TeamScouting2014 team) {
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             teamFileDirectory = new File(activity.getExternalFilesDir(null).getAbsoluteFile() + File.separator + prefs.getYear() + File.separator + team.getTeam().getTeamNumber());
             Log.d(TAG, teamFileDirectory.getAbsolutePath());

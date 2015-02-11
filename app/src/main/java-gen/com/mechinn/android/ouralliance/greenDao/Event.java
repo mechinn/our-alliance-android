@@ -15,7 +15,7 @@ import com.mechinn.android.ouralliance.greenDao.dao.MatchDao;
 /**
  * Entity mapped to table EVENT.
  */
-public class Event extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Event> {
+public class Event extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Event>, java.io.Serializable {
 
     private Long id;
     /** Not-null value. */

@@ -14,7 +14,7 @@ import com.mechinn.android.ouralliance.greenDao.dao.TeamScouting2014Dao;
 /**
  * Entity mapped to table MATCH_SCOUTING2014.
  */
-public class MatchScouting2014 extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<MatchScouting2014> {
+public class MatchScouting2014 extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<MatchScouting2014>, java.io.Serializable {
 
     private Long id;
     /** Not-null value. */

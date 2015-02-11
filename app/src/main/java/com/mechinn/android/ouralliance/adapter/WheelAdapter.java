@@ -9,33 +9,33 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import com.mechinn.android.ouralliance.greenDao.Wheel;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import se.emilsjolander.sprinkles.ModelList;
-
-public class TeamScoutingWheelAdapter extends BaseAdapter implements Filterable {
+public class WheelAdapter extends BaseAdapter implements Filterable {
     public static final String TAG = "TeamScoutingWheelAdapter";
     public static final int TYPE = 0;
 	Context context;
-    ModelList<TeamScoutingWheel> teams;
+    List<Wheel> teams;
     int field;
 	List<CharSequence> original;
     List<CharSequence> filtered;
 
-	public TeamScoutingWheelAdapter(Context context, ModelList<TeamScoutingWheel> teams, int field) {
+	public WheelAdapter(Context context, List<Wheel> teams, int field) {
 		this.context = context;
         this.field = field;
         swapList(teams);
 	}
 	
-	public void swapList(ModelList<TeamScoutingWheel> teams) {
+	public void swapList(List<Wheel> teams) {
         this.teams = teams;
         this.original = new ArrayList<CharSequence>();
         if(null!=this.teams) {
             Collections.sort(this.teams);
-            for(TeamScoutingWheel each : this.teams) {
+            for(Wheel each : this.teams) {
                 switch(field) {
                     case TYPE:
                         original.add(each.getWheelType());

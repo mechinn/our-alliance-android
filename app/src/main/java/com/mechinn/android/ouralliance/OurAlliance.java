@@ -19,6 +19,7 @@ import com.mechinn.android.ouralliance.greenDao.dao.DaoMaster;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
 import de.greenrobot.common.io.IoUtils;
+import de.greenrobot.dao.async.AsyncSession;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -28,6 +29,7 @@ public class OurAlliance extends Application {
     public static final String TAG = "OurAlliance";
     private BluetoothReceive receiver;
     private DaoSession daoSession;
+    private AsyncSession asyncSession;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -69,10 +71,14 @@ public class OurAlliance extends Application {
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
+        asyncSession = daoSession.startAsyncSession();
     }
 
     public DaoSession getDaoSession() {
         return daoSession;
+    }
+    public AsyncSession getAsyncSession() {
+        return asyncSession;
     }
 
     public void onEvent(BluetoothEvent event) {

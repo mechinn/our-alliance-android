@@ -13,7 +13,7 @@ import com.mechinn.android.ouralliance.greenDao.dao.WheelDao;
 /**
  * Entity mapped to table WHEEL.
  */
-public class Wheel extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Wheel> {
+public class Wheel extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Wheel>, java.io.Serializable {
 
     private Long id;
     /** Not-null value. */

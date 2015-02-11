@@ -7,10 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.greenDao.EventTeam;
 
-import se.emilsjolander.sprinkles.ModelList;
+import java.util.List;
 
-public class MatchTeamSelectAdapter extends CompetitionTeamAdapter {
+public class MatchTeamSelectAdapter extends EventTeamAdapter {
     public static final String TAG = "MatchTeamSelectAdapter";
     public static final int RED1 = 0;
     public static final int RED2 = 1;
@@ -22,7 +23,7 @@ public class MatchTeamSelectAdapter extends CompetitionTeamAdapter {
     private int team;
     private SparseIntArray disabled;
 
-    public MatchTeamSelectAdapter(Context context, ModelList<CompetitionTeam> teams, int team) {
+    public MatchTeamSelectAdapter(Context context, List<EventTeam> teams, int team) {
         super(context, teams);
         this.team = team;
         disabled = new SparseIntArray(5);

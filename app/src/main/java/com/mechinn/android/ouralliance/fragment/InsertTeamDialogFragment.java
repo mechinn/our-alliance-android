@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
+import com.mechinn.android.ouralliance.greenDao.Team;
+import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
 
 public class InsertTeamDialogFragment extends DialogFragment {
     public static final String TAG = "InsertTeamDialogFragment";

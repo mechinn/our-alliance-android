@@ -7,21 +7,23 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import se.emilsjolander.sprinkles.ModelList;
+import com.mechinn.android.ouralliance.greenDao.Event;
+import com.mechinn.android.ouralliance.greenDao.Match;
 
 import java.util.Collections;
+import java.util.List;
 
 public class MatchAdapter extends BaseAdapter {
     public static final String TAG = "MatchAdapter";
     Context context;
-    ModelList<Match> matches;
+    List<Match> matches;
 	 
-	public MatchAdapter(Context context, ModelList<Match> matches) {
+	public MatchAdapter(Context context, List<Match> matches) {
         this.context = context;
         swapList(matches);
 	}
 
-    public void swapList(ModelList<Match> matches) {
+    public void swapList(List<Match> matches) {
         this.matches = matches;
         if(null!=this.matches) {
             Collections.sort(this.matches);
@@ -42,11 +44,11 @@ public class MatchAdapter extends BaseAdapter {
         return matches.size();
     }
 
-    public Competition getComp() {
+    public Event getEvent() {
         if(isEmpty()) {
             return null;
         }
-        return getItem(0).getCompetition();
+        return getItem(0).getEvent();
     }
 
     @Override

@@ -7,22 +7,24 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
 
-import se.emilsjolander.sprinkles.ModelList;
+import com.mechinn.android.ouralliance.greenDao.Event;
+
+import java.util.List;
 
 /**
  * Created by mechinn on 2/19/14.
  */
-public class CompetitionListPreferenceAdapter extends BaseAdapter {
-    public static final String TAG = "CompetitionListPreferenceAdapter";
+public class EventListPreferenceAdapter extends BaseAdapter {
+    public static final String TAG = "EventListPreferenceAdapter";
 
     private long id;
     private Context context;
-    private ModelList<Competition> list;
+    private List<Event> list;
     private CharSequence[] entries;
     private CharSequence[] values;
     private String defaultSummary;
 
-    public CompetitionListPreferenceAdapter(Context context) {
+    public EventListPreferenceAdapter(Context context) {
         this.context = context;
         swapList(null, 0);
     }
@@ -31,7 +33,7 @@ public class CompetitionListPreferenceAdapter extends BaseAdapter {
         defaultSummary = summary;
     }
 
-    public void swapList(ModelList<Competition> list, long id) {
+    public void swapList(List<Event> list, long id) {
         this.id = id;
         this.list = list;
         if(!isEmpty()) {
@@ -77,7 +79,7 @@ public class CompetitionListPreferenceAdapter extends BaseAdapter {
         }
         return -1;
     }
-    public Competition getSelected(CharSequence value) {
+    public Event getSelected(CharSequence value) {
         if(!isEmpty()) {
             for(int i=0;i<values.length;++i) {
                 if(value.equals(values[i])) {
@@ -102,7 +104,7 @@ public class CompetitionListPreferenceAdapter extends BaseAdapter {
     }
 
     @Override
-    public Competition getItem(int position) {
+    public Event getItem(int position) {
         if(isEmpty()) {
             return null;
         }

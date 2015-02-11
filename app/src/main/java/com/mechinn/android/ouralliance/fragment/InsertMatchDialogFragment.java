@@ -2,6 +2,7 @@ package com.mechinn.android.ouralliance.fragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,6 +25,8 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MatchTeamSelectAdapter;
+import com.mechinn.android.ouralliance.greenDao.EventTeam;
+import com.mechinn.android.ouralliance.greenDao.Match;
 
 public class InsertMatchDialogFragment extends DialogFragment {
     public static final String TAG = "InsertMatchDialogFragment";
@@ -46,7 +49,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
     private Spinner blue2;
     private Spinner blue3;
     private Match match;
-    private ModelList<CompetitionTeam> teams;
+    private List<EventTeam> teams;
     private ArrayList<MatchTeamSelectAdapter> adapters;
     private MatchTeamSelectAdapter red1Adapter;
     private MatchTeamSelectAdapter red2Adapter;
@@ -61,7 +64,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        teams = (ModelList<CompetitionTeam>) this.getArguments().getSerializable(TEAMS_ARG);
+        teams = (List<EventTeam>) this.getArguments().getSerializable(TEAMS_ARG);
         Collections.sort(teams);
         adapters = new ArrayList<MatchTeamSelectAdapter>(6);
         red1Adapter = new MatchTeamSelectAdapter(this.getActivity(),teams, MatchTeamSelectAdapter.RED1);
@@ -119,17 +122,17 @@ public class InsertMatchDialogFragment extends DialogFragment {
 			type.setOnItemSelectedListener(new OnItemSelectedListener() {
 				@Override
 				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-					if(Match.Type.QUARTERFINAL.getValue()==position) {
+					if(Match.CompetitionLevel.QUARTER_FINALS.getValue()==position) {
                         set.setVisibility(View.VISIBLE);
                         set.setAdapter(quarterfinals);
-					} else if(Match.Type.SEMIFINAL.getValue()==position) {
+					} else if(Match.CompetitionLevel.SEMI_FINALS.getValue()==position) {
 						set.setVisibility(View.VISIBLE);
 						set.setAdapter(semifinals);
 					} else {
 						set.setVisibility(View.INVISIBLE);
 						set.setSelection(0);
 					}
-					if(Match.Type.QUALIFIER.getValue()==position) {
+					if(Match.CompetitionLevel.QUALIFIER.getValue()==position) {
 						numberContainer.setVisibility(View.VISIBLE);
                         matchSpin.setVisibility(View.GONE);
 					} else {

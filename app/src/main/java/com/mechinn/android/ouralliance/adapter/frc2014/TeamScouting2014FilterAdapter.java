@@ -9,27 +9,27 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import se.emilsjolander.sprinkles.ModelList;
 
 public class TeamScouting2014FilterAdapter extends BaseAdapter implements Filterable {
     public static final String TAG = "TeamScouting2014FilterAdapter";
     public enum Type {ORIENTATION,DRIVETRAIN}
 	Context context;
-    ModelList<TeamScouting2014> teams;
+    List<TeamScouting2014> teams;
     Type field;
 	List<CharSequence> original;
     List<CharSequence> filtered;
 
-	public TeamScouting2014FilterAdapter(Context context, ModelList<TeamScouting2014> teams, Type field) {
+	public TeamScouting2014FilterAdapter(Context context, List<TeamScouting2014> teams, Type field) {
 		this.context = context;
         this.field = field;
         swapList(teams);
 	}
 	
-	public void swapList(ModelList<TeamScouting2014> teams) {
+	public void swapList(List<TeamScouting2014> teams) {
         this.teams = teams;
 		this.original = new ArrayList<CharSequence>();
         if(!isEmpty()) {

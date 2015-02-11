@@ -42,6 +42,7 @@ public class DaoGen {
         team.addDateProperty("modified").notNull();
         team.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
         team.implementsInterface("Comparable<Team>");
+        team.implementsSerializable();
         team.addIntProperty("teamNumber").notNull().unique();
         team.addStringProperty("nickname");
         team.addStringProperty("website");
@@ -56,6 +57,7 @@ public class DaoGen {
         multimedia.addDateProperty("modified").notNull();
         multimedia.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
         multimedia.implementsInterface("Comparable<Multimedia>");
+        multimedia.implementsSerializable();
         multimedia.addIntProperty("teamNumber").notNull().unique();
         multimedia.addStringProperty("type");
         multimedia.addStringProperty("key");
@@ -65,6 +67,7 @@ public class DaoGen {
         event.addDateProperty("modified").notNull();
         event.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
         event.implementsInterface("Comparable<Event>");
+        event.implementsSerializable();
         event.addStringProperty("shortName").notNull();
         event.addStringProperty("eventCode").notNull().unique();
         event.addIntProperty("eventType").notNull();
@@ -81,6 +84,7 @@ public class DaoGen {
         eventTeam.addDateProperty("modified").notNull();
         eventTeam.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
         eventTeam.implementsInterface("Comparable<EventTeam>");
+        eventTeam.implementsSerializable();
         Property eventTeamEvent = eventTeam.addLongProperty("eventId").notNull().getProperty();
         eventTeam.addToOne(event,eventTeamEvent);
         Property eventTeamTeam = eventTeam.addLongProperty("teamId").notNull().getProperty();
@@ -105,6 +109,7 @@ public class DaoGen {
         match.addDateProperty("modified").notNull();
         match.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
         match.implementsInterface("Comparable<Match>");
+        match.implementsSerializable();
         match.addStringProperty("compLevel").notNull();
         match.addIntProperty("setNumber");
         match.addDateProperty("time");
@@ -130,6 +135,7 @@ public class DaoGen {
         wheel.addDateProperty("modified").notNull();
         wheel.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
         wheel.implementsInterface("Comparable<Wheel>");
+        wheel.implementsSerializable();
         teamScoutingWheel = wheel.addLongProperty("teamId").notNull().getProperty();
         wheelType = wheel.addStringProperty("wheelType").notNull().getProperty();
         wheel.addDoubleProperty("wheelSize").notNull();
@@ -151,6 +157,7 @@ public class DaoGen {
         teamScouting.addDateProperty("modified").notNull();
         teamScouting.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
         teamScouting.implementsInterface("Comparable<TeamScouting2014>");
+        teamScouting.implementsSerializable();
         Property teamScoutingteam = teamScouting.addLongProperty("teamId").notNull().unique().getProperty();
         teamScouting.addToOne(team,teamScoutingteam);
         teamScouting.addStringProperty("notes");
@@ -190,6 +197,7 @@ public class DaoGen {
         matchScouting.addDateProperty("modified").notNull();
         matchScouting.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
         matchScouting.implementsInterface("Comparable<MatchScouting2014>");
+        matchScouting.implementsSerializable();
         Property matchScoutingmatch = matchScouting.addLongProperty("matchId").notNull().getProperty();
         matchScouting.addToOne(match,matchScoutingmatch);
         Property matchScoutingteam = matchScouting.addLongProperty("teamId").notNull().getProperty();
