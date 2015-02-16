@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.greenDao.Event;
+import com.mechinn.android.ouralliance.greenDao.EventTeam;
 
 public class InsertCompDialogFragment extends DialogFragment {
     public static final String TAG = "InsertCompDialogFragment";
@@ -51,7 +53,7 @@ public class InsertCompDialogFragment extends DialogFragment {
 				public void onClick(DialogInterface dialog, int id) {
 					event.setShortName(compName.getText().toString());
 					event.setEventCode(compCode.getText().toString());
-                    event.asyncSave();
+                    ((OurAlliance)getActivity().getApplicationContext()).getAsyncSession().update(event);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {

@@ -26,20 +26,25 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.mechinn.android.ouralliance.data.MatchScouting;
+import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.frc2014.ExportMatchScouting2014;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
+import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetMatches;
+
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
-public class MatchListFragment extends ListFragment {
+public class MatchListFragment<A extends MatchScouting> extends ListFragment {
     public static final String TAG = "MatchListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
     private Listener mCallback;
 	private Prefs prefs;
 	private MatchAdapter adapter;
-    private ModelList<CompetitionTeam> teams;
+    private List<TeamScouting> teams;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
     private GetMatches downloadMatches;

@@ -37,3 +37,16 @@
     -keepclassmembers class * extends de.greenrobot.event.util.ThrowableFailureEvent {
         (java.lang.Throwable);
     }
+
+# Butter Knife
+    -keep class butterknife.** { *; }
+    -dontwarn butterknife.internal.**
+    -keep class **$$ViewInjector { *; }
+
+    -keepclasseswithmembernames class * {
+        @butterknife.* <fields>;
+    }
+
+    -keepclasseswithmembernames class * {
+        @butterknife.* <methods>;
+    }

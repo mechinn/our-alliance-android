@@ -51,12 +51,13 @@ public class MatchScouting2014Dao extends AbstractDao<MatchScouting2014, Long> {
         public final static Property OverTruss = new Property(17, Boolean.class, "overTruss", false, "OVER_TRUSS");
         public final static Property Low = new Property(18, Boolean.class, "low", false, "LOW");
         public final static Property High = new Property(19, Boolean.class, "high", false, "HIGH");
+        public final static Property MultimediaId = new Property(20, Long.class, "multimediaId", false, "MULTIMEDIA_ID");
     };
 
     private DaoSession daoSession;
 
-    private Query<MatchScouting2014> match_TeamsQuery;
-    private Query<MatchScouting2014> teamScouting2014_MatchesQuery;
+    private Query<MatchScouting2014> match_Teams2014Query;
+    private Query<MatchScouting2014> teamScouting2014_Matches2014Query;
 
     public MatchScouting2014Dao(DaoConfig config) {
         super(config);
@@ -90,7 +91,8 @@ public class MatchScouting2014Dao extends AbstractDao<MatchScouting2014, Long> {
                 "'GROUND' INTEGER," + // 16: ground
                 "'OVER_TRUSS' INTEGER," + // 17: overTruss
                 "'LOW' INTEGER," + // 18: low
-                "'HIGH' INTEGER);"); // 19: high
+                "'HIGH' INTEGER," + // 19: high
+                "'MULTIMEDIA_ID' INTEGER);"); // 20: multimediaId
         // Add Indexes
         db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_MATCH_SCOUTING2014_MATCH_ID_TEAM_ID ON MATCH_SCOUTING2014" +
                 " (MATCH_ID,TEAM_ID);");
@@ -194,6 +196,11 @@ public class MatchScouting2014Dao extends AbstractDao<MatchScouting2014, Long> {
         if (high != null) {
             stmt.bindLong(20, high ? 1l: 0l);
         }
+ 
+        Long multimediaId = entity.getMultimediaId();
+        if (multimediaId != null) {
+            stmt.bindLong(21, multimediaId);
+        }
     }
 
     @Override
@@ -231,7 +238,8 @@ public class MatchScouting2014Dao extends AbstractDao<MatchScouting2014, Long> {
             cursor.isNull(offset + 16) ? null : cursor.getShort(offset + 16) != 0, // ground
             cursor.isNull(offset + 17) ? null : cursor.getShort(offset + 17) != 0, // overTruss
             cursor.isNull(offset + 18) ? null : cursor.getShort(offset + 18) != 0, // low
-            cursor.isNull(offset + 19) ? null : cursor.getShort(offset + 19) != 0 // high
+            cursor.isNull(offset + 19) ? null : cursor.getShort(offset + 19) != 0, // high
+            cursor.isNull(offset + 20) ? null : cursor.getLong(offset + 20) // multimediaId
         );
         return entity;
     }
@@ -259,6 +267,7 @@ public class MatchScouting2014Dao extends AbstractDao<MatchScouting2014, Long> {
         entity.setOverTruss(cursor.isNull(offset + 17) ? null : cursor.getShort(offset + 17) != 0);
         entity.setLow(cursor.isNull(offset + 18) ? null : cursor.getShort(offset + 18) != 0);
         entity.setHigh(cursor.isNull(offset + 19) ? null : cursor.getShort(offset + 19) != 0);
+        entity.setMultimediaId(cursor.isNull(offset + 20) ? null : cursor.getLong(offset + 20));
      }
     
     /** @inheritdoc */
@@ -284,32 +293,32 @@ public class MatchScouting2014Dao extends AbstractDao<MatchScouting2014, Long> {
         return true;
     }
     
-    /** Internal query to resolve the "teams" to-many relationship of Match. */
-    public List<MatchScouting2014> _queryMatch_Teams(long matchId) {
+    /** Internal query to resolve the "teams2014" to-many relationship of Match. */
+    public List<MatchScouting2014> _queryMatch_Teams2014(long matchId) {
         synchronized (this) {
-            if (match_TeamsQuery == null) {
+            if (match_Teams2014Query == null) {
                 QueryBuilder<MatchScouting2014> queryBuilder = queryBuilder();
                 queryBuilder.where(Properties.MatchId.eq(null));
                 queryBuilder.orderRaw("MATCH_ID ASC");
-                match_TeamsQuery = queryBuilder.build();
+                match_Teams2014Query = queryBuilder.build();
             }
         }
-        Query<MatchScouting2014> query = match_TeamsQuery.forCurrentThread();
+        Query<MatchScouting2014> query = match_Teams2014Query.forCurrentThread();
         query.setParameter(0, matchId);
         return query.list();
     }
 
-    /** Internal query to resolve the "matches" to-many relationship of TeamScouting2014. */
-    public List<MatchScouting2014> _queryTeamScouting2014_Matches(long teamId) {
+    /** Internal query to resolve the "matches2014" to-many relationship of TeamScouting2014. */
+    public List<MatchScouting2014> _queryTeamScouting2014_Matches2014(long teamId) {
         synchronized (this) {
-            if (teamScouting2014_MatchesQuery == null) {
+            if (teamScouting2014_Matches2014Query == null) {
                 QueryBuilder<MatchScouting2014> queryBuilder = queryBuilder();
                 queryBuilder.where(Properties.TeamId.eq(null));
                 queryBuilder.orderRaw("MATCH_ID ASC");
-                teamScouting2014_MatchesQuery = queryBuilder.build();
+                teamScouting2014_Matches2014Query = queryBuilder.build();
             }
         }
-        Query<MatchScouting2014> query = teamScouting2014_MatchesQuery.forCurrentThread();
+        Query<MatchScouting2014> query = teamScouting2014_Matches2014Query.forCurrentThread();
         query.setParameter(0, teamId);
         return query.list();
     }

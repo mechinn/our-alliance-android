@@ -1,6 +1,8 @@
 package com.mechinn.android.ouralliance.greenDao;
 
 import java.util.List;
+
+import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
 
@@ -17,7 +19,7 @@ import com.mechinn.android.ouralliance.greenDao.dao.WheelDao;
 /**
  * Entity mapped to table TEAM_SCOUTING2014.
  */
-public class TeamScouting2014 extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<TeamScouting2014>, java.io.Serializable {
+public class TeamScouting2014 extends com.mechinn.android.ouralliance.data.TeamScouting  implements Comparable<TeamScouting2014>, java.io.Serializable {
 
     private Long id;
     /** Not-null value. */
@@ -59,7 +61,7 @@ public class TeamScouting2014 extends com.mechinn.android.ouralliance.OurAllianc
     private Long team__resolvedKey;
 
     private List<Wheel> wheels;
-    private List<MatchScouting2014> matches;
+    private List<MatchScouting2014> matches2014;
     private List<Multimedia> multimedia;
 
     // KEEP FIELDS - put your custom fields here
@@ -387,25 +389,25 @@ public class TeamScouting2014 extends com.mechinn.android.ouralliance.OurAllianc
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
-    public List<MatchScouting2014> getMatches() {
-        if (matches == null) {
+    public List<MatchScouting2014> getMatches2014() {
+        if (matches2014 == null) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             MatchScouting2014Dao targetDao = daoSession.getMatchScouting2014Dao();
-            List<MatchScouting2014> matchesNew = targetDao._queryTeamScouting2014_Matches(id);
+            List<MatchScouting2014> matches2014New = targetDao._queryTeamScouting2014_Matches2014(id);
             synchronized (this) {
-                if(matches == null) {
-                    matches = matchesNew;
+                if(matches2014 == null) {
+                    matches2014 = matches2014New;
                 }
             }
         }
-        return matches;
+        return matches2014;
     }
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    public synchronized void resetMatches() {
-        matches = null;
+    public synchronized void resetMatches2014() {
+        matches2014 = null;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
@@ -455,6 +457,15 @@ public class TeamScouting2014 extends com.mechinn.android.ouralliance.OurAllianc
     }
 
     // KEEP METHODS - put your custom methods here
+    @Override
+    public List<? extends MatchScouting> getMatches() {
+        return this.getMatches2014();
+    }
+
+    @Override
+    public void resetMatches() {
+        this.resetMatches2014();
+    }
     public String toString() {
         return	"ID: "+this.getId()+
                 " Mod: "+this.getModified()+

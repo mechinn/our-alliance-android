@@ -14,7 +14,7 @@ import com.mechinn.android.ouralliance.greenDao.dao.TeamDao;
 /**
  * Entity mapped to table EVENT_TEAM.
  */
-public class EventTeam extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<EventTeam>, java.io.Serializable {
+public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<EventTeam>, java.io.Serializable {
 
     private Long id;
     /** Not-null value. */

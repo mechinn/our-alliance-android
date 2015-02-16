@@ -37,7 +37,7 @@ public class MultimediaDao extends AbstractDao<Multimedia, Long> {
 
     private DaoSession daoSession;
 
-    private Query<Multimedia> match_MultimediaQuery;
+    private Query<Multimedia> matchScouting2014_MultimediaQuery;
     private Query<Multimedia> teamScouting2014_MultimediaQuery;
 
     public MultimediaDao(DaoConfig config) {
@@ -149,16 +149,16 @@ public class MultimediaDao extends AbstractDao<Multimedia, Long> {
         return true;
     }
     
-    /** Internal query to resolve the "multimedia" to-many relationship of Match. */
-    public List<Multimedia> _queryMatch_Multimedia(Long multimediaId) {
+    /** Internal query to resolve the "multimedia" to-many relationship of MatchScouting2014. */
+    public List<Multimedia> _queryMatchScouting2014_Multimedia(Long multimediaId) {
         synchronized (this) {
-            if (match_MultimediaQuery == null) {
+            if (matchScouting2014_MultimediaQuery == null) {
                 QueryBuilder<Multimedia> queryBuilder = queryBuilder();
                 queryBuilder.where(Properties.MultimediaId.eq(null));
-                match_MultimediaQuery = queryBuilder.build();
+                matchScouting2014_MultimediaQuery = queryBuilder.build();
             }
         }
-        Query<Multimedia> query = match_MultimediaQuery.forCurrentThread();
+        Query<Multimedia> query = matchScouting2014_MultimediaQuery.forCurrentThread();
         query.setParameter(0, multimediaId);
         return query.list();
     }

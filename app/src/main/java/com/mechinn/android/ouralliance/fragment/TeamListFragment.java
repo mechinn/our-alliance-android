@@ -16,8 +16,6 @@ import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.greenDao.EventTeam;
-import com.mechinn.android.ouralliance.greenDao.Team;
-import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import com.mechinn.android.ouralliance.greenDao.dao.EventTeamDao;
 import com.mechinn.android.ouralliance.greenDao.dao.TeamDao;
@@ -53,26 +51,28 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
 	private EventTeamDragSortListAdapter adapter;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
-    private AsyncOperation eventLoader;
     private Sort2014 sort;
     private Spinner sortTeams;
     private GetEventTeams downloadTeams;
-    private AsyncSession async;
     private DaoSession daoSession;
+    private AsyncSession async;
+    private AsyncOperation eventLoader;
 
     @Override
     public void onAsyncOperationCompleted(AsyncOperation operation) {
-        if(eventLoader == operation && operation.isCompletedSucessfully() && operation.getType().equals(AsyncOperation.OperationType.QueryList)) {
-            List<EventTeam> teams = (List<EventTeam>) operation.getResult();
-            switch(prefs.getYear()) {
-                case 2014:
-                    adapter.showDrag(sort.equals(Sort2014.RANK));
-                    break;
+        if(eventLoader == operation) {
+            if (operation.isCompletedSucessfully()) {
+                List<EventTeam> teams = (List<EventTeam>) operation.getResult();
+                switch (prefs.getYear()) {
+                    case 2014:
+                        adapter.showDrag(sort.equals(Sort2014.RANK));
+                        break;
+                }
+                adapter.swapList(teams);
+                getActivity().invalidateOptionsMenu();
+            } else {
+                getActivity().invalidateOptionsMenu();
             }
-            adapter.swapList(teams);
-            getActivity().invalidateOptionsMenu();
-        } else {
-            getActivity().invalidateOptionsMenu();
         }
     }
 

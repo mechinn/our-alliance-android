@@ -11,16 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
+import com.mechinn.android.ouralliance.greenDao.EventTeam;
 import com.mechinn.android.ouralliance.greenDao.Team;
 import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
+import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
 public class InsertTeamDialogFragment extends DialogFragment {
     public static final String TAG = "InsertTeamDialogFragment";
 	public static final String TEAM_ARG = "team";
-    public static final String NEXT = "next";
 
     private View dialog;
     private TextView teamNumber;
@@ -42,16 +44,9 @@ public class InsertTeamDialogFragment extends DialogFragment {
 		dialog = inflater.inflate(R.layout.dialog_team_insert, null);
 		teamNumber = (TextView) dialog.findViewById(R.id.editTeamNumber);
 		int yes;
-		try {
-			team = (Team) this.getArguments().getSerializable(TEAM_ARG);
-    		teamNumber.setText(Integer.toString(team.getTeamNumber()));
-    		yes = R.string.update;
-    		Log.d(TAG, "update");
-		} catch(NullPointerException e) {
-			team = new Team();
-			yes = R.string.create;
-    		Log.d(TAG, "insert");
-		}
+        team = new Team();
+        yes = R.string.create;
+        Log.d(TAG, "insert");
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
@@ -69,16 +64,14 @@ public class InsertTeamDialogFragment extends DialogFragment {
 
     private class SaveTeam extends Thread {
         public void run() {
-            Log.d(TAG,"saving: "+team);
+            Log.d(TAG, "saving: " + team);
             team.save();
             Log.d(TAG,"saving id: "+team.getId());
-            switch(prefs.getYear()) {
-                case 2014:
-                    new TeamScouting2014(team).save();
-                    break;
-            }
             Log.d(TAG,"competition id: "+prefs.getComp());
-            new CompetitionTeam(new Competition(prefs.getComp()),team,getArguments().getInt(NEXT,999)).save();
+            EventTeam eventTeam = new EventTeam();
+            eventTeam.setEventId(prefs.getComp());
+            eventTeam.setTeam(team);
+            eventTeam.save();
         }
     }
 }

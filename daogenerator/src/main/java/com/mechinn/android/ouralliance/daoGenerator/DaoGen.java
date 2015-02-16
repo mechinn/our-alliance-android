@@ -40,7 +40,7 @@ public class DaoGen {
         team = schema.addEntity("Team");
         team.addIdProperty();
         team.addDateProperty("modified").notNull();
-        team.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        team.setSuperclass("com.mechinn.android.ouralliance.data.OurAllianceObject");
         team.implementsInterface("Comparable<Team>");
         team.implementsSerializable();
         team.addIntProperty("teamNumber").notNull().unique();
@@ -55,7 +55,7 @@ public class DaoGen {
         multimedia = schema.addEntity("Multimedia");
         multimedia.addIdProperty();
         multimedia.addDateProperty("modified").notNull();
-        multimedia.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        multimedia.setSuperclass("com.mechinn.android.ouralliance.data.OurAllianceObject");
         multimedia.implementsInterface("Comparable<Multimedia>");
         multimedia.implementsSerializable();
         multimedia.addIntProperty("teamNumber").notNull().unique();
@@ -65,7 +65,7 @@ public class DaoGen {
         event = schema.addEntity("Event");
         event.addIdProperty();
         event.addDateProperty("modified").notNull();
-        event.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        event.setSuperclass("com.mechinn.android.ouralliance.data.OurAllianceObject");
         event.implementsInterface("Comparable<Event>");
         event.implementsSerializable();
         event.addStringProperty("shortName").notNull();
@@ -82,7 +82,7 @@ public class DaoGen {
         eventTeam = schema.addEntity("EventTeam");
         eventTeam.addIdProperty();
         eventTeam.addDateProperty("modified").notNull();
-        eventTeam.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        eventTeam.setSuperclass("com.mechinn.android.ouralliance.data.OurAllianceObject");
         eventTeam.implementsInterface("Comparable<EventTeam>");
         eventTeam.implementsSerializable();
         Property eventTeamEvent = eventTeam.addLongProperty("eventId").notNull().getProperty();
@@ -107,7 +107,7 @@ public class DaoGen {
         match = schema.addEntity("Match");
         match.addIdProperty();
         match.addDateProperty("modified").notNull();
-        match.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        match.setSuperclass("com.mechinn.android.ouralliance.data.OurAllianceObject");
         match.implementsInterface("Comparable<Match>");
         match.implementsSerializable();
         match.addStringProperty("compLevel").notNull();
@@ -133,7 +133,7 @@ public class DaoGen {
         wheel = schema.addEntity("Wheel");
         wheel.addIdProperty();
         wheel.addDateProperty("modified").notNull();
-        wheel.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        wheel.setSuperclass("com.mechinn.android.ouralliance.data.OurAllianceObject");
         wheel.implementsInterface("Comparable<Wheel>");
         wheel.implementsSerializable();
         teamScoutingWheel = wheel.addLongProperty("teamId").notNull().getProperty();
@@ -155,7 +155,7 @@ public class DaoGen {
         Entity teamScouting = schema.addEntity("TeamScouting2014");
         teamScouting.addIdProperty();
         teamScouting.addDateProperty("modified").notNull();
-        teamScouting.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        teamScouting.setSuperclass("com.mechinn.android.ouralliance.data.TeamScouting");
         teamScouting.implementsInterface("Comparable<TeamScouting2014>");
         teamScouting.implementsSerializable();
         Property teamScoutingteam = teamScouting.addLongProperty("teamId").notNull().unique().getProperty();
@@ -195,7 +195,7 @@ public class DaoGen {
         Entity matchScouting = schema.addEntity("MatchScouting2014");
         matchScouting.addIdProperty();
         matchScouting.addDateProperty("modified").notNull();
-        matchScouting.setSuperclass("com.mechinn.android.ouralliance.OurAllianceObject");
+        matchScouting.setSuperclass("com.mechinn.android.ouralliance.data.MatchScouting");
         matchScouting.implementsInterface("Comparable<MatchScouting2014>");
         matchScouting.implementsSerializable();
         Property matchScoutingmatch = matchScouting.addLongProperty("matchId").notNull().getProperty();
@@ -218,6 +218,7 @@ public class DaoGen {
         matchScouting.addBooleanProperty("overTruss");
         matchScouting.addBooleanProperty("low");
         matchScouting.addBooleanProperty("high");
+        Property matchMultimedia = matchScouting.addLongProperty("multimediaId").getProperty();
 
         Index matchScoutingUnique = new Index();
         matchScoutingUnique.addProperty(matchScoutingmatch);
@@ -226,14 +227,14 @@ public class DaoGen {
         matchScouting.addIndex(matchScoutingUnique);
 
         ToMany matchToMatchScouting = match.addToMany(matchScouting, matchScoutingmatch);
-        matchToMatchScouting.setName("teams");
+        matchToMatchScouting.setName("teams2014");
         matchToMatchScouting.orderAsc(matchScoutingmatch);
 
         ToMany teamScoutingToMatches = teamScouting.addToMany(matchScouting, matchScoutingteam);
-        teamScoutingToMatches.setName("matches");
+        teamScoutingToMatches.setName("matches2014");
         teamScoutingToMatches.orderAsc(matchScoutingmatch);
 
-        ToMany matchToMultimedia = match.addToMany(multimedia, matchMultimedia);
+        ToMany matchToMultimedia = matchScouting.addToMany(multimedia, matchMultimedia);
         matchToMultimedia.setName("multimedia");
 
         ToMany teamToMultimedia = teamScouting.addToMany(multimedia, teamMultimedia);

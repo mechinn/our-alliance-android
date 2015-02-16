@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.greenDao;
 
+import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import de.greenrobot.dao.DaoException;
 
@@ -13,7 +14,7 @@ import com.mechinn.android.ouralliance.greenDao.dao.WheelDao;
 /**
  * Entity mapped to table WHEEL.
  */
-public class Wheel extends com.mechinn.android.ouralliance.OurAllianceObject  implements Comparable<Wheel>, java.io.Serializable {
+public class Wheel extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<Wheel>, java.io.Serializable {
 
     private Long id;
     /** Not-null value. */
@@ -165,6 +166,14 @@ public class Wheel extends com.mechinn.android.ouralliance.OurAllianceObject  im
     }
 
     // KEEP METHODS - put your custom methods here
+    public void setTeamScouting(TeamScouting team) {
+        if (team == null) {
+            throw new DaoException("To-one property 'teamId' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            teamId = team.getId();
+        }
+    }
     public String toString() {
         return getTeamScouting2014()+": "+ getWheelType()+" | "+ getWheelSize()+" | "+ getWheelCount();
     }
