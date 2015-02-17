@@ -11,14 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.greenDao.EventTeam;
 import com.mechinn.android.ouralliance.greenDao.Team;
-import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
-import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
 public class InsertTeamDialogFragment extends DialogFragment {
     public static final String TAG = "InsertTeamDialogFragment";

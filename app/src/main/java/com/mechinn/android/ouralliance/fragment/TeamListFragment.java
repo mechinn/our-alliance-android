@@ -1,8 +1,6 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import android.bluetooth.BluetoothAdapter;
-import android.os.Handler;
-import android.os.Message;
 import android.view.*;
 import android.widget.*;
 
@@ -11,7 +9,6 @@ import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.EventTeamDragSortListAdapter;
-import com.mechinn.android.ouralliance.data.frc2014.ExportTeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
@@ -290,15 +287,6 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
         dslv.setItemChecked(position, true);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == R.id.action_request_enable_bluetooth) {
-            if (resultCode == Activity.RESULT_OK) {
-                bluetoothTransfer();
-            }
-        }
-    }
-
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -322,23 +310,15 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.matchList).setVisible(prefs.getComp()>0 && null!=adapter && adapter.getCount() > 5);
         menu.findItem(R.id.insertTeamScouting).setVisible(prefs.getComp()>0);
-        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp()>0);
-        menu.findItem(R.id.exportTeamScouting).setVisible(null!=adapter && adapter.getCount()>0);
+        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
+        menu.findItem(R.id.exportTeamScouting).setVisible(null != adapter && adapter.getCount() > 0);
         menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != adapter && adapter.getCount() > 0 && bluetoothAdapter != null);
         if(bluetoothOn) {
             menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
         } else {
             menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
         }
-        menu.findItem(R.id.refreshCompetitionTeams).setVisible(prefs.getComp()>0);
-    }
-
-    private void bluetoothTransfer() {
-        DialogFragment newFragment = new TransferBluetoothDialogFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(TransferBluetoothDialogFragment.TYPE, Import.Type.TEAMSCOUTING2014);
-        newFragment.setArguments(bundle);
-        newFragment.show(this.getFragmentManager(), "Bluetooth Transfer Team Scouting");
+        menu.findItem(R.id.refreshCompetitionTeams).setVisible(prefs.getComp() > 0);
     }
 	
 	@Override
@@ -353,29 +333,6 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
                 DialogFragment newFragment = new InsertTeamDialogFragment();
                 newFragment.show(this.getFragmentManager(), "Add Team");
 	            return true;
-	        case R.id.exportTeamScouting:
-                new ExportTeamScouting2014(this.getActivity()).execute();
-	            return true;
-            case R.id.importTeamScouting:
-                new Import(this.getActivity(),new Handler(new Handler.Callback(){
-                    @Override
-                    public boolean handleMessage(Message msg) {
-                        if(null!=msg.getData().getString(Import.RESULT)) {
-                            Toast.makeText(getActivity(),msg.getData().getString(Import.RESULT),Toast.LENGTH_SHORT).show();
-                            return true;
-                        }
-                        return false;
-                    }
-                }),Import.Type.TEAMSCOUTING2014).start();
-                return true;
-            case R.id.bluetoothTeamScouting:
-                if(!bluetoothAdapter.isEnabled()) {
-                    Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBluetoothIntent, R.id.action_request_enable_bluetooth);
-                } else {
-                    bluetoothTransfer();
-                }
-                return true;
             case R.id.refreshCompetitionTeams:
                 downloadTeams.refreshEventTeams();
                 return true;

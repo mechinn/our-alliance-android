@@ -21,8 +21,8 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
     public abstract void resetWheels();
     public abstract List<? extends MatchScouting> getMatches();
     public abstract void resetMatches();
-    public abstract Long getMultimediaId();
-    public abstract void setMultimediaId(Long multimediaId);
+    public abstract Long getTeamMultimediaId();
+    public abstract void setTeamMultimediaId(Long multimediaId);
     public abstract List<Multimedia> getMultimedia();
     public abstract void resetMultimedia();
     public int compareTo(TeamScouting another) {

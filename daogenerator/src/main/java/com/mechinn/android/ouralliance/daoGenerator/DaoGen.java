@@ -118,7 +118,7 @@ public class DaoGen {
         Property matchNum = match.addIntProperty("matchNum").getProperty();
         Property eventMatch = match.addLongProperty("eventId").getProperty();
         match.addToOne(event,eventMatch);
-        matchMultimedia = match.addLongProperty("multimediaId").getProperty();
+        matchMultimedia = match.addLongProperty("matchMultimediaId").getProperty();
 
         Index matchUnique = new Index();
         matchUnique.addProperty(eventMatch);
@@ -182,7 +182,7 @@ public class DaoGen {
         teamScouting.addBooleanProperty("lowAuto");
         teamScouting.addBooleanProperty("highAuto");
         teamScouting.addBooleanProperty("hotAuto");
-        Property teamMultimedia = teamScouting.addLongProperty("multimediaId").getProperty();
+        Property teamMultimedia = teamScouting.addLongProperty("teamMultimediaId").getProperty();
 
         wheel.addToOne(teamScouting,teamScoutingWheel);
 

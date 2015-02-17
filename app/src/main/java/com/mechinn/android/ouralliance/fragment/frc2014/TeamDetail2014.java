@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
@@ -15,18 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.frc2014.TeamScouting2014FilterAdapter;
 import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;
-import com.mechinn.android.ouralliance.greenDao.Event;
 import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
-import com.mechinn.android.ouralliance.greenDao.Wheel;
 import com.mechinn.android.ouralliance.greenDao.dao.TeamScouting2014Dao;
-import com.mechinn.android.ouralliance.greenDao.dao.WheelDao;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroup;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroupOnCheckedChangeListener;
 
@@ -44,10 +39,10 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     public static final int maxHeight = 84;
     public static final int maxDistance = 9999;
 
-	@InjectView(R.id.team2014orientation) private AutoCompleteTextView orientation;
-    @InjectView(R.id.team2014driveTrain) private AutoCompleteTextView driveTrain;
-    @InjectView(R.id.team2014width) private EditText width;
-    @OnEditorAction(R.id.team2014width) private boolean widthEdit(TextView v, int actionId, KeyEvent event) {
+	@InjectView(R.id.team2014orientation) protected AutoCompleteTextView orientation;
+    @InjectView(R.id.team2014driveTrain) protected AutoCompleteTextView driveTrain;
+    @InjectView(R.id.team2014width) protected EditText width;
+    @OnEditorAction(R.id.team2014width) protected boolean widthEdit(TextView v, int actionId, KeyEvent event) {
         if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 actionId == EditorInfo.IME_ACTION_DONE ||
                 event.getAction() == KeyEvent.ACTION_DOWN &&
@@ -59,13 +54,13 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         }
         return false; // pass on to other listeners.
     }
-    @OnFocusChange(R.id.team2014width) private void widthFocus(View v, boolean hasFocus) {
+    @OnFocusChange(R.id.team2014width) protected void widthFocus(View v, boolean hasFocus) {
         if (!hasFocus) {
             checkPerimeter();
         }
     }
-    @InjectView(R.id.team2014length) private EditText length;
-    @OnEditorAction(R.id.team2014length) private boolean lengthEdit(TextView v, int actionId, KeyEvent event) {
+    @InjectView(R.id.team2014length) protected EditText length;
+    @OnEditorAction(R.id.team2014length) protected boolean lengthEdit(TextView v, int actionId, KeyEvent event) {
         if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 actionId == EditorInfo.IME_ACTION_DONE ||
                 event.getAction() == KeyEvent.ACTION_DOWN &&
@@ -77,13 +72,13 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         }
         return false; // pass on to other listeners.
     }
-    @OnFocusChange(R.id.team2014length) private void lengthFocus(View v, boolean hasFocus) {
+    @OnFocusChange(R.id.team2014length) protected void lengthFocus(View v, boolean hasFocus) {
         if (!hasFocus) {
             checkPerimeter();
         }
     }
-    @InjectView(R.id.team2014heightShooter) private EditText heightShooter;
-    @OnEditorAction(R.id.team2014heightShooter) public boolean heightShooterEdit(TextView v, int actionId, KeyEvent event) {
+    @InjectView(R.id.team2014heightShooter) protected EditText heightShooter;
+    @OnEditorAction(R.id.team2014heightShooter) protected boolean heightShooterEdit(TextView v, int actionId, KeyEvent event) {
         if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 actionId == EditorInfo.IME_ACTION_DONE ||
                 event.getAction() == KeyEvent.ACTION_DOWN &&
@@ -95,13 +90,13 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         }
         return false; // pass on to other listeners.
     }
-    @OnFocusChange(R.id.team2014heightShooter) private void heightShooterFocus(View v, boolean hasFocus) {
+    @OnFocusChange(R.id.team2014heightShooter) protected void heightShooterFocus(View v, boolean hasFocus) {
         if (!hasFocus) {
             checkShooterHeight();
         }
     }
-    @InjectView(R.id.team2014heightMax) private EditText heightMax;
-    @OnEditorAction(R.id.team2014heightMax) public boolean heightMaxEdit(TextView v, int actionId, KeyEvent event) {
+    @InjectView(R.id.team2014heightMax) protected EditText heightMax;
+    @OnEditorAction(R.id.team2014heightMax) protected boolean heightMaxEdit(TextView v, int actionId, KeyEvent event) {
         if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 actionId == EditorInfo.IME_ACTION_DONE ||
                 event.getAction() == KeyEvent.ACTION_DOWN &&
@@ -113,18 +108,18 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         }
         return false; // pass on to other listeners.
     }
-    @OnFocusChange(R.id.team2014heightMax) private void heightMaxFocus(View v, boolean hasFocus) {
+    @OnFocusChange(R.id.team2014heightMax) protected void heightMaxFocus(View v, boolean hasFocus) {
         if (!hasFocus) {
             checkMaxHeight();
         }
     }
-    @InjectView(R.id.team2014shooterType) private UncheckableRadioGroup shooterTypes;
-    @InjectView(R.id.team2014shooterGroup) private LinearLayout shooterGroup;
-    @InjectView(R.id.team2014lowGoal) private CheckBox lowGoal;
-    @InjectView(R.id.team2014highGoal) private CheckBox highGoal;
-    @InjectView(R.id.team2014shootingDistanceGroup) private LinearLayout shootingDistanceGroup;
-    @InjectView(R.id.team2014shootingDistance) private EditText shootingDistance;
-    @OnEditorAction(R.id.team2014shootingDistance) public boolean shootingDistanceEdit(TextView v, int actionId, KeyEvent event) {
+    @InjectView(R.id.team2014shooterType) protected UncheckableRadioGroup shooterTypes;
+    @InjectView(R.id.team2014shooterGroup) protected LinearLayout shooterGroup;
+    @InjectView(R.id.team2014lowGoal) protected CheckBox lowGoal;
+    @InjectView(R.id.team2014highGoal) protected CheckBox highGoal;
+    @InjectView(R.id.team2014shootingDistanceGroup) protected LinearLayout shootingDistanceGroup;
+    @InjectView(R.id.team2014shootingDistance) protected EditText shootingDistance;
+    @OnEditorAction(R.id.team2014shootingDistance) protected boolean shootingDistanceEdit(TextView v, int actionId, KeyEvent event) {
         if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 actionId == EditorInfo.IME_ACTION_DONE ||
                 event.getAction() == KeyEvent.ACTION_DOWN &&
@@ -136,24 +131,24 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         }
         return false; // pass on to other listeners.
     }
-    @OnFocusChange(R.id.team2014shootingDistance) private void shootingDistanceFocus(View v, boolean hasFocus) {
+    @OnFocusChange(R.id.team2014shootingDistance) protected void shootingDistanceFocus(View v, boolean hasFocus) {
         if (!hasFocus) {
             checkShootingDistance();
         }
     }
-    @InjectView(R.id.team2014passGround) private CheckBox passGround;
-    @InjectView(R.id.team2014passAir) private CheckBox passAir;
-    @InjectView(R.id.team2014passTruss) private CheckBox passTruss;
-    @InjectView(R.id.team2014pickupGround) private CheckBox pickupGround;
-    @InjectView(R.id.team2014pickupCatch) private CheckBox pickupCatch;
-    @InjectView(R.id.team2014pusher) private CheckBox pusher;
-    @InjectView(R.id.team2014blocker) private CheckBox blocker;
-    @InjectView(R.id.team2014humanPlayer) private RatingBar humanPlayer;
-    @InjectView(R.id.team2014noAuto) private CheckBox noAuto;
-    @InjectView(R.id.team2014driveAuto) private CheckBox driveAuto;
-    @InjectView(R.id.team2014lowAuto) private CheckBox lowAuto;
-    @InjectView(R.id.team2014highAuto) private CheckBox highAuto;
-    @InjectView(R.id.team2014hotAuto) private CheckBox hotAuto;
+    @InjectView(R.id.team2014passGround) protected CheckBox passGround;
+    @InjectView(R.id.team2014passAir) protected CheckBox passAir;
+    @InjectView(R.id.team2014passTruss) protected CheckBox passTruss;
+    @InjectView(R.id.team2014pickupGround) protected CheckBox pickupGround;
+    @InjectView(R.id.team2014pickupCatch) protected CheckBox pickupCatch;
+    @InjectView(R.id.team2014pusher) protected CheckBox pusher;
+    @InjectView(R.id.team2014blocker) protected CheckBox blocker;
+    @InjectView(R.id.team2014humanPlayer) protected RatingBar humanPlayer;
+    @InjectView(R.id.team2014noAuto) protected CheckBox noAuto;
+    @InjectView(R.id.team2014driveAuto) protected CheckBox driveAuto;
+    @InjectView(R.id.team2014lowAuto) protected CheckBox lowAuto;
+    @InjectView(R.id.team2014highAuto) protected CheckBox highAuto;
+    @InjectView(R.id.team2014hotAuto) protected CheckBox hotAuto;
 
 	private TeamScouting2014FilterAdapter orientationsAdapter;
 	private TeamScouting2014FilterAdapter driveTrainsAdapter;

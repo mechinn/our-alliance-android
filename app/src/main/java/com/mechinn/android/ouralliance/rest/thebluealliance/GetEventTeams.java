@@ -1,9 +1,7 @@
 package com.mechinn.android.ouralliance.rest.thebluealliance;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.greenDao.Event;
@@ -13,8 +11,6 @@ import com.mechinn.android.ouralliance.rest.GetHandlerThread;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import retrofit.RetrofitError;
 
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**

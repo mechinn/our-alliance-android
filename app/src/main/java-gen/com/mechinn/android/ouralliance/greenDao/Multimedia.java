@@ -120,6 +120,11 @@ public class Multimedia extends com.mechinn.android.ouralliance.data.OurAlliance
     }
 
     // KEEP METHODS - put your custom methods here
+
+    @Override
+    public int compareTo(Multimedia another) {
+        return 0;
+    }
     // KEEP METHODS END
 
 }

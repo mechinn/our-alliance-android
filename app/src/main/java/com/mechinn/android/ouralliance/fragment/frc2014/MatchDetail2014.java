@@ -18,20 +18,20 @@ import butterknife.InjectView;
 public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
     public static final String TAG = "MatchDetail2014";
 
-    @InjectView(R.id.match2014hotShots) private NumberPicker hotShots;
-    @InjectView(R.id.match2014shotsMade) private NumberPicker shotsMade;
-    @InjectView(R.id.match2014shotsMissed) private NumberPicker shotsMissed;
+    @InjectView(R.id.match2014hotShots) protected NumberPicker hotShots;
+    @InjectView(R.id.match2014shotsMade) protected NumberPicker shotsMade;
+    @InjectView(R.id.match2014shotsMissed) protected NumberPicker shotsMissed;
     private NumberPicker[] shots;
-    @InjectView(R.id.match2014moveFwd) private RatingBar moveFwd;
-    @InjectView(R.id.match2014shooter) private CheckBox shooter;
-    @InjectView(R.id.match2014catcher) private CheckBox catcher;
-    @InjectView(R.id.match2014passer) private CheckBox passer;
-    @InjectView(R.id.match2014driveTrain) private RatingBar driveTrain;
-    @InjectView(R.id.match2014ballAccuracy) private RatingBar ballAccuracy;
-    @InjectView(R.id.match2014ground) private CheckBox ground;
-    @InjectView(R.id.match2014overTruss) private CheckBox overTruss;
-    @InjectView(R.id.match2014low) private CheckBox low;
-    @InjectView(R.id.match2014high) private CheckBox high;
+    @InjectView(R.id.match2014moveFwd) protected RatingBar moveFwd;
+    @InjectView(R.id.match2014shooter) protected CheckBox shooter;
+    @InjectView(R.id.match2014catcher) protected CheckBox catcher;
+    @InjectView(R.id.match2014passer) protected CheckBox passer;
+    @InjectView(R.id.match2014driveTrain) protected RatingBar driveTrain;
+    @InjectView(R.id.match2014ballAccuracy) protected RatingBar ballAccuracy;
+    @InjectView(R.id.match2014ground) protected CheckBox ground;
+    @InjectView(R.id.match2014overTruss) protected CheckBox overTruss;
+    @InjectView(R.id.match2014low) protected CheckBox low;
+    @InjectView(R.id.match2014high) protected CheckBox high;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

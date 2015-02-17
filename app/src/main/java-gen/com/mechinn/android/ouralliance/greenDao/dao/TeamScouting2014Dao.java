@@ -55,7 +55,7 @@ public class TeamScouting2014Dao extends AbstractDao<TeamScouting2014, Long> {
         public final static Property LowAuto = new Property(24, Boolean.class, "lowAuto", false, "LOW_AUTO");
         public final static Property HighAuto = new Property(25, Boolean.class, "highAuto", false, "HIGH_AUTO");
         public final static Property HotAuto = new Property(26, Boolean.class, "hotAuto", false, "HOT_AUTO");
-        public final static Property MultimediaId = new Property(27, Long.class, "multimediaId", false, "MULTIMEDIA_ID");
+        public final static Property TeamMultimediaId = new Property(27, Long.class, "teamMultimediaId", false, "TEAM_MULTIMEDIA_ID");
     };
 
     private DaoSession daoSession;
@@ -101,7 +101,7 @@ public class TeamScouting2014Dao extends AbstractDao<TeamScouting2014, Long> {
                 "'LOW_AUTO' INTEGER," + // 24: lowAuto
                 "'HIGH_AUTO' INTEGER," + // 25: highAuto
                 "'HOT_AUTO' INTEGER," + // 26: hotAuto
-                "'MULTIMEDIA_ID' INTEGER);"); // 27: multimediaId
+                "'TEAM_MULTIMEDIA_ID' INTEGER);"); // 27: teamMultimediaId
     }
 
     /** Drops the underlying database table. */
@@ -242,9 +242,9 @@ public class TeamScouting2014Dao extends AbstractDao<TeamScouting2014, Long> {
             stmt.bindLong(27, hotAuto ? 1l: 0l);
         }
  
-        Long multimediaId = entity.getMultimediaId();
-        if (multimediaId != null) {
-            stmt.bindLong(28, multimediaId);
+        Long teamMultimediaId = entity.getTeamMultimediaId();
+        if (teamMultimediaId != null) {
+            stmt.bindLong(28, teamMultimediaId);
         }
     }
 
@@ -291,7 +291,7 @@ public class TeamScouting2014Dao extends AbstractDao<TeamScouting2014, Long> {
             cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0, // lowAuto
             cursor.isNull(offset + 25) ? null : cursor.getShort(offset + 25) != 0, // highAuto
             cursor.isNull(offset + 26) ? null : cursor.getShort(offset + 26) != 0, // hotAuto
-            cursor.isNull(offset + 27) ? null : cursor.getLong(offset + 27) // multimediaId
+            cursor.isNull(offset + 27) ? null : cursor.getLong(offset + 27) // teamMultimediaId
         );
         return entity;
     }
@@ -326,7 +326,7 @@ public class TeamScouting2014Dao extends AbstractDao<TeamScouting2014, Long> {
         entity.setLowAuto(cursor.isNull(offset + 24) ? null : cursor.getShort(offset + 24) != 0);
         entity.setHighAuto(cursor.isNull(offset + 25) ? null : cursor.getShort(offset + 25) != 0);
         entity.setHotAuto(cursor.isNull(offset + 26) ? null : cursor.getShort(offset + 26) != 0);
-        entity.setMultimediaId(cursor.isNull(offset + 27) ? null : cursor.getLong(offset + 27));
+        entity.setTeamMultimediaId(cursor.isNull(offset + 27) ? null : cursor.getLong(offset + 27));
      }
     
     /** @inheritdoc */

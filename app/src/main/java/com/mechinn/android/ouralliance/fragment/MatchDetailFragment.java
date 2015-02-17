@@ -31,8 +31,8 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
     private long teamId;
 
 	private View rootView;
-    @InjectView(R.id.matchNotes) private TextView notes;
-    @InjectView(R.id.season) private LinearLayout season;
+    @InjectView(R.id.matchNotes) protected TextView notes;
+    @InjectView(R.id.season) protected LinearLayout season;
 
 	private MatchScoutingYear match;
     private DaoSession daoSession;

@@ -41,9 +41,9 @@ public class InsertMatchDialogFragment extends DialogFragment {
 
     private Prefs prefs;
     private View dialog;
-    @InjectView(R.id.practice) private TextView practice;
-    @InjectView(R.id.type) private Spinner type;
-    @OnItemSelected(R.id.type) public void typeSelected(AdapterView<?> parent, View view, int position, long id) {
+    @InjectView(R.id.practice) protected TextView practice;
+    @InjectView(R.id.type) protected Spinner type;
+    @OnItemSelected(R.id.type) protected void typeSelected(AdapterView<?> parent, View view, int position, long id) {
         if(Match.CompetitionLevel.QUARTER_FINALS.getValue()==position) {
             set.setVisibility(View.VISIBLE);
             set.setAdapter(quarterfinals);
@@ -62,17 +62,17 @@ public class InsertMatchDialogFragment extends DialogFragment {
             matchSpin.setVisibility(View.VISIBLE);
         }
     }
-    @InjectView(R.id.set) private Spinner set;
-    @InjectView(R.id.match) private Spinner matchSpin;
-    @InjectView(R.id.numberContainer) private LinearLayout numberContainer;
-    @InjectView(R.id.number) private EditText number;
+    @InjectView(R.id.set) protected Spinner set;
+    @InjectView(R.id.match) protected Spinner matchSpin;
+    @InjectView(R.id.numberContainer) protected LinearLayout numberContainer;
+    @InjectView(R.id.number) protected EditText number;
     private Spinner[] spinners;
-    @InjectView(R.id.red1) private Spinner red1;
-    @InjectView(R.id.red2) private Spinner red2;
-    @InjectView(R.id.red3) private Spinner red3;
-    @InjectView(R.id.blue1) private Spinner blue1;
-    @InjectView(R.id.blue2) private Spinner blue2;
-    @InjectView(R.id.blue3) private Spinner blue3;
+    @InjectView(R.id.red1) protected Spinner red1;
+    @InjectView(R.id.red2) protected Spinner red2;
+    @InjectView(R.id.red3) protected Spinner red3;
+    @InjectView(R.id.blue1) protected Spinner blue1;
+    @InjectView(R.id.blue2) protected Spinner blue2;
+    @InjectView(R.id.blue3) protected Spinner blue3;
     private Match match;
     private List<TeamScouting> teams;
     private ArrayList<MatchTeamSelectAdapter> adapters;

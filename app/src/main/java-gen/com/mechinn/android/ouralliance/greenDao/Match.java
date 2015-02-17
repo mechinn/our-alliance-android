@@ -27,7 +27,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     private Integer blueScore;
     private Integer matchNum;
     private Long eventId;
-    private Long multimediaId;
+    private Long matchMultimediaId;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -51,7 +51,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         this.id = id;
     }
 
-    public Match(Long id, java.util.Date modified, int compLevel, Integer setNumber, java.util.Date time, Integer redScore, Integer blueScore, Integer matchNum, Long eventId, Long multimediaId) {
+    public Match(Long id, java.util.Date modified, int compLevel, Integer setNumber, java.util.Date time, Integer redScore, Integer blueScore, Integer matchNum, Long eventId, Long matchMultimediaId) {
         this.id = id;
         this.modified = modified;
         this.compLevel = compLevel;
@@ -61,7 +61,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         this.blueScore = blueScore;
         this.matchNum = matchNum;
         this.eventId = eventId;
-        this.multimediaId = multimediaId;
+        this.matchMultimediaId = matchMultimediaId;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -144,12 +144,12 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         this.eventId = eventId;
     }
 
-    public Long getMultimediaId() {
-        return multimediaId;
+    public Long getMatchMultimediaId() {
+        return matchMultimediaId;
     }
 
-    public void setMultimediaId(Long multimediaId) {
-        this.multimediaId = multimediaId;
+    public void setMatchMultimediaId(Long matchMultimediaId) {
+        this.matchMultimediaId = matchMultimediaId;
     }
 
     /** To-one relationship, resolved on first access. */

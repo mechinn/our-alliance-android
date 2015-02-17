@@ -62,8 +62,8 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 
 	private Prefs prefs;
 	private View rootView;
-	@InjectView(R.id.picture) private Button picture;
-    @OnClick(R.id.picture) private void takePicture(View v) {
+	@InjectView(R.id.picture) protected Button picture;
+    @OnClick(R.id.picture) protected void takePicture(View v) {
         // Create a media file name
         if(null!=multimedia && null!=multimedia.getTeamFileDirectory()) {
             String timeStamp = dateFormat.format(new Date());
@@ -78,8 +78,8 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             startActivityForResult(intent, PICTURE_CAPTURE_CODE);
         }
     }
-    @InjectView(R.id.video) private Button video;
-    @OnClick(R.id.video) private void takeVideo(View v) {
+    @InjectView(R.id.video) protected Button video;
+    @OnClick(R.id.video) protected void takeVideo(View v) {
         // Create a media file name
         if(null!=multimedia && null!=multimedia.getTeamFileDirectory()) {
             String timeStamp = dateFormat.format(new Date());
@@ -95,21 +95,21 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             startActivityForResult(intent, VIDEO_CAPTURE_CODE);
         }
     }
-	@InjectView(R.id.gallery) private TwoWayView gallery;
-    @InjectView(R.id.notes) private TextView notes;
-	@InjectView(R.id.addWheel) private Button addWheel;
-    @OnClick(R.id.addWheel) private void addWheel(View v) {
+	@InjectView(R.id.gallery) protected TwoWayView gallery;
+    @InjectView(R.id.notes) protected TextView notes;
+	@InjectView(R.id.addWheel) protected Button addWheel;
+    @OnClick(R.id.addWheel) protected void addWheel(View v) {
         Wheel newWheel = new Wheel();
         newWheel.setTeamScouting(scouting);
         createWheel(newWheel);
     }
-    @InjectView(R.id.wheels) private LinearLayout wheels;
+    @InjectView(R.id.wheels) protected LinearLayout wheels;
     private ArrayList<Wheel> wheelCursor;
 	private MultimediaAdapter multimedia;
 
 	private WheelAdapter wheelTypesAdapter;
 
-    @InjectView(R.id.season) private LinearLayout season;
+    @InjectView(R.id.season) protected LinearLayout season;
 	private long teamId;
 	private Scouting scouting;
     private Event event;

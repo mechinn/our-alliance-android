@@ -126,4 +126,19 @@ public class MultimediaAdapter extends RecyclerView.Adapter<MultimediaAdapter.Si
         Log.d(TAG,"get image: error");
         Toast.makeText(activity, "error loading image", Toast.LENGTH_SHORT).show();
     }
+    public static void openMedia(View v) {
+        File filename = (File) v.getTag(R.string.file);
+        Log.d(TAG, filename.toString());
+        String type = URLConnection.guessContentTypeFromName("file://"+filename.getAbsolutePath());
+        Log.d(TAG, type);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.parse("file://"+filename.getAbsolutePath()), type);
+        try {
+            v.getContext().startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(v.getContext(), "No known viewer for this file type", Toast.LENGTH_LONG).show();
+        }
+    }
+
 }

@@ -48,7 +48,7 @@ public class TeamScouting2014 extends com.mechinn.android.ouralliance.data.TeamS
     private Boolean lowAuto;
     private Boolean highAuto;
     private Boolean hotAuto;
-    private Long multimediaId;
+    private Long teamMultimediaId;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -74,7 +74,7 @@ public class TeamScouting2014 extends com.mechinn.android.ouralliance.data.TeamS
         this.id = id;
     }
 
-    public TeamScouting2014(Long id, java.util.Date modified, long teamId, String notes, String orientation, String driveTrain, Double width, Double length, Double heightShooter, Double heightMax, Integer shooterType, Boolean lowGoal, Boolean highGoal, Double shootingDistance, Boolean passGround, Boolean passAir, Boolean passTruss, Boolean pickupGround, Boolean pickupCatch, Boolean pusher, Boolean blocker, Double humanPlayer, Boolean noAuto, Boolean driveAuto, Boolean lowAuto, Boolean highAuto, Boolean hotAuto, Long multimediaId) {
+    public TeamScouting2014(Long id, java.util.Date modified, long teamId, String notes, String orientation, String driveTrain, Double width, Double length, Double heightShooter, Double heightMax, Integer shooterType, Boolean lowGoal, Boolean highGoal, Double shootingDistance, Boolean passGround, Boolean passAir, Boolean passTruss, Boolean pickupGround, Boolean pickupCatch, Boolean pusher, Boolean blocker, Double humanPlayer, Boolean noAuto, Boolean driveAuto, Boolean lowAuto, Boolean highAuto, Boolean hotAuto, Long teamMultimediaId) {
         this.id = id;
         this.modified = modified;
         this.teamId = teamId;
@@ -102,7 +102,7 @@ public class TeamScouting2014 extends com.mechinn.android.ouralliance.data.TeamS
         this.lowAuto = lowAuto;
         this.highAuto = highAuto;
         this.hotAuto = hotAuto;
-        this.multimediaId = multimediaId;
+        this.teamMultimediaId = teamMultimediaId;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -329,12 +329,12 @@ public class TeamScouting2014 extends com.mechinn.android.ouralliance.data.TeamS
         this.hotAuto = hotAuto;
     }
 
-    public Long getMultimediaId() {
-        return multimediaId;
+    public Long getTeamMultimediaId() {
+        return teamMultimediaId;
     }
 
-    public void setMultimediaId(Long multimediaId) {
-        this.multimediaId = multimediaId;
+    public void setTeamMultimediaId(Long teamMultimediaId) {
+        this.teamMultimediaId = teamMultimediaId;
     }
 
     /** To-one relationship, resolved on first access. */

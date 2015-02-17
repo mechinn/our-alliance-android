@@ -1,12 +1,8 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import android.bluetooth.BluetoothAdapter;
-import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
 
 import com.mechinn.android.ouralliance.OurAlliance;
-import com.mechinn.android.ouralliance.data.Import;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchAdapter;
@@ -25,11 +21,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.data.frc2014.ExportMatchScouting2014;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.greenDao.Match;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
@@ -203,15 +197,6 @@ public class MatchListFragment extends ListFragment implements AsyncOperationLis
         getListView().setItemChecked(position, true);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == R.id.action_request_enable_bluetooth) {
-            if (resultCode == Activity.RESULT_OK) {
-                bluetoothTransfer();
-            }
-        }
-    }
-
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -230,14 +215,6 @@ public class MatchListFragment extends ListFragment implements AsyncOperationLis
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.match_list, menu);
 	}
-
-    private void bluetoothTransfer() {
-        DialogFragment newFragment = new TransferBluetoothDialogFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(TransferBluetoothDialogFragment.TYPE, Import.Type.MATCHSCOUTING2014);
-        newFragment.setArguments(bundle);
-        newFragment.show(this.getFragmentManager(), "Bluetooth Transfer Match Scouting");
-    }
 	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
@@ -273,29 +250,6 @@ public class MatchListFragment extends ListFragment implements AsyncOperationLis
                 newFragment.setArguments(args);
                 newFragment.show(this.getFragmentManager(), "Add Match");
 	            return true;
-            case R.id.exportMatchScouting:
-                new ExportMatchScouting2014(this.getActivity()).execute();
-                return true;
-            case R.id.importMatchScouting:
-                new Import(this.getActivity(),new Handler(new Handler.Callback(){
-                    @Override
-                    public boolean handleMessage(Message msg) {
-                        if(null!=msg.getData().getString(Import.RESULT)) {
-                            Toast.makeText(getActivity(),msg.getData().getString(Import.RESULT),Toast.LENGTH_SHORT).show();
-                            return true;
-                        }
-                        return false;
-                    }
-                }),Import.Type.MATCHSCOUTING2014).start();
-                return true;
-            case R.id.bluetoothMatchScouting:
-                if(!bluetoothAdapter.isEnabled()) {
-                    Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBluetoothIntent, R.id.action_request_enable_bluetooth);
-                } else {
-                    bluetoothTransfer();
-                }
-                return true;
             case R.id.refreshMatches:
                 downloadMatches.refreshMatches();
                 return true;

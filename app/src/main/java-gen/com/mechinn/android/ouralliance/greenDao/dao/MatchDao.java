@@ -39,7 +39,7 @@ public class MatchDao extends AbstractDao<Match, Long> {
         public final static Property BlueScore = new Property(6, Integer.class, "blueScore", false, "BLUE_SCORE");
         public final static Property MatchNum = new Property(7, Integer.class, "matchNum", false, "MATCH_NUM");
         public final static Property EventId = new Property(8, Long.class, "eventId", false, "EVENT_ID");
-        public final static Property MultimediaId = new Property(9, Long.class, "multimediaId", false, "MULTIMEDIA_ID");
+        public final static Property MatchMultimediaId = new Property(9, Long.class, "matchMultimediaId", false, "MATCH_MULTIMEDIA_ID");
     };
 
     private DaoSession daoSession;
@@ -68,7 +68,7 @@ public class MatchDao extends AbstractDao<Match, Long> {
                 "'BLUE_SCORE' INTEGER," + // 6: blueScore
                 "'MATCH_NUM' INTEGER," + // 7: matchNum
                 "'EVENT_ID' INTEGER," + // 8: eventId
-                "'MULTIMEDIA_ID' INTEGER);"); // 9: multimediaId
+                "'MATCH_MULTIMEDIA_ID' INTEGER);"); // 9: matchMultimediaId
         // Add Indexes
         db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_MATCH_EVENT_ID_MATCH_NUM ON MATCH" +
                 " (EVENT_ID,MATCH_NUM);");
@@ -122,9 +122,9 @@ public class MatchDao extends AbstractDao<Match, Long> {
             stmt.bindLong(9, eventId);
         }
  
-        Long multimediaId = entity.getMultimediaId();
-        if (multimediaId != null) {
-            stmt.bindLong(10, multimediaId);
+        Long matchMultimediaId = entity.getMatchMultimediaId();
+        if (matchMultimediaId != null) {
+            stmt.bindLong(10, matchMultimediaId);
         }
     }
 
@@ -153,7 +153,7 @@ public class MatchDao extends AbstractDao<Match, Long> {
             cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // blueScore
             cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // matchNum
             cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // eventId
-            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9) // multimediaId
+            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9) // matchMultimediaId
         );
         return entity;
     }
@@ -170,7 +170,7 @@ public class MatchDao extends AbstractDao<Match, Long> {
         entity.setBlueScore(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
         entity.setMatchNum(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
         entity.setEventId(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
-        entity.setMultimediaId(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
+        entity.setMatchMultimediaId(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
      }
     
     /** @inheritdoc */

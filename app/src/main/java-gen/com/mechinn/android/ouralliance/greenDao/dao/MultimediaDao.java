@@ -31,7 +31,7 @@ public class MultimediaDao extends AbstractDao<Multimedia, Long> {
         public final static Property TeamNumber = new Property(2, int.class, "teamNumber", false, "TEAM_NUMBER");
         public final static Property Type = new Property(3, String.class, "type", false, "TYPE");
         public final static Property Key = new Property(4, String.class, "key", false, "KEY");
-        public final static Property MultimediaId = new Property(5, Long.class, "multimediaId", false, "MULTIMEDIA_ID");
+        public final static Property TeamMultimediaId = new Property(5, Long.class, "teamMultimediaId", false, "TEAM_MULTIMEDIA_ID");
         public final static Property MultimediaId = new Property(6, Long.class, "multimediaId", false, "MULTIMEDIA_ID");
     };
 
@@ -58,7 +58,7 @@ public class MultimediaDao extends AbstractDao<Multimedia, Long> {
                 "'TEAM_NUMBER' INTEGER NOT NULL UNIQUE ," + // 2: teamNumber
                 "'TYPE' TEXT," + // 3: type
                 "'KEY' TEXT," + // 4: key
-                "'MULTIMEDIA_ID' INTEGER," + // 5: multimediaId
+                "'TEAM_MULTIMEDIA_ID' INTEGER," + // 5: teamMultimediaId
                 "'MULTIMEDIA_ID' INTEGER);"); // 6: multimediaId
     }
 
@@ -164,16 +164,16 @@ public class MultimediaDao extends AbstractDao<Multimedia, Long> {
     }
 
     /** Internal query to resolve the "multimedia" to-many relationship of TeamScouting2014. */
-    public List<Multimedia> _queryTeamScouting2014_Multimedia(Long multimediaId) {
+    public List<Multimedia> _queryTeamScouting2014_Multimedia(Long teamMultimediaId) {
         synchronized (this) {
             if (teamScouting2014_MultimediaQuery == null) {
                 QueryBuilder<Multimedia> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.MultimediaId.eq(null));
+                queryBuilder.where(Properties.TeamMultimediaId.eq(null));
                 teamScouting2014_MultimediaQuery = queryBuilder.build();
             }
         }
         Query<Multimedia> query = teamScouting2014_MultimediaQuery.forCurrentThread();
-        query.setParameter(0, multimediaId);
+        query.setParameter(0, teamMultimediaId);
         return query.list();
     }
 

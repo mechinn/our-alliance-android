@@ -7,18 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Handler;
-import android.os.Message;
 
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
-import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.event.EventException;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoMaster;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
-import de.greenrobot.common.io.IoUtils;
 import de.greenrobot.dao.async.AsyncSession;
 import de.greenrobot.event.EventBus;
 
@@ -27,7 +23,6 @@ import de.greenrobot.event.EventBus;
  */
 public class OurAlliance extends Application {
     public static final String TAG = "OurAlliance";
-    private BluetoothReceive receiver;
     private DaoSession daoSession;
     private AsyncSession asyncSession;
 
@@ -54,15 +49,23 @@ public class OurAlliance extends Application {
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         this.registerReceiver(broadcastReceiver, filter);
-        if(null==receiver && null!=BluetoothAdapter.getDefaultAdapter() && BluetoothAdapter.getDefaultAdapter().isEnabled()) {
-            startBluetoothReceiver();
-        }
 //        new AlarmTheBlueAlliance(this.getApplicationContext()).setAlarm();
+    }
+
+    public void onEventMainThread(BluetoothEvent event) {
+        switch (event.getState()) {
+            case STATE_OFF:
+            case STATE_TURNING_OFF:
+                break;
+            case STATE_ON:
+            case STATE_TURNING_ON:
+                break;
+        }
     }
 
     @Override
     public void onTerminate() {
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().unregister(this);
         super.onTerminate();
     }
 
@@ -79,49 +82,5 @@ public class OurAlliance extends Application {
     }
     public AsyncSession getAsyncSession() {
         return asyncSession;
-    }
-
-    public void onEvent(BluetoothEvent event) {
-        switch(event.getState()) {
-            case STATE_OFF:
-            case STATE_TURNING_OFF:
-                stopBluetoothReceiver();
-                break;
-            case STATE_ON:
-                startBluetoothReceiver();
-                break;
-        }
-    }
-
-    public void startBluetoothReceiver() {
-        receiver = new BluetoothReceive(this,new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                if(null!=msg.getData().getString(Import.RESULT)) {
-                    Toast.makeText(OurAlliance.this,msg.getData().getString(Import.RESULT),Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                if(null!=msg.getData().getString(BluetoothReceive.STATUS)) {
-                    Toast.makeText(OurAlliance.this,"Bluetooth was disabled on device",Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
-            }
-        }));
-        receiver.start();
-        Toast.makeText(OurAlliance.this,"Listening for bluetooth connections",Toast.LENGTH_SHORT).show();
-    }
-
-    public void stopBluetoothReceiver() {
-        if(null!=receiver) {
-            receiver.interrupt();
-        }
-        Toast.makeText(OurAlliance.this,"Bluetooth was disabled on device",Toast.LENGTH_SHORT).show();
-    }
-    public boolean isBluetoothReceiverState() {
-        if(null!=receiver) {
-            return receiver.isServerOn();
-        }
-        return false;
     }
 }
