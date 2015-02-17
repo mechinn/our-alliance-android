@@ -99,9 +99,9 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
 		prefs = new Prefs(this.getActivity());
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         sort = Sort2014.RANK;
+        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
         async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
         async.setListener(this);
-        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
         downloadTeams = new GetEventTeams(this.getActivity());
     }
     
@@ -351,9 +351,6 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
 	            return true;
 	        case R.id.insertTeamScouting:
                 DialogFragment newFragment = new InsertTeamDialogFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt(InsertTeamDialogFragment.NEXT,adapter.getCount());
-                newFragment.setArguments(bundle);
                 newFragment.show(this.getFragmentManager(), "Add Team");
 	            return true;
 	        case R.id.exportTeamScouting:

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by mechinn on 2/14/2015.
  */
-public abstract class TeamScouting extends OurAllianceObject {
+public abstract class TeamScouting extends OurAllianceObject implements Comparable<TeamScouting>, java.io.Serializable {
     public abstract long getTeamId();
     public abstract void setTeamId(long teamId);
     public abstract String getNotes();
@@ -25,4 +25,7 @@ public abstract class TeamScouting extends OurAllianceObject {
     public abstract void setMultimediaId(Long multimediaId);
     public abstract List<Multimedia> getMultimedia();
     public abstract void resetMultimedia();
+    public int compareTo(TeamScouting another) {
+        return this.getTeam().compareTo(another.getTeam());
+    }
 }

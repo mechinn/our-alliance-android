@@ -1,6 +1,8 @@
 package com.mechinn.android.ouralliance.data;
 
 import android.util.Log;
+
+import com.mechinn.android.ouralliance.greenDao.Team;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import se.emilsjolander.sprinkles.Query;
 

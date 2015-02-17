@@ -1,8 +1,11 @@
 package com.mechinn.android.ouralliance.fragment;
 
+import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchScouting;
+import com.mechinn.android.ouralliance.greenDao.EventTeam;
+import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -14,7 +17,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragment {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import de.greenrobot.dao.async.AsyncOperation;
+import de.greenrobot.dao.async.AsyncOperationListener;
+import de.greenrobot.dao.async.AsyncSession;
+
+public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScouting> extends Fragment implements AsyncOperationListener {
     public static final String TAG = "MatchDetailFragment";
     public static final String TEAM_ARG = "team";
 
@@ -22,10 +31,13 @@ public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragm
     private long teamId;
 
 	private View rootView;
-    private TextView notes;
-	private LinearLayout season;
+    @InjectView(R.id.matchNotes) private TextView notes;
+    @InjectView(R.id.season) private LinearLayout season;
 
-	private A match;
+	private MatchScoutingYear match;
+    private DaoSession daoSession;
+    private AsyncSession async;
+    private AsyncOperation onMatchLoaded;
 
     public long getTeamId() {
         return teamId;
@@ -39,42 +51,52 @@ public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragm
     public void setSeason(LinearLayout season) {
         this.season = season;
     }
-	public A getMatch() {
+	public MatchScoutingYear getMatch() {
 		return match;
 	}
-	public void setMatch(A match) {
+	public void setMatch(MatchScoutingYear match) {
 		this.match = match;
 	}
 
-    public OneQuery.ResultHandler<A> getOnMatchLoaded() {
+    public DaoSession getDaoSession() {
+        return daoSession;
+    }
+
+    public AsyncSession getAsync() {
+        return async;
+    }
+
+    @Override
+    public void onAsyncOperationCompleted(AsyncOperation operation) {
+        if(onMatchLoaded == operation) {
+            if (operation.isCompletedSucessfully()) {
+                MatchScoutingYear result = (MatchScoutingYear) operation.getResult();
+                Log.d(TAG, "result: " + result);
+                setMatch(result);
+                setView();
+                rootView.setVisibility(View.VISIBLE);
+            } else {
+                rootView.setVisibility(View.GONE);
+            }
+            getActivity().invalidateOptionsMenu();
+        }
+    }
+
+    public AsyncOperation getOnMatchLoaded() {
         return onMatchLoaded;
     }
 
-    public void setOnMatchLoaded(OneQuery.ResultHandler<A> onMatchLoaded) {
+    public void setOnMatchLoaded(AsyncOperation onMatchLoaded) {
         this.onMatchLoaded = onMatchLoaded;
     }
-
-    private OneQuery.ResultHandler<A> onMatchLoaded =
-            new OneQuery.ResultHandler<A>() {
-                @Override
-                public boolean handleResult(A result) {
-                    if(null!=result){
-                        Log.d(TAG, "result: " + result);
-                        setMatch(result);
-                        setView();
-                        rootView.setVisibility(View.VISIBLE);
-                        return true;
-                    } else {
-                        rootView.setVisibility(View.GONE);
-                        return false;
-                    }
-                }
-            };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefs = new Prefs(this.getActivity());
+        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
+        async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
+        async.setListener(this);
     }
 
     @Override
@@ -85,7 +107,7 @@ public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragm
         // the previous article selection set by onSaveInstanceState().
         // This is primarily necessary when in the two-pane layout.
         if (savedInstanceState != null) {
-            teamId = savedInstanceState.getLong(CompetitionTeam.TAG, 0);
+            teamId = savedInstanceState.getLong(EventTeam.TAG, 0);
             Log.d(TAG, "team: "+teamId);
         }
     	
@@ -103,9 +125,14 @@ public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragm
 //		};
         
         rootView = inflater.inflate(R.layout.fragment_match_detail, container, false);
-        notes = (TextView) rootView.findViewById(R.id.matchNotes);
-		season = (LinearLayout) rootView.findViewById(R.id.season);
+        ButterKnife.inject(this, rootView);
 		return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     @Override
@@ -153,10 +180,10 @@ public abstract class MatchDetailFragment<A extends MatchScouting> extends Fragm
 	}
 	
 	public void updateMatch() {
-        match.setNotes(notes.getText());
+        match.setNotes(notes.getText().toString());
 	}
 
     public void commitUpdatedMatch() {
-        this.getMatch().asyncSave();
+        async.update(this.getMatch());
     }
 }

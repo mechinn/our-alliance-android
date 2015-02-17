@@ -28,7 +28,7 @@ public class ExportMatchScouting2014 extends Export {
         if(isFileWrite()) {
             setFilename(getDirectory() + Import.Type.MATCHSCOUTING2014.path());
             new File(getFilename()).mkdirs();
-            setFilename(getFilename() + File.separator + getCompetition().getCode() + CSV);
+            setFilename(getFilename() + File.separator + getEvent().getCode() + CSV);
             try {
                 setWriter(new FileWriter(getFilename()));
             } catch (IOException e) {

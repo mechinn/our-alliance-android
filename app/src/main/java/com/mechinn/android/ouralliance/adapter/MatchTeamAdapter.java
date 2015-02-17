@@ -7,22 +7,22 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.mechinn.android.ouralliance.greenDao.MatchScouting2014;
+import com.mechinn.android.ouralliance.data.MatchScouting;
 
 import java.util.Collections;
 import java.util.List;
 
-public class MatchTeamAdapter2014 extends BaseAdapter {
+public class MatchTeamAdapter<MatchTeam extends MatchScouting> extends BaseAdapter {
     public static final String TAG = "MatchTeamAdapter";
 	Context context;
-    List<MatchScouting2014> teams;
+    List<MatchTeam> teams;
 	
-	public MatchTeamAdapter2014(Context context, List<MatchScouting2014> match) {
+	public MatchTeamAdapter(Context context, List<MatchTeam> match) {
 		this.context = context;
         swapMatch(match);
 	}
 	
-	public void swapMatch(List<MatchScouting2014> match) {
+	public void swapMatch(List<MatchTeam> match) {
         teams = match;
         if(null!=this.teams) {
             Collections.sort(this.teams);
@@ -46,7 +46,7 @@ public class MatchTeamAdapter2014 extends BaseAdapter {
 	}
 
 	@Override
-	public MatchScouting2014 getItem(int position) {
+	public MatchTeam getItem(int position) {
 		if(isEmpty()) {
 			return null;
 		}
@@ -66,7 +66,7 @@ public class MatchTeamAdapter2014 extends BaseAdapter {
                 LayoutInflater inflater = LayoutInflater.from(context);
                 container = (TextView) inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
             }
-		    container.setText(teams.get(position).getTeamScouting2014().getTeam().toString());
+		    container.setText(teams.get(position).getTeamScouting().getTeam().toString());
             if(teams.get(position).getAlliance()) {
                 container.setTextColor(context.getResources().getColor(android.R.color.holo_blue_dark));
             } else {

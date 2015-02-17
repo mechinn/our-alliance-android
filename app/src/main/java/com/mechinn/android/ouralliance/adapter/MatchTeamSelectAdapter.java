@@ -2,29 +2,30 @@ package com.mechinn.android.ouralliance.adapter;
 
 import android.content.Context;
 import android.util.SparseIntArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.greenDao.EventTeam;
+import com.mechinn.android.ouralliance.data.TeamScouting;
 
 import java.util.List;
 
-public class MatchTeamSelectAdapter extends EventTeamAdapter {
+public class MatchTeamSelectAdapter extends BaseAdapter {
     public static final String TAG = "MatchTeamSelectAdapter";
-    public static final int RED1 = 0;
-    public static final int RED2 = 1;
-    public static final int RED3 = 2;
-    public static final int BLUE1 = 3;
-    public static final int BLUE2 = 4;
-    public static final int BLUE3 = 5;
 
+    private Context context;
+    private List<TeamScouting> teams;
+    private LayoutInflater inflater;
     private int team;
     private SparseIntArray disabled;
 
-    public MatchTeamSelectAdapter(Context context, List<EventTeam> teams, int team) {
-        super(context, teams);
+    public MatchTeamSelectAdapter(Context context, List<TeamScouting> teams, int team) {
+        this.context = context;
+        inflater = LayoutInflater.from(getContext());
+        swapList(teams);
         this.team = team;
         disabled = new SparseIntArray(5);
     }
@@ -63,5 +64,60 @@ public class MatchTeamSelectAdapter extends EventTeamAdapter {
         } else {
             return getInflater().inflate(R.layout.null_item, null);
         }
+    }
+
+    public LayoutInflater getInflater() {
+        return inflater;
+    }
+
+    public List<TeamScouting> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<TeamScouting> teams) {
+        this.teams = teams;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public void swapList(List<TeamScouting> teams) {
+        this.teams = teams;
+        this.notifyDataSetChanged();
+    }
+
+    public boolean isEmpty() {
+        if(null!=teams) {
+            return teams.size()<1;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public int getCount() {
+        if(isEmpty()) {
+            return 0;
+        }
+        return teams.size();
+    }
+
+    @Override
+    public TeamScouting getItem(int position) {
+        if(isEmpty()) {
+            return null;
+        }
+
+        return teams.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 }

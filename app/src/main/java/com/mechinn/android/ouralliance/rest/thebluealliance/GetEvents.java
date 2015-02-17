@@ -6,6 +6,8 @@ import com.mechinn.android.ouralliance.BackgroundProgress;
 import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.greenDao.Event;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
+import com.squareup.okhttp.Response;
+
 import retrofit.RetrofitError;
 
 import java.util.List;

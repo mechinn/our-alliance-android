@@ -12,7 +12,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.BackgroundProgress;
+import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.Prefs;
+import com.mechinn.android.ouralliance.greenDao.Event;
 
 public abstract class Export extends BackgroundProgress {
     public static final String TAG = "Export";
@@ -23,7 +25,7 @@ public abstract class Export extends BackgroundProgress {
     private boolean fileWrite;
     private Writer writer;
     private Prefs prefs;
-    private Competition competition;
+    private Event event;
     private String result;
 
 	public Export(Activity activity) {
@@ -63,8 +65,8 @@ public abstract class Export extends BackgroundProgress {
     public Prefs getPrefs() {
         return prefs;
     }
-    public Competition getCompetition() {
-        return competition;
+    public Event getEvent() {
+        return event;
     }
     public abstract String work();
 
@@ -81,7 +83,7 @@ public abstract class Export extends BackgroundProgress {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        competition = Query.one(Competition.class, "SELECT * FROM "+Competition.TAG+" WHERE "+Competition._ID+"=?",prefs.getComp()).get();
+        event = ((OurAlliance)getActivity().getApplication()).getDaoSession().load(Event.class,prefs.getComp());
         result = work();
         return null==result;
     }

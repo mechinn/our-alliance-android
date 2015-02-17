@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Created by mechinn on 2/14/2015.
  */
-public abstract class MatchScouting extends OurAllianceObject {
+public abstract class MatchScouting extends OurAllianceObject implements Comparable<MatchScouting>, java.io.Serializable {
     public abstract long getMatchId();
     public abstract void setMatchId(long matchId);
     public abstract long getTeamId();
@@ -23,4 +23,11 @@ public abstract class MatchScouting extends OurAllianceObject {
     public abstract void setMatch(Match match);
     public abstract TeamScouting getTeamScouting();
     public abstract void setTeamScouting(TeamScouting teamScouting);
+    public int compareTo(MatchScouting another) {
+        int compare = (this.getAlliance()?1:0) - (another.getAlliance()?1:0);
+        if(0==compare) {
+            compare = this.getTeamScouting().getTeam().compareTo(another.getTeamScouting().getTeam());
+        }
+        return compare;
+    }
 }

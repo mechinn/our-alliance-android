@@ -25,31 +25,56 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MatchTeamSelectAdapter;
-import com.mechinn.android.ouralliance.greenDao.EventTeam;
+import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.greenDao.Match;
+import com.mechinn.android.ouralliance.greenDao.MatchScouting2014;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnItemSelected;
 
 public class InsertMatchDialogFragment extends DialogFragment {
     public static final String TAG = "InsertMatchDialogFragment";
+    public static final String EVENT_ARG = "event";
 	public static final String MATCH_ARG = "match";
 	public static final String TEAMS_ARG = "teams";
 
     private Prefs prefs;
     private View dialog;
-    private TextView practice;
-    private Spinner type;
-    private Spinner set;
-    private Spinner matchSpin;
-    private LinearLayout numberContainer;
-    private EditText number;
-    private ArrayList<Spinner> spinners;
-    private Spinner red1;
-    private Spinner red2;
-    private Spinner red3;
-    private Spinner blue1;
-    private Spinner blue2;
-    private Spinner blue3;
+    @InjectView(R.id.practice) private TextView practice;
+    @InjectView(R.id.type) private Spinner type;
+    @OnItemSelected(R.id.type) public void typeSelected(AdapterView<?> parent, View view, int position, long id) {
+        if(Match.CompetitionLevel.QUARTER_FINALS.getValue()==position) {
+            set.setVisibility(View.VISIBLE);
+            set.setAdapter(quarterfinals);
+        } else if(Match.CompetitionLevel.SEMI_FINALS.getValue()==position) {
+            set.setVisibility(View.VISIBLE);
+            set.setAdapter(semifinals);
+        } else {
+            set.setVisibility(View.INVISIBLE);
+            set.setSelection(0);
+        }
+        if(Match.CompetitionLevel.QUALIFIER.getValue()==position) {
+            numberContainer.setVisibility(View.VISIBLE);
+            matchSpin.setVisibility(View.GONE);
+        } else {
+            numberContainer.setVisibility(View.GONE);
+            matchSpin.setVisibility(View.VISIBLE);
+        }
+    }
+    @InjectView(R.id.set) private Spinner set;
+    @InjectView(R.id.match) private Spinner matchSpin;
+    @InjectView(R.id.numberContainer) private LinearLayout numberContainer;
+    @InjectView(R.id.number) private EditText number;
+    private Spinner[] spinners;
+    @InjectView(R.id.red1) private Spinner red1;
+    @InjectView(R.id.red2) private Spinner red2;
+    @InjectView(R.id.red3) private Spinner red3;
+    @InjectView(R.id.blue1) private Spinner blue1;
+    @InjectView(R.id.blue2) private Spinner blue2;
+    @InjectView(R.id.blue3) private Spinner blue3;
     private Match match;
-    private List<EventTeam> teams;
+    private List<TeamScouting> teams;
     private ArrayList<MatchTeamSelectAdapter> adapters;
     private MatchTeamSelectAdapter red1Adapter;
     private MatchTeamSelectAdapter red2Adapter;
@@ -60,19 +85,22 @@ public class InsertMatchDialogFragment extends DialogFragment {
     private ArrayAdapter<Integer> quarterfinals;
     private ArrayAdapter<Integer> semifinals;
     private ArrayAdapter<Integer> matchAdapter;
+    private int teamCount;
+    private long eventId;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        teams = (List<EventTeam>) this.getArguments().getSerializable(TEAMS_ARG);
+        teams = (List<TeamScouting>) this.getArguments().getSerializable(TEAMS_ARG);
         Collections.sort(teams);
         adapters = new ArrayList<MatchTeamSelectAdapter>(6);
-        red1Adapter = new MatchTeamSelectAdapter(this.getActivity(),teams, MatchTeamSelectAdapter.RED1);
-        red2Adapter = new MatchTeamSelectAdapter(this.getActivity(),teams, MatchTeamSelectAdapter.RED2);
-        red3Adapter = new MatchTeamSelectAdapter(InsertMatchDialogFragment.this.getActivity(),teams, MatchTeamSelectAdapter.RED3);
-        blue1Adapter = new MatchTeamSelectAdapter(InsertMatchDialogFragment.this.getActivity(),teams, MatchTeamSelectAdapter.BLUE1);
-        blue2Adapter = new MatchTeamSelectAdapter(InsertMatchDialogFragment.this.getActivity(),teams, MatchTeamSelectAdapter.BLUE2);
-        blue3Adapter = new MatchTeamSelectAdapter(InsertMatchDialogFragment.this.getActivity(),teams, MatchTeamSelectAdapter.BLUE3);
+        teamCount = 0;
+        red1Adapter = new MatchTeamSelectAdapter(InsertMatchDialogFragment.this.getActivity(),teams, teamCount++);
+        red2Adapter = new MatchTeamSelectAdapter(InsertMatchDialogFragment.this.getActivity(),teams, teamCount++);
+        red3Adapter = new MatchTeamSelectAdapter(InsertMatchDialogFragment.this.getActivity(),teams, teamCount++);
+        blue1Adapter = new MatchTeamSelectAdapter(InsertMatchDialogFragment.this.getActivity(),teams, teamCount++);
+        blue2Adapter = new MatchTeamSelectAdapter(InsertMatchDialogFragment.this.getActivity(),teams, teamCount++);
+        blue3Adapter = new MatchTeamSelectAdapter(InsertMatchDialogFragment.this.getActivity(),teams, teamCount++);
         adapters.add(red1Adapter);
         adapters.add(red2Adapter);
         adapters.add(red3Adapter);
@@ -92,26 +120,9 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		dialog = inflater.inflate(R.layout.dialog_match_insert, null);
-		practice = (TextView) dialog.findViewById(R.id.practice);
-		type = (Spinner) dialog.findViewById(R.id.type);
-		set = (Spinner) dialog.findViewById(R.id.set);
-        matchSpin = (Spinner) dialog.findViewById(R.id.match);
+        ButterKnife.inject(this, dialog);
         matchSpin.setAdapter(matchAdapter);
-		numberContainer = (LinearLayout) dialog.findViewById(R.id.numberContainer);
-		number = (EditText) dialog.findViewById(R.id.number);
-		red1 = (Spinner) dialog.findViewById(R.id.red1);
-		red2 = (Spinner) dialog.findViewById(R.id.red2);
-		red3 = (Spinner) dialog.findViewById(R.id.red3);
-		blue1 = (Spinner) dialog.findViewById(R.id.blue1);
-		blue2 = (Spinner) dialog.findViewById(R.id.blue2);
-		blue3 = (Spinner) dialog.findViewById(R.id.blue3);
-        spinners = new ArrayList<Spinner>(6);
-        spinners.add(red1);
-        spinners.add(red2);
-        spinners.add(red3);
-        spinners.add(blue1);
-        spinners.add(blue2);
-        spinners.add(blue3);
+        spinners = new Spinner[] {red1, red2, red3, blue1, blue2, blue3};
 		if(prefs.isPractice()) {
 			practice.setVisibility(View.VISIBLE);
 			type.setVisibility(View.GONE);
@@ -119,32 +130,6 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		} else {
 			practice.setVisibility(View.GONE);
 			type.setVisibility(View.VISIBLE);
-			type.setOnItemSelectedListener(new OnItemSelectedListener() {
-				@Override
-				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-					if(Match.CompetitionLevel.QUARTER_FINALS.getValue()==position) {
-                        set.setVisibility(View.VISIBLE);
-                        set.setAdapter(quarterfinals);
-					} else if(Match.CompetitionLevel.SEMI_FINALS.getValue()==position) {
-						set.setVisibility(View.VISIBLE);
-						set.setAdapter(semifinals);
-					} else {
-						set.setVisibility(View.INVISIBLE);
-						set.setSelection(0);
-					}
-					if(Match.CompetitionLevel.QUALIFIER.getValue()==position) {
-						numberContainer.setVisibility(View.VISIBLE);
-                        matchSpin.setVisibility(View.GONE);
-					} else {
-						numberContainer.setVisibility(View.GONE);
-                        matchSpin.setVisibility(View.VISIBLE);
-					}
-				}
-				@Override
-				public void onNothingSelected(AdapterView<?> parent) {
-					//should never happen
-				}
-			});
 		}
 		red1.setAdapter(red1Adapter);
 		red2.setAdapter(red2Adapter);
@@ -152,8 +137,8 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		blue1.setAdapter(blue1Adapter);
 		blue2.setAdapter(blue2Adapter);
 		blue3.setAdapter(blue3Adapter);
-        for(int spinner=0;spinner<spinners.size();++spinner) {
-            spinners.get(spinner).setSelection(spinner);
+        for(int spinner=0;spinner<teamCount;++spinner) {
+            spinners[spinner].setSelection(spinner);
         }
 		OnItemSelectedListener selectTeamListener = new OnItemSelectedListener() {
 			@Override
@@ -167,7 +152,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
 
-			}
+            }
 		};
 		red1.setOnItemSelectedListener(selectTeamListener);
 		red2.setOnItemSelectedListener(selectTeamListener);
@@ -178,7 +163,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		int yes;
 		try {
 			match = (Match) this.getArguments().getSerializable(MATCH_ARG);
-			number.setText(Integer.toString(match.getDisplayNum()));
+			number.setText(Integer.toString(match.getMatchNum()));
     		yes = R.string.update;
     		Log.d(TAG, "update");
 		} catch(NullPointerException e) {
@@ -186,15 +171,31 @@ public class InsertMatchDialogFragment extends DialogFragment {
 			yes = R.string.create;
     		Log.d(TAG, "insert");
 		}
+        eventId = this.getArguments().getLong(EVENT_ARG);
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     if (prefs.isPractice()) {
-                        match.setMatchType(Match.Type.PRACTICE);
+                        match.setCompetitionLevel(Match.CompetitionLevel.PRACTICE);
                     } else {
-                        match.setMatchType(type.getSelectedItemPosition());
+                        Match.CompetitionLevel level = Match.CompetitionLevel.QUALIFIER;
+                        switch (type.getSelectedItemPosition()) {
+                            case 1:
+                                level = Match.CompetitionLevel.EIGHTH_FINALS;
+                                break;
+                            case 2:
+                                level = Match.CompetitionLevel.QUARTER_FINALS;
+                                break;
+                            case 3:
+                                level = Match.CompetitionLevel.SEMI_FINALS;
+                                break;
+                            case 4:
+                                level = Match.CompetitionLevel.FINALS;
+                                break;
+                        }
+                        match.setCompetitionLevel(level);
                         if (View.VISIBLE == set.getVisibility()) {
-                            match.setMatchSet(set.getSelectedItemPosition() + 1);
+                            match.setSetNumber(set.getSelectedItemPosition() + 1);
                         }
                     }
                     if (View.VISIBLE == matchSpin.getVisibility()) {
@@ -204,10 +205,10 @@ public class InsertMatchDialogFragment extends DialogFragment {
                     }
                     match.setRedScore(-1);
                     match.setBlueScore(-1);
-                    match.setCompetition(((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()).getCompetition());
+                    match.setEventId(eventId);
                     new SaveMatch().run();
-            }
-    }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                }
+            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
             }
@@ -216,17 +217,31 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		return builder.create();
 	}
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
     private class SaveMatch extends Thread {
         public void run() {
             match.save();
             switch (prefs.getYear()) {
                 case 2014:
-                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) red1.getAdapter()).getItem(red1.getSelectedItemPosition()), false).save();
-                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) red2.getAdapter()).getItem(red2.getSelectedItemPosition()), false).save();
-                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) red3.getAdapter()).getItem(red3.getSelectedItemPosition()), false).save();
-                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue1.getAdapter()).getItem(blue1.getSelectedItemPosition()), true).save();
-                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue2.getAdapter()).getItem(blue2.getSelectedItemPosition()), true).save();
-                    new MatchScouting2014(match, ((MatchTeamSelectAdapter) blue3.getAdapter()).getItem(blue3.getSelectedItemPosition()), true).save();
+                    List<MatchScouting2014> teams = new ArrayList<MatchScouting2014>(6);
+                    for(int team=0;team<teamCount;team++) {
+                        MatchScouting2014 scouting = new MatchScouting2014();
+                        scouting.setMatch(match);
+                        scouting.setTeamScouting(((MatchTeamSelectAdapter) spinners[team].getAdapter()).getItem(spinners[team].getSelectedItemPosition()));
+                        if(team<teamCount/2) {
+                            scouting.setPosition(team);
+                            scouting.setAlliance(false);
+                        } else {
+                            scouting.setPosition(team-teamCount/2);
+                            scouting.setAlliance(true);
+                        }
+                        teams.add(scouting);
+                    }
                     break;
             }
         }

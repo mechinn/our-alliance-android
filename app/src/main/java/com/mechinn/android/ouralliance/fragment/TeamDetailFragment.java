@@ -1,9 +1,10 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import java.io.File;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import com.mechinn.android.ouralliance.OurAlliance;
@@ -14,24 +15,21 @@ import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
 import com.mechinn.android.ouralliance.adapter.WheelAdapter;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.greenDao.Event;
-import com.mechinn.android.ouralliance.greenDao.EventTeam;
 import com.mechinn.android.ouralliance.greenDao.Team;
-import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
 import com.mechinn.android.ouralliance.greenDao.Wheel;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
-import com.mechinn.android.ouralliance.greenDao.dao.EventDao;
-import com.mechinn.android.ouralliance.greenDao.dao.EventTeamDao;
-import com.mechinn.android.ouralliance.greenDao.dao.TeamDao;
-import com.mechinn.android.ouralliance.greenDao.dao.TeamScouting2014Dao;
 import com.mechinn.android.ouralliance.greenDao.dao.WheelDao;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -45,6 +43,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.lucasr.twowayview.ItemClickSupport;
 import org.lucasr.twowayview.widget.TwoWayView;
 
 import butterknife.ButterKnife;
@@ -105,7 +104,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
         createWheel(newWheel);
     }
     @InjectView(R.id.wheels) private LinearLayout wheels;
-    private List<Wheel> wheelCursor;
+    private ArrayList<Wheel> wheelCursor;
 	private MultimediaAdapter multimedia;
 
 	private WheelAdapter wheelTypesAdapter;
@@ -120,6 +119,13 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     private AsyncOperation onScoutingLoaded;
     private AsyncOperation onWheelTypesLoaded;
     private AsyncOperation onTeamWheelsLoaded;
+
+    public DaoSession getDaoSession() {
+        return daoSession;
+    }
+    public AsyncSession getAsync() {
+        return async;
+    }
 
     @Override
     public void onAsyncOperationCompleted(AsyncOperation operation) {
@@ -143,7 +149,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             }
         } else if(onWheelTypesLoaded == operation) {
             if (operation.isCompletedSucessfully()) {
-                List<Wheel> result = (List<Wheel>) operation.getResult();
+                ArrayList<Wheel> result = (ArrayList<Wheel>) operation.getResult();
                 wheelTypesAdapter.swapList(result);
                 Log.d(TAG, "Count: " + result.size());
             } else {
@@ -151,7 +157,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             }
         } else if(onTeamWheelsLoaded == operation) {
             if (operation.isCompletedSucessfully()) {
-                List<Wheel> result = (List<Wheel>) operation.getResult();
+                ArrayList<Wheel> result = (ArrayList<Wheel>) operation.getResult();
                 for(Wheel each : result) {
                     createWheel(each);
                 }
@@ -160,7 +166,9 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             }
         }
     }
-
+    public void setScoutuingLoaded(AsyncOperation onScoutingLoaded) {
+        this.onScoutingLoaded = onScoutingLoaded;
+    }
 	public Prefs getPrefs() {
 		return prefs;
 	}
@@ -228,7 +236,45 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	        picture.setVisibility(View.GONE);
 	        video.setVisibility(View.GONE);
 	    }
+        gallery.setHasFixedSize(true);
+        gallery.setLongClickable(true);
+        final ItemClickSupport galleryClick = ItemClickSupport.addTo(gallery);
+        galleryClick.setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClick(RecyclerView recyclerView, View view, int i, long l) {
+                File filename = (File) view.getTag(R.string.file);
+                Log.d(TAG, filename.toString());
+                String type = URLConnection.guessContentTypeFromName("file://" + filename.getAbsolutePath());
+                Log.d(TAG, type);
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse("file://" + filename.getAbsolutePath()), type);
+                try {
+                    TeamDetailFragment.this.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(TeamDetailFragment.this.getActivity(), "No known viewer for this file type", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        galleryClick.setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(RecyclerView recyclerView, View view, int i, long l) {
+                DialogFragment dialog = new MultimediaContextDialogFragment();
+                Bundle dialogArgs = new Bundle();
+                File filename = (File) view.getTag(R.string.file);
+                dialogArgs.putSerializable(MultimediaContextDialogFragment.IMAGE, filename);
+                dialog.setArguments(dialogArgs);
+                dialog.show(TeamDetailFragment.this.getFragmentManager(), "Multimedia context menu");
+                return false;
+            }
+        });
 		return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
     
     @Override
@@ -321,8 +367,8 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	
 	public void setView() {
 		this.getActivity().setTitle(Integer.toString(scouting.getTeam().getTeamNumber())+": "+scouting.getTeam().getNickname());
-		multimedia = new MultimediaAdapter(this.getActivity(),scouting,gallery);
-		Log.d(TAG,"thumbs: "+multimedia.getCount());
+		multimedia = new MultimediaAdapter(this.getActivity(),scouting);
+		Log.d(TAG,"thumbs: "+multimedia.getItemCount());
 		gallery.setAdapter(multimedia);
 		Log.d(TAG,"imageviews: "+gallery.getChildCount());
 		notes.setText(scouting.getNotes());
@@ -338,7 +384,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 		LinearLayout view = (LinearLayout) this.getActivity().getLayoutInflater().inflate(R.layout.fragment_team_detail_wheel, wheels, false);
 		view.setTag(thisWheel);
 		//1 is the type field
-		AutoCompleteTextView type = (AutoCompleteTextView)view.getChildAt(Wheel.FIELD_TYPE);
+		AutoCompleteTextView type = (AutoCompleteTextView)view.getChildAt(R.id.wheelType);
 		type.setText(thisWheel.getWheelType());
 		type.setThreshold(1);
 		type.setAdapter(wheelTypesAdapter);
@@ -364,7 +410,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 		if(0!=thisWheel.getWheelSize()) {
 			//get the number 
 			num = Double.toString(thisWheel.getWheelSize());
-			TextView size = (TextView)view.getChildAt(Wheel.FIELD_SIZE);
+			TextView size = (TextView)view.getChildAt(R.id.wheelSize);
 			size.setText(num);
 		}
 		//if the size is currently 0 dont show it for the user's sake
@@ -372,11 +418,11 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 			//get the number 
 			num = Integer.toString(thisWheel.getWheelCount());
 			//6 is the count field
-			TextView count = (TextView)view.getChildAt(Wheel.FIELD_COUNT);
+			TextView count = (TextView)view.getChildAt(R.id.wheelCount);
 			count.setText(num);
 		}
 		//7 is the delete button, if clicked delete the wheel
-		view.getChildAt(Wheel.FIELD_DELETE).setOnClickListener(new OnClickListener() {
+		view.getChildAt(R.id.deleteWheel).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				View view = ((View) v.getParent());
                 Wheel wheel = (Wheel) view.getTag();
@@ -392,11 +438,11 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 		for(int i=0;i<wheels.getChildCount(); ++i) {
 			LinearLayout theWheelView = (LinearLayout) wheels.getChildAt(i);
             Wheel theWheel = (Wheel) theWheelView.getTag();
-			CharSequence type = ((TextView) theWheelView.getChildAt(Wheel.FIELD_TYPE)).getText();
-			theWheel.setWheelType(type);
-			CharSequence size = ((TextView) theWheelView.getChildAt(Wheel.FIELD_SIZE)).getText();
+			CharSequence type = ((TextView) theWheelView.getChildAt(R.id.wheelType)).getText();
+			theWheel.setWheelType(type.toString());
+			CharSequence size = ((TextView) theWheelView.getChildAt(R.id.wheelSize)).getText();
 			theWheel.setWheelSize(Utility.getFloatFromText(size));
-			CharSequence count = ((TextView) theWheelView.getChildAt(Wheel.FIELD_COUNT)).getText();
+			CharSequence count = ((TextView) theWheelView.getChildAt(R.id.wheelCount)).getText();
 			theWheel.setWheelCount(Utility.getIntFromText(count));
 			//see if we should update or insert or just tell the user there isnt enough info
             ((OurAlliance)this.getActivity().getApplication()).getAsyncSession().update(theWheel);

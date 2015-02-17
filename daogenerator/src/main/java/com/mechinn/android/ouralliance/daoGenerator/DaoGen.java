@@ -110,7 +110,7 @@ public class DaoGen {
         match.setSuperclass("com.mechinn.android.ouralliance.data.OurAllianceObject");
         match.implementsInterface("Comparable<Match>");
         match.implementsSerializable();
-        match.addStringProperty("compLevel").notNull();
+        match.addIntProperty("compLevel").notNull();
         match.addIntProperty("setNumber");
         match.addDateProperty("time");
         match.addIntProperty("redScore");
@@ -156,8 +156,6 @@ public class DaoGen {
         teamScouting.addIdProperty();
         teamScouting.addDateProperty("modified").notNull();
         teamScouting.setSuperclass("com.mechinn.android.ouralliance.data.TeamScouting");
-        teamScouting.implementsInterface("Comparable<TeamScouting2014>");
-        teamScouting.implementsSerializable();
         Property teamScoutingteam = teamScouting.addLongProperty("teamId").notNull().unique().getProperty();
         teamScouting.addToOne(team,teamScoutingteam);
         teamScouting.addStringProperty("notes");
@@ -196,8 +194,6 @@ public class DaoGen {
         matchScouting.addIdProperty();
         matchScouting.addDateProperty("modified").notNull();
         matchScouting.setSuperclass("com.mechinn.android.ouralliance.data.MatchScouting");
-        matchScouting.implementsInterface("Comparable<MatchScouting2014>");
-        matchScouting.implementsSerializable();
         Property matchScoutingmatch = matchScouting.addLongProperty("matchId").notNull().getProperty();
         matchScouting.addToOne(match,matchScoutingmatch);
         Property matchScoutingteam = matchScouting.addLongProperty("teamId").notNull().getProperty();

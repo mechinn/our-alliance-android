@@ -32,7 +32,7 @@ public class MatchDao extends AbstractDao<Match, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Modified = new Property(1, java.util.Date.class, "modified", false, "MODIFIED");
-        public final static Property CompLevel = new Property(2, String.class, "compLevel", false, "COMP_LEVEL");
+        public final static Property CompLevel = new Property(2, int.class, "compLevel", false, "COMP_LEVEL");
         public final static Property SetNumber = new Property(3, Integer.class, "setNumber", false, "SET_NUMBER");
         public final static Property Time = new Property(4, java.util.Date.class, "time", false, "TIME");
         public final static Property RedScore = new Property(5, Integer.class, "redScore", false, "RED_SCORE");
@@ -61,7 +61,7 @@ public class MatchDao extends AbstractDao<Match, Long> {
         db.execSQL("CREATE TABLE " + constraint + "'MATCH' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'MODIFIED' INTEGER NOT NULL ," + // 1: modified
-                "'COMP_LEVEL' TEXT NOT NULL ," + // 2: compLevel
+                "'COMP_LEVEL' INTEGER NOT NULL ," + // 2: compLevel
                 "'SET_NUMBER' INTEGER," + // 3: setNumber
                 "'TIME' INTEGER," + // 4: time
                 "'RED_SCORE' INTEGER," + // 5: redScore
@@ -90,7 +90,7 @@ public class MatchDao extends AbstractDao<Match, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getModified().getTime());
-        stmt.bindString(3, entity.getCompLevel());
+        stmt.bindLong(3, entity.getCompLevel());
  
         Integer setNumber = entity.getSetNumber();
         if (setNumber != null) {
@@ -146,7 +146,7 @@ public class MatchDao extends AbstractDao<Match, Long> {
         Match entity = new Match( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             new java.util.Date(cursor.getLong(offset + 1)), // modified
-            cursor.getString(offset + 2), // compLevel
+            cursor.getInt(offset + 2), // compLevel
             cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // setNumber
             cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)), // time
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // redScore
@@ -163,7 +163,7 @@ public class MatchDao extends AbstractDao<Match, Long> {
     public void readEntity(Cursor cursor, Match entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setModified(new java.util.Date(cursor.getLong(offset + 1)));
-        entity.setCompLevel(cursor.getString(offset + 2));
+        entity.setCompLevel(cursor.getInt(offset + 2));
         entity.setSetNumber(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
         entity.setTime(cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)));
         entity.setRedScore(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));

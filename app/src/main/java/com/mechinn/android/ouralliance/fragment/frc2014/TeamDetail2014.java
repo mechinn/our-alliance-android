@@ -30,10 +30,13 @@ import com.mechinn.android.ouralliance.greenDao.dao.WheelDao;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroup;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroupOnCheckedChangeListener;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnEditorAction;
 import butterknife.OnFocusChange;
+import de.greenrobot.dao.async.AsyncOperation;
 
 public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     public static final String TAG = "TeamDetail2014";
@@ -154,40 +157,23 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 
 	private TeamScouting2014FilterAdapter orientationsAdapter;
 	private TeamScouting2014FilterAdapter driveTrainsAdapter;
+    private AsyncOperation onScoutingLoaded;
 
-    private ManyQuery.ResultHandler<TeamScouting2014> onOrientationsLoaded =
-            new ManyQuery.ResultHandler<TeamScouting2014>() {
+    @Override
+    public void onAsyncOperationCompleted(AsyncOperation operation) {
+        if(onScoutingLoaded == operation) {
+            if (operation.isCompletedSucessfully()) {
+                List<TeamScouting2014> result = (List<TeamScouting2014>) operation.getResult();
+                Log.d(TAG, "Count: " + result.size());
+                orientationsAdapter.swapList(result);
+                driveTrainsAdapter.swapList(result);
+            } else {
 
-                @Override
-                public boolean handleResult(CursorList<TeamScouting2014> result) {
-                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
-                        ModelList<TeamScouting2014> model = ModelList.from(result);
-                        result.close();
-                        orientationsAdapter.swapList(model);
-                        Log.d(TAG, "Count: " + model.size());
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            };
-
-    private ManyQuery.ResultHandler<TeamScouting2014> onDriveTrainsLoaded =
-            new ManyQuery.ResultHandler<TeamScouting2014>() {
-
-                @Override
-                public boolean handleResult(CursorList<TeamScouting2014> result) {
-                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
-                        ModelList<TeamScouting2014> model = ModelList.from(result);
-                        result.close();
-                        driveTrainsAdapter.swapList(model);
-                        Log.d(TAG, "Count: " + model.size());
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            };
+            }
+        } else {
+            super.onAsyncOperationCompleted(operation);
+        }
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -278,8 +264,8 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     public void onResume() {
         super.onResume();
         if (this.getPrefs().getYear() != 0 && getTeamId() != 0) {
-            onScoutingLoaded = async.loadAll(TeamScouting2014.class);
-            loadScouting(async.queryUnique(daoSession.getWheelDao().queryBuilder().where(TeamScouting2014Dao.Properties.TeamId.eq(getTeamId())).build());
+            onScoutingLoaded = getAsync().loadAll(TeamScouting2014.class);
+            setScoutuingLoaded(getAsync().queryUnique(getDaoSession().getWheelDao().queryBuilder().where(TeamScouting2014Dao.Properties.TeamId.eq(getTeamId())).build()));
         }
     }
 	
@@ -307,13 +293,13 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 			heightMax.setText(num);
 		}
         switch(getScouting().getShooterType()) {
-            case TeamScouting2014.NONE:
+            case 0:
                 shooterTypes.programaticallyCheck(R.id.none);
                 break;
-            case TeamScouting2014.DUMPER:
+            case 1:
                 shooterTypes.programaticallyCheck(R.id.dumper);
                 break;
-            case TeamScouting2014.SHOOTER:
+            case 2:
                 shooterTypes.programaticallyCheck(R.id.shooter);
                 break;
         }
@@ -349,13 +335,13 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 		getScouting().setHeightMax(Utility.getDoubleFromText(heightMax.getText()));
         switch(shooterTypes.getCheckedRadioButtonId()) {
             case R.id.none:
-                getScouting().setShooterType(TeamScouting2014.NONE);
+                getScouting().setShooterType(0);
                 break;
             case R.id.dumper:
-                getScouting().setShooterType(TeamScouting2014.DUMPER);
+                getScouting().setShooterType(1);
                 break;
             case R.id.shooter:
-                getScouting().setShooterType(TeamScouting2014.SHOOTER);
+                getScouting().setShooterType(2);
                 break;
         }
 		getScouting().setLowGoal(lowGoal.isChecked());

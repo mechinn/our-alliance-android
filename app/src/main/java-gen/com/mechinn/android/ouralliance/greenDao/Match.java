@@ -20,8 +20,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     private Long id;
     /** Not-null value. */
     private java.util.Date modified;
-    /** Not-null value. */
-    private String compLevel;
+    private int compLevel;
     private Integer setNumber;
     private java.util.Date time;
     private Integer redScore;
@@ -52,7 +51,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         this.id = id;
     }
 
-    public Match(Long id, java.util.Date modified, String compLevel, Integer setNumber, java.util.Date time, Integer redScore, Integer blueScore, Integer matchNum, Long eventId, Long multimediaId) {
+    public Match(Long id, java.util.Date modified, int compLevel, Integer setNumber, java.util.Date time, Integer redScore, Integer blueScore, Integer matchNum, Long eventId, Long multimediaId) {
         this.id = id;
         this.modified = modified;
         this.compLevel = compLevel;
@@ -89,13 +88,11 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         this.modified = modified;
     }
 
-    /** Not-null value. */
-    public String getCompLevel() {
+    public int getCompLevel() {
         return compLevel;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setCompLevel(String compLevel) {
+    public void setCompLevel(int compLevel) {
         this.compLevel = compLevel;
     }
 
@@ -251,6 +248,8 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
                     return "sf";
                 case FINALS:
                     return "f";
+                case PRACTICE:
+                    return "p";
                 default:
                     return "qm";
             }
@@ -265,44 +264,51 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
                     return "Semi Finals";
                 case FINALS:
                     return "Finals";
+                case PRACTICE:
+                    return "Practice";
                 default:
                     return "Qualifier";
             }
         }
-    }
-    public CompetitionLevel getLevelFromCompLevel() {
-        if(this.getCompLevel().equals("ef")) {
-            return CompetitionLevel.EIGHTH_FINALS;
-        } else if(this.getCompLevel().equals("qf")) {
-            return CompetitionLevel.QUARTER_FINALS;
-        } else if(this.getCompLevel().equals("sf")) {
-            return CompetitionLevel.SEMI_FINALS;
-        } else if(this.getCompLevel().equals("f")) {
-            return CompetitionLevel.FINALS;
-        } else {
-            return CompetitionLevel.QUALIFIER;
+        public static CompetitionLevel fromValue(int value) {
+            switch(value) {
+                case 8:
+                    return EIGHTH_FINALS;
+                case 4:
+                    return QUARTER_FINALS;
+                case 2:
+                    return SEMI_FINALS;
+                case 1:
+                    return FINALS;
+                case -1:
+                    return PRACTICE;
+                default:
+                    return QUALIFIER;
+            }
         }
+    }
+    public CompetitionLevel getCompetitionLevel() {
+        return CompetitionLevel.fromValue(this.getCompLevel());
+    }
+    public void setCompetitionLevel(CompetitionLevel level) {
+        this.setCompLevel(level.getValue());
     }
     public String toString() {
-        switch(getLevelFromCompLevel()) {
-            case PRACTICE:
-                return "Practice: "+this.getMatchNum();
+        String string = getCompetitionLevel().toString()+": ";
+        switch(getCompetitionLevel()) {
             case QUARTER_FINALS:
-                return "Quarterfinal: "+getSetNumber()+" Match: "+getMatchNum();
             case SEMI_FINALS:
-                return "Semifinal: "+ getSetNumber()+" Match: "+getMatchNum();
-            case FINALS:
-                return "Final: "+getMatchNum();
-            default:
-                return "Qualifier: "+this.getMatchNum();
+                string += getSetNumber()+" Match: ";
+                break;
         }
+        return string+this.getMatchNum();
     }
     public boolean equals(Object data) {
         if(!(data instanceof Match)) {
             return false;
         }
         return  getEvent().equals(((Match)data).getEvent()) &&
-                getCompLevel().equals(((Match)data).getCompLevel()) &&
+                getCompLevel()==((Match)data).getCompLevel() &&
                 getSetNumber()==((Match)data).getSetNumber() &&
                 getTime().equals(((Match)data).getTime()) &&
                 getRedScore()==((Match)data).getRedScore() &&

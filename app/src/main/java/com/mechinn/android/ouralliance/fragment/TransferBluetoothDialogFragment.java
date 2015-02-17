@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class TransferBluetoothDialogFragment extends DialogFragment {
-    public static final String TAG = "InsertMatchDialogFragment";
+    public static final String TAG = "TransferBluetoothDialogFragment";
     public static final String TYPE = "Type";
 
     private BluetoothAdapter bluetoothAdapter;

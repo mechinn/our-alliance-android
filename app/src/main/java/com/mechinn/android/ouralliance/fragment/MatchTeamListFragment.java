@@ -1,8 +1,11 @@
 package com.mechinn.android.ouralliance.fragment;
 
+import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchTeamAdapter;
+import com.mechinn.android.ouralliance.data.MatchScouting;
+import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -14,38 +17,54 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public abstract class MatchTeamListFragment<A extends MatchScouting> extends ListFragment {
+import java.util.ArrayList;
+
+import de.greenrobot.dao.async.AsyncOperation;
+import de.greenrobot.dao.async.AsyncOperationListener;
+import de.greenrobot.dao.async.AsyncSession;
+
+public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScouting> extends ListFragment implements AsyncOperationListener {
     public static final String TAG = "MatchTeamListFragment";
 	public static final String MATCH_ARG = "match";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
 	private Prefs prefs;
-	private MatchTeamAdapter<A> adapter;
+	private MatchTeamAdapter<MatchScoutingYear> adapter;
     private long matchId;
+    private DaoSession daoSession;
+    private AsyncSession async;
+    private AsyncOperation onMatchLoaded;
+
+    public AsyncSession getAsync() {
+        return async;
+    }
+
+    public DaoSession getDaoSession() {
+        return daoSession;
+    }
 
 	public interface Listener {
         public void onMatchTeamSelected(long team);
     }
 
-    private ManyQuery.ResultHandler<A> onMatchLoaded =
-            new ManyQuery.ResultHandler<A>() {
+    @Override
+    public void onAsyncOperationCompleted(AsyncOperation operation) {
+        if(onMatchLoaded == operation) {
+            if (operation.isCompletedSucessfully()) {
+                ArrayList<MatchScoutingYear> result = (ArrayList<MatchScoutingYear>) operation.getResult();
+                Log.d(TAG, "Count: " + result.size());
+                adapter.swapMatch(result);
+            } else {
 
-                @Override
-                public boolean handleResult(CursorList<A> result) {
-                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
-                        ModelList<A> matches = ModelList.from(result);
-                        result.close();
-                        adapter.swapMatch(matches);
-                        Log.d(TAG, "Count: " + matches.size());
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            };
+            }
+        }
+    }
 
-    public ManyQuery.ResultHandler<A> getOnMatchLoaded() {
+    public AsyncOperation getOnMatchLoaded() {
         return onMatchLoaded;
+    }
+    public void setOnMatchLoaded(AsyncOperation onMatchLoaded) {
+        this.onMatchLoaded = onMatchLoaded;
     }
     public long getMatchId() {
         return matchId;
@@ -69,6 +88,9 @@ public abstract class MatchTeamListFragment<A extends MatchScouting> extends Lis
         super.onCreate(savedInstanceState);
         this.getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 		prefs = new Prefs(this.getActivity());
+        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
+        async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
+        async.setListener(this);
 		matchId = this.getArguments().getLong(MATCH_ARG);
         Log.d(TAG, "match: "+matchId);
     }
@@ -90,9 +112,9 @@ public abstract class MatchTeamListFragment<A extends MatchScouting> extends Lis
                 DialogFragment dialog = new MatchTeamDialogFragment();
                 Bundle dialogArgs = new Bundle();
                 dialogArgs.putLong(MatchTeamDialogFragment.MATCHSCOUTING_ARG, adapter.getItem(position).getId());
-                dialogArgs.putLong(MatchTeamDialogFragment.TEAM_ARG, adapter.getItem(position).getCompetitionTeam().getTeam().getId());
+                dialogArgs.putLong(MatchTeamDialogFragment.TEAM_ARG, adapter.getItem(position).getTeamScouting().getTeam().getId());
                 dialog.setArguments(dialogArgs);
-                dialog.show(getFragmentManager(), adapter.getItem(position).getCompetitionTeam().toString());
+                dialog.show(getFragmentManager(), adapter.getItem(position).getTeamScouting().toString());
                 return true;
             }
         });
@@ -140,5 +162,4 @@ public abstract class MatchTeamListFragment<A extends MatchScouting> extends Lis
             Log.d(TAG,"",e);
         }
 	}
-
 }

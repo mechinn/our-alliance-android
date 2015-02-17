@@ -16,11 +16,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
+import com.mechinn.android.ouralliance.greenDao.Event;
+import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
+import com.mechinn.android.ouralliance.greenDao.dao.EventDao;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetEvents;
 import com.mechinn.android.ouralliance.widget.EventListPreference;
+
+import java.util.ArrayList;
+
+import de.greenrobot.dao.async.AsyncOperation;
+import de.greenrobot.dao.async.AsyncOperationListener;
+import de.greenrobot.dao.async.AsyncSession;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -33,60 +43,61 @@ import com.mechinn.android.ouralliance.widget.EventListPreference;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on devdeloping a Settings UI.
  */
-public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener, GenericDialogFragment.Listener {
+public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener, GenericDialogFragment.Listener, AsyncOperationListener {
     public static final String TAG = "SettingsFragment";
     private static final String EXECUTING_ASYNC = "executingAsync";
 	public static final int DIALOG_RESET = 0;
 	public static final int DIALOG_DELETECOMP = 1;
 	private Prefs prefs;
 	private String yearPrefString;
-	private String compPrefString;
+	private String eventPrefString;
 	private String measurePrefString;
 	private String resetDBPrefString;
     private SparseArray<String> yearArray;
 	private ListPreference year;
-	private EventListPreference comp;
+	private EventListPreference event;
 //	private CompetitionListPreference measure;
 	private Preference resetDB;
 	private Preference changelog;
 	private Preference about;
-    private Competition selectedComp;
+    private Event selectedEvent;
     private GetEvents dialog;
+    private DaoSession daoSession;
+    private AsyncSession async;
+    private AsyncOperation onEventsLoaded;
 
-    private ManyQuery.ResultHandler<Competition> onCompetitionsLoaded =
-            new ManyQuery.ResultHandler<Competition>() {
-
-                @Override
-                public boolean handleResult(CursorList<Competition> result) {
-                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
-                        ModelList<Competition> competitions = ModelList.from(result);
-                        result.close();
-                        comp.swapAdapter(competitions, prefs.getComp());
-                        if(competitions.size()>0) {
-                            comp.setEnabled(true);
-                        } else {
-                            comp.setEnabled(false);
-                        }
-                        if(prefs.getComp()>0) {
-                            selectedComp = comp.get();
-                        } else {
-                            selectedComp = null;
-                        }
-                        return true;
-                    } else {
-                        comp.setSummary(getActivity().getString(R.string.pref_comp_summary));
-                        return false;
-                    }
+    @Override
+    public void onAsyncOperationCompleted(AsyncOperation operation) {
+        if (onEventsLoaded == operation) {
+            if (operation.isCompletedSucessfully()) {
+                ArrayList<Event> result = (ArrayList<Event>) operation.getResult();
+                event.swapAdapter(result, prefs.getComp());
+                if(result.size()>0) {
+                    event.setEnabled(true);
+                } else {
+                    event.setEnabled(false);
                 }
-            };
+                if(prefs.getComp()>0) {
+                    selectedEvent = event.get();
+                } else {
+                    selectedEvent = null;
+                }
+            } else {
+                event.setSummary(getActivity().getString(R.string.pref_comp_summary));
+            }
+        }
+    }
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
         prefs = new Prefs(this.getActivity());
+        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
+        async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
+        async.setListener(this);
         yearPrefString = this.getString(R.string.pref_year);
-        compPrefString = this.getString(R.string.pref_comp);
+        eventPrefString = this.getString(R.string.pref_comp);
         measurePrefString = this.getString(R.string.pref_measure);
         resetDBPrefString = this.getString(R.string.pref_resetDB);
         String[] yearNumberArray = this.getActivity().getResources().getStringArray(R.array.list_year);
@@ -96,7 +107,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             yearArray.put(Integer.parseInt(yearNumberArray[i]),yearSummaryArray[i]);
         }
         year = (ListPreference) getPreferenceScreen().findPreference(yearPrefString);
-        comp = (EventListPreference) getPreferenceScreen().findPreference(compPrefString);
+        event = (EventListPreference) getPreferenceScreen().findPreference(eventPrefString);
 //        measure = (CompetitionListPreference) getPreferenceScreen().findPreference(measurePrefString);
         resetDB = getPreferenceScreen().findPreference(resetDBPrefString);
         resetDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -134,7 +145,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 					return true;
 				}
 			});
-        if(prefs.getYear()>0 && !prefs.isCompetitionsDownloaded()) {
+        if(prefs.getYear()>0 && !prefs.isEventsDownloaded()) {
             getCompetitions();
         }
     }
@@ -145,7 +156,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         setHasOptionsMenu(true);
         setRetainInstance(true);
         // Set up a listener whenever a key changes
-        comp.setValue(Long.toString(prefs.getComp()));
+        event.setValue(Long.toString(prefs.getComp()));
         prefs.setChangeListener(this);
         if(prefs.getYear()>0) {
             year.setSummary(yearArray.get(prefs.getYear()));
@@ -153,12 +164,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         if(prefs.getYear() > 0) {
             queryCompetitions();
         } else {
-            comp.setEnabled(false);
+            event.setEnabled(false);
         }
     }
 
     public void queryCompetitions() {
-        Query.many(Competition.class, "select * from "+Competition.TAG+" where "+Competition.YEAR+"=? ORDER BY "+Competition.OFFICIAL+" DESC,"+Competition.NAME,prefs.getYear()).getAsync(this.getLoaderManager(), onCompetitionsLoaded);
+        onEventsLoaded = async.queryList(daoSession.getEventDao().queryBuilder().where(EventDao.Properties.Year.eq(prefs.getYear())).build());
     }
 
 	@Override
@@ -177,7 +188,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.newComp).setVisible(0!=prefs.getYear());
-        menu.findItem(R.id.deleteComp).setVisible(null!=selectedComp);
+        menu.findItem(R.id.deleteComp).setVisible(null!=selectedEvent);
     }
 	
 	@Override
@@ -228,9 +239,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	}
 
 	public void deleteCompetition() {
-		Log.d(TAG, "id: "+selectedComp);
+		Log.d(TAG, "id: "+selectedEvent);
 		//try inserting the team first in case it doesnt exist
-		selectedComp.delete();
+        selectedEvent.delete();
 	}
 
     public void getCompetitions() {
@@ -245,15 +256,15 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		if(key.equals(yearPrefString)) {
             Log.d(TAG,"selected season");
             year.setSummary(yearArray.get(prefs.getYear()));
-			comp.setValue("0");
+			event.setValue("0");
             getActivity().invalidateOptionsMenu();
             queryCompetitions();
-            if(!prefs.isCompetitionsDownloaded()) {
+            if(!prefs.isEventsDownloaded()) {
                 getCompetitions();
             }
-		} else if(key.equals(compPrefString)) {
+		} else if(key.equals(eventPrefString)) {
             Log.d(TAG,"selected competition");
-            selectedComp = comp.get();
+            selectedEvent = event.get();
 		} else if(key.equals(measurePrefString)) {
             Log.d(TAG,"selected measure");
 

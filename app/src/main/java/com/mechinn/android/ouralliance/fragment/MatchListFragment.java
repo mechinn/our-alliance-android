@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+
+import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.data.Import;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
@@ -26,71 +28,66 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.frc2014.ExportMatchScouting2014;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
-import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
+import com.mechinn.android.ouralliance.greenDao.Match;
+import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
+import com.mechinn.android.ouralliance.greenDao.dao.EventTeamDao;
+import com.mechinn.android.ouralliance.greenDao.dao.MatchDao;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetMatches;
 
-import java.util.List;
+import java.util.ArrayList;
 
+import de.greenrobot.dao.async.AsyncOperation;
+import de.greenrobot.dao.async.AsyncOperationListener;
+import de.greenrobot.dao.async.AsyncSession;
+import de.greenrobot.dao.query.QueryBuilder;
 import de.greenrobot.event.EventBus;
 
-public class MatchListFragment<A extends MatchScouting> extends ListFragment {
+public class MatchListFragment extends ListFragment implements AsyncOperationListener {
     public static final String TAG = "MatchListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
     private Listener mCallback;
 	private Prefs prefs;
 	private MatchAdapter adapter;
-    private List<TeamScouting> teams;
+    private ArrayList<TeamScouting> teams;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
     private GetMatches downloadMatches;
+    private DaoSession daoSession;
+    private AsyncSession async;
+    private AsyncOperation onMatchesLoaded;
+    private AsyncOperation onTeamsLoaded;
 
     public interface Listener {
         public void onMatchSelected(long match);
     }
 
-    private ManyQuery.ResultHandler<Match> onMatchesLoaded =
-            new ManyQuery.ResultHandler<Match>() {
+    @Override
+    public void onAsyncOperationCompleted(AsyncOperation operation) {
+        if(onMatchesLoaded == operation) {
+            if (operation.isCompletedSucessfully()) {
+                ArrayList<Match> result = (ArrayList<Match>) operation.getResult();
+                Log.d(TAG, "Count: " + result.size());
+                adapter.swapList(result);
+            } else {
 
-                @Override
-                public boolean handleResult(CursorList<Match> result) {
-
-                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
-                        ModelList<Match> matches = ModelList.from(result);
-                        result.close();
-                        adapter.swapList(matches);
-                        Log.d(TAG, "Count: " + matches.size());
-                        getActivity().invalidateOptionsMenu();
-                        return true;
-                    } else {
-                        getActivity().invalidateOptionsMenu();
-                        return false;
-                    }
+            }
+            getActivity().invalidateOptionsMenu();
+        } else if(onTeamsLoaded == operation) {
+            if (operation.isCompletedSucessfully()) {
+                teams = (ArrayList<TeamScouting>) operation.getResult();
+                Log.d(TAG, "Count: " + teams.size());
+                if(teams.size()<6) {
+                    getActivity().finish();
                 }
-            };
-
-    private ManyQuery.ResultHandler<CompetitionTeam> onTeamsLoaded =
-            new ManyQuery.ResultHandler<CompetitionTeam>() {
-
-                @Override
-                public boolean handleResult(CursorList<CompetitionTeam> result) {
-                    Log.d(TAG, "Count: " + result.size());
-                    if(result!=null && null!=result.getCursor() && !result.getCursor().isClosed()) {
-                        teams = ModelList.from(result);
-                        if(teams.size()<6) {
-                            getActivity().finish();
-                        }
-                        result.close();
-                    } else {
-                        teams = null;
-                    }
-                    return false;
-                }
-            };
+            } else {
+                teams = null;
+            }
+        }
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -111,6 +108,9 @@ public class MatchListFragment<A extends MatchScouting> extends ListFragment {
 		prefs = new Prefs(this.getActivity());
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         downloadMatches = new GetMatches(this.getActivity());
+        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
+        async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
+        async.setListener(this);
     }
 
     @Override
@@ -178,8 +178,14 @@ public class MatchListFragment<A extends MatchScouting> extends ListFragment {
         if(!prefs.isMatchesDownloaded()) {
             downloadMatches.refreshMatches();
         }
-        Query.many(CompetitionTeam.class, "select * from "+CompetitionTeam.TAG+" where "+CompetitionTeam.COMPETITION+"=?", prefs.getComp()).getAsync(getLoaderManager(),onTeamsLoaded);
-        Query.many(Match.class, prefs.isPractice() ? "select * from "+Match.TAG+" where "+Match.COMPETITION+"=? AND "+Match.MATCHTYPE+"=-1" : "select * from "+Match.TAG+" where "+Match.COMPETITION+"=? AND "+Match.MATCHTYPE+"!=-1", prefs.getComp()).getAsync(getLoaderManager(),onMatchesLoaded);
+        onTeamsLoaded = async.queryList(daoSession.getEventTeamDao().queryBuilder().where(EventTeamDao.Properties.EventId.eq(prefs.getComp())).build());
+        QueryBuilder<Match> matchQueryBuilder = daoSession.getMatchDao().queryBuilder().where(MatchDao.Properties.EventId.eq(prefs.getComp()));
+        if(prefs.isPractice()) {
+            matchQueryBuilder.where(MatchDao.Properties.CompLevel.lt(0));
+        } else {
+            matchQueryBuilder.where(MatchDao.Properties.CompLevel.ge(0));
+        }
+        onMatchesLoaded = async.queryList(matchQueryBuilder.build());
     }
 
     @Override
@@ -263,6 +269,7 @@ public class MatchListFragment<A extends MatchScouting> extends ListFragment {
                 DialogFragment newFragment = new InsertMatchDialogFragment();
                 Bundle args = new Bundle();
                 args.putSerializable(InsertMatchDialogFragment.TEAMS_ARG, teams);
+                args.putLong(InsertMatchDialogFragment.EVENT_ARG,prefs.getComp());
                 newFragment.setArguments(args);
                 newFragment.show(this.getFragmentManager(), "Add Match");
 	            return true;
