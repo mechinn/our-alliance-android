@@ -4,6 +4,7 @@ import java.io.File;
 
 import android.app.Activity;
 import android.os.Environment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 public class Setup extends BackgroundProgress {
@@ -15,7 +16,7 @@ public class Setup extends BackgroundProgress {
 	private boolean reset;
 	private final Activity activity;
 	
-	public Setup(final Activity activity, boolean reset) {
+	public Setup(final FragmentActivity activity, boolean reset) {
 		super(activity, FLAG_SETUP);
 		this.reset = reset;
 		this.activity = activity;

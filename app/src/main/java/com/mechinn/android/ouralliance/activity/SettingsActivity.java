@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.activity;
 
+import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 import com.mechinn.android.ouralliance.*;
 import com.mechinn.android.ouralliance.fragment.GenericDialogFragment;
@@ -7,12 +8,11 @@ import com.mechinn.android.ouralliance.fragment.SettingsFragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class SettingsActivity extends PreferenceActivity implements BackgroundProgress.Listener, GenericDialogFragment.Listener {
+public class SettingsActivity extends FragmentActivity implements BackgroundProgress.Listener, GenericDialogFragment.Listener {
     public static final String TAG = "SettingsActivity";
 	private SettingsFragment frag;
 
@@ -21,10 +21,10 @@ public class SettingsActivity extends PreferenceActivity implements BackgroundPr
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        frag = (SettingsFragment) getFragmentManager().findFragmentByTag(SettingsFragment.TAG);
+        frag = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(SettingsFragment.TAG);
         if(null==frag) {
             frag = new SettingsFragment();
-            getFragmentManager().beginTransaction().replace(android.R.id.content, frag, SettingsFragment.TAG).commit();
+            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, frag, SettingsFragment.TAG).commit();
         }
     }
 

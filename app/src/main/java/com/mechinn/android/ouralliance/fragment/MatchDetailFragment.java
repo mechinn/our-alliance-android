@@ -7,8 +7,8 @@ import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.greenDao.EventTeam;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;

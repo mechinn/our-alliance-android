@@ -5,9 +5,9 @@ import com.mechinn.android.ouralliance.greenDao.Match;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 
 public class DeleteMatchDialogFragment extends DialogFragment {
     public static final String TAG = "DeleteMatchDialogFragment";

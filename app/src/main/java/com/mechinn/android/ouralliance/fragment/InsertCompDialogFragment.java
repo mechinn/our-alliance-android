@@ -2,9 +2,9 @@ package com.mechinn.android.ouralliance.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.greenDao.Event;
-import com.mechinn.android.ouralliance.greenDao.EventTeam;
 
 public class InsertCompDialogFragment extends DialogFragment {
     public static final String TAG = "InsertCompDialogFragment";

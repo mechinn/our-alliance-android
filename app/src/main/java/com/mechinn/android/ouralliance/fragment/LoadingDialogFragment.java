@@ -3,10 +3,10 @@ package com.mechinn.android.ouralliance.fragment;
 import android.os.AsyncTask;
 import com.mechinn.android.ouralliance.R;
 
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;

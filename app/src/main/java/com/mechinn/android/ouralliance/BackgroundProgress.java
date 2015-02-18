@@ -3,9 +3,10 @@ package com.mechinn.android.ouralliance;
 import com.mechinn.android.ouralliance.fragment.LoadingDialogFragment;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean> {
@@ -26,7 +27,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 	private Integer version;
 	private CharSequence status;
     private Listener listener;
-    private Activity activity;
+    private FragmentActivity activity;
     private boolean complete;
 
     public interface Listener {
@@ -34,7 +35,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
         public void cancelled(int flag);
     }
 	
-	public BackgroundProgress(Activity activity, int flag) {
+	public BackgroundProgress(FragmentActivity activity, int flag) {
         this.activity = activity;
         this.prefs = new Prefs(activity);
         try {
@@ -44,7 +45,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
         }
         this.flag = flag;
 		title = "";
-		this.fragmentManager = activity.getFragmentManager();
+		this.fragmentManager = activity.getSupportFragmentManager();
         dialog = new LoadingDialogFragment(this);
 	}
     public Activity getActivity() {

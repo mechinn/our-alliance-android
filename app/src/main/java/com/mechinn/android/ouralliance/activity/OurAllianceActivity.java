@@ -1,8 +1,8 @@
 package com.mechinn.android.ouralliance.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -16,7 +16,7 @@ import com.mechinn.android.ouralliance.R;
 /**
  * Created by mechinn on 4/3/14.
  */
-public class OurAllianceActivity extends Activity implements BackgroundProgress.Listener {
+public class OurAllianceActivity extends FragmentActivity implements BackgroundProgress.Listener {
     public static final String TAG = "OurAllianceActivity";
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
     private AdView adView;
@@ -47,7 +47,7 @@ public class OurAllianceActivity extends Activity implements BackgroundProgress.
         prefs = new Prefs(this);
         adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("014691060B018004")
+                .addTestDevice("E945BD086D90D129A51D07134B9D836B") //nexus 5
                 .build();
         adListener = new AdListener() {
             @Override

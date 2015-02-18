@@ -1,6 +1,8 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import android.bluetooth.BluetoothAdapter;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.*;
 
@@ -21,8 +23,6 @@ import com.mechinn.android.ouralliance.rest.thebluealliance.GetEventTeams;
 import com.mobeta.android.dslv.DragSortListView;
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +32,9 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnItemSelected;
 import de.greenrobot.dao.async.AsyncOperation;
 import de.greenrobot.dao.async.AsyncOperationListener;
 import de.greenrobot.dao.async.AsyncSession;
@@ -42,14 +45,22 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
     public static final String TAG = "TeamListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
-    private DragSortListView dslv;
+    @InjectView(android.R.id.list) protected DragSortListView dslv;
     private int selectedPosition;
 	private Prefs prefs;
 	private EventTeamDragSortListAdapter adapter;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
     private Sort2014 sort;
-    private Spinner sortTeams;
+    @InjectView(R.id.sortTeams) protected Spinner sortTeams;
+    @OnItemSelected(R.id.sortTeams) protected void sortTeamsSelect(AdapterView<?> parent, View view, int position, long id) {
+        switch(prefs.getYear()) {
+            case 2014:
+                sort = Sort.sort2014List.get(position);
+                break;
+        }
+        reloadTeams();
+    }
     private GetEventTeams downloadTeams;
     private DaoSession daoSession;
     private AsyncSession async;
@@ -106,24 +117,14 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_team_list, container, false);
-        sortTeams = (Spinner) rootView.findViewById(R.id.sortTeams);
-        sortTeams.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch(prefs.getYear()) {
-                    case 2014:
-                        sort = Sort.sort2014List.get(position);
-                        break;
-                }
-                reloadTeams();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        dslv = (DragSortListView) rootView.findViewById(android.R.id.list);
+        ButterKnife.inject(this,rootView);
     	return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
     
     @Override

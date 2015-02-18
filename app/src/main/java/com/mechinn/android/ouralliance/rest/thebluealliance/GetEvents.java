@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.rest.thebluealliance;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import com.mechinn.android.ouralliance.BackgroundProgress;
 import com.mechinn.android.ouralliance.OurAlliance;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class GetEvents extends BackgroundProgress {
     public static final String TAG = "GetEvents";
-    public GetEvents(Activity activity) {
+    public GetEvents(FragmentActivity activity) {
         super(activity, FLAG_COMPETITION_LIST);
         setTitle("Downloading");
     }

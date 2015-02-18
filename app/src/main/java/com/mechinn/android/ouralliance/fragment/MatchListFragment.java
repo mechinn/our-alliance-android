@@ -8,9 +8,9 @@ import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchAdapter;
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.ListFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;

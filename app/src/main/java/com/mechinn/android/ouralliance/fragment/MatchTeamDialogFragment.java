@@ -3,9 +3,9 @@ package com.mechinn.android.ouralliance.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 
 public class MatchTeamDialogFragment extends DialogFragment {
     public static final String TAG = "MatchTeamDialogFragment";

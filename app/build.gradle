@@ -43,6 +43,8 @@ dependencies {
     compile 'org.lucasr.twowayview:core:1.0.0-SNAPSHOT@aar'
     compile 'org.lucasr.twowayview:layouts:1.0.0-SNAPSHOT@aar'
     compile 'asia.ivity.android:drag-sort-listview:1.0'
+    compile 'com.jenzz:materialpreference:1.2'
+    compile 'com.github.machinarius:preferencefragment:0.1.2'
 }
 
 android {

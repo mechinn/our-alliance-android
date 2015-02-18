@@ -8,9 +8,9 @@ import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.ListFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;

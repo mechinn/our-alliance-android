@@ -1,10 +1,10 @@
 package com.mechinn.android.ouralliance.activity;
 
 import android.app.FragmentManager.OnBackStackChangedListener;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,13 +68,13 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
                     }
                 	Bundle bundle = new Bundle();
                 	matchTeamListFrag.setArguments(bundle);
-                    getFragmentManager().beginTransaction().replace(listFrag, matchTeamListFrag).commit();
+                    getSupportFragmentManager().beginTransaction().replace(listFrag, matchTeamListFrag).commit();
             		onTeamSelected(loadTeam);
             	}
             } else {
             	teamListFrag = new TeamListFragment();
             	teamListFrag.setArguments(getIntent().getExtras());
-                getFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
+                getSupportFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
             }
         } else if(listFrag==detailFrag) {
             this.getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -116,7 +116,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
         Bundle args = new Bundle();
         args.putLong(TeamDetailFragment.TEAM_ARG, team);
         
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 		switch(getPrefs().getYear()) {
 			case 2014:
 				teamDetailFragment = new TeamDetail2014();

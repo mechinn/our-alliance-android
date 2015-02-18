@@ -1,10 +1,7 @@
 package com.mechinn.android.ouralliance.activity;
 
+import android.support.v4.app.FragmentTransaction;
 import android.view.Window;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.mechinn.android.ouralliance.BackgroundProgress;
-import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.fragment.MatchDetailFragment;
 import com.mechinn.android.ouralliance.fragment.MatchListFragment;
@@ -15,9 +12,7 @@ import com.mechinn.android.ouralliance.fragment.frc2014.MatchDetail2014;
 import com.mechinn.android.ouralliance.fragment.frc2014.MatchTeamList2014Fragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.TeamDetail2014;
 
-import android.app.Activity;
 import android.app.FragmentManager.OnBackStackChangedListener;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -55,7 +50,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
 		}
         if(savedInstanceState == null) {
             matchListFrag = new MatchListFragment();
-            getFragmentManager().beginTransaction().replace(matchFrag, matchListFrag).commitAllowingStateLoss();
+            getSupportFragmentManager().beginTransaction().replace(matchFrag, matchListFrag).commitAllowingStateLoss();
         }
 	}
 	
@@ -105,7 +100,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
 
         Bundle bundle = new Bundle();
         bundle.putLong(MatchTeamListFragment.MATCH_ARG, match);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch(getPrefs().getYear()) {
             case 2014:
                 matchTeamListFrag = new MatchTeamList2014Fragment();
@@ -127,7 +122,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         Log.d(TAG, "team: "+team);
         Bundle args = new Bundle();
         args.putLong(MatchDetailFragment.TEAM_ARG, team);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch(getPrefs().getYear()) {
             case 2014:
                 matchDetailFragment = new MatchDetail2014();
@@ -149,7 +144,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         Bundle args = new Bundle();
         args.putLong(TeamDetailFragment.TEAM_ARG, team);
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch(getPrefs().getYear()) {
             case 2014:
                 teamDetailFragment = new TeamDetail2014();
