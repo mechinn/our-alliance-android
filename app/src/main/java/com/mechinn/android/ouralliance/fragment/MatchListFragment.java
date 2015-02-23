@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.fragment;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 
 import com.mechinn.android.ouralliance.OurAlliance;
@@ -7,7 +8,6 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchAdapter;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
@@ -25,7 +25,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
-import com.mechinn.android.ouralliance.greenDao.Match;
+import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import com.mechinn.android.ouralliance.greenDao.dao.EventTeamDao;
 import com.mechinn.android.ouralliance.greenDao.dao.MatchDao;

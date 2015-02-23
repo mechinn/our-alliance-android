@@ -20,7 +20,7 @@ import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Setup;
-import com.mechinn.android.ouralliance.greenDao.Event;
+import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import com.mechinn.android.ouralliance.greenDao.dao.EventDao;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetEvents;

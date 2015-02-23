@@ -10,7 +10,9 @@ import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -86,7 +88,7 @@ public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScout
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        ((ActionBarActivity)this.getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		prefs = new Prefs(this.getActivity());
         daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
         async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();

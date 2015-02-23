@@ -2,11 +2,11 @@ package com.mechinn.android.ouralliance;
 
 import com.mechinn.android.ouralliance.fragment.LoadingDialogFragment;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
 public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean> {
@@ -48,7 +48,7 @@ public abstract class BackgroundProgress extends AsyncTask<Void, Object, Boolean
 		this.fragmentManager = activity.getSupportFragmentManager();
         dialog = new LoadingDialogFragment(this);
 	}
-    public Activity getActivity() {
+    public FragmentActivity getActivity() {
         return activity;
     }
 	protected String getTitle() {

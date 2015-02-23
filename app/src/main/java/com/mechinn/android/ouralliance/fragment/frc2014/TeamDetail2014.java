@@ -1,7 +1,9 @@
 package com.mechinn.android.ouralliance.fragment.frc2014;
 
+import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,22 +18,23 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.content.ContentProvider;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.frc2014.TeamScouting2014FilterAdapter;
+import com.mechinn.android.ouralliance.adapter.frc2014.Wheel2014Adapter;
+import com.mechinn.android.ouralliance.data.Wheel;
+import com.mechinn.android.ouralliance.data.frc2014.Wheel2014;
 import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;
-import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
-import com.mechinn.android.ouralliance.greenDao.dao.TeamScouting2014Dao;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroup;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroupOnCheckedChangeListener;
 
-import java.util.List;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import butterknife.OnFocusChange;
-import de.greenrobot.dao.async.AsyncOperation;
 
 public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     public static final String TAG = "TeamDetail2014";
@@ -39,6 +42,11 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     public static final int maxHeight = 84;
     public static final int maxDistance = 9999;
 
+    @OnClick(R.id.addWheel) protected void addWheel(View v) {
+        Wheel newWheel = new Wheel2014();
+        newWheel.setTeamScouting(getScouting());
+        newWheel.asyncSave();
+    }
 	@InjectView(R.id.team2014orientation) protected AutoCompleteTextView orientation;
     @InjectView(R.id.team2014driveTrain) protected AutoCompleteTextView driveTrain;
     @InjectView(R.id.team2014width) protected EditText width;
@@ -152,22 +160,52 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 
 	private TeamScouting2014FilterAdapter orientationsAdapter;
 	private TeamScouting2014FilterAdapter driveTrainsAdapter;
-    private AsyncOperation onScoutingLoaded;
 
     @Override
-    public void onAsyncOperationCompleted(AsyncOperation operation) {
-        if(onScoutingLoaded == operation) {
-            if (operation.isCompletedSucessfully()) {
-                List<TeamScouting2014> result = (List<TeamScouting2014>) operation.getResult();
-                Log.d(TAG, "Count: " + result.size());
-                orientationsAdapter.swapList(result);
-                driveTrainsAdapter.swapList(result);
-            } else {
-
-            }
-        } else {
-            super.onAsyncOperationCompleted(operation);
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case R.id.load_team_detail_scouting:
+                return new CursorLoader(getActivity(), ContentProvider.createUri(TeamScouting2014.class,null), null, TeamScouting2014.ID+"=?", new String[] {Long.toString(getTeamId())}, null);
+            case R.id.load_team_detail_scouting_helpers:
+                return new CursorLoader(getActivity(), ContentProvider.createUri(TeamScouting2014.class,null), null, null, null, null);
+            default:
+                return super.onCreateLoader(id, args);
         }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch(loader.getId()) {
+            case R.id.load_team_detail_scouting:
+                setEventFromCursor(data);
+                break;
+            case R.id.load_team_detail_scouting_helpers:
+                orientationsAdapter.swapCursor(data);
+                driveTrainsAdapter.swapCursor(data);
+                break;
+            default:
+                super.onLoadFinished(loader, data);
+                break;
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        switch(loader.getId()) {
+            case R.id.load_team_detail_scouting:
+                break;
+            case R.id.load_team_detail_scouting_helpers:
+                break;
+            default:
+                super.onLoaderReset(loader);
+                break;
+        }
+    }
+
+    public void setScoutingFromCursor(Cursor cursor) {
+        TeamScouting2014 scouting = new TeamScouting2014();
+        scouting.loadFromCursor(cursor);
+        setScouting(scouting);
     }
 
 	@Override
@@ -248,6 +286,7 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         driveTrainsAdapter = new TeamScouting2014FilterAdapter(getActivity(), null, TeamScouting2014FilterAdapter.Type.DRIVETRAIN);
         driveTrain.setAdapter(driveTrainsAdapter);
         driveTrain.setThreshold(1);
+        setWheelsAdapter(new Wheel2014Adapter(getActivity(), null));
     }
 	
 	@Override
@@ -259,8 +298,8 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     public void onResume() {
         super.onResume();
         if (this.getPrefs().getYear() != 0 && getTeamId() != 0) {
-            onScoutingLoaded = getAsync().loadAll(TeamScouting2014.class);
-            setScoutuingLoaded(getAsync().queryUnique(getDaoSession().getWheelDao().queryBuilder().where(TeamScouting2014Dao.Properties.TeamId.eq(getTeamId())).build()));
+            this.getLoaderManager().initLoader(R.id.load_team_detail_scouting,null,this);
+            this.getLoaderManager().initLoader(R.id.load_team_detail_scouting_helpers, null, this);
         }
     }
 	

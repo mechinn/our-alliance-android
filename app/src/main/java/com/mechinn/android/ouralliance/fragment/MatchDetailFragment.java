@@ -4,7 +4,7 @@ import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchScouting;
-import com.mechinn.android.ouralliance.greenDao.EventTeam;
+import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
 import android.os.Bundle;

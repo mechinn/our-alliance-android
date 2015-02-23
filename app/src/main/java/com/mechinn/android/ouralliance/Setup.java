@@ -2,19 +2,27 @@ package com.mechinn.android.ouralliance;
 
 import java.io.File;
 
-import android.app.Activity;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+
+import com.activeandroid.query.Delete;
+import com.mechinn.android.ouralliance.data.Event;
+import com.mechinn.android.ouralliance.data.EventTeam;
+import com.mechinn.android.ouralliance.data.Match;
+import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2014.Wheel2014;
 
 public class Setup extends BackgroundProgress {
     public static final String TAG = "Setup";
 	public static final int VERSION = 18;
 	private Prefs prefs;
 	private String packageName;
-	private File dbPath;
+	private File sprinkles;
 	private boolean reset;
-	private final Activity activity;
+	private final FragmentActivity activity;
 	
 	public Setup(final FragmentActivity activity, boolean reset) {
 		super(activity, FLAG_SETUP);
@@ -22,7 +30,7 @@ public class Setup extends BackgroundProgress {
 		this.activity = activity;
 		prefs = new Prefs(activity);
 		packageName = activity.getPackageName();
-		dbPath = activity.getDatabasePath("sprinkles.db");
+		sprinkles = activity.getDatabasePath("sprinkles.db");
 	}
 	
 	@Override
@@ -48,97 +56,102 @@ public class Setup extends BackgroundProgress {
 	protected Boolean doInBackground(Void... params) {
 		setVersion(prefs.getVersion());
 		Log.d(TAG, "version: "+getVersion());
-        try {
-            switch (getVersion() + 1) {
-                //reset
-                case 0:
-                    setVersion(0);
-                    prefs.clear();
-                    prefs.setVersion(0);
-                case 1:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 2:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 3:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 4:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 5:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 6:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 7:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 8:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 9:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 10:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 11:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 12:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 13:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 14:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 15:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 16:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 17:
-                    increaseVersion();
-                    prefs.increaseVersion();
-                case 18:
-                    increaseVersion();
-                    if (this.isCancelled()) {
-                        return false;
-                    }
+        switch (getVersion() + 1) {
+            //reset
+            case 0:
+                setVersion(0);
+                prefs.clear();
+                prefs.setVersion(0);
+                setStatus("Resetting database");
+                new Delete().from(Event.class).execute();
+                new Delete().from(EventTeam.class).execute();
+                new Delete().from(Match.class).execute();
+                new Delete().from(MatchScouting2014.class).execute();
+//                new Delete().from(Multimedia.class).execute();
+                new Delete().from(Team.class).execute();
+                new Delete().from(TeamScouting2014.class).execute();
+                new Delete().from(Wheel2014.class).execute();
+            case 1:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 2:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 3:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 4:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 5:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 6:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 7:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 8:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 9:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 10:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 11:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 12:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 13:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 14:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 15:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 16:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 17:
+                increaseVersion();
+                prefs.increaseVersion();
+            case 18:
+                increaseVersion();
+                if (this.isCancelled()) {
+                    return false;
+                }
+                setProgressFlag(INDETERMINATE);
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                     setProgressFlag(INDETERMINATE);
-                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        setProgressFlag(INDETERMINATE);
-                        setStatus("Deleting old file directory");
-                        File externalPath = Environment.getExternalStorageDirectory();
-                        File fileDir = new File(externalPath.getAbsolutePath() + "/Android/data/" + packageName + "/files");
-                        Utility.deleteRecursive(fileDir);
-                    }
-                    if (this.isCancelled()) {
-                        return false;
-                    }
-                    setStatus("Resetting database");
-                    if (activity.deleteDatabase(dbPath.getAbsolutePath())) {
-                        Log.d(TAG, "deleted db");
-                    } else {
-                        Log.d(TAG, "did not delete db");
-                    }
-                    if (this.isCancelled()) {
-                        return false;
-                    }
+                    setStatus("Deleting old file directory");
+                    File externalPath = Environment.getExternalStorageDirectory();
+                    File fileDir = new File(externalPath.getAbsolutePath() + "/Android/data/" + packageName + "/files");
+                    Utility.deleteRecursive(fileDir);
+                }
+                if (this.isCancelled()) {
+                    return false;
+                }
+                setStatus("Resetting database");
+                if (activity.deleteDatabase(sprinkles.getAbsolutePath())) {
+                    Log.d(TAG, "deleted db");
+                } else {
+                    Log.d(TAG, "did not delete db");
+                }
+                if (this.isCancelled()) {
+                    return false;
+                }
 
-                    if (this.isCancelled()) {
-                        return false;
-                    }
-                    prefs.increaseVersion();
-            }
-        } finally {
-
+                if (this.isCancelled()) {
+                    return false;
+                }
+                prefs.increaseVersion();
         }
 		setStatus("Finished");
 		return true;

@@ -3,29 +3,23 @@ package com.mechinn.android.ouralliance.adapter;
 import java.io.File;
 import java.net.URLConnection;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
+
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.fragment.MultimediaContextDialogFragment;
-import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;

@@ -34,10 +34,10 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
 	private String matchName;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 
 		new Setup(this, false).execute();
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_team_scouting);
 
 		this.getFragmentManager().addOnBackStackChangedListener(this);
@@ -77,7 +77,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
                 getSupportFragmentManager().beginTransaction().replace(listFrag, teamListFrag).commit();
             }
         } else if(listFrag==detailFrag) {
-            this.getActionBar().setDisplayHomeAsUpEnabled(true);
+            this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 	}
 
@@ -130,7 +130,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
         transaction.replace(detailFrag, teamDetailFragment);
         if(listFrag==detailFrag) {
             transaction.addToBackStack(null);
-            this.getActionBar().setDisplayHomeAsUpEnabled(true);
+            this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         transaction.commit();
 	}
@@ -142,9 +142,9 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
             	this.setTitle(matchName);
         	} else {
             	this.setTitle(R.string.app_name);
-        		this.getActionBar().setDisplayHomeAsUpEnabled(false);
+        		this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            		this.getActionBar().setHomeButtonEnabled(false);
+            		this.getSupportActionBar().setHomeButtonEnabled(false);
                 }
         	}
         }

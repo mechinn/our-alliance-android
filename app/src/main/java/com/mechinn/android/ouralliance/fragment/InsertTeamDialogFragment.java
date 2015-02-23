@@ -14,8 +14,8 @@ import android.widget.TextView;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
-import com.mechinn.android.ouralliance.greenDao.EventTeam;
-import com.mechinn.android.ouralliance.greenDao.Team;
+import com.mechinn.android.ouralliance.data.EventTeam;
+import com.mechinn.android.ouralliance.data.Team;
 
 public class InsertTeamDialogFragment extends DialogFragment {
     public static final String TAG = "InsertTeamDialogFragment";
@@ -62,13 +62,13 @@ public class InsertTeamDialogFragment extends DialogFragment {
     private class SaveTeam extends Thread {
         public void run() {
             Log.d(TAG, "saving: " + team);
-            team.save();
+            team.update();
             Log.d(TAG,"saving id: "+team.getId());
             Log.d(TAG,"competition id: "+prefs.getComp());
             EventTeam eventTeam = new EventTeam();
             eventTeam.setEventId(prefs.getComp());
             eventTeam.setTeam(team);
-            eventTeam.save();
+            eventTeam.update();
         }
     }
 }

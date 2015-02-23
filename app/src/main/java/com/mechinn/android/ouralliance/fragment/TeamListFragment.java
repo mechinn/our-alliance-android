@@ -1,12 +1,16 @@
 package com.mechinn.android.ouralliance.fragment;
 
 import android.bluetooth.BluetoothAdapter;
+import android.database.Cursor;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.*;
 import android.widget.*;
 
-import com.mechinn.android.ouralliance.OurAlliance;
+import com.activeandroid.content.ContentProvider;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
@@ -14,11 +18,7 @@ import com.mechinn.android.ouralliance.adapter.EventTeamDragSortListAdapter;
 import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
-import com.mechinn.android.ouralliance.greenDao.EventTeam;
-import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
-import com.mechinn.android.ouralliance.greenDao.dao.EventTeamDao;
-import com.mechinn.android.ouralliance.greenDao.dao.TeamDao;
-import com.mechinn.android.ouralliance.greenDao.dao.TeamScouting2014Dao;
+import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetEventTeams;
 import com.mobeta.android.dslv.DragSortListView;
 
@@ -30,18 +30,12 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import java.util.List;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemSelected;
-import de.greenrobot.dao.async.AsyncOperation;
-import de.greenrobot.dao.async.AsyncOperationListener;
-import de.greenrobot.dao.async.AsyncSession;
-import de.greenrobot.dao.query.QueryBuilder;
 import de.greenrobot.event.EventBus;
 
-public class TeamListFragment extends Fragment implements AsyncOperationListener {
+public class TeamListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     public static final String TAG = "TeamListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private Listener mCallback;
@@ -62,26 +56,75 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
         reloadTeams();
     }
     private GetEventTeams downloadTeams;
-    private DaoSession daoSession;
-    private AsyncSession async;
-    private AsyncOperation eventLoader;
 
     @Override
-    public void onAsyncOperationCompleted(AsyncOperation operation) {
-        if(eventLoader == operation) {
-            if (operation.isCompletedSucessfully()) {
-                List<EventTeam> teams = (List<EventTeam>) operation.getResult();
-                switch (prefs.getYear()) {
-                    case 2014:
-                        adapter.showDrag(sort.equals(Sort2014.RANK));
-                        break;
-                }
-                adapter.swapList(teams);
-                getActivity().invalidateOptionsMenu();
-            } else {
-                getActivity().invalidateOptionsMenu();
-            }
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String orderBy = EventTeam.RANK;
+//        switch(sort) {
+//            case NUMBER:
+//                builder.orderDesc(TeamDao.Properties.TeamNumber);
+//                break;
+//            case ORIENTATION:
+//                builder.orderAsc(TeamScouting2014Dao.Properties.Orientation);
+//                break;
+//            case DRIVETRAIN:
+//                builder.orderAsc(TeamScouting2014Dao.Properties.DriveTrain);
+//                break;
+//            case HEIGHTSHOOTER:
+//                builder.orderDesc(TeamScouting2014Dao.Properties.HeightShooter);
+//                break;
+//            case HEIGHTMAX:
+//                builder.orderDesc(TeamScouting2014Dao.Properties.HeightMax);
+//                break;
+//            case SHOOTERTYPE:
+//                builder.orderDesc(TeamScouting2014Dao.Properties.ShooterType);
+//                break;
+//            case SHOOTGOAL:
+//                builder.orderDesc(TeamScouting2014Dao.Properties.HighGoal,TeamScouting2014Dao.Properties.LowGoal);
+//                break;
+//            case SHOOTINGDISTANCE:
+//                builder.orderDesc(TeamScouting2014Dao.Properties.ShootingDistance);
+//                break;
+//            case PASS:
+//                builder.orderDesc(TeamScouting2014Dao.Properties.PassTruss,TeamScouting2014Dao.Properties.PassAir,TeamScouting2014Dao.Properties.PassGround);
+//                break;
+//            case PICKUP:
+//                builder.orderDesc(TeamScouting2014Dao.Properties.PickupCatch,TeamScouting2014Dao.Properties.PickupGround);
+//                break;
+//            case PUSHER:
+//                builder.orderAsc(TeamScouting2014Dao.Properties.Pusher);
+//                break;
+//            case BLOCKER:
+//                builder.orderAsc(TeamScouting2014Dao.Properties.Blocker);
+//                break;
+//            case HUMANPLAYER:
+//                builder.orderAsc(TeamScouting2014Dao.Properties.HumanPlayer);
+//                break;
+//            case AUTONOMOUS:
+//                builder.orderDesc(TeamScouting2014Dao.Properties.HotAuto,TeamScouting2014Dao.Properties.HighAuto,TeamScouting2014Dao.Properties.LowAuto,TeamScouting2014Dao.Properties.DriveAuto,TeamScouting2014Dao.Properties.NoAuto);
+//                break;
+//            default:
+//                builder.orderAsc(EventTeamDao.Properties.Rank);
+//                break;
+//        }
+        return new CursorLoader(getActivity(), ContentProvider.createUri(EventTeam.class, null), null, EventTeam.EVENT+"=?", new String[] {prefs.getCompString()}, orderBy );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch (prefs.getYear()) {
+            case 2014:
+                adapter.showDrag(sort.equals(Sort2014.RANK));
+                break;
         }
+        adapter.swapCursor(data);
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
+        getActivity().invalidateOptionsMenu();
     }
 
     public interface Listener {
@@ -107,9 +150,7 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
 		prefs = new Prefs(this.getActivity());
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         sort = Sort2014.RANK;
-        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
-        async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
-        async.setListener(this);
+        this.getLoaderManager().initLoader(0,null,this);
         downloadTeams = new GetEventTeams(this.getActivity());
     }
     
@@ -222,67 +263,12 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
     }
 
     private void reloadTeams() {
-        EventTeamDao eventTeamDao = daoSession.getEventTeamDao();
-
-        switch(prefs.getYear()) {
-            case 2014:
-                QueryBuilder<EventTeam> builder = eventTeamDao.queryBuilder().where(EventTeamDao.Properties.EventId.eq(prefs.getComp()));
-                switch(sort) {
-                    case NUMBER:
-                        builder.orderDesc(TeamDao.Properties.TeamNumber);
-                        break;
-                    case ORIENTATION:
-                        builder.orderAsc(TeamScouting2014Dao.Properties.Orientation);
-                        break;
-                    case DRIVETRAIN:
-                        builder.orderAsc(TeamScouting2014Dao.Properties.DriveTrain);
-                        break;
-                    case HEIGHTSHOOTER:
-                        builder.orderDesc(TeamScouting2014Dao.Properties.HeightShooter);
-                        break;
-                    case HEIGHTMAX:
-                        builder.orderDesc(TeamScouting2014Dao.Properties.HeightMax);
-                        break;
-                    case SHOOTERTYPE:
-                        builder.orderDesc(TeamScouting2014Dao.Properties.ShooterType);
-                        break;
-                    case SHOOTGOAL:
-                        builder.orderDesc(TeamScouting2014Dao.Properties.HighGoal,TeamScouting2014Dao.Properties.LowGoal);
-                        break;
-                    case SHOOTINGDISTANCE:
-                        builder.orderDesc(TeamScouting2014Dao.Properties.ShootingDistance);
-                        break;
-                    case PASS:
-                        builder.orderDesc(TeamScouting2014Dao.Properties.PassTruss,TeamScouting2014Dao.Properties.PassAir,TeamScouting2014Dao.Properties.PassGround);
-                        break;
-                    case PICKUP:
-                        builder.orderDesc(TeamScouting2014Dao.Properties.PickupCatch,TeamScouting2014Dao.Properties.PickupGround);
-                        break;
-                    case PUSHER:
-                        builder.orderAsc(TeamScouting2014Dao.Properties.Pusher);
-                        break;
-                    case BLOCKER:
-                        builder.orderAsc(TeamScouting2014Dao.Properties.Blocker);
-                        break;
-                    case HUMANPLAYER:
-                        builder.orderAsc(TeamScouting2014Dao.Properties.HumanPlayer);
-                        break;
-                    case AUTONOMOUS:
-                        builder.orderDesc(TeamScouting2014Dao.Properties.HotAuto,TeamScouting2014Dao.Properties.HighAuto,TeamScouting2014Dao.Properties.LowAuto,TeamScouting2014Dao.Properties.DriveAuto,TeamScouting2014Dao.Properties.NoAuto);
-                        break;
-                    default:
-                        builder.orderAsc(EventTeamDao.Properties.Rank);
-                        break;
-                }
-                eventLoader = async.queryList(builder.build());
-                break;
-        }
-
+        getLoaderManager().restartLoader(0, null, this);
     }
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        mCallback.onTeamSelected(adapter.getItem(position).getTeam().getId());
+        mCallback.onTeamSelected(adapter.getTeam(position).getTeam().getId());
         
         // Set the item as checked to be highlighted when in two-pane layout
         dslv.setItemChecked(position, true);
@@ -367,7 +353,7 @@ public class TeamListFragment extends Fragment implements AsyncOperationListener
 	        case R.id.delete:
                 dialog = new DeleteTeamDialogFragment();
                 Bundle deleteArgs = new Bundle();
-                deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.getItem(position));
+                deleteArgs.putSerializable(DeleteTeamDialogFragment.TEAM_ARG, adapter.getTeam(position));
                 dialog.setArguments(deleteArgs);
                 dialog.show(this.getFragmentManager(), "Delete Team");
 	            return true;

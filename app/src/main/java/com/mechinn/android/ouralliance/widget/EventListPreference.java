@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.util.AttributeSet;
 
 import com.mechinn.android.ouralliance.adapter.EventListPreferenceAdapter;
-import com.mechinn.android.ouralliance.greenDao.Event;
+import com.mechinn.android.ouralliance.data.Event;
 
 import java.util.List;
 

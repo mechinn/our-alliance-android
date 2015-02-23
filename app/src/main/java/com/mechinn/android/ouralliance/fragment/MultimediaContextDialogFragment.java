@@ -2,15 +2,16 @@ package com.mechinn.android.ouralliance.fragment;
 
 import java.io.File;
 
+import android.app.Activity;
 import android.graphics.Point;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Display;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;

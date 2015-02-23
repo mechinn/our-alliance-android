@@ -1,33 +1,79 @@
 package com.mechinn.android.ouralliance.data;
 
-import com.mechinn.android.ouralliance.greenDao.Match;
-import com.mechinn.android.ouralliance.greenDao.TeamScouting2014;
+import android.database.Cursor;
 
-import java.util.Date;
+import com.activeandroid.annotation.Column;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mechinn on 2/14/2015.
  */
-public abstract class MatchScouting extends OurAllianceObject implements Comparable<MatchScouting>, java.io.Serializable {
-    public abstract long getMatchId();
-    public abstract void setMatchId(long matchId);
-    public abstract long getTeamId();
-    public abstract void setTeamId(long teamId);
-    public abstract Boolean getAlliance();
-    public abstract void setAlliance(Boolean alliance);
-    public abstract Integer getPosition();
-    public abstract void setPosition(Integer position);
-    public abstract String getNotes();
-    public abstract void setNotes(String notes);
-    public abstract Match getMatch();
-    public abstract void setMatch(Match match);
-    public abstract TeamScouting getTeamScouting();
-    public abstract void setTeamScouting(TeamScouting teamScouting);
+public abstract class MatchScouting<TeamScout extends TeamScouting> extends OurAllianceObject implements Comparable<MatchScouting>, java.io.Serializable {
+    public final static String TAG = "MatchScouting";
+
+    public final static String MATCH = Match.TAG;
+    public final static String TEAM = TeamScouting.TAG;
+    public final static String ALLIANCE = "alliance";
+    public final static String POSITION = "position";
+    public final static String NOTES = "notes";
+    @Column(name=MATCH, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {UNIQUE})
+    private Match match;
+    @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {super.TAG}, onUniqueConflicts = {UNIQUE})
+    private TeamScout teamScouting;
+    @Column(name=ALLIANCE, notNull = true, onNullConflict = Column.ConflictAction.FAIL)
+    private boolean alliance;
+    @Column(name=POSITION, notNull = true, onNullConflict = Column.ConflictAction.FAIL)
+    private int position;
+    @Column(name=NOTES)
+    private String notes;
+    public Match getMatch() {
+        return match;
+    }
+    public void setMatch(Match match) {
+        this.match = match;
+    }
+    public TeamScout getTeamScouting() {
+        return teamScouting;
+    }
+    public void setTeamScouting(TeamScout teamScouting) {
+        this.teamScouting = teamScouting;
+    }
+    public boolean isAlliance() {
+        return alliance;
+    }
+    public void setAlliance(boolean alliance) {
+        this.alliance = alliance;
+    }
+    public int getPosition() {
+        return position;
+    }
+    public void setPosition(int position) {
+        this.position = position;
+    }
+    public String getNotes() {
+        return notes;
+    }
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
     public int compareTo(MatchScouting another) {
-        int compare = (this.getAlliance()?1:0) - (another.getAlliance()?1:0);
+        int compare = (this.isAlliance()?1:0) - (another.isAlliance()?1:0);
         if(0==compare) {
             compare = this.getTeamScouting().getTeam().compareTo(another.getTeamScouting().getTeam());
         }
         return compare;
+    }
+    public boolean equals(Object data) {
+        if (!(data instanceof MatchScouting)) {
+            return false;
+        }
+        return getMatch().equals(((MatchScouting) data).getMatch()) &&
+                getTeamScouting().equals(((MatchScouting) data).getTeamScouting()) &&
+                isAlliance() == ((MatchScouting) data).isAlliance() &&
+                getNotes().equals(((MatchScouting) data).getNotes());
     }
 }

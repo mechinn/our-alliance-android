@@ -68,7 +68,8 @@ public class DaoGen {
         event.setSuperclass("com.mechinn.android.ouralliance.data.OurAllianceObject");
         event.implementsInterface("Comparable<Event>");
         event.implementsSerializable();
-        event.addStringProperty("shortName").notNull();
+        event.addStringProperty("name");
+        event.addStringProperty("shortName");
         event.addStringProperty("eventCode").notNull().unique();
         event.addIntProperty("eventType").notNull();
         event.addIntProperty("eventDistrict").notNull();

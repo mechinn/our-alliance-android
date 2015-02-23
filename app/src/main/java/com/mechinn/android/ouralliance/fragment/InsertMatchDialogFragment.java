@@ -26,8 +26,8 @@ import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MatchTeamSelectAdapter;
 import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.greenDao.Match;
-import com.mechinn.android.ouralliance.greenDao.MatchScouting2014;
+import com.mechinn.android.ouralliance.data.Match;
+import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -225,7 +225,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
 
     private class SaveMatch extends Thread {
         public void run() {
-            match.save();
+            match.update();
             switch (prefs.getYear()) {
                 case 2014:
                     List<MatchScouting2014> teams = new ArrayList<MatchScouting2014>(6);

@@ -33,10 +33,10 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
 	private int detailFrag;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_match_scouting);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		this.getFragmentManager().addOnBackStackChangedListener(this);
         // Add the fragment to the 'fragment_container' FrameLayout
         if (this.findViewById(R.id.fragment_container) != null) {

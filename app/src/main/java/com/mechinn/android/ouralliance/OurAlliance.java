@@ -1,30 +1,27 @@
 package com.mechinn.android.ouralliance;
 
-import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.sqlite.SQLiteDatabase;
 
+import android.util.Log;
 import android.widget.Toast;
+
+import com.activeandroid.app.Application;
 import com.crashlytics.android.Crashlytics;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.event.EventException;
-import com.mechinn.android.ouralliance.greenDao.dao.DaoMaster;
-import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
-import de.greenrobot.dao.async.AsyncSession;
 import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.ThrowableFailureEvent;
 
 /**
  * Created by mechinn on 2/18/14.
  */
 public class OurAlliance extends Application {
     public static final String TAG = "OurAlliance";
-    private DaoSession daoSession;
-    private AsyncSession asyncSession;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -44,7 +41,6 @@ public class OurAlliance extends Application {
     public void onCreate() {
         super.onCreate();
         Crashlytics.start(this);
-        setupDatabase();
         EventBus.getDefault().register(this);
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -69,18 +65,8 @@ public class OurAlliance extends Application {
         super.onTerminate();
     }
 
-    private void setupDatabase() {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "greendao", null);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        DaoMaster daoMaster = new DaoMaster(db);
-        daoSession = daoMaster.newSession();
-        asyncSession = daoSession.startAsyncSession();
-    }
-
-    public DaoSession getDaoSession() {
-        return daoSession;
-    }
-    public AsyncSession getAsyncSession() {
-        return asyncSession;
+    public void onEventMainThread(ThrowableFailureEvent event) {
+        Toast.makeText(this,event.getThrowable().getMessage(),Toast.LENGTH_LONG);
+        Log.e(TAG, event.getThrowable().getMessage(),event.getThrowable());
     }
 }

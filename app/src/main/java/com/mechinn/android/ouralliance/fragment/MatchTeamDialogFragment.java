@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBarActivity;
 
 public class MatchTeamDialogFragment extends DialogFragment {
     public static final String TAG = "MatchTeamDialogFragment";

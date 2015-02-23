@@ -60,6 +60,18 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="b0d52c1a1854fa2c1171de35d312d751fb817acd" />
+        <meta-data android:name="AA_DB_NAME" android:value="activeAndroid.db" />
+        <meta-data android:name="AA_DB_VERSION" android:value="1" />
+        <meta-data android:name="AA_MODELS" android:value="
+            com.mechinn.android.ouralliance.data.Team,
+            com.mechinn.android.ouralliance.data.Event,
+            com.mechinn.android.ouralliance.data.EventTeam,
+            com.mechinn.android.ouralliance.data.Match,
+            com.mechinn.android.ouralliance.data.Wheel2014,
+            com.mechinn.android.ouralliance.data.TeamScouting2014,
+            com.mechinn.android.ouralliance.data.MatchScouting2014
+            " />
+        <provider android:authorities="com.mechinn.android.ouralliance" android:exported="false" android:name="com.activeandroid.content.ContentProvider" />
         <!--<receiver-->
         <!--android:name="com.mechinn.android.ouralliance.rest.thebluealliance.AlarmTheBlueAlliance"-->
         <!--android:enabled="true"-->

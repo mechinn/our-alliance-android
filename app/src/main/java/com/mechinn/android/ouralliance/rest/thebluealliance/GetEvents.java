@@ -1,14 +1,14 @@
 package com.mechinn.android.ouralliance.rest.thebluealliance;
 
-import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import com.mechinn.android.ouralliance.BackgroundProgress;
 import com.mechinn.android.ouralliance.OurAlliance;
-import com.mechinn.android.ouralliance.greenDao.Event;
+import com.mechinn.android.ouralliance.data.Event;
+import com.mechinn.android.ouralliance.event.Transaction;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
-import com.squareup.okhttp.Response;
 
+import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 
 import java.util.List;
@@ -35,23 +35,33 @@ public class GetEvents extends BackgroundProgress {
                     if (this.isCancelled()) {
                         return false;
                     }
-                    Log.d(TAG, "name: " + event.getShortName());
-                    Log.d(TAG, "code: " + event.getEventCode());
-                    Log.d(TAG, "location: " + event.getVenueAddress());
+                    Log.d(TAG, "name: " + event.getName());
+                    Log.d(TAG, "shortName: " + event.getShortName());
+                    Log.d(TAG, "eventCode: " + event.getEventCode());
+                    Log.d(TAG, "eventType: " + event.getEventType());
+                    Log.d(TAG, "eventDistrict: " + event.getEventDistrict());
                     Log.d(TAG, "season: " + event.getYear());
-                    Log.d(TAG, "official: " + event.getOfficial());
+                    Log.d(TAG, "venueAddress: " + event.getVenueAddress());
+                    Log.d(TAG, "website: " + event.getWebsite());
+                    Log.d(TAG, "startDate: " + event.getStartDate());
+                    Log.d(TAG, "endDate: " + event.getEndDate());
+                    Log.d(TAG, "official: " + event.isOfficial());
                     this.increasePrimary();
                 }
-                ((OurAlliance)this.getActivity().getApplication()).getDaoSession().getEventDao().insertInTx(events);
+                EventBus.getDefault().post(new Transaction(events));
                 getPrefs().setEventsDownloaded(true);
             } catch (RetrofitError e) {
                 Log.e(TAG,"Error downloading events",e);
-                if(e.isNetworkError()) {
-                    setStatus("Unable to connect");
-                    return false;
-                } else if(e.getResponse().getStatus()!=200) {
-                    setStatus("Error "+e.getResponse().getStatus()+" connecting");
-                    return false;
+                try {
+                    if (e.isNetworkError()) {
+                        setStatus("Unable to connect");
+                        return false;
+                    } else if (e.getResponse().getStatus() != 200) {
+                        setStatus("Error " + e.getResponse().getStatus() + " connecting");
+                        return false;
+                    }
+                } catch (Exception ex) {
+                    setStatus(e.getMessage());
                 }
             }
         }

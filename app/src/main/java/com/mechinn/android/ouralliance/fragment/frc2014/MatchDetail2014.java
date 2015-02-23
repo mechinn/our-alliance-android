@@ -10,7 +10,7 @@ import android.widget.RatingBar;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.fragment.MatchDetailFragment;
-import com.mechinn.android.ouralliance.greenDao.MatchScouting2014;
+import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

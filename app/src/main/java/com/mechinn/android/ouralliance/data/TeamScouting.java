@@ -1,31 +1,44 @@
 package com.mechinn.android.ouralliance.data;
 
-import com.mechinn.android.ouralliance.greenDao.MatchScouting2014;
-import com.mechinn.android.ouralliance.greenDao.Multimedia;
-import com.mechinn.android.ouralliance.greenDao.Team;
-import com.mechinn.android.ouralliance.greenDao.Wheel;
+import com.activeandroid.annotation.Column;
 
 import java.util.List;
 
-/**
- * Created by mechinn on 2/14/2015.
- */
 public abstract class TeamScouting extends OurAllianceObject implements Comparable<TeamScouting>, java.io.Serializable {
-    public abstract long getTeamId();
-    public abstract void setTeamId(long teamId);
-    public abstract String getNotes();
-    public abstract void setNotes(String notes);
-    public abstract Team getTeam();
-    public abstract void setTeam(Team team);
-    public abstract List<Wheel> getWheels();
-    public abstract void resetWheels();
+    public final static String TAG = "TeamScouting";
+    public final static String TEAM = Team.TAG;
+    public final static String NOTES = "notes";
+    @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, unique = true, onUniqueConflict = Column.ConflictAction.FAIL)
+    private Team team;
+    @Column(name=NOTES)
+    private String notes;
+    public Team getTeam() {
+        return team;
+    }
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+    public String getNotes() {
+        return notes;
+    }
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+    public abstract List<? extends Wheel> getWheels();
     public abstract List<? extends MatchScouting> getMatches();
-    public abstract void resetMatches();
-    public abstract Long getTeamMultimediaId();
-    public abstract void setTeamMultimediaId(Long multimediaId);
-    public abstract List<Multimedia> getMultimedia();
-    public abstract void resetMultimedia();
+    public String toString() {
+        return "ID: "+this.getId()+
+                " Mod: "+this.getModified()+
+                " Notes: "+this.getNotes();
+    }
     public int compareTo(TeamScouting another) {
         return this.getTeam().compareTo(another.getTeam());
+    }
+    public boolean equals(Object data) {
+        if (!(data instanceof TeamScouting)) {
+            return false;
+        }
+        return getTeam().equals(((TeamScouting) data).getTeam()) &&
+                getNotes().equals(((TeamScouting) data).getNotes());
     }
 }

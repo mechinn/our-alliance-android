@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.mechinn.android.ouralliance.greenDao.Event;
-import com.mechinn.android.ouralliance.greenDao.Match;
+import com.mechinn.android.ouralliance.data.Event;
+import com.mechinn.android.ouralliance.data.Match;
 
 import java.util.Collections;
 import java.util.List;

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.greenDao.Event;
+import com.mechinn.android.ouralliance.data.Event;
 
 public class InsertCompDialogFragment extends DialogFragment {
     public static final String TAG = "InsertCompDialogFragment";

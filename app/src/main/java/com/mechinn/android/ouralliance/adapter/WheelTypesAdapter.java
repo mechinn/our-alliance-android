@@ -1,4 +1,4 @@
-package com.mechinn.android.ouralliance.adapter.frc2014;
+package com.mechinn.android.ouralliance.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,37 +9,36 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.data.Wheel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class TeamScouting2014FilterAdapter extends BaseAdapter implements Filterable {
-    public static final String TAG = "TeamScouting2014FilterAdapter";
-    public enum Type {ORIENTATION,DRIVETRAIN}
+public class WheelTypesAdapter extends BaseAdapter implements Filterable {
+    public static final String TAG = "TeamScoutingWheelAdapter";
+    public static final int TYPE = 0;
 	Context context;
-    List<TeamScouting2014> teams;
-    Type field;
+    List<Wheel> teams;
+    int field;
 	List<CharSequence> original;
     List<CharSequence> filtered;
 
-	public TeamScouting2014FilterAdapter(Context context, List<TeamScouting2014> teams, Type field) {
+	public WheelTypesAdapter(Context context, List<Wheel> teams, int field) {
 		this.context = context;
         this.field = field;
         swapList(teams);
 	}
 	
-	public void swapList(List<TeamScouting2014> teams) {
+	public void swapList(List<Wheel> teams) {
         this.teams = teams;
-		this.original = new ArrayList<CharSequence>();
-        if(!isEmpty()) {
-            for(TeamScouting2014 each : this.teams) {
+        this.original = new ArrayList<CharSequence>();
+        if(null!=this.teams) {
+            Collections.sort(this.teams);
+            for(Wheel each : this.teams) {
                 switch(field) {
-                    case ORIENTATION:
-                        original.add(each.getOrientation());
-                        break;
-                    case DRIVETRAIN:
-                        original.add(each.getDriveTrain());
+                    case TYPE:
+                        original.add(each.getWheelType());
                         break;
                 }
             }
@@ -48,15 +47,15 @@ public class TeamScouting2014FilterAdapter extends BaseAdapter implements Filter
 	}
 
     public boolean isEmpty() {
-        if(null!=teams) {
-            return teams.size()<1;
+        if(null!=this.filtered) {
+            return filtered.size()<1;
         } else {
             return true;
         }
     }
 	
 	public int getCount() {
-		if(isEmpty()||null==filtered) {
+		if(isEmpty()) {
 			return 0;
 		}
 		return filtered.size();
@@ -64,7 +63,7 @@ public class TeamScouting2014FilterAdapter extends BaseAdapter implements Filter
 
 	@Override
 	public CharSequence getItem(int position) {
-		if(isEmpty()||null==filtered) {
+		if(isEmpty()) {
 			return null;
 		}
 		return filtered.get(position);
@@ -78,13 +77,13 @@ public class TeamScouting2014FilterAdapter extends BaseAdapter implements Filter
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TextView container = (TextView) convertView;
-		if(!isEmpty()) {
+        if(!isEmpty()) {
             if(null==convertView) {
                 LayoutInflater inflater = LayoutInflater.from(context);
                 container = (TextView) inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
             }
             container.setText(filtered.get(position).toString());
-		}
+        }
 		return container;
 	}
 

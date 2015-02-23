@@ -1,6 +1,6 @@
 package com.mechinn.android.ouralliance.activity;
 
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Window;
 import com.mechinn.android.ouralliance.*;
 import com.mechinn.android.ouralliance.fragment.GenericDialogFragment;
@@ -12,7 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class SettingsActivity extends FragmentActivity implements BackgroundProgress.Listener, GenericDialogFragment.Listener {
+public class SettingsActivity extends ActionBarActivity implements BackgroundProgress.Listener, GenericDialogFragment.Listener {
     public static final String TAG = "SettingsActivity";
 	private SettingsFragment frag;
 
@@ -20,7 +20,7 @@ public class SettingsActivity extends FragmentActivity implements BackgroundProg
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         frag = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(SettingsFragment.TAG);
         if(null==frag) {
             frag = new SettingsFragment();

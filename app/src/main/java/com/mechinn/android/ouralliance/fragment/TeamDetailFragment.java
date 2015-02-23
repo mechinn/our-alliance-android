@@ -7,37 +7,36 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import com.mechinn.android.ouralliance.OurAlliance;
+import com.activeandroid.content.ContentProvider;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
 import com.mechinn.android.ouralliance.adapter.WheelAdapter;
 import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.greenDao.Event;
-import com.mechinn.android.ouralliance.greenDao.Team;
-import com.mechinn.android.ouralliance.greenDao.Wheel;
-import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
-import com.mechinn.android.ouralliance.greenDao.dao.WheelDao;
+import com.mechinn.android.ouralliance.data.Event;
+import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.Wheel;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,16 +48,11 @@ import org.lucasr.twowayview.widget.TwoWayView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.dao.async.AsyncOperation;
-import de.greenrobot.dao.async.AsyncOperationListener;
-import de.greenrobot.dao.async.AsyncSession;
 
-public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends Fragment implements AsyncOperationListener {
+public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String TAG = "TeamDetailFragment";
 	public static final String TEAM_ARG = "team";
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-	private final static int PICTURE_CAPTURE_CODE = 100;
-	private final static int VIDEO_CAPTURE_CODE = 101;
 
 	private Prefs prefs;
 	private View rootView;
@@ -75,7 +69,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediaFile)); // set the image file name
 
             // start the image capture Intent
-            startActivityForResult(intent, PICTURE_CAPTURE_CODE);
+            startActivityForResult(intent, R.id.picture_capture_code);
         }
     }
     @InjectView(R.id.video) protected Button video;
@@ -92,82 +86,76 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
 
             // start the image capture Intent
-            startActivityForResult(intent, VIDEO_CAPTURE_CODE);
+            startActivityForResult(intent, R.id.video_capture_code);
         }
     }
 	@InjectView(R.id.gallery) protected TwoWayView gallery;
     @InjectView(R.id.notes) protected TextView notes;
 	@InjectView(R.id.addWheel) protected Button addWheel;
-    @OnClick(R.id.addWheel) protected void addWheel(View v) {
-        Wheel newWheel = new Wheel();
-        newWheel.setTeamScouting(scouting);
-        createWheel(newWheel);
-    }
     @InjectView(R.id.wheels) protected LinearLayout wheels;
     private ArrayList<Wheel> wheelCursor;
 	private MultimediaAdapter multimedia;
+    public WheelAdapter getWheelsAdapter() {
+        return wheelsAdapter;
+    }
+    public void setWheelsAdapter(WheelAdapter wheelsAdapter) {
+        this.wheelsAdapter = wheelsAdapter;
+    }
 
-	private WheelAdapter wheelTypesAdapter;
+    private WheelAdapter wheelsAdapter;
 
     @InjectView(R.id.season) protected LinearLayout season;
 	private long teamId;
 	private Scouting scouting;
     private Event event;
-    private DaoSession daoSession;
-    private AsyncSession async;
-    private AsyncOperation onEventLoaded;
-    private AsyncOperation onScoutingLoaded;
-    private AsyncOperation onWheelTypesLoaded;
-    private AsyncOperation onTeamWheelsLoaded;
 
-    public DaoSession getDaoSession() {
-        return daoSession;
-    }
-    public AsyncSession getAsync() {
-        return async;
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case R.id.load_event:
+                return new CursorLoader(getActivity(), ContentProvider.createUri(Event.class, null), null, Event.ID+"=?", new String[] {prefs.getCompString()}, null );
+            case R.id.load_wheel_types:
+                return new CursorLoader(getActivity(), ContentProvider.createUri(Wheel.class,null), null, null, null, null);
+            case R.id.load_team_wheels:
+                return new CursorLoader(getActivity(), ContentProvider.createUri(Wheel.class,null), null, Wheel.TEAM_SCOUTING+"=?", new String[] {Long.toString(getTeamId())}, null);
+            default:
+                return null;
+        }
     }
 
     @Override
-    public void onAsyncOperationCompleted(AsyncOperation operation) {
-        if(onEventLoaded == operation) {
-            if (operation.isCompletedSucessfully()) {
-                Event result = (Event) operation.getResult();
-                Log.d(TAG, "result: " + result);
-                setEvent(result);
-            } else {
-
-            }
-        } else if(onScoutingLoaded == operation) {
-            if (operation.isCompletedSucessfully()) {
-                Scouting result = (Scouting) operation.getResult();
-                Log.d(TAG, "result: " + result);
-                setScouting(result);
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch(loader.getId()) {
+            case R.id.load_event:
+                setEventFromCursor(data);
+                break;
+            case R.id.load_team_detail_scouting:
+                setScoutingFromCursor(data);
                 setView();
                 rootView.setVisibility(View.VISIBLE);
-            } else {
-                rootView.setVisibility(View.GONE);
-            }
-        } else if(onWheelTypesLoaded == operation) {
-            if (operation.isCompletedSucessfully()) {
-                ArrayList<Wheel> result = (ArrayList<Wheel>) operation.getResult();
-                wheelTypesAdapter.swapList(result);
-                Log.d(TAG, "Count: " + result.size());
-            } else {
-
-            }
-        } else if(onTeamWheelsLoaded == operation) {
-            if (operation.isCompletedSucessfully()) {
-                ArrayList<Wheel> result = (ArrayList<Wheel>) operation.getResult();
-                for(Wheel each : result) {
-                    createWheel(each);
-                }
-            } else {
-
-            }
+                break;
+            case R.id.load_wheel_types:
+                wheelsAdapter.swapWheelTypes(data);
+                break;
+            case R.id.load_team_wheels:
+                wheelsAdapter.swapCursor(data);
+                break;
         }
     }
-    public void setScoutuingLoaded(AsyncOperation onScoutingLoaded) {
-        this.onScoutingLoaded = onScoutingLoaded;
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        switch(loader.getId()) {
+            case R.id.load_event:
+                break;
+            case R.id.load_team_detail_scouting:
+                rootView.setVisibility(View.GONE);
+                break;
+            case R.id.load_wheel_types:
+                break;
+            case R.id.load_team_wheels:
+                break;
+        }
     }
 	public Prefs getPrefs() {
 		return prefs;
@@ -187,6 +175,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	public void setScouting(Scouting scouting) {
 		this.scouting = scouting;
 	}
+    public abstract void setScoutingFromCursor(Cursor cursor);
 	public LinearLayout getSeason() {
 		return season;
 	}
@@ -196,18 +185,19 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     public Event getEvent() {
         return event;
     }
-
     public void setEvent(Event event) {
         this.event = event;
+    }
+    public void setEventFromCursor(Cursor cursor) {
+        Event event = new Event();
+        event.loadFromCursor(cursor);
+        setEvent(event);
     }
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
-        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
-        async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
-        async.setListener(this);
 	}
 
     @Override
@@ -279,7 +269,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     
     @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICTURE_CAPTURE_CODE) {
+        if (requestCode == R.id.picture_capture_code) {
             if (resultCode == Activity.RESULT_OK) {
                 // Image captured and saved to fileUri specified in the Intent
             	if(null!=data && null!=data.getData()) {
@@ -292,7 +282,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             } else {
                 // Image capture failed, advise user
             }
-        } else if (requestCode == VIDEO_CAPTURE_CODE) {
+        } else if (requestCode == R.id.video_capture_code) {
             if (resultCode == Activity.RESULT_OK) {
                 // Video captured and saved to fileUri specified in the Intent
             	if(null!=data && null!=data.getData()) {
@@ -307,12 +297,6 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        wheelTypesAdapter = new WheelAdapter(getActivity(), null, WheelAdapter.TYPE);
     }
 
     @Override
@@ -335,9 +319,9 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     public void onResume() {
         super.onResume();
         if (prefs.getYear() != 0 && teamId != 0) {
-            onEventLoaded = async.load(Event.class,prefs.getComp());
-            onWheelTypesLoaded = async.loadAll(Wheel.class);
-            onTeamWheelsLoaded = async.queryList(daoSession.getWheelDao().queryBuilder().where(WheelDao.Properties.TeamId.eq(getTeamId())).build());
+            this.getLoaderManager().initLoader(R.id.load_event,null,this);
+            this.getLoaderManager().initLoader(R.id.load_wheel_types,null,this);
+            this.getLoaderManager().initLoader(R.id.load_team_wheels,null,this);
         }
     }
 
@@ -380,60 +364,6 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 		}
 	}
 	
-	public LinearLayout createWheel(Wheel thisWheel) {
-		LinearLayout view = (LinearLayout) this.getActivity().getLayoutInflater().inflate(R.layout.fragment_team_detail_wheel, wheels, false);
-		view.setTag(thisWheel);
-		//1 is the type field
-		AutoCompleteTextView type = (AutoCompleteTextView)view.getChildAt(R.id.wheelType);
-		type.setText(thisWheel.getWheelType());
-		type.setThreshold(1);
-		type.setAdapter(wheelTypesAdapter);
-		type.setOnFocusChangeListener(new OnFocusChangeListener() {
-			public void onFocusChange(View v, boolean hasFocus) {
-				AutoCompleteTextView textView = (AutoCompleteTextView) v; 
-				if(hasFocus) {
-					v.setTag(textView.getText().toString());
-//				} else {
-//					String oldString = (String) textView.getTag();
-//					if(null!=oldString && !wheelTypes.contains(oldString)) {
-//						wheelTypesAdapter.remove(oldString);
-//					}
-//					String newString = textView.getText().toString();
-//					if(null!=newString && !newString.isEmpty()) {
-//						wheelTypesAdapter.add(newString);
-//					}
-				}
-			}
-		});
-		String num;
-		//if the size is currently 0 dont show it for the user's sake
-		if(0!=thisWheel.getWheelSize()) {
-			//get the number 
-			num = Double.toString(thisWheel.getWheelSize());
-			TextView size = (TextView)view.getChildAt(R.id.wheelSize);
-			size.setText(num);
-		}
-		//if the size is currently 0 dont show it for the user's sake
-		if(0!=thisWheel.getWheelCount()) {
-			//get the number 
-			num = Integer.toString(thisWheel.getWheelCount());
-			//6 is the count field
-			TextView count = (TextView)view.getChildAt(R.id.wheelCount);
-			count.setText(num);
-		}
-		//7 is the delete button, if clicked delete the wheel
-		view.getChildAt(R.id.deleteWheel).setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				View view = ((View) v.getParent());
-                Wheel wheel = (Wheel) view.getTag();
-                wheel.delete();
-				wheels.removeView(view);
-			}
-		});
-		wheels.addView(view);
-		return view;
-	}
-	
 	public void updateScouting() {
 		for(int i=0;i<wheels.getChildCount(); ++i) {
 			LinearLayout theWheelView = (LinearLayout) wheels.getChildAt(i);
@@ -441,16 +371,16 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 			CharSequence type = ((TextView) theWheelView.getChildAt(R.id.wheelType)).getText();
 			theWheel.setWheelType(type.toString());
 			CharSequence size = ((TextView) theWheelView.getChildAt(R.id.wheelSize)).getText();
-			theWheel.setWheelSize(Utility.getFloatFromText(size));
+			theWheel.setWheelSize(Utility.getDoubleFromText(size));
 			CharSequence count = ((TextView) theWheelView.getChildAt(R.id.wheelCount)).getText();
 			theWheel.setWheelCount(Utility.getIntFromText(count));
 			//see if we should update or insert or just tell the user there isnt enough info
-            ((OurAlliance)this.getActivity().getApplication()).getAsyncSession().update(theWheel);
+            theWheel.asyncSave();
 		}
 		scouting.setNotes(notes.getText().toString());
 	}
 	
 	public void commitUpdatedScouting() {
-        ((OurAlliance)this.getActivity().getApplication()).getAsyncSession().update(this.getScouting());
+        this.getScouting().asyncSave();
 	}
 }

@@ -2,8 +2,10 @@ package com.mechinn.android.ouralliance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.view.Window;
+
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -13,13 +15,16 @@ import com.mechinn.android.ouralliance.BackgroundProgress;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * Created by mechinn on 4/3/14.
  */
-public class OurAllianceActivity extends FragmentActivity implements BackgroundProgress.Listener {
+public class OurAllianceActivity extends ActionBarActivity implements BackgroundProgress.Listener {
     public static final String TAG = "OurAllianceActivity";
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
-    private AdView adView;
+    @InjectView(R.id.adView) protected AdView adView;
     private AdRequest adRequest;
     private AdListener adListener;
     private Prefs prefs;
@@ -77,12 +82,15 @@ public class OurAllianceActivity extends FragmentActivity implements BackgroundP
                 adView.setVisibility(View.VISIBLE);
             }
         };
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.ic_launcher);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        adView = (AdView) this.findViewById(R.id.adView);
+        ButterKnife.inject(this);
         adView.setAdListener(adListener);
     }
 

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
 
-import com.mechinn.android.ouralliance.greenDao.Event;
+import com.mechinn.android.ouralliance.data.Event;
 
 import java.util.List;
 

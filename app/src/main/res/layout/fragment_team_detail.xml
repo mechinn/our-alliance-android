@@ -75,17 +75,16 @@
 			    android:text="Add" />
 
 		</LinearLayout>
-		
-		<LinearLayout
-			     android:id="@+id/wheels"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:orientation="vertical" />
+
+        <ListView
+            android:id="@+id/wheels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <View
-                android:layout_width="match_parent"
-                android:layout_height="2dip"
-                android:background="#000000"/>
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="#000000"/>
 			
 	    <LinearLayout
 		     android:id="@+id/season"

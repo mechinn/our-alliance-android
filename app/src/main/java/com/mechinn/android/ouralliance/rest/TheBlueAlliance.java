@@ -2,10 +2,12 @@ package com.mechinn.android.ouralliance.rest;
 
 import android.util.Log;
 
-import com.mechinn.android.ouralliance.greenDao.Event;
-import com.mechinn.android.ouralliance.greenDao.Match;
-import com.mechinn.android.ouralliance.greenDao.Multimedia;
-import com.mechinn.android.ouralliance.greenDao.Team;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mechinn.android.ouralliance.data.Event;
+import com.mechinn.android.ouralliance.data.Match;
+import com.mechinn.android.ouralliance.data.Team;
 import com.squareup.okhttp.OkHttpClient;
 
 import retrofit.Callback;
@@ -15,11 +17,12 @@ import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.client.Request;
 import retrofit.client.Response;
+import retrofit.converter.GsonConverter;
 import retrofit.http.GET;
-import retrofit.http.Headers;
 import retrofit.http.Path;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,7 +36,18 @@ public class TheBlueAlliance {
             request.addHeader("X-TBA-App-Id", "com.mechinn.android.ouralliance:FRC_mobile_scouting_application:2015");
         }
     };
-    private static final RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint("http://www.thebluealliance.com/api/v2").setRequestInterceptor(requestInterceptor).setClient(new InterceptingOkClient()).build();
+    private static final Gson gson = new GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .registerTypeAdapter(Date.class, new JsonDateAdapter())
+            .create();
+    private static final RestAdapter restAdapter = new RestAdapter
+            .Builder()
+            .setEndpoint("http://www.thebluealliance.com/api/v2")
+            .setRequestInterceptor(requestInterceptor)
+            .setClient(new InterceptingOkClient())
+            .setLogLevel(RestAdapter.LogLevel.FULL)
+            .setConverter(new GsonConverter(gson))
+            .build();
     private static final TheBlueAllianceAPIv2 service = restAdapter.create(TheBlueAllianceAPIv2.class);
     public static TheBlueAllianceAPIv2 getService() {
         return service;
@@ -94,11 +108,11 @@ public class TheBlueAlliance {
         @GET("/team/{team}/years_participated")
         public void getTeamYearsParticipated(@Path("team") String team, Callback<int[]> callback);
 
-        @GET("/team/{team}/{year}/media")
-        public List<Multimedia> getTeamMedia(@Path("team") String team, @Path("year") int year);
-
-        @GET("/team/{team}/{year}/media")
-        public void getTeamMedia(@Path("team") String team, @Path("year") int year, Callback<List<Multimedia>> callback);
+//        @GET("/team/{team}/{year}/media")
+//        public List<Multimedia> getTeamMedia(@Path("team") String team, @Path("year") int year);
+//
+//        @GET("/team/{team}/{year}/media")
+//        public void getTeamMedia(@Path("team") String team, @Path("year") int year, Callback<List<Multimedia>> callback);
 
         @GET("/events/{year}")
         public List<Event> getEventList(@Path("year") int year);

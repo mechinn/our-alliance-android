@@ -7,9 +7,9 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 
-import com.mechinn.android.ouralliance.greenDao.Event;
-import com.mechinn.android.ouralliance.greenDao.EventTeam;
-import com.mechinn.android.ouralliance.greenDao.Match;
+import com.mechinn.android.ouralliance.data.Event;
+import com.mechinn.android.ouralliance.data.EventTeam;
+import com.mechinn.android.ouralliance.data.Match;
 
 import java.util.Map;
 
@@ -122,12 +122,18 @@ public class Prefs {
 		editor.putString(yearPref, year);
 		editor.apply();
 	}
+    public String getYearString() {
+        return prefs.getString(yearPref, yearDefault);
+    }
 	public int getYear() {
-		return Integer.parseInt(prefs.getString(yearPref, yearDefault));
+		return Integer.parseInt(getYearString());
 	}
-	public long getComp() {
-		return Long.parseLong(prefs.getString(compPref, compDefault));
+	public String getCompString() {
+		return prefs.getString(compPref, compDefault);
 	}
+    public long getComp() {
+        return Long.parseLong(getCompString());
+    }
 	public String getMeasure() {
 		return prefs.getString(measurePref, measureDefault);
 	}
