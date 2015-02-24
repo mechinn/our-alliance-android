@@ -1,16 +1,13 @@
 package com.mechinn.android.ouralliance.fragment;
 
-import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchTeamAdapter;
 import com.mechinn.android.ouralliance.data.MatchScouting;
-import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
+import com.mechinn.android.ouralliance.event.SelectMatchTeamEvent;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -19,70 +16,20 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import de.greenrobot.dao.async.AsyncOperation;
-import de.greenrobot.dao.async.AsyncOperationListener;
-import de.greenrobot.dao.async.AsyncSession;
+import de.greenrobot.event.EventBus;
 
-public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScouting> extends ListFragment implements AsyncOperationListener {
+public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScouting> extends ListFragment {
     public static final String TAG = "MatchTeamListFragment";
 	public static final String MATCH_ARG = "match";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-    private Listener mCallback;
 	private Prefs prefs;
 	private MatchTeamAdapter<MatchScoutingYear> adapter;
     private long matchId;
-    private DaoSession daoSession;
-    private AsyncSession async;
-    private AsyncOperation onMatchLoaded;
 
-    public AsyncSession getAsync() {
-        return async;
-    }
-
-    public DaoSession getDaoSession() {
-        return daoSession;
-    }
-
-	public interface Listener {
-        public void onMatchTeamSelected(long team);
-    }
-
-    @Override
-    public void onAsyncOperationCompleted(AsyncOperation operation) {
-        if(onMatchLoaded == operation) {
-            if (operation.isCompletedSucessfully()) {
-                ArrayList<MatchScoutingYear> result = (ArrayList<MatchScoutingYear>) operation.getResult();
-                Log.d(TAG, "Count: " + result.size());
-                adapter.swapMatch(result);
-            } else {
-
-            }
-        }
-    }
-
-    public AsyncOperation getOnMatchLoaded() {
-        return onMatchLoaded;
-    }
-    public void setOnMatchLoaded(AsyncOperation onMatchLoaded) {
-        this.onMatchLoaded = onMatchLoaded;
-    }
     public long getMatchId() {
         return matchId;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception.
-        try {
-            mCallback = (Listener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
-        }
     }
 
     @Override
@@ -90,9 +37,6 @@ public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScout
         super.onCreate(savedInstanceState);
         ((ActionBarActivity)this.getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		prefs = new Prefs(this.getActivity());
-        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
-        async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
-        async.setListener(this);
 		matchId = this.getArguments().getLong(MATCH_ARG);
         Log.d(TAG, "match: "+matchId);
     }
@@ -136,6 +80,7 @@ public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScout
     @Override
     public void onStart() {
         super.onStart();
+        EventBus.getDefault().register(this);
 //		this.getActivity().registerForContextMenu(this.getListView());
         // When in two-pane layout, set the listview to highlight the selected list item
         // (We do this during onStart because at the point the listview is available.)
@@ -143,10 +88,26 @@ public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScout
         	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(0!=getMatchId()) {
+            load();
+        }
+    }
+
+    public abstract void load();
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        mCallback.onMatchTeamSelected(adapter.getItem(position).getId());
+        EventBus.getDefault().post(new SelectMatchTeamEvent(adapter.getItem(position).getId()));
         
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);
@@ -164,4 +125,24 @@ public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScout
             Log.d(TAG,"",e);
         }
 	}
+
+    public void onEvent(MatchScoutingYear matchScoutingChanged) {
+        load();
+    }
+
+    public void onEvent(LoadMatchScouting scouting) {
+        List<MatchScoutingYear> result = scouting.getScouting();
+        Log.d(TAG, "Count: " + result.size());
+        adapter.swapMatch(result);
+    }
+
+    protected class LoadMatchScouting {
+        List<MatchScoutingYear> scouting;
+        public LoadMatchScouting(List<MatchScoutingYear> scouting) {
+            this.scouting = scouting;
+        }
+        public List<MatchScoutingYear> getScouting() {
+            return scouting;
+        }
+    }
 }

@@ -2,10 +2,14 @@ package com.mechinn.android.ouralliance.activity;
 
 import android.support.v4.app.FragmentTransaction;
 import android.view.Window;
+
+import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.event.SelectMatchEvent;
+import com.mechinn.android.ouralliance.event.SelectMatchTeamEvent;
+import com.mechinn.android.ouralliance.event.SelectTeamEvent;
 import com.mechinn.android.ouralliance.fragment.MatchDetailFragment;
 import com.mechinn.android.ouralliance.fragment.MatchListFragment;
-import com.mechinn.android.ouralliance.fragment.MatchTeamDialogFragment;
 import com.mechinn.android.ouralliance.fragment.MatchTeamListFragment;
 import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.MatchDetail2014;
@@ -22,7 +26,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MatchScoutingActivity extends OurAllianceActivity implements OnBackStackChangedListener, MatchListFragment.Listener, MatchTeamListFragment.Listener, MatchTeamDialogFragment.Listener, OnSharedPreferenceChangeListener {
+import de.greenrobot.event.EventBus;
+
+public class MatchScoutingActivity extends OurAllianceActivity implements OnBackStackChangedListener {
     public static final String TAG = "MatchScoutingActivity";
 	private MatchListFragment matchListFrag;
     private MatchTeamListFragment<?> matchTeamListFrag;
@@ -60,11 +66,22 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
 		this.getMenuInflater().inflate(R.menu.ouralliance, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
 	
 	@Override
 	public void onResume() {
 	    super.onResume();
-	    getPrefs().setChangeListener(this);
         if(getPrefs().getComp()<1) {
             this.finish();
         }
@@ -91,15 +108,12 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
 	    }
 	}
 
-	public void onMatchSelected(long match) {
-//		if(null!=teamDetailFragment) {
-//			teamDetailFragment.updateScouting();
-//			teamDetailFragment.commitUpdatedScouting();
-//		}
-		Log.d(TAG, "match: "+match);
+	public void onEvent(SelectMatchEvent match) {
+        long matchId = match.getId();
+		Log.d(TAG, "match: "+matchId);
 
         Bundle bundle = new Bundle();
-        bundle.putLong(MatchTeamListFragment.MATCH_ARG, match);
+        bundle.putLong(MatchTeamListFragment.MATCH_ARG, matchId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch(getPrefs().getYear()) {
             case 2014:
@@ -118,10 +132,11 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         transaction.commit();
 	}
 
-    public void onMatchTeamSelected(long team) {
-        Log.d(TAG, "team: "+team);
+    public void onEvent(SelectMatchTeamEvent team) {
+        long teamId = team.getId();
+        Log.d(TAG, "team: "+teamId);
         Bundle args = new Bundle();
-        args.putLong(MatchDetailFragment.TEAM_ARG, team);
+        args.putLong(MatchDetailFragment.TEAM_ARG, teamId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch(getPrefs().getYear()) {
             case 2014:
@@ -140,9 +155,11 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         transaction.commit();
     }
 
-    public void onTeamSelected(long team) {
+    public void onEvent(SelectTeamEvent team) {
+        long teamId = team.getId();
+        Log.d(TAG, "team: "+teamId);
         Bundle args = new Bundle();
-        args.putLong(TeamDetailFragment.TEAM_ARG, team);
+        args.putLong(TeamDetailFragment.TEAM_ARG, teamId);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch(getPrefs().getYear()) {
@@ -169,20 +186,11 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         }
 	}
 	
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+	public void onEvent(Prefs prefsChanged) {
+        String key = prefsChanged.getKeyChanged();
 		Log.d(TAG, key);
 		if(key.equals(this.getString(R.string.pref_practice))) {
 			this.recreate();
 		}
 	}
-
-    @Override
-    public void onMatchTeamDialogPositiveClick(long team) {
-        onTeamSelected(team);
-    }
-
-    @Override
-    public void onMatchTeamDialogNegativeClick(long team) {
-        onMatchTeamSelected(team);
-    }
 }

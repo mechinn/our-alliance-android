@@ -2,17 +2,15 @@ package com.mechinn.android.ouralliance.activity;
 
 import android.support.v7.app.ActionBarActivity;
 import android.view.Window;
-import com.mechinn.android.ouralliance.*;
-import com.mechinn.android.ouralliance.fragment.GenericDialogFragment;
+
+import com.mechinn.android.ouralliance.fragment.ResetDialogFragment;
 import com.mechinn.android.ouralliance.fragment.SettingsFragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-public class SettingsActivity extends ActionBarActivity implements BackgroundProgress.Listener, GenericDialogFragment.Listener {
+public class SettingsActivity extends ActionBarActivity {
     public static final String TAG = "SettingsActivity";
 	private SettingsFragment frag;
 
@@ -27,29 +25,6 @@ public class SettingsActivity extends ActionBarActivity implements BackgroundPro
             getSupportFragmentManager().beginTransaction().replace(android.R.id.content, frag, SettingsFragment.TAG).commit();
         }
     }
-
-	public void cancelled(int flag) {
-		switch(flag) {
-			case Setup.FLAG_SETUP:
-				Log.wtf(TAG,"reset cancelled");
-				Toast.makeText(this, "Reset was cancelled please contact the developer", Toast.LENGTH_LONG).show();
-                break;
-		}
-	}
-
-	public void complete(int flag) {
-		Log.d(TAG, "flag: " + flag);
-		switch(flag) {
-			case BackgroundProgress.FLAG_SETUP:
-				Utility.restartApp(this);
-                break;
-            case BackgroundProgress.FLAG_COMPETITION_LIST:
-                if(null!=frag) {
-                    frag.queryCompetitions();
-                }
-                break;
-		}
-	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -65,14 +40,6 @@ public class SettingsActivity extends ActionBarActivity implements BackgroundPro
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
-	}
-	
-	public void onGenericDialogPositiveClick(int flag, DialogInterface dialog, int id) {
-		frag.onGenericDialogPositiveClick(flag, dialog, id);
-	}
-
-	public void onGenericDialogNegativeClick(int flag, DialogInterface dialog, int id) {
-		frag.onGenericDialogNegativeClick(flag, dialog, id);
 	}
 	
 //	public void onBuildHeaders(List<PreferenceActivity.Header> target) {

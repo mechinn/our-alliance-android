@@ -52,7 +52,7 @@ public class InsertCompDialogFragment extends DialogFragment {
 				public void onClick(DialogInterface dialog, int id) {
 					event.setShortName(compName.getText().toString());
 					event.setEventCode(compCode.getText().toString());
-                    ((OurAlliance)getActivity().getApplicationContext()).getAsyncSession().update(event);
+                    event.asyncSave();
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {

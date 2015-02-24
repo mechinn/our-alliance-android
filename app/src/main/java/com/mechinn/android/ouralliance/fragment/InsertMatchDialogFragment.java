@@ -21,20 +21,25 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.activeandroid.Model;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MatchTeamSelectAdapter;
+import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemSelected;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
 
 public class InsertMatchDialogFragment extends DialogFragment {
-    public static final String TAG = "InsertMatchDialogFragment";
+    public static final String TAG = "InsertMatchDialogFrag";
     public static final String EVENT_ARG = "event";
 	public static final String MATCH_ARG = "match";
 	public static final String TEAMS_ARG = "teams";
@@ -176,7 +181,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     if (prefs.isPractice()) {
-                        match.setCompetitionLevel(Match.CompetitionLevel.PRACTICE);
+                        match.setCompLevel(Match.CompetitionLevel.PRACTICE);
                     } else {
                         Match.CompetitionLevel level = Match.CompetitionLevel.QUALIFIER;
                         switch (type.getSelectedItemPosition()) {
@@ -193,7 +198,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
                                 level = Match.CompetitionLevel.FINALS;
                                 break;
                         }
-                        match.setCompetitionLevel(level);
+                        match.setCompLevel(level);
                         if (View.VISIBLE == set.getVisibility()) {
                             match.setSetNumber(set.getSelectedItemPosition() + 1);
                         }
@@ -205,8 +210,31 @@ public class InsertMatchDialogFragment extends DialogFragment {
                     }
                     match.setRedScore(-1);
                     match.setBlueScore(-1);
-                    match.setEventId(eventId);
-                    new SaveMatch().run();
+                    AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+                        @Override
+                        public void run() throws Exception {
+                            match.setEvent(Model.load(Event.class,eventId));
+                            match.asyncSave();
+                            switch (prefs.getYear()) {
+                                case 2014:
+                                    List<MatchScouting2014> teams = new ArrayList<MatchScouting2014>(6);
+                                    for (int team = 0; team < teamCount; team++) {
+                                        MatchScouting2014 scouting = new MatchScouting2014();
+                                        scouting.setMatch(match);
+                                        scouting.setTeamScouting((TeamScouting2014)((MatchTeamSelectAdapter) spinners[team].getAdapter()).getItem(spinners[team].getSelectedItemPosition()));
+                                        if (team < teamCount / 2) {
+                                            scouting.setPosition(team);
+                                            scouting.setAlliance(false);
+                                        } else {
+                                            scouting.setPosition(team - teamCount / 2);
+                                            scouting.setAlliance(true);
+                                        }
+                                        teams.add(scouting);
+                                    }
+                                    break;
+                            }
+                        }
+                    });
                 }
             }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -221,29 +249,5 @@ public class InsertMatchDialogFragment extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-    }
-
-    private class SaveMatch extends Thread {
-        public void run() {
-            match.update();
-            switch (prefs.getYear()) {
-                case 2014:
-                    List<MatchScouting2014> teams = new ArrayList<MatchScouting2014>(6);
-                    for(int team=0;team<teamCount;team++) {
-                        MatchScouting2014 scouting = new MatchScouting2014();
-                        scouting.setMatch(match);
-                        scouting.setTeamScouting(((MatchTeamSelectAdapter) spinners[team].getAdapter()).getItem(spinners[team].getSelectedItemPosition()));
-                        if(team<teamCount/2) {
-                            scouting.setPosition(team);
-                            scouting.setAlliance(false);
-                        } else {
-                            scouting.setPosition(team-teamCount/2);
-                            scouting.setAlliance(true);
-                        }
-                        teams.add(scouting);
-                    }
-                    break;
-            }
-        }
     }
 }

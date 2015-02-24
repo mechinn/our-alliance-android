@@ -5,6 +5,7 @@ import com.mechinn.android.ouralliance.data.OurAllianceObject;
 
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
 /**
@@ -34,6 +35,7 @@ public class Transaction implements AsyncExecutor.RunnableEx {
                 } else {
                     object.save();
                 }
+                EventBus.getDefault().post(object);
             }
             ActiveAndroid.setTransactionSuccessful();
         }

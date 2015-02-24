@@ -26,6 +26,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.data.Match;
+import com.mechinn.android.ouralliance.event.SelectMatchEvent;
 import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 import com.mechinn.android.ouralliance.greenDao.dao.EventTeamDao;
 import com.mechinn.android.ouralliance.greenDao.dao.MatchDao;
@@ -38,26 +39,17 @@ import de.greenrobot.dao.async.AsyncOperationListener;
 import de.greenrobot.dao.async.AsyncSession;
 import de.greenrobot.dao.query.QueryBuilder;
 import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
 
-public class MatchListFragment extends ListFragment implements AsyncOperationListener {
+public class MatchListFragment extends ListFragment {
     public static final String TAG = "MatchListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-
-    private Listener mCallback;
 	private Prefs prefs;
 	private MatchAdapter adapter;
     private ArrayList<TeamScouting> teams;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
     private GetMatches downloadMatches;
-    private DaoSession daoSession;
-    private AsyncSession async;
-    private AsyncOperation onMatchesLoaded;
-    private AsyncOperation onTeamsLoaded;
-
-    public interface Listener {
-        public void onMatchSelected(long match);
-    }
 
     @Override
     public void onAsyncOperationCompleted(AsyncOperation operation) {
@@ -84,27 +76,11 @@ public class MatchListFragment extends ListFragment implements AsyncOperationLis
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception.
-        try {
-            mCallback = (Listener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
-        }
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         downloadMatches = new GetMatches(this.getActivity());
-        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
-        async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
-        async.setListener(this);
     }
 
     @Override
@@ -170,7 +146,7 @@ public class MatchListFragment extends ListFragment implements AsyncOperationLis
     public void onResume() {
         super.onResume();
         if(!prefs.isMatchesDownloaded()) {
-            downloadMatches.refreshMatches();
+            AsyncExecutor.create().execute(downloadMatches);
         }
         onTeamsLoaded = async.queryList(daoSession.getEventTeamDao().queryBuilder().where(EventTeamDao.Properties.EventId.eq(prefs.getComp())).build());
         QueryBuilder<Match> matchQueryBuilder = daoSession.getMatchDao().queryBuilder().where(MatchDao.Properties.EventId.eq(prefs.getComp()));
@@ -181,16 +157,10 @@ public class MatchListFragment extends ListFragment implements AsyncOperationLis
         }
         onMatchesLoaded = async.queryList(matchQueryBuilder.build());
     }
-
-    @Override
-    public void onDestroy() {
-        downloadMatches.quit();
-        super.onDestroy();
-    }
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
-        mCallback.onMatchSelected(((Match)adapter.getItem(position)).getId());
+        EventBus.getDefault().post(new SelectMatchEvent(((Match)adapter.getItem(position)).getId()));
         getActivity().setTitle(((Match)adapter.getItem(position)).toString());
         
         // Set the item as checked to be highlighted when in two-pane layout
@@ -251,7 +221,7 @@ public class MatchListFragment extends ListFragment implements AsyncOperationLis
                 newFragment.show(this.getFragmentManager(), "Add Match");
 	            return true;
             case R.id.refreshMatches:
-                downloadMatches.refreshMatches();
+                AsyncExecutor.create().execute(downloadMatches);
                 return true;
 	        default:
 	            return super.onOptionsItemSelected(item);

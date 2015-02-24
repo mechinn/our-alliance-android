@@ -9,6 +9,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Wheel;
 
 import java.util.ArrayList;
@@ -17,27 +18,26 @@ import java.util.List;
 
 public class WheelTypesAdapter extends BaseAdapter implements Filterable {
     public static final String TAG = "TeamScoutingWheelAdapter";
-    public static final int TYPE = 0;
 	Context context;
-    List<Wheel> teams;
+    List<? extends Wheel> wheels;
     int field;
 	List<CharSequence> original;
     List<CharSequence> filtered;
 
-	public WheelTypesAdapter(Context context, List<Wheel> teams, int field) {
+	public WheelTypesAdapter(Context context, List<? extends Wheel> wheels, int field) {
 		this.context = context;
         this.field = field;
-        swapList(teams);
+        swapList(wheels);
 	}
 	
-	public void swapList(List<Wheel> teams) {
-        this.teams = teams;
-        this.original = new ArrayList<CharSequence>();
-        if(null!=this.teams) {
-            Collections.sort(this.teams);
-            for(Wheel each : this.teams) {
+	public void swapList(List<? extends Wheel> wheels) {
+        this.wheels = wheels;
+        this.original = new ArrayList<>();
+        if(null!=this.wheels) {
+            Collections.sort(this.wheels);
+            for(Wheel each : this.wheels) {
                 switch(field) {
-                    case TYPE:
+                    case R.id.wheelType:
                         original.add(each.getWheelType());
                         break;
                 }

@@ -1,14 +1,14 @@
 package com.mechinn.android.ouralliance.rest.thebluealliance;
 
-import android.support.v4.app.FragmentActivity;
+import android.content.Context;
 import android.util.Log;
-import com.mechinn.android.ouralliance.BackgroundProgress;
-import com.mechinn.android.ouralliance.OurAlliance;
+import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.Event;
+import com.mechinn.android.ouralliance.event.ToastEvent;
 import com.mechinn.android.ouralliance.event.Transaction;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 
-import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
 import retrofit.RetrofitError;
 
 import java.util.List;
@@ -16,25 +16,24 @@ import java.util.List;
 /**
  * Created by mechinn on 3/31/14.
  */
-public class GetEvents extends BackgroundProgress {
+public class GetEvents implements AsyncExecutor.RunnableEx {
     public static final String TAG = "GetEvents";
-    public GetEvents(FragmentActivity activity) {
-        super(activity, FLAG_COMPETITION_LIST);
-        setTitle("Downloading");
+    private Context context;
+    private Prefs prefs;
+
+    public GetEvents(Context context) {
+        this.context = context;
     }
 
     @Override
-    protected Boolean doInBackground(Void... params) {
-        if(this.getPrefs().getYear()>0) {
-            Log.d(TAG, "year: " + this.getPrefs().getYear());
+    public void run() throws Exception {
+        if(this.prefs.getYear()>0) {
+            Log.d(TAG, "year: " + this.prefs.getYear());
             try {
-                int year = this.getPrefs().getYear();
-                setStatus("Setting up "+year+" events");
+                int year = this.prefs.getYear();
+                ToastEvent.toast("Setting up " + year + " events");
                 List<Event> events = TheBlueAlliance.getService().getEventList(year);
                 for (Event event : events) {
-                    if (this.isCancelled()) {
-                        return false;
-                    }
                     Log.d(TAG, "name: " + event.getName());
                     Log.d(TAG, "shortName: " + event.getShortName());
                     Log.d(TAG, "eventCode: " + event.getEventCode());
@@ -46,26 +45,19 @@ public class GetEvents extends BackgroundProgress {
                     Log.d(TAG, "startDate: " + event.getStartDate());
                     Log.d(TAG, "endDate: " + event.getEndDate());
                     Log.d(TAG, "official: " + event.isOfficial());
-                    this.increasePrimary();
                 }
-                EventBus.getDefault().post(new Transaction(events));
-                getPrefs().setEventsDownloaded(true);
+                Transaction.save(events);
+                prefs.setEventsDownloaded(true);
             } catch (RetrofitError e) {
                 Log.e(TAG,"Error downloading events",e);
-                try {
-                    if (e.isNetworkError()) {
-                        setStatus("Unable to connect");
-                        return false;
-                    } else if (e.getResponse().getStatus() != 200) {
-                        setStatus("Error " + e.getResponse().getStatus() + " connecting");
-                        return false;
-                    }
-                } catch (Exception ex) {
-                    setStatus(e.getMessage());
+                if (e.getKind() == RetrofitError.Kind.NETWORK) {
+                    ToastEvent.toast("Unable to connect");
+                } else if (e.getResponse().getStatus() != 200) {
+                    ToastEvent.toast("Error " + e.getResponse().getStatus() + " connecting");
                 }
             }
+        } else {
+            Log.i(TAG, "No season selected");
         }
-        setStatus("No season selected");
-        return true;
     }
 }

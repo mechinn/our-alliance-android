@@ -25,13 +25,6 @@ public class Utility {
 	    	Log.d(TAG, "deleted: "+fileOrDirectory.getName());
 	    }
 	}
-	public static void restartApp(Context context) {
-		String pack = context.getPackageName();
-		Log.d(TAG,pack);
-		Intent i = context.getPackageManager().getLaunchIntentForPackage(pack);
-		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-		context.startActivity(i);
-	}
 	public static boolean isIntentAvailable(Context context, String action) {
 	    final PackageManager packageManager = context.getPackageManager();
 	    final Intent intent = new Intent(action);

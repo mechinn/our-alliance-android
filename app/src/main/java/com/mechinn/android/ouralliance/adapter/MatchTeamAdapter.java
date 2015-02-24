@@ -67,7 +67,7 @@ public class MatchTeamAdapter<MatchTeam extends MatchScouting> extends BaseAdapt
                 container = (TextView) inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
             }
 		    container.setText(teams.get(position).getTeamScouting().getTeam().toString());
-            if(teams.get(position).getAlliance()) {
+            if(teams.get(position).isAlliance()) {
                 container.setTextColor(context.getResources().getColor(android.R.color.holo_blue_dark));
             } else {
                 container.setTextColor(context.getResources().getColor(android.R.color.holo_red_dark));

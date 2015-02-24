@@ -8,6 +8,8 @@ import android.content.Intent;
 
 import com.mechinn.android.ouralliance.Prefs;
 
+import de.greenrobot.event.util.AsyncExecutor;
+
 /**
  * Created by mechinn on 3/7/14.
  */
@@ -33,7 +35,7 @@ public class AlarmTheBlueAlliance extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         getMatches = new GetMatches(context);
-        getMatches.refreshMatches();
+        AsyncExecutor.create().execute(getMatches);
     }
     public void setAlarm() {
         am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), TIME, pi);

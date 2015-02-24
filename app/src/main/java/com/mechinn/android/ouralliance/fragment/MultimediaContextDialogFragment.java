@@ -5,10 +5,10 @@ import java.io.File;
 import android.app.Activity;
 import android.graphics.Point;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Display;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
+import com.mechinn.android.ouralliance.event.MultimediaDeletedEvent;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -23,6 +23,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import de.greenrobot.event.EventBus;
 
 import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
 
@@ -47,24 +49,10 @@ public class MultimediaContextDialogFragment extends DialogFragment implements C
     public void onError() {
         waiting.setVisibility(View.GONE);
     }
-
-    public interface Listener {
-        public void onDeletedImage();
-    }
-    
-    Listener listener;
     
     @Override
     public void onAttach(Activity activity) {
     	super.onAttach(activity);
-    	// Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-        	listener = (Listener) activity;
-        } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString() + " must implement "+TAG+".Listener");
-        }
         Display display = activity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -98,7 +86,7 @@ public class MultimediaContextDialogFragment extends DialogFragment implements C
 			public void onClick(View v) {
 				if(file.delete()) {
 					Toast.makeText(MultimediaContextDialogFragment.this.getActivity(), "Deleted media", Toast.LENGTH_SHORT).show();
-					listener.onDeletedImage();
+                    EventBus.getDefault().post(new MultimediaDeletedEvent());
 				} else {
 					Toast.makeText(MultimediaContextDialogFragment.this.getActivity(), "Could not delete media", Toast.LENGTH_SHORT).show();
 				}

@@ -22,7 +22,6 @@ import com.activeandroid.content.ContentProvider;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.frc2014.TeamScouting2014FilterAdapter;
-import com.mechinn.android.ouralliance.adapter.frc2014.Wheel2014Adapter;
 import com.mechinn.android.ouralliance.data.Wheel;
 import com.mechinn.android.ouralliance.data.frc2014.Wheel2014;
 import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;

@@ -12,6 +12,8 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.mechinn.android.ouralliance.*;
+import com.mechinn.android.ouralliance.event.MultimediaDeletedEvent;
+import com.mechinn.android.ouralliance.event.SelectTeamEvent;
 import com.mechinn.android.ouralliance.fragment.MatchTeamListFragment;
 import com.mechinn.android.ouralliance.fragment.MultimediaContextDialogFragment;
 import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;
@@ -19,7 +21,7 @@ import com.mechinn.android.ouralliance.fragment.TeamListFragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.MatchTeamList2014Fragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.TeamDetail2014;
 
-public class TeamScoutingActivity extends OurAllianceActivity implements TeamListFragment.Listener, OnBackStackChangedListener, MultimediaContextDialogFragment.Listener {
+public class TeamScoutingActivity extends OurAllianceActivity implements OnBackStackChangedListener {
     public static final String TAG = "TeamScoutingActivity";
 	public static final String TEAM_ARG = "team";
 	public static final String MATCH_ARG = "match";
@@ -36,8 +38,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
 	public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
-
-		new Setup(this, false).execute();
+        setTitle(R.string.matches);
 		setContentView(R.layout.activity_team_scouting);
 
 		this.getFragmentManager().addOnBackStackChangedListener(this);
@@ -55,7 +56,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
             if(0!=loadTeam) {
             	Log.d(TAG, "listfrag: "+listFrag+" detailfrag: "+detailFrag);
             	if(listFrag==detailFrag) {
-            		onTeamSelected(loadTeam);
+                    selectTeam(loadTeam);
             	} else {
                     switch(getPrefs().getYear()) {
                         case 2014:
@@ -69,7 +70,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
                 	Bundle bundle = new Bundle();
                 	matchTeamListFrag.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction().replace(listFrag, matchTeamListFrag).commit();
-            		onTeamSelected(loadTeam);
+                    selectTeam(loadTeam);
             	}
             } else {
             	teamListFrag = new TeamListFragment();
@@ -112,28 +113,33 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
         startActivity(intent);
     }
 
-	public void onTeamSelected(long team) {
+	public void onEvent(SelectTeamEvent team) {
+        selectTeam(team.getId());
+	}
+
+    public void selectTeam(long team) {
+        Log.d(TAG, "team: "+team);
         Bundle args = new Bundle();
         args.putLong(TeamDetailFragment.TEAM_ARG, team);
-        
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		switch(getPrefs().getYear()) {
-			case 2014:
-				teamDetailFragment = new TeamDetail2014();
-	            break;
-	        default:
-	        	Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();
-	            transaction.commit();
-	            return;
-		}
-		teamDetailFragment.setArguments(args);
+        switch(getPrefs().getYear()) {
+            case 2014:
+                teamDetailFragment = new TeamDetail2014();
+                break;
+            default:
+                Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();
+                transaction.commit();
+                return;
+        }
+        teamDetailFragment.setArguments(args);
         transaction.replace(detailFrag, teamDetailFragment);
         if(listFrag==detailFrag) {
             transaction.addToBackStack(null);
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         transaction.commit();
-	}
+    }
 
 	public void onBackStackChanged() {
 		Log.i(TAG, "back stack changed ");
@@ -148,10 +154,6 @@ public class TeamScoutingActivity extends OurAllianceActivity implements TeamLis
                 }
         	}
         }
-	}
-
-	public void onDeletedImage() {
-		teamDetailFragment.resetMultimediaAdapter();
 	}
 
 }

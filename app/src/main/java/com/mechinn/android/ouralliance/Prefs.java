@@ -13,6 +13,8 @@ import com.mechinn.android.ouralliance.data.Match;
 
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
+
 public class Prefs {
     public static final String TAG = "Prefs";
 	private SharedPreferences prefs;
@@ -32,30 +34,41 @@ public class Prefs {
 	private String yearPref;
 	private String yearDefault;
     private Editor editor;
+    private String changedKey;
 	
 	public Prefs(Context context) {
-		this.dbSetupPref = context.getString(R.string.pref_resetDB);
-		this.dbSetupDefault = context.getString(R.string.pref_resetDB_default);
-		this.compPref = context.getString(R.string.pref_comp);
-		this.compDefault = context.getString(R.string.pref_comp_default);
-		this.measurePref = context.getString(R.string.pref_measure);
-		this.measureDefault = context.getString(R.string.pref_measure_default);
-		this.versionPref = context.getString(R.string.pref_about);
-		this.versionDefault = context.getString(R.string.pref_about_default);
-		this.practicePref = context.getString(R.string.pref_practice);
-		this.practiceDefault = context.getString(R.string.pref_practice_default);
+		this(context,null);
+	}
+    public Prefs(Context context, String changedKey) {
+        this.dbSetupPref = context.getString(R.string.pref_resetDB);
+        this.dbSetupDefault = context.getString(R.string.pref_resetDB_default);
+        this.compPref = context.getString(R.string.pref_comp);
+        this.compDefault = context.getString(R.string.pref_comp_default);
+        this.measurePref = context.getString(R.string.pref_measure);
+        this.measureDefault = context.getString(R.string.pref_measure_default);
+        this.versionPref = context.getString(R.string.pref_about);
+        this.versionDefault = context.getString(R.string.pref_about_default);
+        this.practicePref = context.getString(R.string.pref_practice);
+        this.practiceDefault = context.getString(R.string.pref_practice_default);
         this.adsPref = context.getString(R.string.pref_ads);
         this.adsDefault = context.getString(R.string.pref_ads_default);
-		this.yearPref = context.getString(R.string.pref_year);
-		this.yearDefault = context.getString(R.string.pref_year_default);
-		try {
-			this.currentVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-		} catch (NameNotFoundException e) {
-			this.currentVersion = 0;
-		}
-		prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        this.yearPref = context.getString(R.string.pref_year);
+        this.yearDefault = context.getString(R.string.pref_year_default);
+        try {
+            this.currentVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+        } catch (NameNotFoundException e) {
+            this.currentVersion = 0;
+        }
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
         editor = prefs.edit();
-	}
+        this.changedKey = changedKey;
+    }
+    public static void changed(Context context, String key) {
+        EventBus.getDefault().post(new Prefs(context,key));
+    }
+    public String getKeyChanged() {
+        return changedKey;
+    }
 	public int getCurrentVersion() {
 		return currentVersion;
 	}

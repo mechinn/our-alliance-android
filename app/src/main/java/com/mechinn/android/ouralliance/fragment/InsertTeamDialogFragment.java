@@ -11,11 +11,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.activeandroid.Model;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
+import com.mechinn.android.ouralliance.adapter.MatchTeamSelectAdapter;
+import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import de.greenrobot.event.util.AsyncExecutor;
 
 public class InsertTeamDialogFragment extends DialogFragment {
     public static final String TAG = "InsertTeamDialogFragment";
@@ -48,7 +58,20 @@ public class InsertTeamDialogFragment extends DialogFragment {
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					team.setTeamNumber(Utility.getIntFromText(teamNumber.getText()));
-                    new SaveTeam().run();
+                    AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+                        @Override
+                        public void run() throws Exception {
+                            Log.d(TAG, "saving: " + team);
+                            team.asyncSave();
+                            Log.d(TAG,"saving id: "+team.getId());
+                            Log.d(TAG,"competition id: "+prefs.getComp());
+                            EventTeam eventTeam = new EventTeam();
+                            Event event = Model.load(Event.class,prefs.getComp());
+                            eventTeam.setEvent(event);
+                            eventTeam.setTeam(team);
+                            eventTeam.asyncSave();
+                        }
+                    });
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
@@ -58,17 +81,4 @@ public class InsertTeamDialogFragment extends DialogFragment {
 		// Create the AlertDialog object and return it
 		return builder.create();
 	}
-
-    private class SaveTeam extends Thread {
-        public void run() {
-            Log.d(TAG, "saving: " + team);
-            team.update();
-            Log.d(TAG,"saving id: "+team.getId());
-            Log.d(TAG,"competition id: "+prefs.getComp());
-            EventTeam eventTeam = new EventTeam();
-            eventTeam.setEventId(prefs.getComp());
-            eventTeam.setTeam(team);
-            eventTeam.update();
-        }
-    }
 }

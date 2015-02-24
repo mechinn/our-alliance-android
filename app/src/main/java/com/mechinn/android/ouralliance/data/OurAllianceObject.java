@@ -7,6 +7,7 @@ import com.activeandroid.annotation.Column;
 
 import java.util.Date;
 
+import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
 public abstract class OurAllianceObject extends Model {
@@ -30,6 +31,7 @@ public abstract class OurAllianceObject extends Model {
             @Override
             public void run() throws Exception {
                 save();
+                EventBus.getDefault().post(OurAllianceObject.this);
             }
         });
     }
@@ -38,6 +40,7 @@ public abstract class OurAllianceObject extends Model {
             @Override
             public void run() throws Exception {
                 delete();
+                EventBus.getDefault().post(OurAllianceObject.this);
             }
         });
     }

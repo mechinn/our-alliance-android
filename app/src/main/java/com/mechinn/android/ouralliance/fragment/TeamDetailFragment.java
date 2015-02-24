@@ -17,6 +17,7 @@ import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.Wheel;
+import com.mechinn.android.ouralliance.event.MultimediaDeletedEvent;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -48,6 +49,7 @@ import org.lucasr.twowayview.widget.TwoWayView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String TAG = "TeamDetailFragment";
@@ -313,6 +315,13 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     		teamId = getArguments().getLong(TEAM_ARG, 0);
     		Log.d(TAG, "team: "+teamId);
         }
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -358,12 +367,6 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 		notes.setText(scouting.getNotes());
 	}
 	
-	public void resetMultimediaAdapter() {
-		if(null!=multimedia) {
-            multimedia.buildImageSet(scouting);
-		}
-	}
-	
 	public void updateScouting() {
 		for(int i=0;i<wheels.getChildCount(); ++i) {
 			LinearLayout theWheelView = (LinearLayout) wheels.getChildAt(i);
@@ -383,4 +386,10 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	public void commitUpdatedScouting() {
         this.getScouting().asyncSave();
 	}
+
+    public void onEvent(MultimediaDeletedEvent event) {
+        if(null!=multimedia) {
+            multimedia.buildImageSet(scouting);
+        }
+    }
 }
