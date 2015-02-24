@@ -2,8 +2,6 @@ package com.mechinn.android.ouralliance.fragment.frc2014;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.activeandroid.content.ContentProvider;
+import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.frc2014.TeamScouting2014FilterAdapter;
@@ -29,11 +27,15 @@ import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroup;
 import com.mechinn.android.ouralliance.widget.UncheckableRadioGroupOnCheckedChangeListener;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import butterknife.OnFocusChange;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
 
 public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     public static final String TAG = "TeamDetail2014";
@@ -160,47 +162,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 	private TeamScouting2014FilterAdapter orientationsAdapter;
 	private TeamScouting2014FilterAdapter driveTrainsAdapter;
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case R.id.load_team_detail_scouting:
-                return new CursorLoader(getActivity(), ContentProvider.createUri(TeamScouting2014.class,null), null, TeamScouting2014.ID+"=?", new String[] {Long.toString(getTeamId())}, null);
-            case R.id.load_team_detail_scouting_helpers:
-                return new CursorLoader(getActivity(), ContentProvider.createUri(TeamScouting2014.class,null), null, null, null, null);
-            default:
-                return super.onCreateLoader(id, args);
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch(loader.getId()) {
-            case R.id.load_team_detail_scouting:
-                setEventFromCursor(data);
-                break;
-            case R.id.load_team_detail_scouting_helpers:
-                orientationsAdapter.swapCursor(data);
-                driveTrainsAdapter.swapCursor(data);
-                break;
-            default:
-                super.onLoadFinished(loader, data);
-                break;
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        switch(loader.getId()) {
-            case R.id.load_team_detail_scouting:
-                break;
-            case R.id.load_team_detail_scouting_helpers:
-                break;
-            default:
-                super.onLoaderReset(loader);
-                break;
-        }
-    }
-
     public void setScoutingFromCursor(Cursor cursor) {
         TeamScouting2014 scouting = new TeamScouting2014();
         scouting.loadFromCursor(cursor);
@@ -285,7 +246,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         driveTrainsAdapter = new TeamScouting2014FilterAdapter(getActivity(), null, TeamScouting2014FilterAdapter.Type.DRIVETRAIN);
         driveTrain.setAdapter(driveTrainsAdapter);
         driveTrain.setThreshold(1);
-        setWheelsAdapter(new Wheel2014Adapter(getActivity(), null));
     }
 	
 	@Override
@@ -297,8 +257,8 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     public void onResume() {
         super.onResume();
         if (this.getPrefs().getYear() != 0 && getTeamId() != 0) {
-            this.getLoaderManager().initLoader(R.id.load_team_detail_scouting,null,this);
-            this.getLoaderManager().initLoader(R.id.load_team_detail_scouting_helpers, null, this);
+            loadOrientations();
+            loadDriveTrains();
         }
     }
 	
@@ -438,6 +398,54 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void loadOrientations() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                List<TeamScouting2014> orientations = new Select().from(TeamScouting2014.class).groupBy(TeamScouting2014.ORIENTATION).execute();
+                EventBus.getDefault().post(new LoadOrientations(orientations));
+            }
+        });
+    }
+    public void onEvent(TeamScouting2014 scoutingChanged) {
+        loadOrientations();
+        loadDriveTrains();
+    }
+    public void onEvent(LoadOrientations orientations) {
+        orientationsAdapter.swapList(orientations.getOrientations());
+    }
+    private class LoadOrientations {
+        List<TeamScouting2014> orientations;
+        public LoadOrientations(List<TeamScouting2014> orientations) {
+            this.orientations = orientations;
+        }
+        public List<TeamScouting2014> getOrientations() {
+            return orientations;
+        }
+    }
+
+    public void loadDriveTrains() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                List<TeamScouting2014> driveTrains = new Select().from(TeamScouting2014.class).groupBy(TeamScouting2014.DRIVE_TRAIN).execute();
+                EventBus.getDefault().post(new LoadDriveTrains(driveTrains));
+            }
+        });
+    }
+    public void onEvent(LoadDriveTrains driveTrains) {
+        driveTrainsAdapter.swapList(driveTrains.getDriveTrains());
+    }
+    private class LoadDriveTrains {
+        List<TeamScouting2014> driveTrains;
+        public LoadDriveTrains(List<TeamScouting2014> driveTrains) {
+            this.driveTrains = driveTrains;
+        }
+        public List<TeamScouting2014> getDriveTrains() {
+            return driveTrains;
         }
     }
 }

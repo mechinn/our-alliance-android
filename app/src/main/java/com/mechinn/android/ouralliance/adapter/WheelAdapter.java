@@ -59,6 +59,11 @@ public class WheelAdapter extends BaseAdapter {
         }
     }
 
+    public void swapWheelTypes(List<Wheel> wheels) {
+        this.wheelTypesAdapter.swapList(wheels);
+        wheelTypesAdapter.notifyDataSetChanged();
+    }
+
     public void swapList(List<Wheel> wheels) {
         this.wheels = wheels;
         this.notifyDataSetChanged();

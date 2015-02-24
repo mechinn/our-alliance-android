@@ -1,9 +1,9 @@
 package com.mechinn.android.ouralliance.fragment;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 
-import com.mechinn.android.ouralliance.OurAlliance;
+import com.activeandroid.query.From;
+import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchAdapter;
@@ -23,21 +23,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import com.mechinn.android.ouralliance.data.TeamScouting;
+import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.event.SelectMatchEvent;
-import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
-import com.mechinn.android.ouralliance.greenDao.dao.EventTeamDao;
-import com.mechinn.android.ouralliance.greenDao.dao.MatchDao;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetMatches;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import de.greenrobot.dao.async.AsyncOperation;
-import de.greenrobot.dao.async.AsyncOperationListener;
-import de.greenrobot.dao.async.AsyncSession;
-import de.greenrobot.dao.query.QueryBuilder;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
@@ -46,34 +39,10 @@ public class MatchListFragment extends ListFragment {
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 	private Prefs prefs;
 	private MatchAdapter adapter;
-    private ArrayList<TeamScouting> teams;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
     private GetMatches downloadMatches;
-
-    @Override
-    public void onAsyncOperationCompleted(AsyncOperation operation) {
-        if(onMatchesLoaded == operation) {
-            if (operation.isCompletedSucessfully()) {
-                ArrayList<Match> result = (ArrayList<Match>) operation.getResult();
-                Log.d(TAG, "Count: " + result.size());
-                adapter.swapList(result);
-            } else {
-
-            }
-            getActivity().invalidateOptionsMenu();
-        } else if(onTeamsLoaded == operation) {
-            if (operation.isCompletedSucessfully()) {
-                teams = (ArrayList<TeamScouting>) operation.getResult();
-                Log.d(TAG, "Count: " + teams.size());
-                if(teams.size()<6) {
-                    getActivity().finish();
-                }
-            } else {
-                teams = null;
-            }
-        }
-    }
+    private boolean enoughTeams;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -148,14 +117,7 @@ public class MatchListFragment extends ListFragment {
         if(!prefs.isMatchesDownloaded()) {
             AsyncExecutor.create().execute(downloadMatches);
         }
-        onTeamsLoaded = async.queryList(daoSession.getEventTeamDao().queryBuilder().where(EventTeamDao.Properties.EventId.eq(prefs.getComp())).build());
-        QueryBuilder<Match> matchQueryBuilder = daoSession.getMatchDao().queryBuilder().where(MatchDao.Properties.EventId.eq(prefs.getComp()));
-        if(prefs.isPractice()) {
-            matchQueryBuilder.where(MatchDao.Properties.CompLevel.lt(0));
-        } else {
-            matchQueryBuilder.where(MatchDao.Properties.CompLevel.ge(0));
-        }
-        onMatchesLoaded = async.queryList(matchQueryBuilder.build());
+
     }
     
     private void selectItem(int position) {
@@ -189,7 +151,7 @@ public class MatchListFragment extends ListFragment {
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 	    menu.findItem(R.id.practice).setChecked(prefs.isPractice());
-        menu.findItem(R.id.insert).setVisible(prefs.getComp()>0 && null != teams && teams.size() > 5);
+        menu.findItem(R.id.insert).setVisible(prefs.getComp()>0 && enoughTeams);
         menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && bluetoothAdapter!=null);
         menu.findItem(R.id.importMatchScouting).setVisible(prefs.getComp()>0);
         menu.findItem(R.id.exportMatchScouting).setVisible(null!=adapter && adapter.getCount()>0);
@@ -213,12 +175,7 @@ public class MatchListFragment extends ListFragment {
             	prefs.setPractice(item.isChecked());
 	            return true;
 	        case R.id.insert:
-                DialogFragment newFragment = new InsertMatchDialogFragment();
-                Bundle args = new Bundle();
-                args.putSerializable(InsertMatchDialogFragment.TEAMS_ARG, teams);
-                args.putLong(InsertMatchDialogFragment.EVENT_ARG,prefs.getComp());
-                newFragment.setArguments(args);
-                newFragment.show(this.getFragmentManager(), "Add Match");
+                new InsertMatchDialogFragment().show(this.getFragmentManager(), "Add Match");
 	            return true;
             case R.id.refreshMatches:
                 AsyncExecutor.create().execute(downloadMatches);
@@ -261,4 +218,64 @@ public class MatchListFragment extends ListFragment {
 	            return super.onContextItemSelected(item);
 	    }
 	}
+
+    public void loadEventTeams() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                int count = new Select().from(EventTeam.class).where(Match.EVENT,prefs.getComp()).count();
+                EventBus.getDefault().post(new LoadEventTeams(count));
+            }
+        });
+    }
+    public void onEvent(EventTeam eventTeamsChanged) {
+        loadEventTeams();
+    }
+    public void onEvent(LoadEventTeams teams) {
+        enoughTeams = teams.enoughTeams();
+        getActivity().invalidateOptionsMenu();
+    }
+    private class LoadEventTeams {
+        int count;
+        public LoadEventTeams(int count) {
+            this.count = count;
+        }
+        public boolean enoughTeams() {
+            return count>5;
+        }
+    }
+
+    public void loadMatches() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                From matchBuilder = new Select().from(Match.class).where(Match.EVENT,prefs.getComp());
+                if(prefs.isPractice()) {
+                    matchBuilder = matchBuilder.and(Match.COMPETITION_LEVEL+"<0");
+                } else {
+                    matchBuilder = matchBuilder.and(Match.COMPETITION_LEVEL+">=0");
+                }
+                List<Match> matches = matchBuilder.execute();
+                EventBus.getDefault().post(new LoadMatches(matches));
+            }
+        });
+    }
+    public void onEvent(Match scoutingChanged) {
+        loadMatches();
+    }
+    public void onEvent(LoadMatches matches) {
+        List<Match> result = matches.getMatches();
+        Log.d(TAG, "Count: " + result.size());
+        adapter.swapList(result);
+        getActivity().invalidateOptionsMenu();
+    }
+    private class LoadMatches {
+        List<Match> matches;
+        public LoadMatches(List<Match> matches) {
+            this.matches = matches;
+        }
+        public List<Match> getMatches() {
+            return matches;
+        }
+    }
 }

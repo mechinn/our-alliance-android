@@ -1,11 +1,9 @@
 package com.mechinn.android.ouralliance.fragment;
 
-import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.EventTeam;
-import com.mechinn.android.ouralliance.greenDao.dao.DaoSession;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,11 +17,8 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import de.greenrobot.dao.async.AsyncOperation;
-import de.greenrobot.dao.async.AsyncOperationListener;
-import de.greenrobot.dao.async.AsyncSession;
 
-public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScouting> extends Fragment implements AsyncOperationListener {
+public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScouting> extends Fragment {
     public static final String TAG = "MatchDetailFragment";
     public static final String TEAM_ARG = "team";
 
@@ -35,9 +30,6 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
     @InjectView(R.id.season) protected LinearLayout season;
 
 	private MatchScoutingYear match;
-    private DaoSession daoSession;
-    private AsyncSession async;
-    private AsyncOperation onMatchLoaded;
 
     public long getTeamId() {
         return teamId;
@@ -58,45 +50,10 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
 		this.match = match;
 	}
 
-    public DaoSession getDaoSession() {
-        return daoSession;
-    }
-
-    public AsyncSession getAsync() {
-        return async;
-    }
-
-    @Override
-    public void onAsyncOperationCompleted(AsyncOperation operation) {
-        if(onMatchLoaded == operation) {
-            if (operation.isCompletedSucessfully()) {
-                MatchScoutingYear result = (MatchScoutingYear) operation.getResult();
-                Log.d(TAG, "result: " + result);
-                setMatch(result);
-                setView();
-                rootView.setVisibility(View.VISIBLE);
-            } else {
-                rootView.setVisibility(View.GONE);
-            }
-            getActivity().invalidateOptionsMenu();
-        }
-    }
-
-    public AsyncOperation getOnMatchLoaded() {
-        return onMatchLoaded;
-    }
-
-    public void setOnMatchLoaded(AsyncOperation onMatchLoaded) {
-        this.onMatchLoaded = onMatchLoaded;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefs = new Prefs(this.getActivity());
-        daoSession = ((OurAlliance) this.getActivity().getApplication()).getDaoSession();
-        async = ((OurAlliance) this.getActivity().getApplication()).getAsyncSession();
-        async.setListener(this);
     }
 
     @Override
@@ -154,7 +111,7 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
 	public void onPause() {
         if(null!=match) {
             updateMatch();
-            commitUpdatedMatch();
+            this.getMatch().asyncSave();
         }
         super.onPause();
 	}
@@ -183,7 +140,25 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
         match.setNotes(notes.getText().toString());
 	}
 
-    public void commitUpdatedMatch() {
-        async.update(this.getMatch());
+    public abstract void loadMatchScouting();
+    public void onEvent(MatchScoutingYear scoutingChanged) {
+        loadMatchScouting();
+    }
+    public void onEvent(LoadMatcheScouting scouting) {
+        MatchScoutingYear result = scouting.getScouting();
+        Log.d(TAG, "result: " + result);
+        setMatch(result);
+        setView();
+        rootView.setVisibility(View.VISIBLE);
+        getActivity().invalidateOptionsMenu();
+    }
+    protected class LoadMatcheScouting {
+        MatchScoutingYear scouting;
+        public LoadMatcheScouting(MatchScoutingYear scouting) {
+            this.scouting = scouting;
+        }
+        public MatchScoutingYear getScouting() {
+            return scouting;
+        }
     }
 }

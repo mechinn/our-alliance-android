@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 
 import java.util.List;
@@ -17,12 +18,12 @@ public class MatchTeamSelectAdapter extends BaseAdapter {
     public static final String TAG = "MatchTeamSelectAdapter";
 
     private Context context;
-    private List<TeamScouting> teams;
+    private List<EventTeam> teams;
     private LayoutInflater inflater;
     private int team;
     private SparseIntArray disabled;
 
-    public MatchTeamSelectAdapter(Context context, List<TeamScouting> teams, int team) {
+    public MatchTeamSelectAdapter(Context context, List<EventTeam> teams, int team) {
         this.context = context;
         inflater = LayoutInflater.from(getContext());
         swapList(teams);
@@ -70,11 +71,11 @@ public class MatchTeamSelectAdapter extends BaseAdapter {
         return inflater;
     }
 
-    public List<TeamScouting> getTeams() {
+    public List<EventTeam> getTeams() {
         return teams;
     }
 
-    public void setTeams(List<TeamScouting> teams) {
+    public void setTeams(List<EventTeam> teams) {
         this.teams = teams;
     }
 
@@ -86,7 +87,7 @@ public class MatchTeamSelectAdapter extends BaseAdapter {
         this.context = context;
     }
 
-    public void swapList(List<TeamScouting> teams) {
+    public void swapList(List<EventTeam> teams) {
         this.teams = teams;
         this.notifyDataSetChanged();
     }
@@ -108,7 +109,7 @@ public class MatchTeamSelectAdapter extends BaseAdapter {
     }
 
     @Override
-    public TeamScouting getItem(int position) {
+    public EventTeam getItem(int position) {
         if(isEmpty()) {
             return null;
         }

@@ -8,12 +8,15 @@ import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.RatingBar;
 
+import com.activeandroid.Model;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.fragment.MatchDetailFragment;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
 
 public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
     public static final String TAG = "MatchDetail2014";
@@ -61,9 +64,7 @@ public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
     @Override
     public void onResume() {
         super.onResume();
-        if (this.getTeamId() != 0) {
-            setOnMatchLoaded(getAsync().load(MatchScouting2014.class,this.getTeamId()));
-        }
+        loadMatchScouting();
     }
 	
 	@Override
@@ -101,4 +102,16 @@ public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
         getMatch().setLow(low.isChecked());
         getMatch().setHigh(high.isChecked());
 	}
+
+    public void loadMatchScouting() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                if (getTeamId() != 0) {
+                    MatchScouting2014 scouting = Model.load(MatchScouting2014.class, getTeamId());
+                    EventBus.getDefault().post(new LoadMatcheScouting(scouting));
+                }
+            }
+        });
+    }
 }

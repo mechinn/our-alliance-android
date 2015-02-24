@@ -5,18 +5,26 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
+import com.activeandroid.Model;
 import com.activeandroid.content.ContentProvider;
+import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
 import com.mechinn.android.ouralliance.adapter.WheelAdapter;
+import com.mechinn.android.ouralliance.adapter.frc2014.TeamScouting2014FilterAdapter;
+import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.Wheel;
+import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2014.Wheel2014;
 import com.mechinn.android.ouralliance.event.MultimediaDeletedEvent;
 
 import android.app.Activity;
@@ -50,8 +58,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
 
-public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends Fragment {
     public static final String TAG = "TeamDetailFragment";
 	public static final String TEAM_ARG = "team";
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
@@ -95,14 +104,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     @InjectView(R.id.notes) protected TextView notes;
 	@InjectView(R.id.addWheel) protected Button addWheel;
     @InjectView(R.id.wheels) protected LinearLayout wheels;
-    private ArrayList<Wheel> wheelCursor;
 	private MultimediaAdapter multimedia;
-    public WheelAdapter getWheelsAdapter() {
-        return wheelsAdapter;
-    }
-    public void setWheelsAdapter(WheelAdapter wheelsAdapter) {
-        this.wheelsAdapter = wheelsAdapter;
-    }
 
     private WheelAdapter wheelsAdapter;
 
@@ -111,54 +113,6 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	private Scouting scouting;
     private Event event;
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case R.id.load_event:
-                return new CursorLoader(getActivity(), ContentProvider.createUri(Event.class, null), null, Event.ID+"=?", new String[] {prefs.getCompString()}, null );
-            case R.id.load_wheel_types:
-                return new CursorLoader(getActivity(), ContentProvider.createUri(Wheel.class,null), null, null, null, null);
-            case R.id.load_team_wheels:
-                return new CursorLoader(getActivity(), ContentProvider.createUri(Wheel.class,null), null, Wheel.TEAM_SCOUTING+"=?", new String[] {Long.toString(getTeamId())}, null);
-            default:
-                return null;
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch(loader.getId()) {
-            case R.id.load_event:
-                setEventFromCursor(data);
-                break;
-            case R.id.load_team_detail_scouting:
-                setScoutingFromCursor(data);
-                setView();
-                rootView.setVisibility(View.VISIBLE);
-                break;
-            case R.id.load_wheel_types:
-                wheelsAdapter.swapWheelTypes(data);
-                break;
-            case R.id.load_team_wheels:
-                wheelsAdapter.swapCursor(data);
-                break;
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        switch(loader.getId()) {
-            case R.id.load_event:
-                break;
-            case R.id.load_team_detail_scouting:
-                rootView.setVisibility(View.GONE);
-                break;
-            case R.id.load_wheel_types:
-                break;
-            case R.id.load_team_wheels:
-                break;
-        }
-    }
 	public Prefs getPrefs() {
 		return prefs;
 	}
@@ -177,7 +131,6 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	public void setScouting(Scouting scouting) {
 		this.scouting = scouting;
 	}
-    public abstract void setScoutingFromCursor(Cursor cursor);
 	public LinearLayout getSeason() {
 		return season;
 	}
@@ -189,11 +142,6 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     }
     public void setEvent(Event event) {
         this.event = event;
-    }
-    public void setEventFromCursor(Cursor cursor) {
-        Event event = new Event();
-        event.loadFromCursor(cursor);
-        setEvent(event);
     }
 
 	@Override
@@ -264,6 +212,12 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        wheelsAdapter = new WheelAdapter(getActivity(), null);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
@@ -328,9 +282,9 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     public void onResume() {
         super.onResume();
         if (prefs.getYear() != 0 && teamId != 0) {
-            this.getLoaderManager().initLoader(R.id.load_event,null,this);
-            this.getLoaderManager().initLoader(R.id.load_wheel_types,null,this);
-            this.getLoaderManager().initLoader(R.id.load_team_wheels,null,this);
+            loadEvent();
+            loadWheelTypes();
+            loadWheels();
         }
     }
 
@@ -390,6 +344,123 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     public void onEvent(MultimediaDeletedEvent event) {
         if(null!=multimedia) {
             multimedia.buildImageSet(scouting);
+        }
+    }
+    public void loadEvent() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                Event event = Model.load(Event.class,prefs.getComp());
+                EventBus.getDefault().post(new LoadEvent(event));
+            }
+        });
+    }
+    public void onEvent(Event eventTeamsChanged) {
+        loadEvent();
+    }
+    public void onEvent(LoadEvent event) {
+        setEvent(event.getEvent());
+    }
+    private class LoadEvent {
+        Event event;
+        public LoadEvent(Event event) {
+            this.event = event;
+        }
+        public Event getEvent() {
+            return event;
+        }
+    }
+    public void loadWheelTypes() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                List<Wheel> wheelTypes = null;
+                switch (prefs.getYear()) {
+                    case 2014:
+                        wheelTypes = new Select().from(Wheel2014.class).groupBy(Wheel2014.WHEEL_TYPE).execute();
+                        break;
+                }
+                if (null != wheelTypes) {
+                    EventBus.getDefault().post(new LoadWheelTypes(wheelTypes));
+                }
+            }
+        });
+    }
+    public void onEvent(Wheel wheelsChanged) {
+        loadWheelTypes();
+        loadWheels();
+    }
+    public void onEvent(LoadWheelTypes event) {
+        wheelsAdapter.swapWheelTypes(event.getWheels());
+    }
+    private class LoadWheelTypes {
+        List<Wheel> wheels;
+        public LoadWheelTypes(List<Wheel> wheels) {
+            this.wheels = wheels;
+        }
+        public List<Wheel> getWheels() {
+            return wheels;
+        }
+    }
+    public void loadWheels() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                List<Wheel> wheels = null;
+                switch (prefs.getYear()) {
+                    case 2014:
+                        wheels = new Select().from(Wheel2014.class).where(Wheel2014.TEAM_SCOUTING, getTeamId()).execute();
+                        break;
+                }
+                if (null != wheels) {
+                    EventBus.getDefault().post(new LoadWheelTypes(wheels));
+                }
+            }
+        });
+    }
+    public void onEvent(LoadWheels event) {
+        wheelsAdapter.swapList(event.getWheels());
+    }
+    private class LoadWheels {
+        List<Wheel> wheels;
+        public LoadWheels(List<Wheel> wheels) {
+            this.wheels = wheels;
+        }
+        public List<Wheel> getWheels() {
+            return wheels;
+        }
+    }
+    public void loadScouting() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                Scouting scouting = null;
+                switch(prefs.getYear()) {
+                    case 2014:
+                        scouting = new Select().from(TeamScouting2014.class).where(TeamScouting2014.ID,getTeamId()).executeSingle();
+                        break;
+                }
+                if(null!=wheels) {
+                    EventBus.getDefault().post(new LoadScouting(scouting));
+                }
+            }
+        });
+    }
+    public void onEvent(Scouting scoutingChanged) {
+        loadScouting();
+    }
+    public void onEvent(LoadScouting scouting) {
+        setScouting(scouting.getScouting());
+        setView();
+        rootView.setVisibility(View.VISIBLE);
+    }
+    private class LoadScouting {
+        Scouting scouting;
+        public LoadScouting(Scouting scouting) {
+            this.scouting = scouting;
+        }
+        public Scouting getScouting() {
+            return scouting;
         }
     }
 }
