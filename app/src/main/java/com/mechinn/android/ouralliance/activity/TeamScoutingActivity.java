@@ -113,7 +113,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements OnBackS
         startActivity(intent);
     }
 
-	public void onEvent(SelectTeamEvent team) {
+	public void onEventMainThread(SelectTeamEvent team) {
         selectTeam(team.getId());
 	}
 

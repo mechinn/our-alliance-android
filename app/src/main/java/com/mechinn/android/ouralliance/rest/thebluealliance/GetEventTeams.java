@@ -25,6 +25,7 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
 
     public GetEventTeams(Context context) {
         this.context = context;
+        this.prefs = new Prefs(context);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
         Log.d(TAG, "Setting up teams");
         try {
             List<Team> teams = TheBlueAlliance.getService().getEventTeams(prefs.getYear() + event.getEventCode());
-            Transaction.save(teams);
+            Transaction.save(Team.class,teams);
             ToastEvent.toast("Finished downloading teams",false);
             prefs.setEventTeamsDownloaded(true);
         } catch (RetrofitError e) {

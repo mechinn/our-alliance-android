@@ -410,11 +410,11 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
             }
         });
     }
-    public void onEvent(TeamScouting2014 scoutingChanged) {
+    public void onEventMainThread(TeamScouting2014 scoutingChanged) {
         loadOrientations();
         loadDriveTrains();
     }
-    public void onEvent(LoadOrientations orientations) {
+    public void onEventMainThread(LoadOrientations orientations) {
         orientationsAdapter.swapList(orientations.getOrientations());
     }
     private class LoadOrientations {
@@ -436,7 +436,7 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
             }
         });
     }
-    public void onEvent(LoadDriveTrains driveTrains) {
+    public void onEventMainThread(LoadDriveTrains driveTrains) {
         driveTrainsAdapter.swapList(driveTrains.getDriveTrains());
     }
     private class LoadDriveTrains {

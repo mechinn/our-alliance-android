@@ -108,7 +108,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
 	    }
 	}
 
-	public void onEvent(SelectMatchEvent match) {
+	public void onEventMainThread(SelectMatchEvent match) {
         long matchId = match.getId();
 		Log.d(TAG, "match: "+matchId);
 
@@ -132,7 +132,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         transaction.commit();
 	}
 
-    public void onEvent(SelectMatchTeamEvent team) {
+    public void onEventMainThread(SelectMatchTeamEvent team) {
         long teamId = team.getId();
         Log.d(TAG, "team: "+teamId);
         Bundle args = new Bundle();
@@ -155,7 +155,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         transaction.commit();
     }
 
-    public void onEvent(SelectTeamEvent team) {
+    public void onEventMainThread(SelectTeamEvent team) {
         long teamId = team.getId();
         Log.d(TAG, "team: "+teamId);
         Bundle args = new Bundle();
@@ -186,7 +186,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         }
 	}
 	
-	public void onEvent(Prefs prefsChanged) {
+	public void onEventMainThread(Prefs prefsChanged) {
         String key = prefsChanged.getKeyChanged();
 		Log.d(TAG, key);
 		if(key.equals(this.getString(R.string.pref_practice))) {

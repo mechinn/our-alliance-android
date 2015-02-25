@@ -126,11 +126,11 @@ public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScout
         }
 	}
 
-    public void onEvent(MatchScoutingYear matchScoutingChanged) {
+    public void onEventMainThread(MatchScoutingYear matchScoutingChanged) {
         load();
     }
 
-    public void onEvent(LoadMatchScouting scouting) {
+    public void onEventMainThread(LoadMatchScouting scouting) {
         List<MatchScoutingYear> result = scouting.getScouting();
         Log.d(TAG, "Count: " + result.size());
         adapter.swapMatch(result);

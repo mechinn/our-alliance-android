@@ -180,7 +180,7 @@ public class SettingsFragment extends PreferenceFragment {
         AsyncExecutor.create().execute(new GetEvents(this.getActivity()));
     }
 
-	public void onEvent(Prefs changedPrefs) {
+	public void onEventMainThread(Prefs changedPrefs) {
         String key = changedPrefs.getKeyChanged();
 		Log.d(TAG, key);
 		if(key.equals(yearPrefString)) {
@@ -188,7 +188,6 @@ public class SettingsFragment extends PreferenceFragment {
             year.setSummary(yearArray.get(prefs.getYear()));
 			event.setValue("0");
             getActivity().invalidateOptionsMenu();
-            load();
             if(!changedPrefs.isEventsDownloaded()) {
                 getCompetitions();
             }
@@ -210,11 +209,11 @@ public class SettingsFragment extends PreferenceFragment {
         });
     }
 
-    public void onEvent(Event eventsChanged) {
+    public void onEventMainThread(Event eventsChanged) {
         load();
     }
 
-    public void onEvent(LoadEvents events) {
+    public void onEventMainThread(LoadEvents events) {
         List<Event> eventList = events.getEvents();
         event.swapAdapter(eventList, prefs.getComp());
         if(eventList.size()>0) {

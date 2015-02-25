@@ -315,18 +315,18 @@ public class TeamListFragment extends Fragment {
 //                builder.orderAsc(EventTeamDao.Properties.Rank);
 //                break;
 //        }
-                List<EventTeam> teams = new Select().from(EventTeam.class).join(Team.class).on(EventTeam.TEAM+"="+Team.ID).where(EventTeam.EVENT+"=?",prefs.getCompString()).orderBy(orderBy).execute();
+                List<EventTeam> teams = new Select().from(EventTeam.class).join(Team.class).on(EventTeam.TAG+"."+EventTeam.TEAM+"="+Team.TAG+"."+Team.ID).where(EventTeam.TAG+"."+EventTeam.EVENT+"=?",prefs.getComp()).orderBy(orderBy).execute();
 
                 EventBus.getDefault().post(new LoadTeams(teams));
             }
         });
     }
 
-    public void onEvent(EventTeam eventTeamsChanged) {
+    public void onEventMainThread(EventTeam eventTeamsChanged) {
         load();
     }
 
-    public void onEvent(LoadTeams teams) {
+    public void onEventMainThread(LoadTeams teams) {
         switch (prefs.getYear()) {
             case 2014:
                 adapter.showDrag(sort.equals(Sort2014.RANK));

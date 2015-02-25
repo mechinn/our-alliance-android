@@ -105,13 +105,7 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
                         prefs.setVersion(0);
                         Log.i(TAG, "Resetting database");
                         new Delete().from(Event.class).execute();
-                        new Delete().from(EventTeam.class).execute();
-                        new Delete().from(Match.class).execute();
-                        new Delete().from(MatchScouting2014.class).execute();
-                        //                new Delete().from(Multimedia.class).execute();
                         new Delete().from(Team.class).execute();
-                        new Delete().from(TeamScouting2014.class).execute();
-                        new Delete().from(Wheel2014.class).execute();
                     case 1:
                     case 2:
                     case 3:

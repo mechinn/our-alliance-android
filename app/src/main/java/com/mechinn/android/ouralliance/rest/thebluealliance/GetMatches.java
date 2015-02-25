@@ -25,6 +25,7 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
 
     public GetMatches(Context context) {
         this.context = context;
+        this.prefs = new Prefs(context);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
         Log.d(TAG, "getting matches "+prefs.getYear() + event.getEventCode());
         try {
             List<Match> matches = TheBlueAlliance.getService().getEventMatches(prefs.getYear() + event.getEventCode());
-            Transaction.save(matches);
+            Transaction.save(Match.class,matches);
             ToastEvent.toast("Finished downloading matches", false);
             prefs.setMatchesDownloaded(true);
         } catch (RetrofitError e) {

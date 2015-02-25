@@ -263,10 +263,10 @@ public class InsertMatchDialogFragment extends DialogFragment {
             }
         });
     }
-    public void onEvent(EventTeam eventTeamsChanged) {
+    public void onEventMainThread(EventTeam eventTeamsChanged) {
         loadEventTeams();
     }
-    public void onEvent(LoadEventTeams teams) {
+    public void onEventMainThread(LoadEventTeams teams) {
         for(MatchTeamSelectAdapter adapter : adapters) {
             adapter.setTeams(teams.getTeams());
             adapter.notifyDataSetChanged();

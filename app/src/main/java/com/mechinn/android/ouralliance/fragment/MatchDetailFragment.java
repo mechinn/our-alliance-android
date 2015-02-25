@@ -141,10 +141,10 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
 	}
 
     public abstract void loadMatchScouting();
-    public void onEvent(MatchScoutingYear scoutingChanged) {
+    public void onEventMainThread(MatchScoutingYear scoutingChanged) {
         loadMatchScouting();
     }
-    public void onEvent(LoadMatcheScouting scouting) {
+    public void onEventMainThread(LoadMatcheScouting scouting) {
         MatchScoutingYear result = scouting.getScouting();
         Log.d(TAG, "result: " + result);
         setMatch(result);

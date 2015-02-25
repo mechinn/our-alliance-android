@@ -20,7 +20,7 @@ import com.mobeta.android.dslv.DragSortListView;
 import java.util.List;
 
 public class EventTeamDragSortListAdapter extends BaseAdapter implements DragSortListView.DropListener {
-    public static final String TAG = "EventTeamDragSortListAdapter";
+    public static final String TAG = "EventTeamDSLAdapter";
     private int dragable;
     private Context context;
     private List<EventTeam> teams;
@@ -105,7 +105,7 @@ public class EventTeamDragSortListAdapter extends BaseAdapter implements DragSor
         Log.d(TAG, "team: " + getTeam(from) + " new rank: " + to);
         getTeam(from).setRank(to);
         Log.d(TAG, "team: " + getTeam(from));
-        Transaction.save(this.getTeams());
+        Transaction.save(EventTeam.class,this.getTeams());
     }
 
     public EventTeam getTeam(int position) {

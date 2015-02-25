@@ -8,11 +8,11 @@ public abstract class Wheel<Scouting extends TeamScouting> extends com.mechinn.a
     public final static String WHEEL_TYPE = "wheelType";
     public final static String WHEEL_SIZE = "wheelSize";
     public final static String WHEEL_COUNT = "wheelCount";
-    @Column(name=TEAM_SCOUTING, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {UNIQUE})
+    @Column(name=TEAM_SCOUTING, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private Scouting teamScouting;
-    @Column(name=WHEEL_TYPE, uniqueGroups = {TAG}, onUniqueConflicts = {UNIQUE})
+    @Column(name=WHEEL_TYPE, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private String wheelType;
-    @Column(name=WHEEL_SIZE, uniqueGroups = {TAG}, onUniqueConflicts = {UNIQUE})
+    @Column(name=WHEEL_SIZE, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private Double wheelSize;
     @Column(name=WHEEL_COUNT)
     private Integer wheelCount;

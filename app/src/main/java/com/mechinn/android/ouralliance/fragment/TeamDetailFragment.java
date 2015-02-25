@@ -341,7 +341,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
         this.getScouting().asyncSave();
 	}
 
-    public void onEvent(MultimediaDeletedEvent event) {
+    public void onEventMainThread(MultimediaDeletedEvent event) {
         if(null!=multimedia) {
             multimedia.buildImageSet(scouting);
         }
@@ -355,10 +355,10 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             }
         });
     }
-    public void onEvent(Event eventTeamsChanged) {
+    public void onEventMainThread(Event eventTeamsChanged) {
         loadEvent();
     }
-    public void onEvent(LoadEvent event) {
+    public void onEventMainThread(LoadEvent event) {
         setEvent(event.getEvent());
     }
     private class LoadEvent {
@@ -386,11 +386,11 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             }
         });
     }
-    public void onEvent(Wheel wheelsChanged) {
+    public void onEventMainThread(Wheel wheelsChanged) {
         loadWheelTypes();
         loadWheels();
     }
-    public void onEvent(LoadWheelTypes event) {
+    public void onEventMainThread(LoadWheelTypes event) {
         wheelsAdapter.swapWheelTypes(event.getWheels());
     }
     private class LoadWheelTypes {
@@ -418,7 +418,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             }
         });
     }
-    public void onEvent(LoadWheels event) {
+    public void onEventMainThread(LoadWheels event) {
         wheelsAdapter.swapList(event.getWheels());
     }
     private class LoadWheels {
@@ -446,10 +446,10 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             }
         });
     }
-    public void onEvent(Scouting scoutingChanged) {
+    public void onEventMainThread(Scouting scoutingChanged) {
         loadScouting();
     }
-    public void onEvent(LoadScouting scouting) {
+    public void onEventMainThread(LoadScouting scouting) {
         setScouting(scouting.getScouting());
         setView();
         rootView.setVisibility(View.VISIBLE);

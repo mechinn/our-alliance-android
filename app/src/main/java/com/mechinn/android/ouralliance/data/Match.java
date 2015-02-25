@@ -20,11 +20,11 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     public final static String TIME = "time";
     public final static String RED_SCORE = "redScore";
     public final static String BLUE_SCORE = "blueScore";
-    @Column(name=EVENT, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {UNIQUE})
+    @Column(name=EVENT, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private Event event;
-    @Column(name=COMPETITION_LEVEL, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {UNIQUE})
+    @Column(name=COMPETITION_LEVEL, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private CompetitionLevel compLevel;
-    @Column(name=MATCH_NUMBER, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {UNIQUE})
+    @Column(name=MATCH_NUMBER, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private int matchNum;
     @Column(name=SET_NUMBER)
     private Integer setNumber;

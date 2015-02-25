@@ -26,13 +26,13 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     private String name;
     @Column(name=SHORT_NAME)
     private String shortName;
-    @Column(name=EVENT_CODE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {UNIQUE})
+    @Column(name=EVENT_CODE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private String eventCode;
     @Column(name=EVENT_TYPE, notNull = true, onNullConflict = Column.ConflictAction.FAIL)
     private int eventType;
     @Column(name=EVENT_DISTRICT, notNull = true, onNullConflict = Column.ConflictAction.FAIL)
     private int eventDistrict;
-    @Column(name=YEAR, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {UNIQUE})
+    @Column(name=YEAR, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private int year;
     @Column(name=VENUE_ADDRESS)
     private String venueAddress;

@@ -228,10 +228,10 @@ public class MatchListFragment extends ListFragment {
             }
         });
     }
-    public void onEvent(EventTeam eventTeamsChanged) {
+    public void onEventMainThread(EventTeam eventTeamsChanged) {
         loadEventTeams();
     }
-    public void onEvent(LoadEventTeams teams) {
+    public void onEventMainThread(LoadEventTeams teams) {
         enoughTeams = teams.enoughTeams();
         getActivity().invalidateOptionsMenu();
     }
@@ -260,10 +260,10 @@ public class MatchListFragment extends ListFragment {
             }
         });
     }
-    public void onEvent(Match scoutingChanged) {
+    public void onEventMainThread(Match scoutingChanged) {
         loadMatches();
     }
-    public void onEvent(LoadMatches matches) {
+    public void onEventMainThread(LoadMatches matches) {
         List<Match> result = matches.getMatches();
         Log.d(TAG, "Count: " + result.size());
         adapter.swapList(result);

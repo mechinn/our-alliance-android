@@ -20,9 +20,9 @@ public abstract class MatchScouting<TeamScout extends TeamScouting> extends OurA
     public final static String ALLIANCE = "alliance";
     public final static String POSITION = "position";
     public final static String NOTES = "notes";
-    @Column(name=MATCH, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {UNIQUE})
+    @Column(name=MATCH, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private Match match;
-    @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {super.TAG}, onUniqueConflicts = {UNIQUE})
+    @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private TeamScout teamScouting;
     @Column(name=ALLIANCE, notNull = true, onNullConflict = Column.ConflictAction.FAIL)
     private boolean alliance;

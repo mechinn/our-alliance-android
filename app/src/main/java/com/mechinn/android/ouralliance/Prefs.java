@@ -164,6 +164,7 @@ public class Prefs {
         return prefs.getBoolean(adsPref, Boolean.parseBoolean(adsDefault));
     }
     public void setAdsDisabled(boolean adsDisabled) {
+
         editor.putBoolean(adsPref, adsDisabled);
         editor.apply();
     }
