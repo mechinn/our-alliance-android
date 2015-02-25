@@ -7,6 +7,9 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
+
 @Table(name = MatchScouting2014.TAG, id = MatchScouting2014.ID)
 public class MatchScouting2014 extends com.mechinn.android.ouralliance.data.MatchScouting<TeamScouting2014>  {
     public final static String TAG = "MatchScouting2014";
@@ -149,5 +152,24 @@ public class MatchScouting2014 extends com.mechinn.android.ouralliance.data.Matc
                 getOverTruss()==((MatchScouting2014)data).getOverTruss() &&
                 getLow()==((MatchScouting2014)data).getLow() &&
                 getHigh()==((MatchScouting2014)data).getHigh();
+    }
+
+    public void asyncSave() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                saveMod();
+                EventBus.getDefault().post(MatchScouting2014.this);
+            }
+        });
+    }
+    public void asyncDelete() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                delete();
+                EventBus.getDefault().post(MatchScouting2014.this);
+            }
+        });
     }
 }

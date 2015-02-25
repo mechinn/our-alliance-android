@@ -8,6 +8,9 @@ import com.activeandroid.annotation.Table;
 
 import java.util.Date;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
+
 @Table(name = Event.TAG, id = Event.ID)
 public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<Event>, java.io.Serializable {
     public final static String TAG = "Event";
@@ -128,5 +131,23 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
             compare = this.getShortName().compareTo(another.getShortName());
         }
         return compare;
+    }
+    public void asyncSave() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                saveMod();
+                EventBus.getDefault().post(Event.this);
+            }
+        });
+    }
+    public void asyncDelete() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                delete();
+                EventBus.getDefault().post(Event.this);
+            }
+        });
     }
 }

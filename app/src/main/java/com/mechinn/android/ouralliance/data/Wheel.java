@@ -2,6 +2,9 @@ package com.mechinn.android.ouralliance.data;
 
 import com.activeandroid.annotation.Column;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
+
 public abstract class Wheel<Scouting extends TeamScouting> extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<Wheel>, java.io.Serializable {
     public final static String TAG = "Wheel";
     public final static String TEAM_SCOUTING = TeamScouting.TAG;
@@ -58,5 +61,23 @@ public abstract class Wheel<Scouting extends TeamScouting> extends com.mechinn.a
             compare = this.getTeamScouting().compareTo(another.getTeamScouting());
         }
         return compare;
+    }
+    public void asyncSave() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                saveMod();
+                EventBus.getDefault().post(Wheel.this);
+            }
+        });
+    }
+    public void asyncDelete() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                delete();
+                EventBus.getDefault().post(Wheel.this);
+            }
+        });
     }
 }

@@ -26,22 +26,6 @@ public abstract class OurAllianceObject extends Model {
         setModified(new Date());
         save();
     }
-    public void asyncSave() {
-        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
-            @Override
-            public void run() throws Exception {
-                saveMod();
-                EventBus.getDefault().post(OurAllianceObject.this);
-            }
-        });
-    }
-    public void asyncDelete() {
-        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
-            @Override
-            public void run() throws Exception {
-                delete();
-                EventBus.getDefault().post(OurAllianceObject.this);
-            }
-        });
-    }
+    public abstract void asyncSave();
+    public abstract void asyncDelete();
 }

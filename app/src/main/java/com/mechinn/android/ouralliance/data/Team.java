@@ -6,6 +6,9 @@ import android.provider.BaseColumns;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
+
 @Table(name = Team.TAG, id = Team.ID)
 public class Team extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<Team>, java.io.Serializable {
     public final static String TAG = "Team";
@@ -97,5 +100,23 @@ public class Team extends com.mechinn.android.ouralliance.data.OurAllianceObject
         }
         return  getTeamNumber()==((Team) data).getTeamNumber()
                 && getNickname().equals(((Team)data).getNickname());
+    }
+    public void asyncSave() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                saveMod();
+                EventBus.getDefault().post(Team.this);
+            }
+        });
+    }
+    public void asyncDelete() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                delete();
+                EventBus.getDefault().post(Team.this);
+            }
+        });
     }
 }

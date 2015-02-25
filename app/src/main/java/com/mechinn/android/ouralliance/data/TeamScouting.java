@@ -4,6 +4,9 @@ import com.activeandroid.annotation.Column;
 
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
+
 public abstract class TeamScouting extends OurAllianceObject implements Comparable<TeamScouting>, java.io.Serializable {
     public final static String TAG = "TeamScouting";
     public final static String TEAM = Team.TAG;
@@ -40,5 +43,23 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
         }
         return getTeam().equals(((TeamScouting) data).getTeam()) &&
                 getNotes().equals(((TeamScouting) data).getNotes());
+    }
+    public void asyncSave() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                saveMod();
+                EventBus.getDefault().post(TeamScouting.this);
+            }
+        });
+    }
+    public void asyncDelete() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                delete();
+                EventBus.getDefault().post(TeamScouting.this);
+            }
+        });
     }
 }

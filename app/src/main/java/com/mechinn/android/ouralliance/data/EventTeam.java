@@ -6,6 +6,9 @@ import android.provider.BaseColumns;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
+
 @Table(name = EventTeam.TAG, id = EventTeam.ID)
 public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<EventTeam>, java.io.Serializable {
     public final static String TAG = "EventTeam";
@@ -67,5 +70,23 @@ public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceO
             compare = this.getTeam().compareTo(another.getTeam());
         }
         return compare;
+    }
+    public void asyncSave() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                saveMod();
+                EventBus.getDefault().post(EventTeam.this);
+            }
+        });
+    }
+    public void asyncDelete() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                delete();
+                EventBus.getDefault().post(EventTeam.this);
+            }
+        });
     }
 }

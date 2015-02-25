@@ -10,6 +10,9 @@ import com.activeandroid.annotation.Table;
 import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.Wheel;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.util.AsyncExecutor;
+
 @Table(name = TeamScouting2014.TAG, id = TeamScouting2014.ID)
 public class TeamScouting2014 extends com.mechinn.android.ouralliance.data.TeamScouting {
     public final static String TAG = "TeamScouting2014";
@@ -284,5 +287,23 @@ public class TeamScouting2014 extends com.mechinn.android.ouralliance.data.TeamS
                 getLowAuto()==((TeamScouting2014)data).getLowAuto() &&
                 getHighAuto()==((TeamScouting2014)data).getHighAuto() &&
                 getHotAuto()==((TeamScouting2014)data).getHotAuto();
+    }
+    public void asyncSave() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                saveMod();
+                EventBus.getDefault().post(TeamScouting2014.this);
+            }
+        });
+    }
+    public void asyncDelete() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                delete();
+                EventBus.getDefault().post(TeamScouting2014.this);
+            }
+        });
     }
 }
