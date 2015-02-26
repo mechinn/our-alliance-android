@@ -218,6 +218,9 @@ public class TeamListFragment extends Fragment {
 	            return true;
 	        case R.id.insertTeamScouting:
                 DialogFragment newFragment = new InsertTeamDialogFragment();
+                Bundle updateArgs = new Bundle();
+                updateArgs.putSerializable(InsertTeamDialogFragment.RANK_ARG, adapter.getCount());
+                newFragment.setArguments(updateArgs);
                 newFragment.show(this.getFragmentManager(), "Add Team");
 	            return true;
             case R.id.refreshCompetitionTeams:

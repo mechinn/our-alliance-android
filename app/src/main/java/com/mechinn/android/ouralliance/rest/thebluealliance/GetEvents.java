@@ -47,7 +47,7 @@ public class GetEvents implements AsyncExecutor.RunnableEx {
                     Log.d(TAG, "endDate: " + event.getEndDate());
                     Log.d(TAG, "official: " + event.isOfficial());
                 }
-                Transaction.save(Event.class,events);
+                Transaction.save(Event.class, events);
                 prefs.setEventsDownloaded(true);
             } catch (RetrofitError e) {
                 Log.e(TAG,"Error downloading events",e);

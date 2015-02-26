@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
@@ -213,40 +214,46 @@ public class InsertMatchDialogFragment extends DialogFragment {
                     AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
                         @Override
                         public void run() throws Exception {
-                            match.setEvent(Model.load(Event.class,eventId));
-                            match.asyncSave();
-                            switch (prefs.getYear()) {
-                                case 2014:
-                                    List<MatchScouting2014> teams = new ArrayList<MatchScouting2014>(6);
-                                    for (int team = 0; team < teamCount; team++) {
-                                        MatchScouting2014 scouting = new MatchScouting2014();
-                                        scouting.setMatch(match);
-                                        EventTeam eventTeam = (EventTeam)((MatchTeamSelectAdapter) spinners[team].getAdapter()).getItem(spinners[team].getSelectedItemPosition());
-                                        TeamScouting2014 scouting2014 = new Select().from(TeamScouting2014.class).where(TeamScouting2014.TEAM+"=?",eventTeam.getTeam().getId()).executeSingle();
-                                        scouting.setTeamScouting(scouting2014);
-                                        if (team < teamCount / 2) {
-                                            scouting.setPosition(team);
-                                            scouting.setAlliance(false);
-                                        } else {
-                                            scouting.setPosition(team - teamCount / 2);
-                                            scouting.setAlliance(true);
+                            match.setEvent(Model.load(Event.class, eventId));
+                            ActiveAndroid.beginTransaction();
+                            try {
+                                match.saveMod();
+                                switch (prefs.getYear()) {
+                                    case 2014:
+                                        List<MatchScouting2014> teams = new ArrayList<MatchScouting2014>(6);
+                                        for (int team = 0; team < teamCount; team++) {
+                                            MatchScouting2014 scouting = new MatchScouting2014();
+                                            scouting.setMatch(match);
+                                            EventTeam eventTeam = (EventTeam) ((MatchTeamSelectAdapter) spinners[team].getAdapter()).getItem(spinners[team].getSelectedItemPosition());
+                                            TeamScouting2014 scouting2014 = new Select().from(TeamScouting2014.class).where(TeamScouting2014.TEAM + "=?", eventTeam.getTeam().getId()).executeSingle();
+                                            scouting.setTeamScouting(scouting2014);
+                                            if (team < teamCount / 2) {
+                                                scouting.setPosition(team);
+                                                scouting.setAlliance(false);
+                                            } else {
+                                                scouting.setPosition(team - teamCount / 2);
+                                                scouting.setAlliance(true);
+                                            }
+                                            scouting.saveMod();
                                         }
-                                        teams.add(scouting);
-                                    }
-                                    break;
+                                        break;
+                                }
+                                ActiveAndroid.setTransactionSuccessful();
+                            } finally {
+                                ActiveAndroid.endTransaction();
                             }
                         }
                     });
                 }
             }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
+                public void onClick (DialogInterface dialog,int id){
+                    dialog.cancel();
+                }
+            });
         loadEventTeams();
-		// Create the AlertDialog object and return it
-		return builder.create();
-	}
+        // Create the AlertDialog object and return it
+        return builder.create();
+    }
 
     @Override
     public void onDestroyView() {

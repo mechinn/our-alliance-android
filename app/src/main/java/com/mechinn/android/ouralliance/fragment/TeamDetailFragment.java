@@ -48,6 +48,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,7 +104,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	@InjectView(R.id.gallery) protected TwoWayView gallery;
     @InjectView(R.id.notes) protected TextView notes;
 	@InjectView(R.id.addWheel) protected Button addWheel;
-    @InjectView(R.id.wheels) protected LinearLayout wheels;
+    @InjectView(R.id.wheels) protected ListView wheels;
 	private MultimediaAdapter multimedia;
 
     private WheelAdapter wheelsAdapter;
@@ -164,7 +165,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
         
         rootView = inflater.inflate(R.layout.fragment_team_detail, container, false);
 		rootView.setVisibility(View.GONE);
-        ButterKnife.inject(this, rootView);
+
 		if (this.getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
 			if(!Utility.isIntentAvailable(this.getActivity(),MediaStore.ACTION_IMAGE_CAPTURE)) {
 		        picture.setVisibility(View.GONE);

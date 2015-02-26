@@ -21,15 +21,20 @@ public class Transaction implements AsyncExecutor.RunnableEx {
         this.delete = delete;
     }
     public static void save(Class type, List<? extends OurAllianceObject> objects) {
-        AsyncExecutor.create().execute(new Transaction(type,objects,false));
+        new Transaction(type,objects,false).run();
     }
     public static void delete(Class type, List<? extends OurAllianceObject> objects) {
+        new Transaction(type,objects,true).run();
+    }
+    public static void asyncSave(Class type, List<? extends OurAllianceObject> objects) {
+        AsyncExecutor.create().execute(new Transaction(type,objects,false));
+    }
+    public static void asyncDelete(Class type, List<? extends OurAllianceObject> objects) {
         AsyncExecutor.create().execute(new Transaction(type,objects,true));
     }
 
     @Override
-    public void run() throws Exception {
-        boolean success = false;
+    public void run() {
         ActiveAndroid.beginTransaction();
         try {
             for(OurAllianceObject object : objects) {
@@ -40,13 +45,10 @@ public class Transaction implements AsyncExecutor.RunnableEx {
                 }
             }
             ActiveAndroid.setTransactionSuccessful();
-            success = true;
+            EventBus.getDefault().post(type.cast(objects.get(0)));
         }
         finally {
             ActiveAndroid.endTransaction();
-            if(success) {
-                EventBus.getDefault().post(type.cast(objects.get(0)));
-            }
         }
     }
 }

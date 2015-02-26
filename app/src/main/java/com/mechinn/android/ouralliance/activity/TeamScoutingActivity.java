@@ -21,6 +21,8 @@ import com.mechinn.android.ouralliance.fragment.TeamListFragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.MatchTeamList2014Fragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.TeamDetail2014;
 
+import de.greenrobot.event.EventBus;
+
 public class TeamScoutingActivity extends OurAllianceActivity implements OnBackStackChangedListener {
     public static final String TAG = "TeamScoutingActivity";
 	public static final String TEAM_ARG = "team";
@@ -81,6 +83,18 @@ public class TeamScoutingActivity extends OurAllianceActivity implements OnBackS
             this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 	}
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

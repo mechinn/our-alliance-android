@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
@@ -28,13 +29,14 @@ import java.util.List;
 import de.greenrobot.event.util.AsyncExecutor;
 
 public class InsertTeamDialogFragment extends DialogFragment {
-    public static final String TAG = "InsertTeamDialogFragment";
-	public static final String TEAM_ARG = "team";
+    public static final String TAG = "InsertTeamDialogFrag";
+    public static final String RANK_ARG = "rank";
 
     private View dialog;
     private TextView teamNumber;
     private Team team;
     private Prefs prefs;
+    private int rank;
 
     @Override
     public void onAttach(Activity activity) {
@@ -50,34 +52,43 @@ public class InsertTeamDialogFragment extends DialogFragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		dialog = inflater.inflate(R.layout.dialog_team_insert, null);
 		teamNumber = (TextView) dialog.findViewById(R.id.editTeamNumber);
+        rank = getArguments().getInt(RANK_ARG);
 		int yes;
         team = new Team();
         yes = R.string.create;
         Log.d(TAG, "insert");
 		builder.setView(dialog)
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					team.setTeamNumber(Utility.getIntFromText(teamNumber.getText()));
+                public void onClick(DialogInterface dialog, int id) {
+                    team.setTeamNumber(Utility.getIntFromText(teamNumber.getText()));
                     AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
                         @Override
                         public void run() throws Exception {
                             Log.d(TAG, "saving: " + team);
-                            team.asyncSave();
-                            Log.d(TAG,"saving id: "+team.getId());
-                            Log.d(TAG,"competition id: "+prefs.getComp());
+                            Log.d(TAG, "competition id: " + prefs.getComp());
                             EventTeam eventTeam = new EventTeam();
-                            Event event = Model.load(Event.class,prefs.getComp());
+                            Event event = Model.load(Event.class, prefs.getComp());
                             eventTeam.setEvent(event);
                             eventTeam.setTeam(team);
-                            eventTeam.asyncSave();
+                            eventTeam.setRank(rank);
+                            ActiveAndroid.beginTransaction();
+                            try {
+                                team.saveMod();
+                                Log.d(TAG, "saving team id: " + team.getId());
+                                eventTeam.saveMod();
+                                Log.d(TAG, "saving event team id: " + eventTeam.getId());
+                                ActiveAndroid.setTransactionSuccessful();
+                            } finally {
+                                ActiveAndroid.endTransaction();
+                            }
                         }
                     });
-				}
-			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
+                }
+            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
 		// Create the AlertDialog object and return it
 		return builder.create();
 	}

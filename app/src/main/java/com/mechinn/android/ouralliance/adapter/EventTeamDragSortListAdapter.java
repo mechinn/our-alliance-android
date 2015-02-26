@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.EventTeam;
-import com.mechinn.android.ouralliance.data.Wheel;
 import com.mechinn.android.ouralliance.event.Transaction;
 import com.mobeta.android.dslv.DragSortListView;
 
@@ -105,7 +104,7 @@ public class EventTeamDragSortListAdapter extends BaseAdapter implements DragSor
         Log.d(TAG, "team: " + getTeam(from) + " new rank: " + to);
         getTeam(from).setRank(to);
         Log.d(TAG, "team: " + getTeam(from));
-        Transaction.save(EventTeam.class,this.getTeams());
+        Transaction.asyncSave(EventTeam.class, this.getTeams());
     }
 
     public EventTeam getTeam(int position) {

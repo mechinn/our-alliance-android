@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 
 public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScouting> extends Fragment {
     public static final String TAG = "MatchDetailFragment";
@@ -95,7 +96,7 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
     @Override
     public void onStart() {
         super.onStart();
-
+        EventBus.getDefault().register(this);
         // During startup, check if there are arguments passed to the fragment.
         // onStart is a good place to do this because the layout has already been
         // applied to the fragment at this point so we can safely call the method
@@ -105,6 +106,12 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
             teamId = getArguments().getLong(TEAM_ARG, 0);
             Log.d(TAG, "team: " + teamId);
         }
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 	
 	@Override

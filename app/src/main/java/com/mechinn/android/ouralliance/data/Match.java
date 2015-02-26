@@ -1,7 +1,6 @@
 package com.mechinn.android.ouralliance.data;
 
 import android.database.Cursor;
-import android.provider.BaseColumns;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -32,11 +31,12 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     @Column(name=SET_NUMBER)
     private Integer setNumber;
     @Column(name=TIME)
-    private Date time;
+    private Long time;
     @Column(name=RED_SCORE)
     private Integer redScore;
     @Column(name=BLUE_SCORE)
     private Integer blueScore;
+    private Alliances alliances;
     public Match() {}
     public Match(Cursor cursor) {
         this.loadFromCursor(cursor);
@@ -66,10 +66,10 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         this.setNumber = setNumber;
     }
     public Date getTime() {
-        return time;
+        return new Date(time);
     }
     public void setTime(Date time) {
-        this.time = time;
+        this.time = time.getTime();
     }
     public Integer getRedScore() {
         return redScore;
@@ -82,6 +82,9 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     }
     public void setBlueScore(Integer blueScore) {
         this.blueScore = blueScore;
+    }
+    public Alliances getAlliances() {
+        return alliances;
     }
     public List<MatchScouting> getTeams() {
         return getMany(MatchScouting.class, TAG);

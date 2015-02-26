@@ -3,19 +3,23 @@ package com.mechinn.android.ouralliance.rest.thebluealliance;
 import android.content.Context;
 import android.util.Log;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.Event;
+import com.mechinn.android.ouralliance.data.EventTeam;
+import com.mechinn.android.ouralliance.data.OurAllianceObject;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.event.ToastEvent;
 import com.mechinn.android.ouralliance.event.Transaction;
-import com.mechinn.android.ouralliance.rest.GetHandlerThread;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 import retrofit.RetrofitError;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GetEventTeams implements AsyncExecutor.RunnableEx {
@@ -34,9 +38,23 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
         Event event = Model.load(Event.class,prefs.getComp());
         Log.d(TAG, "year: " + prefs.getYear());
         Log.d(TAG, "Setting up teams");
+        ActiveAndroid.beginTransaction();
         try {
             List<Team> teams = TheBlueAlliance.getService().getEventTeams(prefs.getYear() + event.getEventCode());
-            Transaction.save(Team.class,teams);
+            Transaction.save(Team.class, teams);
+            Collections.sort(teams);
+            List<EventTeam> eventTeams = new ArrayList<>();
+            for(int teamRank=0;teamRank<teams.size();teamRank++) {
+                EventTeam eventTeam = new EventTeam();
+                eventTeam.setEvent(event);
+                eventTeam.setTeam(teams.get(teamRank));
+                eventTeam.setRank(teamRank);
+                eventTeams.add(eventTeam);
+            }
+            Transaction.save(EventTeam.class, eventTeams);
+            ActiveAndroid.setTransactionSuccessful();
+            EventBus.getDefault().post(teams.get(0));
+            EventBus.getDefault().post(eventTeams.get(0));
             ToastEvent.toast("Finished downloading teams",false);
             prefs.setEventTeamsDownloaded(true);
         } catch (RetrofitError e) {
@@ -46,6 +64,8 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
             } else if (e.getResponse().getStatus() != 200) {
                 ToastEvent.toast("Error " + e.getResponse().getStatus() + " connecting");
             }
+        } finally {
+            ActiveAndroid.endTransaction();
         }
     }
 }
