@@ -28,31 +28,20 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnItemSelected;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
 public class TeamListFragment extends Fragment {
     public static final String TAG = "TeamListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-    @InjectView(android.R.id.list) protected DragSortListView dslv;
+    protected DragSortListView dslv;
     private int selectedPosition;
 	private Prefs prefs;
 	private EventTeamDragSortListAdapter adapter;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
     private Sort2014 sort;
-    @InjectView(R.id.sortTeams) protected Spinner sortTeams;
-    @OnItemSelected(R.id.sortTeams) protected void sortTeamsSelect(AdapterView<?> parent, View view, int position, long id) {
-        switch(prefs.getYear()) {
-            case 2014:
-                sort = Sort.sort2014List.get(position);
-                break;
-        }
-        load();
-    }
+    private Spinner sortTeams;
     private GetEventTeams downloadTeams;
 
     @Override
@@ -68,14 +57,25 @@ public class TeamListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_team_list, container, false);
-        ButterKnife.inject(this,rootView);
-    	return rootView;
-    }
+        dslv = (DragSortListView) rootView.findViewById(android.R.id.list);
+        sortTeams = (Spinner) rootView.findViewById(R.id.sortTeams);
+        sortTeams.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch(prefs.getYear()) {
+                    case 2014:
+                        sort = Sort.sort2014List.get(position);
+                        break;
+                }
+                load();
+            }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    	return rootView;
     }
     
     @Override

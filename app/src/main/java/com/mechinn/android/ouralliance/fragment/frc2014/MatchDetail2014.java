@@ -13,34 +13,43 @@ import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.fragment.MatchDetailFragment;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
 public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
     public static final String TAG = "MatchDetail2014";
 
-    @InjectView(R.id.match2014hotShots) protected NumberPicker hotShots;
-    @InjectView(R.id.match2014shotsMade) protected NumberPicker shotsMade;
-    @InjectView(R.id.match2014shotsMissed) protected NumberPicker shotsMissed;
+    private NumberPicker hotShots;
+    private NumberPicker shotsMade;
+    private NumberPicker shotsMissed;
     private NumberPicker[] shots;
-    @InjectView(R.id.match2014moveFwd) protected RatingBar moveFwd;
-    @InjectView(R.id.match2014shooter) protected CheckBox shooter;
-    @InjectView(R.id.match2014catcher) protected CheckBox catcher;
-    @InjectView(R.id.match2014passer) protected CheckBox passer;
-    @InjectView(R.id.match2014driveTrain) protected RatingBar driveTrain;
-    @InjectView(R.id.match2014ballAccuracy) protected RatingBar ballAccuracy;
-    @InjectView(R.id.match2014ground) protected CheckBox ground;
-    @InjectView(R.id.match2014overTruss) protected CheckBox overTruss;
-    @InjectView(R.id.match2014low) protected CheckBox low;
-    @InjectView(R.id.match2014high) protected CheckBox high;
+    private RatingBar moveFwd;
+    private CheckBox shooter;
+    private CheckBox catcher;
+    private CheckBox passer;
+    private RatingBar driveTrain;
+    private RatingBar ballAccuracy;
+    private CheckBox ground;
+    private CheckBox overTruss;
+    private CheckBox low;
+    private CheckBox high;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         View seasonView = inflater.inflate(R.layout.fragment_match_detail_2014, getSeason(), false);
-        ButterKnife.inject(this,seasonView);
+        hotShots = (NumberPicker) seasonView.findViewById(R.id.match2014hotShots);
+        shotsMissed = (NumberPicker) seasonView.findViewById(R.id.match2014shotsMissed);
+        moveFwd = (RatingBar) seasonView.findViewById(R.id.match2014moveFwd);
+        shooter = (CheckBox) seasonView.findViewById(R.id.match2014shooter);
+        catcher = (CheckBox) seasonView.findViewById(R.id.match2014catcher);
+        passer = (CheckBox) seasonView.findViewById(R.id.match2014passer);
+        driveTrain = (RatingBar) seasonView.findViewById(R.id.match2014driveTrain);
+        ballAccuracy = (RatingBar) seasonView.findViewById(R.id.match2014ballAccuracy);
+        ground = (CheckBox) seasonView.findViewById(R.id.match2014ground);
+        overTruss = (CheckBox) seasonView.findViewById(R.id.match2014overTruss);
+        low = (CheckBox) seasonView.findViewById(R.id.match2014low);
+        high = (CheckBox) seasonView.findViewById(R.id.match2014high);
         String[] nums = new String[100];
         for(int i=0; i<nums.length; i++) {
             nums[i] = Integer.toString(i);

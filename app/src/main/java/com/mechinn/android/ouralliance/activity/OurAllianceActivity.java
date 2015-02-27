@@ -1,10 +1,8 @@
 package com.mechinn.android.ouralliance.activity;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.ads.AdListener;
@@ -15,16 +13,13 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 /**
  * Created by mechinn on 4/3/14.
  */
 public class OurAllianceActivity extends ActionBarActivity {
     public static final String TAG = "OurAllianceActivity";
     static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 1001;
-    @InjectView(R.id.adView) protected AdView adView;
+    protected AdView adView;
     private AdRequest adRequest;
     private AdListener adListener;
     private Prefs prefs;
@@ -97,7 +92,7 @@ public class OurAllianceActivity extends ActionBarActivity {
     @Override
     public void onStart() {
         super.onStart();
-        ButterKnife.inject(this);
+        adView = (AdView) this.findViewById(R.id.adView);
         adView.setAdListener(adListener);
     }
 

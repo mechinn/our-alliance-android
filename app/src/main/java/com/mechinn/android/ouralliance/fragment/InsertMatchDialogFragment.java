@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
-import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
@@ -31,14 +30,10 @@ import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MatchTeamSelectAdapter;
 import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.EventTeam;
-import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnItemSelected;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
@@ -48,38 +43,19 @@ public class InsertMatchDialogFragment extends DialogFragment {
 
     private Prefs prefs;
     private View dialog;
-    @InjectView(R.id.practice) protected TextView practice;
-    @InjectView(R.id.type) protected Spinner type;
-    @OnItemSelected(R.id.type) protected void typeSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(Match.CompetitionLevel.QUARTER_FINALS.getValue()==position) {
-            set.setVisibility(View.VISIBLE);
-            set.setAdapter(quarterfinals);
-        } else if(Match.CompetitionLevel.SEMI_FINALS.getValue()==position) {
-            set.setVisibility(View.VISIBLE);
-            set.setAdapter(semifinals);
-        } else {
-            set.setVisibility(View.INVISIBLE);
-            set.setSelection(0);
-        }
-        if(Match.CompetitionLevel.QUALIFIER.getValue()==position) {
-            numberContainer.setVisibility(View.VISIBLE);
-            matchSpin.setVisibility(View.GONE);
-        } else {
-            numberContainer.setVisibility(View.GONE);
-            matchSpin.setVisibility(View.VISIBLE);
-        }
-    }
-    @InjectView(R.id.set) protected Spinner set;
-    @InjectView(R.id.match) protected Spinner matchSpin;
-    @InjectView(R.id.numberContainer) protected LinearLayout numberContainer;
-    @InjectView(R.id.number) protected EditText number;
+    private TextView practice;
+    private Spinner type;
+    private Spinner set;
+    private Spinner matchSpin;
+    private LinearLayout numberContainer;
+    private EditText number;
     private Spinner[] spinners;
-    @InjectView(R.id.red1) protected Spinner red1;
-    @InjectView(R.id.red2) protected Spinner red2;
-    @InjectView(R.id.red3) protected Spinner red3;
-    @InjectView(R.id.blue1) protected Spinner blue1;
-    @InjectView(R.id.blue2) protected Spinner blue2;
-    @InjectView(R.id.blue3) protected Spinner blue3;
+    private Spinner red1;
+    private Spinner red2;
+    private Spinner red3;
+    private Spinner blue1;
+    private Spinner blue2;
+    private Spinner blue3;
     private Match match;
     private List<EventTeam> teams;
     private ArrayList<MatchTeamSelectAdapter> adapters;
@@ -126,7 +102,52 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		dialog = inflater.inflate(R.layout.dialog_match_insert, null);
-        ButterKnife.inject(this, dialog);
+        practice = (TextView) dialog.findViewById(R.id.practice);
+        type = (Spinner) dialog.findViewById(R.id.type);
+        type.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch(position) {
+                    case 2:
+                        set.setVisibility(View.VISIBLE);
+                        set.setAdapter(quarterfinals);
+                        break;
+                    case 3:
+                        set.setVisibility(View.VISIBLE);
+                        set.setAdapter(semifinals);
+                        break;
+                    default:
+                        set.setVisibility(View.INVISIBLE);
+                        set.setSelection(0);
+                        break;
+                }
+                switch(position) {
+                    case 0:
+                        numberContainer.setVisibility(View.VISIBLE);
+                        matchSpin.setVisibility(View.GONE);
+                        break;
+                    default:
+                        numberContainer.setVisibility(View.GONE);
+                        matchSpin.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        set = (Spinner) dialog.findViewById(R.id.set);
+        matchSpin = (Spinner) dialog.findViewById(R.id.match);
+        numberContainer = (LinearLayout) dialog.findViewById(R.id.numberContainer);
+        number = (EditText) dialog.findViewById(R.id.number);
+        red1 = (Spinner) dialog.findViewById(R.id.red1);
+        red2 = (Spinner) dialog.findViewById(R.id.red2);
+        red3 = (Spinner) dialog.findViewById(R.id.red3);
+        blue1 = (Spinner) dialog.findViewById(R.id.blue1);
+        blue2 = (Spinner) dialog.findViewById(R.id.blue2);
+        blue3 = (Spinner) dialog.findViewById(R.id.blue3);
         matchSpin.setAdapter(matchAdapter);
         spinners = new Spinner[] {red1, red2, red3, blue1, blue2, blue3};
 		if(prefs.isPractice()) {
@@ -169,7 +190,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
 		int yes;
 		try {
 			match = (Match) this.getArguments().getSerializable(MATCH_ARG);
-			number.setText(Integer.toString(match.getMatchNum()));
+			number.setText(Integer.toString(match.getMatchNumber()));
     		yes = R.string.update;
     		Log.d(TAG, "update");
 		} catch(NullPointerException e) {
@@ -182,21 +203,21 @@ public class InsertMatchDialogFragment extends DialogFragment {
 			.setPositiveButton(yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     if (prefs.isPractice()) {
-                        match.setCompLevel(Match.CompetitionLevel.PRACTICE);
+                        match.setCompLevel(Match.PRACTICE);
                     } else {
-                        Match.CompetitionLevel level = Match.CompetitionLevel.QUALIFIER;
+                        String level = Match.QUALIFIER;
                         switch (type.getSelectedItemPosition()) {
                             case 1:
-                                level = Match.CompetitionLevel.EIGHTH_FINALS;
+                                level = Match.EIGHTH_FINALS;
                                 break;
                             case 2:
-                                level = Match.CompetitionLevel.QUARTER_FINALS;
+                                level = Match.QUARTER_FINALS;
                                 break;
                             case 3:
-                                level = Match.CompetitionLevel.SEMI_FINALS;
+                                level = Match.SEMI_FINALS;
                                 break;
                             case 4:
-                                level = Match.CompetitionLevel.FINALS;
+                                level = Match.FINALS;
                                 break;
                         }
                         match.setCompLevel(level);
@@ -205,9 +226,9 @@ public class InsertMatchDialogFragment extends DialogFragment {
                         }
                     }
                     if (View.VISIBLE == matchSpin.getVisibility()) {
-                        match.setMatchNum(matchSpin.getSelectedItemPosition() + 1);
+                        match.setMatchNumber(matchSpin.getSelectedItemPosition() + 1);
                     } else {
-                        match.setMatchNum(Utility.getIntFromText(number.getText()));
+                        match.setMatchNumber(Utility.getIntFromText(number.getText()));
                     }
                     match.setRedScore(-1);
                     match.setBlueScore(-1);
@@ -258,7 +279,6 @@ public class InsertMatchDialogFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
         EventBus.getDefault().unregister(this);
     }
     public void loadEventTeams() {

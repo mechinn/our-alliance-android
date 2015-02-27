@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScouting> extends Fragment {
@@ -27,8 +25,8 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
     private long teamId;
 
 	private View rootView;
-    @InjectView(R.id.matchNotes) protected TextView notes;
-    @InjectView(R.id.season) protected LinearLayout season;
+    private TextView notes;
+    private LinearLayout season;
 
 	private MatchScoutingYear match;
 
@@ -83,20 +81,14 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
 //		};
         
         rootView = inflater.inflate(R.layout.fragment_match_detail, container, false);
-        ButterKnife.inject(this, rootView);
+        notes = (TextView) rootView.findViewById(R.id.matchNotes);
+        season = (LinearLayout) rootView.findViewById(R.id.season);
 		return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
         // During startup, check if there are arguments passed to the fragment.
         // onStart is a good place to do this because the layout has already been
         // applied to the fragment at this point so we can safely call the method
@@ -106,12 +98,6 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
             teamId = getArguments().getLong(TEAM_ARG, 0);
             Log.d(TAG, "team: " + teamId);
         }
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
     }
 	
 	@Override

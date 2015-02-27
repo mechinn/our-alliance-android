@@ -53,6 +53,7 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
             for(Match match : matches) {
                 match.setRedScore(match.getAlliances().getRed().getScore());
                 match.setBlueScore(match.getAlliances().getBlue().getScore());
+                match.setEvent(event);
                 match.saveMod();
                 matchesChanged = true;
             }

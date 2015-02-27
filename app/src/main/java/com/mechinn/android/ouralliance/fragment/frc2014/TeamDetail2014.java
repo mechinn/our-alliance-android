@@ -29,11 +29,6 @@ import com.mechinn.android.ouralliance.widget.UncheckableRadioGroupOnCheckedChan
 
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnEditorAction;
-import butterknife.OnFocusChange;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
@@ -43,121 +38,31 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
     public static final int maxHeight = 84;
     public static final int maxDistance = 9999;
 
-    @OnClick(R.id.addWheel) protected void addWheel(View v) {
-        Wheel newWheel = new Wheel2014();
-        newWheel.setTeamScouting(getScouting());
-        newWheel.asyncSave();
-    }
-	@InjectView(R.id.team2014orientation) protected AutoCompleteTextView orientation;
-    @InjectView(R.id.team2014driveTrain) protected AutoCompleteTextView driveTrain;
-    @InjectView(R.id.team2014width) protected EditText width;
-    @OnEditorAction(R.id.team2014width) protected boolean widthEdit(TextView v, int actionId, KeyEvent event) {
-        if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                actionId == EditorInfo.IME_ACTION_DONE ||
-                event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-            if (!event.isShiftPressed()) {
-                checkPerimeter();
-                return true; // consume.
-            }
-        }
-        return false; // pass on to other listeners.
-    }
-    @OnFocusChange(R.id.team2014width) protected void widthFocus(View v, boolean hasFocus) {
-        if (!hasFocus) {
-            checkPerimeter();
-        }
-    }
-    @InjectView(R.id.team2014length) protected EditText length;
-    @OnEditorAction(R.id.team2014length) protected boolean lengthEdit(TextView v, int actionId, KeyEvent event) {
-        if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                actionId == EditorInfo.IME_ACTION_DONE ||
-                event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-            if (!event.isShiftPressed()) {
-                checkPerimeter();
-                return true; // consume.
-            }
-        }
-        return false; // pass on to other listeners.
-    }
-    @OnFocusChange(R.id.team2014length) protected void lengthFocus(View v, boolean hasFocus) {
-        if (!hasFocus) {
-            checkPerimeter();
-        }
-    }
-    @InjectView(R.id.team2014heightShooter) protected EditText heightShooter;
-    @OnEditorAction(R.id.team2014heightShooter) protected boolean heightShooterEdit(TextView v, int actionId, KeyEvent event) {
-        if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                actionId == EditorInfo.IME_ACTION_DONE ||
-                event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-            if (!event.isShiftPressed()) {
-                checkShooterHeight();
-                return true; // consume.
-            }
-        }
-        return false; // pass on to other listeners.
-    }
-    @OnFocusChange(R.id.team2014heightShooter) protected void heightShooterFocus(View v, boolean hasFocus) {
-        if (!hasFocus) {
-            checkShooterHeight();
-        }
-    }
-    @InjectView(R.id.team2014heightMax) protected EditText heightMax;
-    @OnEditorAction(R.id.team2014heightMax) protected boolean heightMaxEdit(TextView v, int actionId, KeyEvent event) {
-        if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                actionId == EditorInfo.IME_ACTION_DONE ||
-                event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-            if (!event.isShiftPressed()) {
-                checkMaxHeight();
-                return true; // consume.
-            }
-        }
-        return false; // pass on to other listeners.
-    }
-    @OnFocusChange(R.id.team2014heightMax) protected void heightMaxFocus(View v, boolean hasFocus) {
-        if (!hasFocus) {
-            checkMaxHeight();
-        }
-    }
-    @InjectView(R.id.team2014shooterType) protected UncheckableRadioGroup shooterTypes;
-    @InjectView(R.id.team2014shooterGroup) protected LinearLayout shooterGroup;
-    @InjectView(R.id.team2014lowGoal) protected CheckBox lowGoal;
-    @InjectView(R.id.team2014highGoal) protected CheckBox highGoal;
-    @InjectView(R.id.team2014shootingDistanceGroup) protected LinearLayout shootingDistanceGroup;
-    @InjectView(R.id.team2014shootingDistance) protected EditText shootingDistance;
-    @OnEditorAction(R.id.team2014shootingDistance) protected boolean shootingDistanceEdit(TextView v, int actionId, KeyEvent event) {
-        if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                actionId == EditorInfo.IME_ACTION_DONE ||
-                event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-            if (!event.isShiftPressed()) {
-                checkShootingDistance();
-                return true; // consume.
-            }
-        }
-        return false; // pass on to other listeners.
-    }
-    @OnFocusChange(R.id.team2014shootingDistance) protected void shootingDistanceFocus(View v, boolean hasFocus) {
-        if (!hasFocus) {
-            checkShootingDistance();
-        }
-    }
-    @InjectView(R.id.team2014passGround) protected CheckBox passGround;
-    @InjectView(R.id.team2014passAir) protected CheckBox passAir;
-    @InjectView(R.id.team2014passTruss) protected CheckBox passTruss;
-    @InjectView(R.id.team2014pickupGround) protected CheckBox pickupGround;
-    @InjectView(R.id.team2014pickupCatch) protected CheckBox pickupCatch;
-    @InjectView(R.id.team2014pusher) protected CheckBox pusher;
-    @InjectView(R.id.team2014blocker) protected CheckBox blocker;
-    @InjectView(R.id.team2014humanPlayer) protected RatingBar humanPlayer;
-    @InjectView(R.id.team2014noAuto) protected CheckBox noAuto;
-    @InjectView(R.id.team2014driveAuto) protected CheckBox driveAuto;
-    @InjectView(R.id.team2014lowAuto) protected CheckBox lowAuto;
-    @InjectView(R.id.team2014highAuto) protected CheckBox highAuto;
-    @InjectView(R.id.team2014hotAuto) protected CheckBox hotAuto;
+	private AutoCompleteTextView orientation;
+    private AutoCompleteTextView driveTrain;
+    private EditText width;
+    private EditText length;
+    private EditText heightShooter;
+    private EditText heightMax;
+    private UncheckableRadioGroup shooterTypes;
+    private LinearLayout shooterGroup;
+    private CheckBox lowGoal;
+    private CheckBox highGoal;
+    private LinearLayout shootingDistanceGroup;
+    private EditText shootingDistance;
+    private CheckBox passGround;
+    private CheckBox passAir;
+    private CheckBox passTruss;
+    private CheckBox pickupGround;
+    private CheckBox pickupCatch;
+    private CheckBox pusher;
+    private CheckBox blocker;
+    private RatingBar humanPlayer;
+    private CheckBox noAuto;
+    private CheckBox driveAuto;
+    private CheckBox lowAuto;
+    private CheckBox highAuto;
+    private CheckBox hotAuto;
 
 	private TeamScouting2014FilterAdapter orientationsAdapter;
 	private TeamScouting2014FilterAdapter driveTrainsAdapter;
@@ -172,7 +77,130 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
 		View seasonView = inflater.inflate(R.layout.fragment_team_detail_2014, getSeason(), false);
-        ButterKnife.inject(this, seasonView);
+        orientation = (AutoCompleteTextView) seasonView.findViewById(R.id.team2014orientation);
+        driveTrain = (AutoCompleteTextView) seasonView.findViewById(R.id.team2014driveTrain);
+        width = (EditText) seasonView.findViewById(R.id.team2014width);
+        width.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    if (!event.isShiftPressed()) {
+                        checkPerimeter();
+                        return true; // consume.
+                    }
+                }
+                return false; // pass on to other listeners.
+            }
+        });
+        length = (EditText) seasonView.findViewById(R.id.team2014length);
+        length.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    if (!event.isShiftPressed()) {
+                        checkPerimeter();
+                        return true; // consume.
+                    }
+                }
+                return false; // pass on to other listeners.
+            }
+        });
+        heightShooter = (EditText) seasonView.findViewById(R.id.team2014heightShooter);
+        heightShooter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (null != event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    if (!event.isShiftPressed()) {
+                        checkShooterHeight();
+                        return true; // consume.
+                    }
+                }
+                return false; // pass on to other listeners.
+            }
+        });
+        heightShooter.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    checkShooterHeight();
+                }
+            }
+        });
+        heightMax = (EditText) seasonView.findViewById(R.id.team2014heightMax);
+        heightMax.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (null != event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    if (!event.isShiftPressed()) {
+                        checkMaxHeight();
+                        return true; // consume.
+                    }
+                }
+                return false; // pass on to other listeners.
+            }
+        });
+        heightMax.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    checkMaxHeight();
+                }
+            }
+        });
+        shooterTypes = (UncheckableRadioGroup) seasonView.findViewById(R.id.team2014shooterType);
+        shooterGroup = (LinearLayout) seasonView.findViewById(R.id.team2014shooterGroup);
+        lowGoal = (CheckBox) seasonView.findViewById(R.id.team2014lowGoal);
+        highGoal = (CheckBox) seasonView.findViewById(R.id.team2014highGoal);
+        shootingDistanceGroup = (LinearLayout) seasonView.findViewById(R.id.team2014shootingDistanceGroup);
+        shootingDistance = (EditText) seasonView.findViewById(R.id.team2014shootingDistance);
+        shootingDistance.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    if (!event.isShiftPressed()) {
+                        checkShootingDistance();
+                        return true; // consume.
+                    }
+                }
+                return false; // pass on to other listeners.
+            }
+        });
+        shootingDistance.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    checkShootingDistance();
+                }
+            }
+        });
+        passGround = (CheckBox) seasonView.findViewById(R.id.team2014passGround);
+        passAir = (CheckBox) seasonView.findViewById(R.id.team2014passAir);
+        passTruss = (CheckBox) seasonView.findViewById(R.id.team2014passTruss);
+        pickupGround = (CheckBox) seasonView.findViewById(R.id.team2014pickupGround);
+        pickupCatch = (CheckBox) seasonView.findViewById(R.id.team2014pickupCatch);
+        pusher = (CheckBox) seasonView.findViewById(R.id.team2014pusher);
+        blocker = (CheckBox) seasonView.findViewById(R.id.team2014blocker);
+        humanPlayer = (RatingBar) seasonView.findViewById(R.id.team2014humanPlayer);
+        noAuto = (CheckBox) seasonView.findViewById(R.id.team2014noAuto);
+        driveAuto = (CheckBox) seasonView.findViewById(R.id.team2014driveAuto);
+        lowAuto = (CheckBox) seasonView.findViewById(R.id.team2014lowAuto);
+        highAuto = (CheckBox) seasonView.findViewById(R.id.team2014highAuto);
+        hotAuto = (CheckBox) seasonView.findViewById(R.id.team2014hotAuto);
 		shooterTypes.setOnCheckedChangeListener(new UncheckableRadioGroupOnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -230,12 +258,6 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
 		getSeason().addView(seasonView);
 		return rootView;
 	}
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -412,12 +434,17 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<TeamScouting2014> orientations = new Select().from(TeamScouting2014.class).groupBy(TeamScouting2014.ORIENTATION).execute();
-                EventBus.getDefault().post(new LoadOrientations(orientations));
+                try {
+                    List<TeamScouting2014> orientations = new Select().from(TeamScouting2014.class).groupBy(TeamScouting2014.ORIENTATION).execute();
+                    EventBus.getDefault().post(new LoadOrientations(orientations));
+                } catch(NullPointerException e) {
+
+                }
             }
         });
     }
     public void onEventMainThread(TeamScouting2014 scoutingChanged) {
+        loadScouting();
         loadOrientations();
         loadDriveTrains();
     }
@@ -438,8 +465,12 @@ public class TeamDetail2014 extends TeamDetailFragment<TeamScouting2014> {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<TeamScouting2014> driveTrains = new Select().from(TeamScouting2014.class).groupBy(TeamScouting2014.DRIVE_TRAIN).execute();
-                EventBus.getDefault().post(new LoadDriveTrains(driveTrains));
+                try {
+                    List<TeamScouting2014> driveTrains = new Select().from(TeamScouting2014.class).groupBy(TeamScouting2014.DRIVE_TRAIN).execute();
+                    EventBus.getDefault().post(new LoadDriveTrains(driveTrains));
+                } catch(NullPointerException e) {
+
+                }
             }
         });
     }

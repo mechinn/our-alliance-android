@@ -3,26 +3,21 @@ package com.mechinn.android.ouralliance.fragment;
 import java.io.File;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import com.activeandroid.Model;
-import com.activeandroid.content.ContentProvider;
 import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
 import com.mechinn.android.ouralliance.adapter.WheelAdapter;
-import com.mechinn.android.ouralliance.adapter.frc2014.TeamScouting2014FilterAdapter;
-import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.Wheel;
-import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.Wheel2014;
 import com.mechinn.android.ouralliance.event.MultimediaDeletedEvent;
@@ -31,21 +26,18 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -55,9 +47,6 @@ import android.widget.Toast;
 import org.lucasr.twowayview.ItemClickSupport;
 import org.lucasr.twowayview.widget.TwoWayView;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
@@ -68,48 +57,17 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 
 	private Prefs prefs;
 	private View rootView;
-	@InjectView(R.id.picture) protected Button picture;
-    @OnClick(R.id.picture) protected void takePicture(View v) {
-        // Create a media file name
-        if(null!=multimedia && null!=multimedia.getTeamFileDirectory()) {
-            String timeStamp = dateFormat.format(new Date());
-            File mediaFile = new File(multimedia.getTeamFileDirectory().getPath().replaceFirst("file://", "") + File.separator + "IMG_"+ timeStamp + ".jpg");
-            Log.d(TAG,mediaFile.getAbsolutePath());
-            // create Intent to take a picture and return control to the calling application
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediaFile)); // set the image file name
-
-            // start the image capture Intent
-            startActivityForResult(intent, R.id.picture_capture_code);
-        }
-    }
-    @InjectView(R.id.video) protected Button video;
-    @OnClick(R.id.video) protected void takeVideo(View v) {
-        // Create a media file name
-        if(null!=multimedia && null!=multimedia.getTeamFileDirectory()) {
-            String timeStamp = dateFormat.format(new Date());
-            File mediaFile = new File(multimedia.getTeamFileDirectory().getPath().replaceFirst("file://", "") + File.separator + "VID_"+ timeStamp + ".mp4");
-            Log.d(TAG,mediaFile.getAbsolutePath());
-            // create Intent to take a picture and return control to the calling application
-            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediaFile)); // set the image file name
-            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
-
-            // start the image capture Intent
-            startActivityForResult(intent, R.id.video_capture_code);
-        }
-    }
-	@InjectView(R.id.gallery) protected TwoWayView gallery;
-    @InjectView(R.id.notes) protected TextView notes;
-	@InjectView(R.id.addWheel) protected Button addWheel;
-    @InjectView(R.id.wheels) protected ListView wheels;
+	private Button picture;
+    private Button video;
+	private TwoWayView gallery;
+    private TextView notes;
+	private Button addWheel;
+    private ListView wheels;
 	private MultimediaAdapter multimedia;
 
     private WheelAdapter wheelsAdapter;
 
-    @InjectView(R.id.season) protected LinearLayout season;
+    private LinearLayout season;
 	private long teamId;
 	private Scouting scouting;
     private Event event;
@@ -165,7 +123,45 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
         
         rootView = inflater.inflate(R.layout.fragment_team_detail, container, false);
 		rootView.setVisibility(View.GONE);
+        picture = (Button) rootView.findViewById(R.id.picture);
+        picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create a media file name
+                if(null!=multimedia && null!=multimedia.getTeamFileDirectory()) {
+                    String timeStamp = dateFormat.format(new Date());
+                    File mediaFile = new File(multimedia.getTeamFileDirectory().getPath().replaceFirst("file://", "") + File.separator + "IMG_"+ timeStamp + ".jpg");
+                    Log.d(TAG,mediaFile.getAbsolutePath());
+                    // create Intent to take a picture and return control to the calling application
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediaFile)); // set the image file name
+
+                    // start the image capture Intent
+                    startActivityForResult(intent, R.id.picture_capture_code);
+                }
+            }
+        });
+        video = (Button) rootView.findViewById(R.id.video);
+        video.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create a media file name
+                if(null!=multimedia && null!=multimedia.getTeamFileDirectory()) {
+                    String timeStamp = dateFormat.format(new Date());
+                    File mediaFile = new File(multimedia.getTeamFileDirectory().getPath().replaceFirst("file://", "") + File.separator + "VID_"+ timeStamp + ".mp4");
+                    Log.d(TAG,mediaFile.getAbsolutePath());
+                    // create Intent to take a picture and return control to the calling application
+                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediaFile)); // set the image file name
+                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
+
+                    // start the image capture Intent
+                    startActivityForResult(intent, R.id.video_capture_code);
+                }
+            }
+        });
 		if (this.getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
 			if(!Utility.isIntentAvailable(this.getActivity(),MediaStore.ACTION_IMAGE_CAPTURE)) {
 		        picture.setVisibility(View.GONE);
@@ -177,6 +173,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	        picture.setVisibility(View.GONE);
 	        video.setVisibility(View.GONE);
 	    }
+        gallery = (TwoWayView) rootView.findViewById(R.id.gallery);
         gallery.setHasFixedSize(true);
         gallery.setLongClickable(true);
         final ItemClickSupport galleryClick = ItemClickSupport.addTo(gallery);
@@ -209,6 +206,23 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
                 return false;
             }
         });
+        notes = (TextView) rootView.findViewById(R.id.notes);
+        addWheel = (Button) rootView.findViewById(R.id.addWheel);
+        wheels = (ListView) rootView.findViewById(R.id.wheels);
+        wheels.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Wheel newWheel = new Wheel2014();
+                newWheel.setTeamScouting(getScouting());
+                newWheel.asyncSave();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        season = (LinearLayout) rootView.findViewById(R.id.season);
 		return rootView;
     }
 
@@ -216,12 +230,6 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         wheelsAdapter = new WheelAdapter(getActivity(), null);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
     }
     
     @Override
@@ -270,13 +278,6 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     		teamId = getArguments().getLong(TEAM_ARG, 0);
     		Log.d(TAG, "team: "+teamId);
         }
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
     }
 
     @Override
@@ -375,14 +376,18 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<Wheel> wheelTypes = null;
-                switch (prefs.getYear()) {
-                    case 2014:
-                        wheelTypes = new Select().from(Wheel2014.class).groupBy(Wheel2014.WHEEL_TYPE).execute();
-                        break;
-                }
-                if (null != wheelTypes) {
-                    EventBus.getDefault().post(new LoadWheelTypes(wheelTypes));
+                try {
+                    List<Wheel> wheelTypes = null;
+                    switch (prefs.getYear()) {
+                        case 2014:
+                            wheelTypes = new Select().from(Wheel2014.class).groupBy(Wheel2014.WHEEL_TYPE).execute();
+                            break;
+                    }
+                    if (null != wheelTypes) {
+                        EventBus.getDefault().post(new LoadWheelTypes(wheelTypes));
+                    }
+                } catch(NullPointerException e) {
+
                 }
             }
         });
@@ -407,14 +412,18 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<Wheel> wheels = null;
-                switch (prefs.getYear()) {
-                    case 2014:
-                        wheels = new Select().from(Wheel2014.class).where(Wheel2014.TEAM_SCOUTING, getTeamId()).execute();
-                        break;
-                }
-                if (null != wheels) {
-                    EventBus.getDefault().post(new LoadWheelTypes(wheels));
+                try {
+                    List<Wheel> wheels = null;
+                    switch (prefs.getYear()) {
+                        case 2014:
+                            wheels = new Select().from(Wheel2014.class).where(Wheel2014.TEAM_SCOUTING, getTeamId()).execute();
+                            break;
+                    }
+                    if (null != wheels) {
+                        EventBus.getDefault().post(new LoadWheelTypes(wheels));
+                    }
+                } catch(NullPointerException e) {
+
                 }
             }
         });
@@ -436,19 +445,26 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             @Override
             public void run() throws Exception {
                 Scouting scouting = null;
-                switch(prefs.getYear()) {
-                    case 2014:
-                        scouting = new Select().from(TeamScouting2014.class).where(TeamScouting2014.ID,getTeamId()).executeSingle();
-                        break;
+                try {
+                    switch (prefs.getYear()) {
+                        case 2014:
+                            scouting = new Select().from(TeamScouting2014.class).where(TeamScouting2014.ID, getTeamId()).executeSingle();
+                            break;
+                    }
+                } catch(NullPointerException e) {
+                    switch (prefs.getYear()) {
+                        case 2014:
+                            Team team = new Select().from(Team.class).where(Team.ID, getTeamId()).executeSingle();
+                            scouting = (Scouting) new TeamScouting2014();
+                            scouting.setTeam(team);
+                            break;
+                    }
                 }
-                if(null!=wheels) {
+                if(null!=scouting) {
                     EventBus.getDefault().post(new LoadScouting(scouting));
                 }
             }
         });
-    }
-    public void onEventMainThread(Scouting scoutingChanged) {
-        loadScouting();
     }
     public void onEventMainThread(LoadScouting scouting) {
         setScouting(scouting.getScouting());

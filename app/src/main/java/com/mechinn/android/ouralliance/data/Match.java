@@ -22,13 +22,19 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     public final static String TIME = "time";
     public final static String RED_SCORE = "redScore";
     public final static String BLUE_SCORE = "blueScore";
+    public final static String EIGHTH_FINALS = "ef";
+    public final static String QUARTER_FINALS = "qf";
+    public final static String SEMI_FINALS = "sf";
+    public final static String FINALS = "f";
+    public final static String QUALIFIER = "qm";
+    public final static String PRACTICE = "p";
     @Column(name=EVENT, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private Event event;
     @Column(name=COMPETITION_LEVEL, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
-    private CompetitionLevel compLevel;
+    private String compLevel;
     @Column(name=MATCH_NUMBER, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
-    private int matchNum;
-    @Column(name=SET_NUMBER)
+    private int matchNumber;
+    @Column(name=SET_NUMBER, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private Integer setNumber;
     @Column(name=TIME)
     private Long time;
@@ -47,17 +53,32 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     public void setEvent(Event event) {
         this.event = event;
     }
-    public CompetitionLevel getCompLevel() {
+    public String getCompLevel() {
         return compLevel;
     }
-    public void setCompLevel(CompetitionLevel compLevel) {
+    public String compLevelString() {
+        if(getCompLevel().equals(EIGHTH_FINALS)) {
+            return "Eigtht Finals";
+        } else if(getCompLevel().equals(QUARTER_FINALS)) {
+            return "Quarter Finals";
+        } else if(getCompLevel().equals(SEMI_FINALS)) {
+            return "Semi Finals";
+        } else if(getCompLevel().equals(FINALS)) {
+            return "Finals";
+        } else if(getCompLevel().equals(PRACTICE)) {
+            return "Practice";
+        } else {
+            return "Qualifier";
+        }
+    }
+    public void setCompLevel(String compLevel) {
         this.compLevel = compLevel;
     }
-    public int getMatchNum() {
-        return matchNum;
+    public int getMatchNumber() {
+        return matchNumber;
     }
-    public void setMatchNum(int matchNum) {
-        this.matchNum = matchNum;
+    public void setMatchNumber(int matchNumber) {
+        this.matchNumber = matchNumber;
     }
     public Integer getSetNumber() {
         return setNumber;
@@ -89,78 +110,12 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     public List<MatchScouting> getTeams() {
         return getMany(MatchScouting.class, TAG);
     }
-    public enum CompetitionLevel {
-        EIGHTH_FINALS(8),
-        QUARTER_FINALS(4),
-        SEMI_FINALS(2),
-        FINALS(1),
-        QUALIFIER(0),
-        PRACTICE(-1);
-        private int value;
-        private CompetitionLevel(int value) {
-            this.value = value;
-        }
-        public int getValue() {
-            return this.value;
-        }
-        public String getAbbr() {
-            switch(this) {
-                case EIGHTH_FINALS:
-                    return "ef";
-                case QUARTER_FINALS:
-                    return "qf";
-                case SEMI_FINALS:
-                    return "sf";
-                case FINALS:
-                    return "f";
-                case PRACTICE:
-                    return "p";
-                default:
-                    return "qm";
-            }
-        }
-        public String toString() {
-            switch(this) {
-                case EIGHTH_FINALS:
-                    return "Eigtht Finals";
-                case QUARTER_FINALS:
-                    return "Quarter Finals";
-                case SEMI_FINALS:
-                    return "Semi Finals";
-                case FINALS:
-                    return "Finals";
-                case PRACTICE:
-                    return "Practice";
-                default:
-                    return "Qualifier";
-            }
-        }
-        public static CompetitionLevel fromValue(int value) {
-            switch(value) {
-                case 8:
-                    return EIGHTH_FINALS;
-                case 4:
-                    return QUARTER_FINALS;
-                case 2:
-                    return SEMI_FINALS;
-                case 1:
-                    return FINALS;
-                case -1:
-                    return PRACTICE;
-                default:
-                    return QUALIFIER;
-            }
-        }
-    }
     public String toString() {
-        String string = getCompLevel().toString()+": ";
-        switch(getCompLevel()) {
-            case QUARTER_FINALS:
-            case SEMI_FINALS:
-                string += getSetNumber()+" Match: ";
-                break;
+        String string = compLevelString()+": ";
+        if(getCompLevel().equals(EIGHTH_FINALS) || getCompLevel().equals(QUARTER_FINALS) || getCompLevel().equals(SEMI_FINALS)) {
+            string += getSetNumber()+" Match: ";
         }
-        return string+this.getMatchNum();
+        return string+this.getMatchNumber();
     }
     public boolean equals(Object data) {
         if(!(data instanceof Match)) {
@@ -172,10 +127,10 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
                 getTime().equals(((Match)data).getTime()) &&
                 getRedScore()==((Match)data).getRedScore() &&
                 getBlueScore()==((Match)data).getBlueScore() &&
-                getMatchNum()==((Match)data).getMatchNum();
+                getMatchNumber()==((Match)data).getMatchNumber();
     }
     public int compareTo(Match another) {
-        return this.getMatchNum() - another.getMatchNum();
+        return this.getMatchNumber() - another.getMatchNumber();
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
