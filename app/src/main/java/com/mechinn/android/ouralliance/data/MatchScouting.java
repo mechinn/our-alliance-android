@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.util.AsyncExecutor;
-
 /**
  * Created by mechinn on 2/14/2015.
  */
@@ -78,23 +75,5 @@ public abstract class MatchScouting<TeamScout extends TeamScouting> extends OurA
                 getTeamScouting().equals(((MatchScouting) data).getTeamScouting()) &&
                 isAlliance() == ((MatchScouting) data).isAlliance() &&
                 getNotes().equals(((MatchScouting) data).getNotes());
-    }
-    public void asyncSave() {
-        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
-            @Override
-            public void run() throws Exception {
-                saveMod();
-                EventBus.getDefault().post(MatchScouting.this);
-            }
-        });
-    }
-    public void asyncDelete() {
-        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
-            @Override
-            public void run() throws Exception {
-                delete();
-                EventBus.getDefault().post(MatchScouting.this);
-            }
-        });
     }
 }
