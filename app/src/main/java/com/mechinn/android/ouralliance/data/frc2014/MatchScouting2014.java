@@ -5,14 +5,13 @@ import android.provider.BaseColumns;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
 @Table(name = MatchScouting2014.TAG, id = MatchScouting2014.ID)
-public class MatchScouting2014 extends MatchScouting<TeamScouting2014> {
+public class MatchScouting2014 extends com.mechinn.android.ouralliance.data.MatchScouting<TeamScouting2014>  {
     public final static String TAG = "MatchScouting2014";
     public final static String HOTSHOTS = "hotShots";
     public final static String SHOTSMADE = "shotsMade";

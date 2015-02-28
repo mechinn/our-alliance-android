@@ -15,12 +15,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import de.greenrobot.event.EventBus;
+
 public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScouting> extends Fragment {
     public static final String TAG = "MatchDetailFragment";
-    public static final String SCOUTING_ARG = "team";
+    public static final String TEAM_ARG = "team";
 
     private Prefs prefs;
-    private long scoutingId;
+    private long teamId;
 
 	private View rootView;
     private TextView notes;
@@ -28,11 +30,11 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
 
 	private MatchScoutingYear match;
 
-    public long getScoutingId() {
-        return scoutingId;
+    public long getTeamId() {
+        return teamId;
     }
-    public void setScoutingId(long scoutingId) {
-        this.scoutingId = scoutingId;
+    public void setTeamId(long teamId) {
+        this.teamId = teamId;
     }
     public LinearLayout getSeason() {
     return season;
@@ -61,8 +63,8 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
         // the previous article selection set by onSaveInstanceState().
         // This is primarily necessary when in the two-pane layout.
         if (savedInstanceState != null) {
-            scoutingId = savedInstanceState.getLong(EventTeam.TAG, 0);
-            Log.d(TAG, "team: "+ scoutingId);
+            teamId = savedInstanceState.getLong(EventTeam.TAG, 0);
+            Log.d(TAG, "team: "+teamId);
         }
     	
 //    	OnClickListener teamButton = new OnClickListener() {
@@ -93,8 +95,8 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
         // below that sets the article text.
         Bundle args = getArguments();
         if (args != null) {
-            scoutingId = getArguments().getLong(SCOUTING_ARG, 0);
-            Log.d(TAG, "team: " + scoutingId);
+            teamId = getArguments().getLong(TEAM_ARG, 0);
+            Log.d(TAG, "team: " + teamId);
         }
     }
 	
@@ -110,7 +112,7 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(SCOUTING_ARG, scoutingId);
+        outState.putLong(TEAM_ARG, teamId);
     }
 	
 	@Override

@@ -132,11 +132,11 @@ public class MatchScoutingActivity extends OurAllianceActivity implements OnBack
         transaction.commit();
 	}
 
-    public void onEventMainThread(SelectMatchTeamEvent scouting) {
-        long scoutingId = scouting.getId();
-        Log.d(TAG, "team: "+scoutingId);
+    public void onEventMainThread(SelectMatchTeamEvent team) {
+        long teamId = team.getId();
+        Log.d(TAG, "team: "+teamId);
         Bundle args = new Bundle();
-        args.putLong(MatchDetailFragment.SCOUTING_ARG, scoutingId);
+        args.putLong(MatchDetailFragment.TEAM_ARG, teamId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch(getPrefs().getYear()) {
             case 2014:

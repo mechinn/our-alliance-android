@@ -448,13 +448,13 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
                 try {
                     switch (prefs.getYear()) {
                         case 2014:
-                            scouting = new Select().from(TeamScouting2014.class).where(TeamScouting2014.TEAM, getTeamId()).executeSingle();
+                            scouting = new Select().from(TeamScouting2014.class).where(TeamScouting2014.ID, getTeamId()).executeSingle();
                             break;
                     }
                 } catch(NullPointerException e) {
                     switch (prefs.getYear()) {
                         case 2014:
-                            Team team = Model.load(Team.class,getTeamId());
+                            Team team = new Select().from(Team.class).where(Team.ID, getTeamId()).executeSingle();
                             scouting = (Scouting) new TeamScouting2014();
                             scouting.setTeam(team);
                             break;
