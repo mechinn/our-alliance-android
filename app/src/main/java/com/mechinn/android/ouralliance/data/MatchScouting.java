@@ -15,18 +15,14 @@ import de.greenrobot.event.util.AsyncExecutor;
 /**
  * Created by mechinn on 2/14/2015.
  */
-public abstract class MatchScouting<TeamScout extends TeamScouting> extends OurAllianceObject implements Comparable<MatchScouting>, java.io.Serializable {
+public abstract class MatchScouting extends OurAllianceObject implements Comparable<MatchScouting>, java.io.Serializable {
     public final static String TAG = "MatchScouting";
-
     public final static String MATCH = Match.TAG;
-    public final static String TEAM = TeamScouting.TAG;
     public final static String ALLIANCE = "alliance";
     public final static String POSITION = "position";
     public final static String NOTES = "notes";
     @Column(name=MATCH, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private Match match;
-    @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
-    private TeamScout teamScouting;
     @Column(name=ALLIANCE, notNull = true, onNullConflict = Column.ConflictAction.FAIL)
     private boolean alliance;
     @Column(name=POSITION, notNull = true, onNullConflict = Column.ConflictAction.FAIL)
@@ -39,12 +35,8 @@ public abstract class MatchScouting<TeamScout extends TeamScouting> extends OurA
     public void setMatch(Match match) {
         this.match = match;
     }
-    public TeamScout getTeamScouting() {
-        return teamScouting;
-    }
-    public void setTeamScouting(TeamScout teamScouting) {
-        this.teamScouting = teamScouting;
-    }
+    public abstract TeamScouting getTeamScouting();
+    public abstract void setTeamScouting(TeamScouting teamScouting);
     public boolean isAlliance() {
         return alliance;
     }

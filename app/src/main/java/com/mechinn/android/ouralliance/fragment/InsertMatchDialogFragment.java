@@ -285,7 +285,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<EventTeam> teams = new Select().from(EventTeam.class).where(EventTeam.EVENT,prefs.getComp()).execute();
+                List<EventTeam> teams = new Select().from(EventTeam.class).where(EventTeam.EVENT+"=?",prefs.getComp()).execute();
                 EventBus.getDefault().post(new LoadEventTeams(teams));
             }
         });

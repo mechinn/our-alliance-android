@@ -116,8 +116,8 @@ public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                if (getTeamId() != 0) {
-                    MatchScouting2014 scouting = Model.load(MatchScouting2014.class, getTeamId());
+                if (getScoutingId() != 0) {
+                    MatchScouting2014 scouting = Model.load(MatchScouting2014.class, getScoutingId());
                     EventBus.getDefault().post(new LoadMatcheScouting(scouting));
                 }
             }

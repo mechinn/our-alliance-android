@@ -223,7 +223,7 @@ public class MatchListFragment extends ListFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                int count = new Select().from(EventTeam.class).where(Match.EVENT,prefs.getComp()).count();
+                int count = new Select().from(EventTeam.class).where(Match.EVENT+"=?",prefs.getComp()).count();
                 EventBus.getDefault().post(new LoadEventTeams(count));
             }
         });
@@ -249,7 +249,7 @@ public class MatchListFragment extends ListFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                From matchBuilder = new Select().from(Match.class).where(Match.EVENT,prefs.getComp());
+                From matchBuilder = new Select().from(Match.class).where(Match.EVENT+"=?",prefs.getComp());
                 if(prefs.isPractice()) {
                     matchBuilder = matchBuilder.and(Match.COMPETITION_LEVEL+"<0");
                 } else {

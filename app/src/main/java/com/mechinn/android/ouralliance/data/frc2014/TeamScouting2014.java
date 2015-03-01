@@ -8,13 +8,14 @@ import java.util.List;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.mechinn.android.ouralliance.data.MatchScouting;
+import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Wheel;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
 @Table(name = TeamScouting2014.TAG, id = TeamScouting2014.ID)
-public class TeamScouting2014 extends com.mechinn.android.ouralliance.data.TeamScouting {
+public class TeamScouting2014 extends TeamScouting {
     public final static String TAG = "TeamScouting2014";
     public final static String ORIENTATION = "orientation";
     public final static String DRIVE_TRAIN = "driveTrain";

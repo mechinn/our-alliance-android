@@ -67,15 +67,11 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
                             matchScouting.setMatch(match);
                             matchScouting.setPosition(position);
                             int teamNum = Integer.parseInt(teams.get(position).substring(3));
-                            TeamScouting2014 teamScouting;
-                            try {
-                                teamScouting = new Select().from(TeamScouting2014.class).join(Team.class).on("?=?", TeamScouting2014.TEAM, Team.ID).where("?=?", Team.TEAM_NUMBER, teamNum).executeSingle();
-                            } catch(Exception teamScoutingEx) {
+                            TeamScouting2014 teamScouting = new Select().from(TeamScouting2014.class).join(Team.class).on(TeamScouting2014.TAG+"."+TeamScouting2014.TEAM+"="+Team.TAG+"."+Team.ID).where(Team.TAG+"."+Team.TEAM_NUMBER+"=?", teamNum).executeSingle();
+                            if(null== teamScouting) {
                                 teamScouting = new TeamScouting2014();
-                                Team teamObject;
-                                try {
-                                    teamObject = new Select().from(Team.class).where("?=?", Team.TEAM_NUMBER, teamNum).executeSingle();
-                                } catch(Exception teamEx) {
+                                Team teamObject = new Select().from(Team.class).where(Team.TEAM_NUMBER+"=?", teamNum).executeSingle();
+                                if(null==teamObject) {
                                     teamObject = new Team();
                                     teamObject.setTeamNumber(teamNum);
                                     teamObject.saveMod();
@@ -85,7 +81,7 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
                                 teamScouting.saveMod();
                                 teamScoutingChanged = true;
                             }
-                            matchScouting.setTeamScouting(teamScouting);
+                            matchScouting.setTeamScouting2014(teamScouting);
                             matchScouting.setAlliance(position>2);
                             matchScouting.saveMod();
                             matchScoutingChanged = true;

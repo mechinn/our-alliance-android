@@ -5,14 +5,11 @@ import com.activeandroid.annotation.Column;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
-public abstract class Wheel<Scouting extends TeamScouting> extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<Wheel>, java.io.Serializable {
+public abstract class Wheel extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<Wheel>, java.io.Serializable {
     public final static String TAG = "Wheel";
-    public final static String TEAM_SCOUTING = TeamScouting.TAG;
     public final static String WHEEL_TYPE = "wheelType";
     public final static String WHEEL_SIZE = "wheelSize";
     public final static String WHEEL_COUNT = "wheelCount";
-    @Column(name=TEAM_SCOUTING, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
-    private Scouting teamScouting;
     @Column(name=WHEEL_TYPE, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private String wheelType;
     @Column(name=WHEEL_SIZE, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
@@ -37,12 +34,8 @@ public abstract class Wheel<Scouting extends TeamScouting> extends com.mechinn.a
     public void setWheelCount(Integer wheelCount) {
         this.wheelCount = wheelCount;
     }
-    public Scouting getTeamScouting() {
-        return teamScouting;
-    }
-    public void setTeamScouting(Scouting teamScouting) {
-        this.teamScouting = teamScouting;
-    }
+    public abstract TeamScouting getTeamScouting();
+    public abstract void setTeamScouting(TeamScouting teamScouting);
     public String toString() {
         return getTeamScouting()+": "+ getWheelType()+" | "+ getWheelSize()+" | "+ getWheelCount();
     }

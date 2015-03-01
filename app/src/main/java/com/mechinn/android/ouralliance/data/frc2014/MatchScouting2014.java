@@ -5,14 +5,16 @@ import android.provider.BaseColumns;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
 @Table(name = MatchScouting2014.TAG, id = MatchScouting2014.ID)
-public class MatchScouting2014 extends com.mechinn.android.ouralliance.data.MatchScouting<TeamScouting2014>  {
+public class MatchScouting2014 extends MatchScouting {
     public final static String TAG = "MatchScouting2014";
+    public final static String TEAM = TeamScouting2014.TAG;
     public final static String HOTSHOTS = "hotShots";
     public final static String SHOTSMADE = "shotsMade";
     public final static String SHOTSMISSED = "shotsMissed";
@@ -26,6 +28,8 @@ public class MatchScouting2014 extends com.mechinn.android.ouralliance.data.Matc
     public final static String OVERTRUSS = "overTruss";
     public final static String LOW = "low";
     public final static String HIGH = "high";
+    @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
+    private TeamScouting2014 teamScouting2014;
     @Column(name=HOTSHOTS)
     private Integer hotShots;
     @Column(name=SHOTSMADE)
@@ -55,6 +59,18 @@ public class MatchScouting2014 extends com.mechinn.android.ouralliance.data.Matc
     public MatchScouting2014() {}
     public MatchScouting2014(Cursor cursor) {
         this.loadFromCursor(cursor);
+    }
+    public TeamScouting2014 getTeamScouting2014() {
+        return teamScouting2014;
+    }
+    public void setTeamScouting2014(TeamScouting2014 teamScouting2014) {
+        this.teamScouting2014 = teamScouting2014;
+    }
+    public TeamScouting getTeamScouting() {
+        return getTeamScouting2014();
+    }
+    public void setTeamScouting(TeamScouting teamScouting) {
+        setTeamScouting2014((TeamScouting2014) teamScouting);
     }
     public Integer getHotShots() {
         return hotShots;
