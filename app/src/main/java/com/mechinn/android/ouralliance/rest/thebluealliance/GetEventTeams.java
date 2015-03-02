@@ -10,6 +10,7 @@ import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.OurAllianceObject;
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.event.ToastEvent;
 import com.mechinn.android.ouralliance.event.Transaction;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
@@ -40,8 +41,17 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
         Log.d(TAG, "Setting up teams");
         ActiveAndroid.beginTransaction();
         try {
-            List<Team> teams = TheBlueAlliance.getService().getEventTeams(prefs.getYear() + event.getEventCode());
-            Transaction.save(Team.class, teams);
+            int year = prefs.getYear();
+            List<Team> teams = TheBlueAlliance.getService().getEventTeams(year + event.getEventCode());
+            for(Team team : teams) {
+                team.saveMod();
+                switch(year) {
+                    case 2014:
+                        TeamScouting2014 scouting2014 = new TeamScouting2014();
+                        scouting2014.setTeam(team);
+                        scouting2014.saveMod();
+                }
+            }
             Collections.sort(teams);
             List<EventTeam> eventTeams = new ArrayList<>();
             for(int teamRank=0;teamRank<teams.size();teamRank++) {
@@ -50,8 +60,8 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
                 eventTeam.setTeam(teams.get(teamRank));
                 eventTeam.setRank(teamRank);
                 eventTeams.add(eventTeam);
+                eventTeam.saveMod();
             }
-            Transaction.save(EventTeam.class, eventTeams);
             ActiveAndroid.setTransactionSuccessful();
             EventBus.getDefault().post(teams.get(0));
             EventBus.getDefault().post(eventTeams.get(0));

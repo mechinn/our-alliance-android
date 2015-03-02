@@ -276,6 +276,7 @@ public class TeamListFragment extends Fragment {
                 switch(prefs.getYear()) {
                     case 2014:
                         query = query.join(TeamScouting2014.class).on(Team.TAG+"."+Team.ID+"="+TeamScouting2014.TAG+"."+TeamScouting2014.TEAM);
+                        Log.d(TAG,"sort: "+sort2014);
                         switch(sort2014) {
                             case NUMBER:
                                 orderBy = Team.TAG+"."+Team.TEAM_NUMBER+" ASC";
@@ -285,6 +286,12 @@ public class TeamListFragment extends Fragment {
                                 break;
                             case DRIVETRAIN:
                                 orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.DRIVE_TRAIN+" ASC";
+                                break;
+                            case WIDTH:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.WIDTH+" DESC";
+                                break;
+                            case LENGTH:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.LENGTH+" DESC";
                                 break;
                             case HEIGHTSHOOTER:
                                 orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HEIGHT_SHOOTER+" DESC";
@@ -337,6 +344,13 @@ public class TeamListFragment extends Fragment {
     }
 
     public void onEventMainThread(EventTeam eventTeamsChanged) {
+        load();
+    }
+
+    public void onEventMainThread(TeamScouting2014 teamScouting2014Changed) {
+        load();
+    }
+    public void onEventMainThread(Team teamsChanged) {
         load();
     }
 

@@ -87,6 +87,20 @@ public class TeamDetail2014 extends TeamDetailFragment {
         setScouting(scouting);
     }
 
+    public void shooterTypeNone() {
+        shooterGroup.setVisibility(View.GONE);
+        lowGoal.setChecked(false);
+        highGoal.setChecked(false);
+        shootingDistanceGroup.setVisibility(View.GONE);
+        shootingDistance.setText("");
+        lowAuto.setVisibility(View.GONE);
+        lowAuto.setChecked(false);
+        highAuto.setVisibility(View.GONE);
+        highAuto.setChecked(false);
+        hotAuto.setVisibility(View.GONE);
+        hotAuto.setChecked(false);
+    }
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
@@ -214,6 +228,7 @@ public class TeamDetail2014 extends TeamDetailFragment {
         lowAuto = (CheckBox) seasonView.findViewById(R.id.team2014lowAuto);
         highAuto = (CheckBox) seasonView.findViewById(R.id.team2014highAuto);
         hotAuto = (CheckBox) seasonView.findViewById(R.id.team2014hotAuto);
+        shooterTypeNone();
 		shooterTypes.setOnCheckedChangeListener(new UncheckableRadioGroupOnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -222,17 +237,7 @@ public class TeamDetail2014 extends TeamDetailFragment {
                     switch (checkedId) {
                         default:
                         case R.id.none:
-                            shooterGroup.setVisibility(View.GONE);
-                            lowGoal.setChecked(false);
-                            highGoal.setChecked(false);
-                            shootingDistanceGroup.setVisibility(View.GONE);
-                            shootingDistance.setText("");
-                            lowAuto.setVisibility(View.GONE);
-                            lowAuto.setChecked(false);
-                            highAuto.setVisibility(View.GONE);
-                            highAuto.setChecked(false);
-                            hotAuto.setVisibility(View.GONE);
-                            hotAuto.setChecked(false);
+                            shooterTypeNone();
                             break;
                         case R.id.dumper:
                             shooterGroup.setVisibility(View.VISIBLE);
@@ -323,31 +328,31 @@ public class TeamDetail2014 extends TeamDetailFragment {
 		orientation.setText(getScouting().getOrientation());
 		driveTrain.setText(getScouting().getDriveTrain());
 		//check if its 0, if so empty the string so the user doesnt go crazy
-		if(null!=getScouting().getWidth() && 0 != getScouting().getShootingDistance()) {
+		if(null!=getScouting().getWidth() && getScouting().getWidth()>0) {
 			num = Double.toString(getScouting().getWidth());
 			width.setText(num);
 		}
-		if(null!=getScouting().getLength() && 0 != getScouting().getShootingDistance()) {
+		if(null!=getScouting().getLength() && getScouting().getLength()>0) {
 			num = Double.toString(getScouting().getLength());
 			length.setText(num);
 		}
-		if(null!=getScouting().getHeightShooter() && 0 != getScouting().getShootingDistance()) {
+		if(null!=getScouting().getHeightShooter() && getScouting().getHeightShooter()>0) {
 			num = Double.toString(getScouting().getHeightShooter());
 			heightShooter.setText(num);
 		}
-		if(null!=getScouting().getHeightMax() && 0 != getScouting().getShootingDistance()) {
+		if(null!=getScouting().getHeightMax() && getScouting().getHeightMax()>0) {
 			num = Double.toString(getScouting().getHeightMax());
 			heightMax.setText(num);
 		}
         if(null!=getScouting().getShooterType()) {
             switch (getScouting().getShooterType()) {
-                case 0:
+                case NONE:
                     shooterTypes.programaticallyCheck(R.id.none);
                     break;
-                case 1:
+                case DUMPER:
                     shooterTypes.programaticallyCheck(R.id.dumper);
                     break;
-                case 2:
+                case SHOOTER:
                     shooterTypes.programaticallyCheck(R.id.shooter);
                     break;
             }
@@ -358,7 +363,7 @@ public class TeamDetail2014 extends TeamDetailFragment {
         if(null!=getScouting().getHighGoal()) {
             highGoal.setChecked(getScouting().getHighGoal());
         }
-        if(null!=getScouting().getShootingDistance() && 0 != getScouting().getShootingDistance()) {
+        if(null!=getScouting().getShootingDistance() && getScouting().getShootingDistance()>0) {
             num = Double.toString(getScouting().getShootingDistance());
             shootingDistance.setText(num);
         }
@@ -446,14 +451,16 @@ public class TeamDetail2014 extends TeamDetailFragment {
 		getScouting().setHeightMax(Utility.getDoubleFromText(heightMax.getText()));
         switch(shooterTypes.getCheckedRadioButtonId()) {
             case R.id.none:
-                getScouting().setShooterType(0);
+                getScouting().setShooterType(TeamScouting2014.ShooterType.NONE);
                 break;
             case R.id.dumper:
-                getScouting().setShooterType(1);
+                getScouting().setShooterType(TeamScouting2014.ShooterType.DUMPER);
                 break;
             case R.id.shooter:
-                getScouting().setShooterType(2);
+                getScouting().setShooterType(TeamScouting2014.ShooterType.SHOOTER);
                 break;
+            default:
+                getScouting().setShooterType(TeamScouting2014.ShooterType.UNKNOWN);
         }
 		getScouting().setLowGoal(lowGoal.isChecked());
         getScouting().setHighGoal(highGoal.isChecked());

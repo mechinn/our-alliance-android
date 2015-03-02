@@ -24,6 +24,29 @@ public class TeamScouting2014 extends TeamScouting {
     public final static String HEIGHT_SHOOTER = "heightShooter";
     public final static String HEIGHT_MAX = "heightMax";
     public final static String SHOOTER_TYPE = "shooterType";
+    public enum ShooterType {
+        UNKNOWN(null),NONE(0),DUMPER(1),SHOOTER(2);
+        private Integer value;
+        private ShooterType(Integer value) {
+            this.value = value;
+        }
+        public Integer getValue() {
+            return value;
+        }
+        public static ShooterType getType(Integer value) {
+            if(null!=value) {
+                switch(value) {
+                    case 0:
+                        return NONE;
+                    case 1:
+                        return DUMPER;
+                    case 2:
+                        return SHOOTER;
+                }
+            }
+            return UNKNOWN;
+        }
+    }
     public final static String LOW_GOAL = "lowGoal";
     public final static String HIGH_GOAL = "highGoal";
     public final static String SHOOTING_DISTANCE = "shootingDistance";
@@ -126,11 +149,17 @@ public class TeamScouting2014 extends TeamScouting {
     public void setHeightMax(Double heightMax) {
         this.heightMax = heightMax;
     }
-    public Integer getShooterType() {
+    public Integer getShooter() {
         return shooterType;
     }
-    public void setShooterType(Integer shooterType) {
+    public void setShooter(Integer shooterType) {
         this.shooterType = shooterType;
+    }
+    public ShooterType getShooterType() {
+        return ShooterType.getType(shooterType);
+    }
+    public void setShooterType(ShooterType shooterType) {
+        this.shooterType = shooterType.getValue();
     }
     public Boolean getLowGoal() {
         return lowGoal;
