@@ -9,47 +9,60 @@ import de.greenrobot.event.EventBusException;
  */
 public class BluetoothEvent {
     public enum State {
-        STATE_CONNECTING,
-        STATE_CONNECTED,
-        STATE_DISCONNECTING,
-        STATE_DISCONNECTED,
-        STATE_TURNING_OFF,
-        STATE_OFF,
-        STATE_TURNING_ON,
-        STATE_ON
+        CONNECTING,
+        CONNECTED,
+        DISCONNECTING,
+        DISCONNECTED,
+        TURNING_OFF,
+        OFF,
+        TURNING_ON,
+        ON,
+        DISABLED
     }
     private State state;
-    public BluetoothEvent(int state) throws EventException {
+    public BluetoothEvent(int state) {
         switch(state) {
             case BluetoothAdapter.STATE_CONNECTING:
-                this.state = State.STATE_CONNECTING;
+                this.state = State.CONNECTING;
                 break;
             case BluetoothAdapter.STATE_CONNECTED:
-                this.state = State.STATE_CONNECTED;
+                this.state = State.CONNECTED;
                 break;
             case BluetoothAdapter.STATE_DISCONNECTING:
-                this.state = State.STATE_DISCONNECTING;
+                this.state = State.DISCONNECTING;
                 break;
             case BluetoothAdapter.STATE_DISCONNECTED:
-                this.state = State.STATE_DISCONNECTED;
+                this.state = State.DISCONNECTED;
                 break;
             case BluetoothAdapter.STATE_TURNING_OFF:
-                this.state = State.STATE_TURNING_OFF;
+                this.state = State.TURNING_OFF;
                 break;
             case BluetoothAdapter.STATE_OFF:
-                this.state = State.STATE_OFF;
+                this.state = State.OFF;
                 break;
             case BluetoothAdapter.STATE_TURNING_ON:
-                this.state = State.STATE_TURNING_ON;
+                this.state = State.TURNING_ON;
                 break;
             case BluetoothAdapter.STATE_ON:
-                this.state = State.STATE_ON;
+                this.state = State.ON;
                 break;
             default:
-                throw new EventException("Unknown State");
+                this.state = State.DISABLED;
         }
     }
     public State getState() {
         return state;
+    }
+    public boolean isEnabled() {
+        return !state.equals(State.DISABLED);
+    }
+    public boolean isDisabled() {
+        return state.equals(State.DISABLED);
+    }
+    public boolean isConnected() {
+        return state.equals(State.CONNECTED);
+    }
+    public boolean isOn() {
+        return state.equals(State.ON);
     }
 }

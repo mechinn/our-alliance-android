@@ -46,12 +46,9 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                try {
-                    int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-                    EventBus.getDefault().post(new BluetoothEvent(state));
-                } catch (EventException e) {
-                    Toast.makeText(OurAlliance.this,e.getMessage(),Toast.LENGTH_LONG).show();
-                }
+                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+//                EventBus.getDefault().postSticky(new BluetoothEvent(state));
+                EventBus.getDefault().postSticky(new BluetoothEvent(BluetoothAdapter.ERROR));
             }
         }
     };
@@ -72,16 +69,23 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         this.registerReceiver(broadcastReceiver, filter);
+//        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        if(null==bluetoothAdapter) {
+//            EventBus.getDefault().postSticky(new BluetoothEvent(BluetoothAdapter.STATE_OFF));
+//        } else {
+//            EventBus.getDefault().postSticky(new BluetoothEvent(.getState()));
+//        }
+        EventBus.getDefault().postSticky(new BluetoothEvent(BluetoothAdapter.ERROR));
 //        new AlarmTheBlueAlliance(this.getApplicationContext()).setAlarm();
     }
 
     public void onEventMainThread(BluetoothEvent event) {
         switch (event.getState()) {
-            case STATE_OFF:
-            case STATE_TURNING_OFF:
+            case OFF:
+            case TURNING_OFF:
                 break;
-            case STATE_ON:
-            case STATE_TURNING_ON:
+            case ON:
+            case TURNING_ON:
                 break;
         }
     }

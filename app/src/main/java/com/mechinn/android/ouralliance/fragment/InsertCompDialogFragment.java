@@ -15,7 +15,7 @@ import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Event;
 
 public class InsertCompDialogFragment extends DialogFragment {
-    public static final String TAG = "InsertCompDialogFragment";
+    public static final String TAG = "InsertCompDialog";
 	public static final String SEASON_ARG = "season";
 	public static final String COMP_ARG = "compeition";
 

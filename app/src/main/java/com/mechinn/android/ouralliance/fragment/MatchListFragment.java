@@ -39,8 +39,6 @@ public class MatchListFragment extends ListFragment {
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 	private Prefs prefs;
 	private MatchAdapter adapter;
-    private BluetoothAdapter bluetoothAdapter;
-    private boolean bluetoothOn;
     private GetMatches downloadMatches;
     private boolean enoughTeams;
 
@@ -48,7 +46,6 @@ public class MatchListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         downloadMatches = new GetMatches(this.getActivity());
     }
 
@@ -87,22 +84,9 @@ public class MatchListFragment extends ListFragment {
         if (getFragmentManager().findFragmentById(R.id.list_fragment) != null) {
         	getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
-        if(null!=bluetoothAdapter) {
-            bluetoothOn = bluetoothAdapter.isEnabled();
-        }
     }
 
     public void onEventMainThread(BluetoothEvent event) {
-        switch (event.getState()) {
-            case STATE_OFF:
-            case STATE_TURNING_OFF:
-                bluetoothOn = false;
-                break;
-            case STATE_ON:
-            case STATE_TURNING_ON:
-                bluetoothOn = true;
-                break;
-        }
         getActivity().invalidateOptionsMenu();
     }
 
@@ -153,12 +137,13 @@ public class MatchListFragment extends ListFragment {
 	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
+        BluetoothEvent bluetoothState = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
 	    menu.findItem(R.id.practice).setChecked(prefs.isPractice());
         menu.findItem(R.id.insert).setVisible(prefs.getComp()>0 && enoughTeams);
-        menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && bluetoothAdapter!=null);
+        menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && !bluetoothState.isDisabled());
         menu.findItem(R.id.importMatchScouting).setVisible(prefs.getComp()>0);
         menu.findItem(R.id.exportMatchScouting).setVisible(null!=adapter && adapter.getCount()>0);
-        if(bluetoothOn) {
+        if(bluetoothState.isOn()) {
             menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
         } else {
             menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth);

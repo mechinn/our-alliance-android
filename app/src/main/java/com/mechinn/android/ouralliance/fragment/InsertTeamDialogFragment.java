@@ -20,12 +20,14 @@ import com.mechinn.android.ouralliance.adapter.MatchTeamSelectAdapter;
 import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.Team;
+import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
 public class InsertTeamDialogFragment extends DialogFragment {
@@ -64,20 +66,33 @@ public class InsertTeamDialogFragment extends DialogFragment {
                     AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
                         @Override
                         public void run() throws Exception {
-                            Log.d(TAG, "saving: " + team);
-                            Log.d(TAG, "competition id: " + prefs.getComp());
-                            EventTeam eventTeam = new EventTeam();
-                            Event event = Model.load(Event.class, prefs.getComp());
-                            eventTeam.setEvent(event);
-                            eventTeam.setTeam(team);
-                            eventTeam.setRank(rank);
                             ActiveAndroid.beginTransaction();
                             try {
                                 team.saveMod();
                                 Log.d(TAG, "saving team id: " + team.getId());
+                                Log.d(TAG, "saving: " + team);
+                                Log.d(TAG, "competition id: " + prefs.getComp());
+                                EventTeam eventTeam = new EventTeam();
+                                Event event = Model.load(Event.class, prefs.getComp());
+                                eventTeam.setEvent(event);
+                                eventTeam.setTeam(team);
+                                eventTeam.setRank(rank);
                                 eventTeam.saveMod();
                                 Log.d(TAG, "saving event team id: " + eventTeam.getId());
+                                TeamScouting scouting = null;
+                                switch (prefs.getYear()) {
+                                    case 2014:
+                                        scouting = new TeamScouting2014();
+                                }
+                                scouting.setTeam(team);
+                                scouting.saveMod();
                                 ActiveAndroid.setTransactionSuccessful();
+                                EventBus.getDefault().post(team);
+                                EventBus.getDefault().post(eventTeam);
+                                switch (prefs.getYear()) {
+                                    case 2014:
+                                        EventBus.getDefault().post(new TeamScouting2014());
+                                }
                             } finally {
                                 ActiveAndroid.endTransaction();
                             }

@@ -40,8 +40,6 @@ public class TeamListFragment extends Fragment {
     private int selectedPosition;
 	private Prefs prefs;
 	private EventTeamDragSortListAdapter adapter;
-    private BluetoothAdapter bluetoothAdapter;
-    private boolean bluetoothOn;
     private Sort2014 sort2014;
     private Spinner sortTeams;
     private GetEventTeams downloadTeams;
@@ -50,7 +48,6 @@ public class TeamListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         sort2014 = Sort2014.RANK;
         downloadTeams = new GetEventTeams(this.getActivity());
     }
@@ -119,22 +116,9 @@ public class TeamListFragment extends Fragment {
         if(null!=adapter) {
             adapter.notifyDataSetChanged();
         }
-        if(null!=bluetoothAdapter) {
-            bluetoothOn = bluetoothAdapter.isEnabled();
-        }
     }
 
     public void onEventMainThread(BluetoothEvent event) {
-        switch (event.getState()) {
-            case STATE_OFF:
-            case STATE_TURNING_OFF:
-                bluetoothOn = false;
-                break;
-            case STATE_ON:
-            case STATE_TURNING_ON:
-                bluetoothOn = true;
-                break;
-        }
         getActivity().invalidateOptionsMenu();
     }
 
@@ -197,12 +181,13 @@ public class TeamListFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        BluetoothEvent bluetooth = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
         menu.findItem(R.id.matchList).setVisible(prefs.getComp()>0 && null!=adapter && adapter.getCount() > 5);
         menu.findItem(R.id.insertTeamScouting).setVisible(prefs.getComp()>0);
         menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
         menu.findItem(R.id.exportTeamScouting).setVisible(null != adapter && adapter.getCount() > 0);
-        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != adapter && adapter.getCount() > 0 && bluetoothAdapter != null);
-        if(bluetoothOn) {
+        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != adapter && adapter.getCount() > 0 && bluetooth.isEnabled());
+        if(bluetooth.isOn()) {
             menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
         } else {
             menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
