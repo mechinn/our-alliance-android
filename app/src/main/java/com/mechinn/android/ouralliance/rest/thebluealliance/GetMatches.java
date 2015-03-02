@@ -8,6 +8,7 @@ import com.activeandroid.Model;
 import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.Event;
+import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.OurAllianceObject;
@@ -47,6 +48,7 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
         boolean teamScoutingChanged = false;
         boolean matchScoutingChanged = false;
         boolean matchesChanged = false;
+        boolean eventTeamsChanged = false;
         try {
             int year = prefs.getYear();
             List<Match> matches = TheBlueAlliance.getService().getEventMatches(year + event.getEventCode());
@@ -80,6 +82,16 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
                                 teamScouting.setTeam(teamObject);
                                 teamScouting.saveMod();
                                 teamScoutingChanged = true;
+                                EventTeam eventTeam = new Select().from(EventTeam.class).where(EventTeam.TEAM+"=?", teamObject.getId()).and(EventTeam.EVENT+"=?",event.getId()).executeSingle();
+                                if(null==eventTeam) {
+                                    List<EventTeam> ranks = new Select().from(EventTeam.class).where(EventTeam.EVENT+"=?",event.getId()).orderBy(EventTeam.RANK+" DESC").execute();
+                                    eventTeam = new EventTeam();
+                                    eventTeam.setEvent(event);
+                                    eventTeam.setTeam(teamObject);
+                                    eventTeam.setRank(ranks.get(0).getRank()+1);
+                                    eventTeam.saveMod();
+                                    eventTeamsChanged = true;
+                                }
                             }
                             matchScouting.setTeamScouting2014(teamScouting);
                             matchScouting.setAlliance(position>2);
@@ -101,6 +113,9 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
             }
             if(matchScoutingChanged) {
                 EventBus.getDefault().post(new MatchScouting2014());
+            }
+            if(eventTeamsChanged) {
+                EventBus.getDefault().post(new EventTeam());
             }
             ToastEvent.toast("Finished downloading matches", false);
             prefs.setMatchesDownloaded(true);

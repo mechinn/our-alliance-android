@@ -31,9 +31,9 @@ import de.greenrobot.event.EventBus;
 public class MatchScoutingActivity extends OurAllianceActivity implements OnBackStackChangedListener {
     public static final String TAG = "MatchScoutingActivity";
 	private MatchListFragment matchListFrag;
-    private MatchTeamListFragment<?> matchTeamListFrag;
-	private MatchDetailFragment<?> matchDetailFragment;
-    private TeamDetailFragment<?> teamDetailFragment;
+    private MatchTeamListFragment matchTeamListFrag;
+	private MatchDetailFragment matchDetailFragment;
+    private TeamDetailFragment teamDetailFragment;
 	private int matchFrag;
     private int teamFrag;
 	private int detailFrag;

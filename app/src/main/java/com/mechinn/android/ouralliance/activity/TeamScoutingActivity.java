@@ -30,8 +30,8 @@ public class TeamScoutingActivity extends OurAllianceActivity implements OnBackS
 	public static final String MATCHNAME_ARG = "matchname";
     public static final int GOOGLE_PLAY_ERROR = 0;
 	private TeamListFragment teamListFrag;
-	private MatchTeamListFragment<?> matchTeamListFrag;
-	private TeamDetailFragment<?> teamDetailFragment;
+	private MatchTeamListFragment matchTeamListFrag;
+	private TeamDetailFragment teamDetailFragment;
 	private int listFrag;
 	private int detailFrag;
 	private long loadTeam;

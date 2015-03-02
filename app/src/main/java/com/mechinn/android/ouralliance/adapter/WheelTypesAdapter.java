@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
@@ -46,20 +47,19 @@ public class WheelTypesAdapter extends BaseAdapter implements Filterable {
         this.notifyDataSetChanged();
 	}
 
+    @Override
     public boolean isEmpty() {
+        return getCount()<1;
+    }
+
+    @Override
+    public int getCount() {
         if(null!=this.filtered) {
-            return filtered.size()<1;
+            return filtered.size();
         } else {
-            return true;
+            return 0;
         }
     }
-	
-	public int getCount() {
-		if(isEmpty()) {
-			return 0;
-		}
-		return filtered.size();
-	}
 
 	@Override
 	public CharSequence getItem(int position) {

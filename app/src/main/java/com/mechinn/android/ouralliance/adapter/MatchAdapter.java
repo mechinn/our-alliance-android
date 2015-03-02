@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.data.Event;
@@ -13,7 +14,7 @@ import com.mechinn.android.ouralliance.data.Match;
 import java.util.Collections;
 import java.util.List;
 
-public class MatchAdapter extends BaseAdapter {
+public class MatchAdapter extends BaseAdapter implements ListAdapter {
     public static final String TAG = "MatchAdapter";
     Context context;
     List<Match> matches;

@@ -20,14 +20,20 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
-public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScouting> extends ListFragment {
+public abstract class MatchTeamListFragment extends ListFragment {
     public static final String TAG = "MatchTeamListFragment";
 	public static final String MATCH_ARG = "match";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 	private Prefs prefs;
-	private MatchTeamAdapter<MatchScoutingYear> adapter;
+    private MatchTeamAdapter<? extends MatchScouting> adapter;
     private long matchId;
 
+    public MatchTeamAdapter<? extends MatchScouting> getAdapter() {
+        return adapter;
+    }
+    public void setAdapter(MatchTeamAdapter<? extends MatchScouting> adapter) {
+        this.adapter = adapter;
+    }
     public long getMatchId() {
         return matchId;
     }
@@ -125,24 +131,4 @@ public abstract class MatchTeamListFragment<MatchScoutingYear extends MatchScout
             Log.d(TAG,"",e);
         }
 	}
-
-    public void onEventMainThread(MatchScoutingYear matchScoutingChanged) {
-        load();
-    }
-
-    public void onEventMainThread(LoadMatchScouting scouting) {
-        List<MatchScoutingYear> result = scouting.getScouting();
-        Log.d(TAG, "Count: " + result.size());
-        adapter.swapMatch(result);
-    }
-
-    protected class LoadMatchScouting {
-        List<MatchScoutingYear> scouting;
-        public LoadMatchScouting(List<MatchScoutingYear> scouting) {
-            this.scouting = scouting;
-        }
-        public List<MatchScoutingYear> getScouting() {
-            return scouting;
-        }
-    }
 }

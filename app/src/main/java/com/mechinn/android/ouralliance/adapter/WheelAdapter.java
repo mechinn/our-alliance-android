@@ -7,10 +7,13 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.data.Wheel;
+import com.mechinn.android.ouralliance.event.Transaction;
 
 import java.util.List;
 
@@ -29,8 +32,13 @@ public class WheelAdapter extends BaseAdapter {
     }
 
     @Override
+    public boolean isEmpty() {
+        return getCount()<1;
+    }
+
+    @Override
     public int getCount() {
-        if(null!=wheels) {
+        if(null!=this.wheels) {
             return wheels.size();
         } else {
             return 0;
@@ -39,15 +47,19 @@ public class WheelAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        if(!isEmpty()) {
-            return wheels.get(position);
-        } else {
+        if(isEmpty()) {
             return null;
+        } else {
+            return wheels.get(position);
         }
     }
 
     public Wheel getWheel(int position) {
         return (Wheel) getItem(position);
+    }
+
+    public List<? extends Wheel> getWheels() {
+        return wheels;
     }
 
     @Override
@@ -59,12 +71,12 @@ public class WheelAdapter extends BaseAdapter {
         }
     }
 
-    public void swapWheelTypes(List<Wheel> wheels) {
+    public void swapWheelTypes(List<? extends Wheel> wheels) {
         this.wheelTypesAdapter.swapList(wheels);
         wheelTypesAdapter.notifyDataSetChanged();
     }
 
-    public void swapList(List<Wheel> wheels) {
+    public void swapList(List<? extends Wheel> wheels) {
         this.wheels = wheels;
         this.notifyDataSetChanged();
     }
@@ -100,14 +112,14 @@ public class WheelAdapter extends BaseAdapter {
             });
             String num;
             //if the size is currently 0 dont show it for the user's sake
-            if(0!=wheel.getWheelSize()) {
+            if(null!=wheel.getWheelSize() && 0!=wheel.getWheelSize()) {
                 //get the number
                 num = Double.toString(wheel.getWheelSize());
                 TextView size = (TextView)container.findViewById(R.id.wheelSize);
                 size.setText(num);
             }
             //if the size is currently 0 dont show it for the user's sake
-            if(0!=wheel.getWheelCount()) {
+            if(null!=wheel.getWheelCount() && 0!=wheel.getWheelCount()) {
                 //get the number
                 num = Integer.toString(wheel.getWheelCount());
                 //6 is the count field
@@ -119,7 +131,7 @@ public class WheelAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     View view = ((View) v.getParent());
                     Wheel wheel = (Wheel) view.getTag();
-                    wheel.delete();
+                    wheel.asyncDelete();
                 }
             });
         }

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
+import android.widget.ListAdapter;
 
 import com.mechinn.android.ouralliance.data.Event;
 
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Created by mechinn on 2/19/14.
  */
-public class EventListPreferenceAdapter extends BaseAdapter {
+public class EventListPreferenceAdapter extends BaseAdapter implements ListAdapter {
     public static final String TAG = "EventListPreferenceAdapter";
 
     private long id;

@@ -75,7 +75,7 @@ public class TeamScouting2014 extends TeamScouting {
     @Column(name=BLOCKER)
     private Boolean blocker;
     @Column(name=HUMAN_PLAYER)
-    private Double humanPlayer;
+    private Float humanPlayer;
     @Column(name=NO_AUTO)
     private Boolean noAuto;
     @Column(name=DRIVE_AUTO)
@@ -192,10 +192,10 @@ public class TeamScouting2014 extends TeamScouting {
     public void setBlocker(Boolean blocker) {
         this.blocker = blocker;
     }
-    public Double getHumanPlayer() {
+    public Float getHumanPlayer() {
         return humanPlayer;
     }
-    public void setHumanPlayer(Double humanPlayer) {
+    public void setHumanPlayer(Float humanPlayer) {
         this.humanPlayer = humanPlayer;
     }
     public Boolean getNoAuto() {

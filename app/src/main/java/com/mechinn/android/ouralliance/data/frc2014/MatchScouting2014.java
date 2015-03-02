@@ -2,11 +2,14 @@ package com.mechinn.android.ouralliance.data.frc2014;
 
 import android.database.Cursor;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.TeamScouting;
+
+import java.util.Date;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
@@ -28,7 +31,7 @@ public class MatchScouting2014 extends MatchScouting {
     public final static String OVERTRUSS = "overTruss";
     public final static String LOW = "low";
     public final static String HIGH = "high";
-    @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
+    @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {MatchScouting.TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private TeamScouting2014 teamScouting2014;
     @Column(name=HOTSHOTS)
     private Integer hotShots;
@@ -37,7 +40,7 @@ public class MatchScouting2014 extends MatchScouting {
     @Column(name=SHOTSMISSED)
     private Integer shotsMissed;
     @Column(name=MOVEFORWARD)
-    private Double moveForward;
+    private Float moveForward;
     @Column(name=SHOOTER)
     private Boolean shooter;
     @Column(name=CATCHER)
@@ -45,9 +48,9 @@ public class MatchScouting2014 extends MatchScouting {
     @Column(name=PASSER)
     private Boolean passer;
     @Column(name=DRIVETRAINRATING)
-    private Double driveTrainRating;
+    private Float driveTrainRating;
     @Column(name=BALLACCURACYRATING)
-    private Double ballAccuracyRating;
+    private Float ballAccuracyRating;
     @Column(name=GROUND)
     private Boolean ground;
     @Column(name=OVERTRUSS)
@@ -90,10 +93,10 @@ public class MatchScouting2014 extends MatchScouting {
     public void setShotsMissed(Integer shotsMissed) {
         this.shotsMissed = shotsMissed;
     }
-    public Double getMoveForward() {
+    public Float getMoveForward() {
         return moveForward;
     }
-    public void setMoveForward(Double moveForward) {
+    public void setMoveForward(Float moveForward) {
         this.moveForward = moveForward;
     }
     public Boolean getShooter() {
@@ -114,16 +117,16 @@ public class MatchScouting2014 extends MatchScouting {
     public void setPasser(Boolean passer) {
         this.passer = passer;
     }
-    public Double getDriveTrainRating() {
+    public Float getDriveTrainRating() {
         return driveTrainRating;
     }
-    public void setDriveTrainRating(Double driveTrainRating) {
+    public void setDriveTrainRating(Float driveTrainRating) {
         this.driveTrainRating = driveTrainRating;
     }
-    public Double getBallAccuracyRating() {
+    public Float getBallAccuracyRating() {
         return ballAccuracyRating;
     }
-    public void setBallAccuracyRating(Double ballAccuracyRating) {
+    public void setBallAccuracyRating(Float ballAccuracyRating) {
         this.ballAccuracyRating = ballAccuracyRating;
     }
     public Boolean getGround() {
@@ -170,6 +173,11 @@ public class MatchScouting2014 extends MatchScouting {
                 getHigh()==((MatchScouting2014)data).getHigh();
     }
 
+    public void saveMod() {
+        setModified(new Date());
+        Log.d(TAG, "saving object");
+        save();
+    }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override

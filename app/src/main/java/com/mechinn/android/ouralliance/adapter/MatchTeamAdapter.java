@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.data.MatchScouting;
@@ -12,7 +13,7 @@ import com.mechinn.android.ouralliance.data.MatchScouting;
 import java.util.Collections;
 import java.util.List;
 
-public class MatchTeamAdapter<MatchTeam extends MatchScouting> extends BaseAdapter {
+public class MatchTeamAdapter<MatchTeam extends MatchScouting> extends BaseAdapter implements ListAdapter {
     public static final String TAG = "MatchTeamAdapter";
 	Context context;
     List<MatchTeam> teams;

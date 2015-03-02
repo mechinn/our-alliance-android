@@ -31,7 +31,7 @@ public class TeamScouting2014FilterAdapter extends BaseAdapter implements Filter
 	
 	public void swapList(List<TeamScouting2014> teams) {
         this.teams = teams;
-		this.original = new ArrayList<CharSequence>();
+		this.original = new ArrayList<>();
         if(!isEmpty()) {
             for(TeamScouting2014 each : this.teams) {
                 switch(field) {
@@ -100,7 +100,7 @@ public class TeamScouting2014FilterAdapter extends BaseAdapter implements Filter
                     results.values = original;
                     results.count = original.size();
                 } else {
-                    List<CharSequence> filterResultsData = new ArrayList<CharSequence>();
+                    List<CharSequence> filterResultsData = new ArrayList<>();
                     for(CharSequence data : original) {
                         //In this loop, you'll filter through originalData and compare each item to charSequence.
                         //If you find a match, add it to your new ArrayList

@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
@@ -18,7 +19,7 @@ import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.List;
 
-public class EventTeamDragSortListAdapter extends BaseAdapter implements DragSortListView.DropListener {
+public class EventTeamDragSortListAdapter extends BaseAdapter implements ListAdapter, DragSortListView.DropListener {
     public static final String TAG = "EventTeamDSLAdapter";
     private int dragable;
     private Context context;

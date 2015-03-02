@@ -35,20 +35,21 @@ public class Transaction implements AsyncExecutor.RunnableEx {
 
     @Override
     public void run() {
-        ActiveAndroid.beginTransaction();
-        try {
-            for(OurAllianceObject object : objects) {
-                if(delete) {
-                    object.delete();
-                } else {
-                    object.saveMod();
+        if(null!=objects && objects.size()>0) {
+            ActiveAndroid.beginTransaction();
+            try {
+                for (OurAllianceObject object : objects) {
+                    if (delete) {
+                        object.delete();
+                    } else {
+                        object.saveMod();
+                    }
                 }
+                ActiveAndroid.setTransactionSuccessful();
+                EventBus.getDefault().post(type.cast(objects.get(0)));
+            } finally {
+                ActiveAndroid.endTransaction();
             }
-            ActiveAndroid.setTransactionSuccessful();
-            EventBus.getDefault().post(type.cast(objects.get(0)));
-        }
-        finally {
-            ActiveAndroid.endTransaction();
         }
     }
 }

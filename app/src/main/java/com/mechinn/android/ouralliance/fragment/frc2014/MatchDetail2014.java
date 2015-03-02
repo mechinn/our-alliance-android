@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.fragment.frc2014;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
-public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
+public class MatchDetail2014 extends MatchDetailFragment {
     public static final String TAG = "MatchDetail2014";
 
     private NumberPicker hotShots;
@@ -33,12 +34,19 @@ public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
     private CheckBox overTruss;
     private CheckBox low;
     private CheckBox high;
+    public MatchScouting2014 getMatch() {
+        return (MatchScouting2014) super.getMatch();
+    }
+    public void setMatch(MatchScouting2014 match) {
+        super.setMatch(match);
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         View seasonView = inflater.inflate(R.layout.fragment_match_detail_2014, getSeason(), false);
         hotShots = (NumberPicker) seasonView.findViewById(R.id.match2014hotShots);
+        shotsMade = (NumberPicker) seasonView.findViewById(R.id.match2014shotsMade);
         shotsMissed = (NumberPicker) seasonView.findViewById(R.id.match2014shotsMissed);
         moveFwd = (RatingBar) seasonView.findViewById(R.id.match2014moveFwd);
         shooter = (CheckBox) seasonView.findViewById(R.id.match2014shooter);
@@ -66,32 +74,47 @@ public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
 	}
 	
 	@Override
-	public void onStart() {
-		super.onStart();
-	}
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadMatchScouting();
-    }
-	
-	@Override
 	public void setView() {
 		super.setView();
-        hotShots.setValue(getMatch().getHotShots());
-        shotsMade.setValue(getMatch().getShotsMade());
-        shotsMissed.setValue(getMatch().getShotsMissed());
-        moveFwd.setRating(getMatch().getMoveForward().floatValue());
-        shooter.setChecked(getMatch().getShooter());
-        catcher.setChecked(getMatch().getCatcher());
-        passer.setChecked(getMatch().getPasser());
-        driveTrain.setRating(getMatch().getDriveTrainRating().floatValue());
-        ballAccuracy.setRating(getMatch().getBallAccuracyRating().floatValue());
-        ground.setChecked(getMatch().getGround());
-        overTruss.setChecked(getMatch().getOverTruss());
-        low.setChecked(getMatch().getLow());
-        high.setChecked(getMatch().getHigh());
+        if(null!=getMatch().getHotShots()) {
+            hotShots.setValue(getMatch().getHotShots());
+        }
+        if(null!=getMatch().getShotsMade()) {
+            shotsMade.setValue(getMatch().getShotsMade());
+        }
+        if(null!=getMatch().getShotsMissed()) {
+            shotsMissed.setValue(getMatch().getShotsMissed());
+        }
+        if(null!=getMatch().getMoveForward()) {
+            moveFwd.setRating(getMatch().getMoveForward());
+        }
+        if(null!=getMatch().getShooter()) {
+            shooter.setChecked(getMatch().getShooter());
+        }
+        if(null!=getMatch().getCatcher()) {
+            catcher.setChecked(getMatch().getCatcher());
+        }
+        if(null!=getMatch().getPasser()) {
+            passer.setChecked(getMatch().getPasser());
+        }
+        if(null!=getMatch().getDriveTrainRating()) {
+            driveTrain.setRating(getMatch().getDriveTrainRating());
+        }
+        if(null!=getMatch().getBallAccuracyRating()) {
+            ballAccuracy.setRating(getMatch().getBallAccuracyRating());
+        }
+        if(null!=getMatch().getGround()) {
+            ground.setChecked(getMatch().getGround());
+        }
+        if(null!=getMatch().getOverTruss()) {
+            overTruss.setChecked(getMatch().getOverTruss());
+        }
+        if(null!=getMatch().getLow()) {
+            low.setChecked(getMatch().getLow());
+        }
+        if(null!=getMatch().getHigh()) {
+            high.setChecked(getMatch().getHigh());
+        }
 	}
 	
 	@Override
@@ -100,12 +123,12 @@ public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
         getMatch().setHotShots(hotShots.getValue());
         getMatch().setShotsMade(shotsMade.getValue());
         getMatch().setShotsMissed(shotsMissed.getValue());
-        getMatch().setMoveForward((double)moveFwd.getRating());
+        getMatch().setMoveForward(moveFwd.getRating());
         getMatch().setShooter(shooter.isChecked());
         getMatch().setCatcher(catcher.isChecked());
         getMatch().setPasser(passer.isChecked());
-        getMatch().setDriveTrainRating((double)driveTrain.getRating());
-        getMatch().setBallAccuracyRating((double)ballAccuracy.getRating());
+        getMatch().setDriveTrainRating(driveTrain.getRating());
+        getMatch().setBallAccuracyRating(ballAccuracy.getRating());
         getMatch().setGround(ground.isChecked());
         getMatch().setOverTruss(overTruss.isChecked());
         getMatch().setLow(low.isChecked());
@@ -118,9 +141,35 @@ public class MatchDetail2014 extends MatchDetailFragment<MatchScouting2014> {
             public void run() throws Exception {
                 if (getScoutingId() != 0) {
                     MatchScouting2014 scouting = Model.load(MatchScouting2014.class, getScoutingId());
-                    EventBus.getDefault().post(new LoadMatcheScouting(scouting));
+                    if(null!=scouting) {
+                        EventBus.getDefault().post(new LoadMatchScouting(scouting));
+                    } else {
+                        Log.d(TAG,"match scouting null "+getScoutingId());
+                    }
+                } else {
+                    Log.d(TAG,"match scouting id 0 == "+getScoutingId());
                 }
             }
         });
+    }
+    public void onEventMainThread(MatchScouting2014 scoutingChanged) {
+        loadMatchScouting();
+    }
+    public void onEventMainThread(LoadMatchScouting scouting) {
+        MatchScouting2014 result = scouting.getScouting();
+        Log.d(TAG, "result: " + result);
+        setMatch(result);
+        setView();
+        getRootView().setVisibility(View.VISIBLE);
+        getActivity().invalidateOptionsMenu();
+    }
+    protected class LoadMatchScouting {
+        MatchScouting2014 scouting;
+        public LoadMatchScouting(MatchScouting2014 scouting) {
+            this.scouting = scouting;
+        }
+        public MatchScouting2014 getScouting() {
+            return scouting;
+        }
     }
 }

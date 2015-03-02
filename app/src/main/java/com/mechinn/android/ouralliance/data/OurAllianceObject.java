@@ -1,6 +1,7 @@
 package com.mechinn.android.ouralliance.data;
 
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
@@ -24,6 +25,7 @@ public abstract class OurAllianceObject extends Model {
     }
     public void saveMod() {
         setModified(new Date());
+        Log.d(TAG, "saving object");
         save();
     }
     public abstract void asyncSave();

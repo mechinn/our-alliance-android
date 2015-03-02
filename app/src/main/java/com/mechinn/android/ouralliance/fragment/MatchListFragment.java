@@ -116,6 +116,9 @@ public class MatchListFragment extends ListFragment {
         super.onResume();
         if(!prefs.isMatchesDownloaded()) {
             AsyncExecutor.create().execute(downloadMatches);
+        } else {
+            loadMatches();
+            loadEventTeams();
         }
 
     }
@@ -251,9 +254,9 @@ public class MatchListFragment extends ListFragment {
             public void run() throws Exception {
                 From matchBuilder = new Select().from(Match.class).where(Match.EVENT+"=?",prefs.getComp());
                 if(prefs.isPractice()) {
-                    matchBuilder = matchBuilder.and(Match.COMPETITION_LEVEL+"<0");
+                    matchBuilder = matchBuilder.and(Match.COMPETITION_LEVEL+"=?",Match.PRACTICE);
                 } else {
-                    matchBuilder = matchBuilder.and(Match.COMPETITION_LEVEL+">=0");
+                    matchBuilder = matchBuilder.and(Match.COMPETITION_LEVEL+"<>?",Match.PRACTICE);
                 }
                 List<Match> matches = matchBuilder.execute();
                 EventBus.getDefault().post(new LoadMatches(matches));

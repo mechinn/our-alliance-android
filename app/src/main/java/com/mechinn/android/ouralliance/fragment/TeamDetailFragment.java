@@ -7,19 +7,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.activeandroid.Model;
-import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
 import com.mechinn.android.ouralliance.adapter.WheelAdapter;
+import com.mechinn.android.ouralliance.adapter.WheelTypesAdapter;
 import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.Wheel;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
-import com.mechinn.android.ouralliance.data.frc2014.Wheel2014;
 import com.mechinn.android.ouralliance.event.MultimediaDeletedEvent;
 
 import android.app.Activity;
@@ -37,7 +33,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -48,30 +44,33 @@ import org.lucasr.twowayview.ItemClickSupport;
 import org.lucasr.twowayview.widget.TwoWayView;
 
 import de.greenrobot.event.EventBus;
-import de.greenrobot.event.util.AsyncExecutor;
 
-public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends Fragment {
+public abstract class TeamDetailFragment extends Fragment {
     public static final String TAG = "TeamDetailFragment";
 	public static final String TEAM_ARG = "team";
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
 
 	private Prefs prefs;
-	private View rootView;
+    private View rootView;
 	private Button picture;
     private Button video;
 	private TwoWayView gallery;
     private TextView notes;
-	private Button addWheel;
-    private ListView wheels;
+    private Button addWheel;
+    private LinearLayout wheels;
 	private MultimediaAdapter multimedia;
-
-    private WheelAdapter wheelsAdapter;
+    private WheelTypesAdapter wheelTypesAdapter;
 
     private LinearLayout season;
 	private long teamId;
-	private Scouting scouting;
-    private Event event;
+	private TeamScouting scouting;
 
+    public View getRootView() {
+        return rootView;
+    }
+    public void setRootView(View rootView) {
+        this.rootView = rootView;
+    }
 	public Prefs getPrefs() {
 		return prefs;
 	}
@@ -84,10 +83,10 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	public void setTeamId(long teamId) {
 		this.teamId = teamId;
 	}
-	public Scouting getScouting() {
+	public TeamScouting getScouting() {
 		return scouting;
 	}
-	public void setScouting(Scouting scouting) {
+	public void setScouting(TeamScouting scouting) {
 		this.scouting = scouting;
 	}
 	public LinearLayout getSeason() {
@@ -96,14 +95,30 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	public void setSeason(LinearLayout season) {
 		this.season = season;
 	}
-    public Event getEvent() {
-        return event;
+    public Button getAddWheel() {
+        return addWheel;
     }
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setAddWheel(Button addWheel) {
+        this.addWheel = addWheel;
     }
 
-	@Override
+    public WheelTypesAdapter getWheelTypesAdapter() {
+        return wheelTypesAdapter;
+    }
+
+    public void setWheelTypesAdapter(WheelTypesAdapter wheelTypesAdapter) {
+        this.wheelTypesAdapter = wheelTypesAdapter;
+    }
+
+    public LinearLayout getWheels() {
+        return wheels;
+    }
+
+    public void setWheels(LinearLayout wheels) {
+        this.wheels = wheels;
+    }
+
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
@@ -120,7 +135,6 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     		teamId = savedInstanceState.getLong(Team.TAG, 0);
     		Log.d(TAG, "team: "+teamId);
         }
-        
         rootView = inflater.inflate(R.layout.fragment_team_detail, container, false);
 		rootView.setVisibility(View.GONE);
         picture = (Button) rootView.findViewById(R.id.picture);
@@ -207,21 +221,8 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
             }
         });
         notes = (TextView) rootView.findViewById(R.id.notes);
+        wheels = (LinearLayout) rootView.findViewById(R.id.wheels);
         addWheel = (Button) rootView.findViewById(R.id.addWheel);
-        wheels = (ListView) rootView.findViewById(R.id.wheels);
-        wheels.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Wheel newWheel = new Wheel2014();
-                newWheel.setTeamScouting(getScouting());
-                newWheel.asyncSave();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         season = (LinearLayout) rootView.findViewById(R.id.season);
 		return rootView;
     }
@@ -229,7 +230,7 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        wheelsAdapter = new WheelAdapter(getActivity(), null);
+        wheelTypesAdapter = new WheelTypesAdapter(this.getActivity(), null, R.id.wheelType);
     }
     
     @Override
@@ -278,15 +279,21 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
     		teamId = getArguments().getLong(TEAM_ARG, 0);
     		Log.d(TAG, "team: "+teamId);
         }
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (prefs.getYear() != 0 && teamId != 0) {
-            loadEvent();
+            loadScouting();
             loadWheelTypes();
-            loadWheels();
         }
     }
 
@@ -324,18 +331,6 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	}
 	
 	public void updateScouting() {
-		for(int i=0;i<wheels.getChildCount(); ++i) {
-			LinearLayout theWheelView = (LinearLayout) wheels.getChildAt(i);
-            Wheel theWheel = (Wheel) theWheelView.getTag();
-			CharSequence type = ((TextView) theWheelView.getChildAt(R.id.wheelType)).getText();
-			theWheel.setWheelType(type.toString());
-			CharSequence size = ((TextView) theWheelView.getChildAt(R.id.wheelSize)).getText();
-			theWheel.setWheelSize(Utility.getDoubleFromText(size));
-			CharSequence count = ((TextView) theWheelView.getChildAt(R.id.wheelCount)).getText();
-			theWheel.setWheelCount(Utility.getIntFromText(count));
-			//see if we should update or insert or just tell the user there isnt enough info
-            theWheel.asyncSave();
-		}
 		scouting.setNotes(notes.getText().toString());
 	}
 	
@@ -344,140 +339,66 @@ public abstract class TeamDetailFragment<Scouting extends TeamScouting> extends 
 	}
 
     public void onEventMainThread(MultimediaDeletedEvent event) {
-        if(null!=multimedia) {
+        if (null != multimedia) {
             multimedia.buildImageSet(scouting);
         }
     }
-    public void loadEvent() {
-        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
-            @Override
-            public void run() throws Exception {
-                Event event = Model.load(Event.class,prefs.getComp());
-                EventBus.getDefault().post(new LoadEvent(event));
-            }
-        });
-    }
-    public void onEventMainThread(Event eventTeamsChanged) {
-        loadEvent();
-    }
-    public void onEventMainThread(LoadEvent event) {
-        setEvent(event.getEvent());
-    }
-    private class LoadEvent {
-        Event event;
-        public LoadEvent(Event event) {
-            this.event = event;
-        }
-        public Event getEvent() {
-            return event;
-        }
-    }
-    public void loadWheelTypes() {
-        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
-            @Override
-            public void run() throws Exception {
-                try {
-                    List<Wheel> wheelTypes = null;
-                    switch (prefs.getYear()) {
-                        case 2014:
-                            wheelTypes = new Select().from(Wheel2014.class).groupBy(Wheel2014.WHEEL_TYPE).execute();
-                            break;
-                    }
-                    if (null != wheelTypes) {
-                        EventBus.getDefault().post(new LoadWheelTypes(wheelTypes));
-                    }
-                } catch(NullPointerException e) {
-
+    public LinearLayout createWheel(Wheel thisWheel) {
+        LinearLayout view = (LinearLayout) this.getActivity().getLayoutInflater().inflate(R.layout.fragment_team_detail_wheel, wheels, false);
+        view.setTag(thisWheel);
+        //1 is the type field
+        AutoCompleteTextView type = (AutoCompleteTextView) view.findViewById(R.id.wheelType);
+        TextView count = (TextView) view.findViewById(R.id.wheelCount);
+        TextView size = (TextView) view.findViewById(R.id.wheelSize);
+        Button delete = (Button) view.findViewById(R.id.deleteWheel);
+        type.setText(thisWheel.getWheelType());
+        type.setThreshold(1);
+        type.setAdapter(getWheelTypesAdapter());
+        type.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                AutoCompleteTextView textView = (AutoCompleteTextView) v;
+                if(hasFocus) {
+                    v.setTag(textView.getText().toString());
+//				} else {
+//					String oldString = (String) textView.getTag();
+//					if(null!=oldString && !wheelTypes.contains(oldString)) {
+//						wheelTypesAdapter.remove(oldString);
+//					}
+//					String newString = textView.getText().toString();
+//					if(null!=newString && !newString.isEmpty()) {
+//						wheelTypesAdapter.add(newString);
+//					}
                 }
             }
         });
-    }
-    public void onEventMainThread(Wheel wheelsChanged) {
-        loadWheelTypes();
-        loadWheels();
-    }
-    public void onEventMainThread(LoadWheelTypes event) {
-        wheelsAdapter.swapWheelTypes(event.getWheels());
-    }
-    private class LoadWheelTypes {
-        List<Wheel> wheels;
-        public LoadWheelTypes(List<Wheel> wheels) {
-            this.wheels = wheels;
+        String num;
+        //if the size is currently 0 dont show it for the user's sake
+        if(null!=thisWheel.getWheelSize() && thisWheel.getWheelSize()>0) {
+            //get the number
+            num = Double.toString(thisWheel.getWheelSize());
+            size.setText(num);
         }
-        public List<Wheel> getWheels() {
-            return wheels;
+        //if the size is currently 0 dont show it for the user's sake
+        if(null!=thisWheel.getWheelCount() && thisWheel.getWheelCount()>0) {
+            //get the number
+            num = Integer.toString(thisWheel.getWheelCount());
+            //6 is the count field
+            count.setText(num);
         }
-    }
-    public void loadWheels() {
-        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
-            @Override
-            public void run() throws Exception {
-                try {
-                    List<Wheel> wheels = null;
-                    switch (prefs.getYear()) {
-                        case 2014:
-                            wheels = new Select().from(Wheel2014.class).where(Wheel2014.TEAM_SCOUTING+"=?", getTeamId()).execute();
-                            break;
-                    }
-                    if (null != wheels) {
-                        EventBus.getDefault().post(new LoadWheelTypes(wheels));
-                    }
-                } catch(NullPointerException e) {
-
-                }
+        //7 is the delete button, if clicked delete the wheel
+        delete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                updateWheels();
+                View view = ((View) v.getParent());
+                Wheel wheel = (Wheel) view.getTag();
+                wheel.asyncDelete();
             }
         });
+        wheels.addView(view);
+        return view;
     }
-    public void onEventMainThread(LoadWheels event) {
-        wheelsAdapter.swapList(event.getWheels());
-    }
-    private class LoadWheels {
-        List<Wheel> wheels;
-        public LoadWheels(List<Wheel> wheels) {
-            this.wheels = wheels;
-        }
-        public List<Wheel> getWheels() {
-            return wheels;
-        }
-    }
-    public void loadScouting() {
-        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
-            @Override
-            public void run() throws Exception {
-                Scouting scouting = null;
-                try {
-                    switch (prefs.getYear()) {
-                        case 2014:
-                            scouting = new Select().from(TeamScouting2014.class).where(TeamScouting2014.TEAM+"=?", getTeamId()).executeSingle();
-                            break;
-                    }
-                } catch(NullPointerException e) {
-                    switch (prefs.getYear()) {
-                        case 2014:
-                            Team team = Model.load(Team.class,getTeamId());
-                            scouting = (Scouting) new TeamScouting2014();
-                            scouting.setTeam(team);
-                            break;
-                    }
-                }
-                if(null!=scouting) {
-                    EventBus.getDefault().post(new LoadScouting(scouting));
-                }
-            }
-        });
-    }
-    public void onEventMainThread(LoadScouting scouting) {
-        setScouting(scouting.getScouting());
-        setView();
-        rootView.setVisibility(View.VISIBLE);
-    }
-    private class LoadScouting {
-        Scouting scouting;
-        public LoadScouting(Scouting scouting) {
-            this.scouting = scouting;
-        }
-        public Scouting getScouting() {
-            return scouting;
-        }
-    }
+    public abstract void loadScouting();
+    public abstract void loadWheelTypes();
+    public abstract void loadWheels();
+    public abstract void updateWheels();
 }

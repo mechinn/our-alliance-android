@@ -15,7 +15,7 @@ import de.greenrobot.event.util.AsyncExecutor;
 public class Wheel2014 extends Wheel {
     public final static String TAG = "Wheel2014";
     public final static String TEAM_SCOUTING = TeamScouting2014.TAG;
-    @Column(name=TEAM_SCOUTING, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
+    @Column(name=TEAM_SCOUTING, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {Wheel.TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private TeamScouting2014 teamScouting2014;
     public Wheel2014() {}
     public Wheel2014(Cursor cursor) {

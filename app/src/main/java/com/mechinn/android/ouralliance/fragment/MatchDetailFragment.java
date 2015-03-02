@@ -4,6 +4,7 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.EventTeam;
+import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,19 +16,27 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScouting> extends Fragment {
+import de.greenrobot.event.EventBus;
+
+public abstract class MatchDetailFragment extends Fragment {
     public static final String TAG = "MatchDetailFragment";
     public static final String SCOUTING_ARG = "team";
 
     private Prefs prefs;
     private long scoutingId;
 
-	private View rootView;
+    private View rootView;
     private TextView notes;
     private LinearLayout season;
 
-	private MatchScoutingYear match;
+	private MatchScouting match;
 
+    public View getRootView() {
+        return rootView;
+    }
+    public void setRootView(View rootView) {
+        this.rootView = rootView;
+    }
     public long getScoutingId() {
         return scoutingId;
     }
@@ -40,10 +49,10 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
     public void setSeason(LinearLayout season) {
         this.season = season;
     }
-	public MatchScoutingYear getMatch() {
+	public MatchScouting getMatch() {
 		return match;
 	}
-	public void setMatch(MatchScoutingYear match) {
+	public void setMatch(MatchScouting match) {
 		this.match = match;
 	}
 
@@ -96,16 +105,32 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
             scoutingId = getArguments().getLong(SCOUTING_ARG, 0);
             Log.d(TAG, "team: " + scoutingId);
         }
+        EventBus.getDefault().register(this);
     }
-	
-	@Override
-	public void onPause() {
-        if(null!=match) {
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "team: " + getScoutingId());
+        loadMatchScouting();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(TAG, "pausing");
+        if(null!=getMatch()) {
+            Log.d(TAG,"saving "+getMatch());
             updateMatch();
             this.getMatch().asyncSave();
         }
         super.onPause();
-	}
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -132,24 +157,4 @@ public abstract class MatchDetailFragment<MatchScoutingYear extends MatchScoutin
 	}
 
     public abstract void loadMatchScouting();
-    public void onEventMainThread(MatchScoutingYear scoutingChanged) {
-        loadMatchScouting();
-    }
-    public void onEventMainThread(LoadMatcheScouting scouting) {
-        MatchScoutingYear result = scouting.getScouting();
-        Log.d(TAG, "result: " + result);
-        setMatch(result);
-        setView();
-        rootView.setVisibility(View.VISIBLE);
-        getActivity().invalidateOptionsMenu();
-    }
-    protected class LoadMatcheScouting {
-        MatchScoutingYear scouting;
-        public LoadMatcheScouting(MatchScoutingYear scouting) {
-            this.scouting = scouting;
-        }
-        public MatchScoutingYear getScouting() {
-            return scouting;
-        }
-    }
 }

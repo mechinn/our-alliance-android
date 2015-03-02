@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.R;
@@ -14,7 +15,7 @@ import com.mechinn.android.ouralliance.data.TeamScouting;
 
 import java.util.List;
 
-public class MatchTeamSelectAdapter extends BaseAdapter {
+public class MatchTeamSelectAdapter extends BaseAdapter implements SpinnerAdapter {
     public static final String TAG = "MatchTeamSelectAdapter";
 
     private Context context;
