@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.*;
 
+import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
@@ -13,6 +14,7 @@ import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.EventTeamDragSortListAdapter;
 import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.event.SelectTeamEvent;
@@ -40,7 +42,7 @@ public class TeamListFragment extends Fragment {
 	private EventTeamDragSortListAdapter adapter;
     private BluetoothAdapter bluetoothAdapter;
     private boolean bluetoothOn;
-    private Sort2014 sort;
+    private Sort2014 sort2014;
     private Spinner sortTeams;
     private GetEventTeams downloadTeams;
 
@@ -49,7 +51,7 @@ public class TeamListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        sort = Sort2014.RANK;
+        sort2014 = Sort2014.RANK;
         downloadTeams = new GetEventTeams(this.getActivity());
     }
     
@@ -64,7 +66,7 @@ public class TeamListFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch(prefs.getYear()) {
                     case 2014:
-                        sort = Sort.sort2014List.get(position);
+                        sort2014 = Sort.sort2014List.get(position);
                         break;
                 }
                 load();
@@ -269,56 +271,65 @@ public class TeamListFragment extends Fragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
+                From query = new Select().from(EventTeam.class).join(Team.class).on(EventTeam.TAG+"."+EventTeam.TEAM+"="+Team.TAG+"."+Team.ID);
+                String orderBy = EventTeam.TAG+"."+EventTeam.RANK+" ASC";
+                switch(prefs.getYear()) {
+                    case 2014:
+                        query = query.join(TeamScouting2014.class).on(Team.TAG+"."+Team.ID+"="+TeamScouting2014.TAG+"."+TeamScouting2014.TEAM);
+                        switch(sort2014) {
+                            case NUMBER:
+                                orderBy = Team.TAG+"."+Team.TEAM_NUMBER+" ASC";
+                                break;
+                            case ORIENTATION:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.ORIENTATION+" ASC";
+                                break;
+                            case DRIVETRAIN:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.DRIVE_TRAIN+" ASC";
+                                break;
+                            case HEIGHTSHOOTER:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HEIGHT_SHOOTER+" DESC";
+                                break;
+                            case HEIGHTMAX:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HEIGHT_MAX+" DESC";
+                                break;
+                            case SHOOTERTYPE:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.SHOOTER_TYPE+" DESC";
+                                break;
+                            case SHOOTGOAL:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HIGH_GOAL+" DESC, "+TeamScouting2014.TAG+"."+TeamScouting2014.LOW_GOAL+" DESC";
+                                break;
+                            case SHOOTINGDISTANCE:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.SHOOTING_DISTANCE+" DESC";
+                                break;
+                            case PASS:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.PASS_TRUSS+" DESC, "+
+                                        TeamScouting2014.TAG+"."+TeamScouting2014.PASS_AIR+" DESC, "+
+                                        TeamScouting2014.TAG+"."+TeamScouting2014.PASS_GROUND+" DESC";
+                                break;
+                            case PICKUP:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.PICKUP_CATCH+" DESC, "+TeamScouting2014.TAG+"."+TeamScouting2014.PICKUP_GROUND+" DESC";
+                                break;
+                            case PUSHER:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.PUSHER+" ASC";
+                                break;
+                            case BLOCKER:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.BLOCKER+" ASC";
+                                break;
+                            case HUMANPLAYER:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HUMAN_PLAYER+" DESC";
+                                break;
+                            case AUTONOMOUS:
+                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HOT_AUTO+" DESC, "+
+                                        TeamScouting2014.TAG+"."+TeamScouting2014.HIGH_AUTO+" DESC, "+
+                                        TeamScouting2014.TAG+"."+TeamScouting2014.LOW_AUTO+" DESC, "+
+                                        TeamScouting2014.TAG+"."+TeamScouting2014.DRIVE_AUTO+" DESC, "+
+                                        TeamScouting2014.TAG+"."+TeamScouting2014.NO_AUTO+" DESC";
+                                break;
+                        }
+                        break;
+                }
 
-                String orderBy = EventTeam.RANK;
-//        switch(sort) {
-//            case NUMBER:
-//                builder.orderDesc(TeamDao.Properties.TeamNumber);
-//                break;
-//            case ORIENTATION:
-//                builder.orderAsc(TeamScouting2014Dao.Properties.Orientation);
-//                break;
-//            case DRIVETRAIN:
-//                builder.orderAsc(TeamScouting2014Dao.Properties.DriveTrain);
-//                break;
-//            case HEIGHTSHOOTER:
-//                builder.orderDesc(TeamScouting2014Dao.Properties.HeightShooter);
-//                break;
-//            case HEIGHTMAX:
-//                builder.orderDesc(TeamScouting2014Dao.Properties.HeightMax);
-//                break;
-//            case SHOOTERTYPE:
-//                builder.orderDesc(TeamScouting2014Dao.Properties.ShooterType);
-//                break;
-//            case SHOOTGOAL:
-//                builder.orderDesc(TeamScouting2014Dao.Properties.HighGoal,TeamScouting2014Dao.Properties.LowGoal);
-//                break;
-//            case SHOOTINGDISTANCE:
-//                builder.orderDesc(TeamScouting2014Dao.Properties.ShootingDistance);
-//                break;
-//            case PASS:
-//                builder.orderDesc(TeamScouting2014Dao.Properties.PassTruss,TeamScouting2014Dao.Properties.PassAir,TeamScouting2014Dao.Properties.PassGround);
-//                break;
-//            case PICKUP:
-//                builder.orderDesc(TeamScouting2014Dao.Properties.PickupCatch,TeamScouting2014Dao.Properties.PickupGround);
-//                break;
-//            case PUSHER:
-//                builder.orderAsc(TeamScouting2014Dao.Properties.Pusher);
-//                break;
-//            case BLOCKER:
-//                builder.orderAsc(TeamScouting2014Dao.Properties.Blocker);
-//                break;
-//            case HUMANPLAYER:
-//                builder.orderAsc(TeamScouting2014Dao.Properties.HumanPlayer);
-//                break;
-//            case AUTONOMOUS:
-//                builder.orderDesc(TeamScouting2014Dao.Properties.HotAuto,TeamScouting2014Dao.Properties.HighAuto,TeamScouting2014Dao.Properties.LowAuto,TeamScouting2014Dao.Properties.DriveAuto,TeamScouting2014Dao.Properties.NoAuto);
-//                break;
-//            default:
-//                builder.orderAsc(EventTeamDao.Properties.Rank);
-//                break;
-//        }
-                List<EventTeam> teams = new Select().from(EventTeam.class).join(Team.class).on(EventTeam.TAG+"."+EventTeam.TEAM+"="+Team.TAG+"."+Team.ID).where(EventTeam.TAG+"."+EventTeam.EVENT+"=?",prefs.getComp()).orderBy(orderBy).execute();
+                List<EventTeam> teams = query.where(EventTeam.TAG+"."+EventTeam.EVENT+"=?",prefs.getComp()).orderBy(orderBy).execute();
 
                 EventBus.getDefault().post(new LoadTeams(teams));
             }
@@ -332,7 +343,7 @@ public class TeamListFragment extends Fragment {
     public void onEventMainThread(LoadTeams teams) {
         switch (prefs.getYear()) {
             case 2014:
-                adapter.showDrag(sort.equals(Sort2014.RANK));
+                adapter.showDrag(sort2014.equals(Sort2014.RANK));
                 break;
         }
         adapter.swapList(teams.getTeams());

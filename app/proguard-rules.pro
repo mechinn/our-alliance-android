@@ -1,9 +1,3 @@
-# GreenDAO
-    -keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
-        public static java.lang.String TABLENAME;
-    }
-    -keep class **$Properties
-
 # Two Way View
     -keep class org.lucasr.twowayview.** { *; }
 

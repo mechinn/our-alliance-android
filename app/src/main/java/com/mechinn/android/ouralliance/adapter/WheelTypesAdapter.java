@@ -22,8 +22,8 @@ public class WheelTypesAdapter extends BaseAdapter implements Filterable {
 	Context context;
     List<? extends Wheel> wheels;
     int field;
-	List<CharSequence> original;
-    List<CharSequence> filtered;
+	List<String> original;
+    List<String> filtered;
 
 	public WheelTypesAdapter(Context context, List<? extends Wheel> wheels, int field) {
 		this.context = context;
@@ -99,12 +99,13 @@ public class WheelTypesAdapter extends BaseAdapter implements Filterable {
                     results.values = original;
                     results.count = original.size();
                 } else {
-                    List<CharSequence> filterResultsData = new ArrayList<CharSequence>();
-                    for(CharSequence data : original) {
+                    String filteringString = charSequence.toString().toLowerCase();
+                    List<String> filterResultsData = new ArrayList<>();
+                    for(String data : original) {
                         //In this loop, you'll filter through originalData and compare each item to charSequence.
                         //If you find a match, add it to your new ArrayList
                         //I'm not sure how you're going to do comparison, so you'll need to fill out this conditional
-                        if(data.toString().toLowerCase().matches(".*"+charSequence.toString().toLowerCase()+".*")) {
+                        if(null!=data && data.toLowerCase().contains(filteringString)) {
                             filterResultsData.add(data);
                         }
                     }
@@ -116,7 +117,7 @@ public class WheelTypesAdapter extends BaseAdapter implements Filterable {
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                filtered = (ArrayList<CharSequence>)filterResults.values;
+                filtered = (ArrayList<String>)filterResults.values;
                 notifyDataSetChanged();
             }
         };

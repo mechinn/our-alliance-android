@@ -49,8 +49,10 @@ public abstract class TeamDetailFragment extends Fragment {
     public static final String TAG = "TeamDetailFragment";
 	public static final String TEAM_ARG = "team";
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+    private final static int PICTURE_CAPTURE_CODE = 100;
+    private final static int VIDEO_CAPTURE_CODE = 101;
 
-	private Prefs prefs;
+    private Prefs prefs;
     private View rootView;
 	private Button picture;
     private Button video;
@@ -152,7 +154,7 @@ public abstract class TeamDetailFragment extends Fragment {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediaFile)); // set the image file name
 
                     // start the image capture Intent
-                    startActivityForResult(intent, R.id.picture_capture_code);
+                    startActivityForResult(intent, PICTURE_CAPTURE_CODE);
                 }
             }
         });
@@ -172,7 +174,7 @@ public abstract class TeamDetailFragment extends Fragment {
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
 
                     // start the image capture Intent
-                    startActivityForResult(intent, R.id.video_capture_code);
+                    startActivityForResult(intent, VIDEO_CAPTURE_CODE);
                 }
             }
         });
@@ -235,7 +237,7 @@ public abstract class TeamDetailFragment extends Fragment {
     
     @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == R.id.picture_capture_code) {
+        if (requestCode == PICTURE_CAPTURE_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 // Image captured and saved to fileUri specified in the Intent
             	if(null!=data && null!=data.getData()) {
@@ -248,7 +250,7 @@ public abstract class TeamDetailFragment extends Fragment {
             } else {
                 // Image capture failed, advise user
             }
-        } else if (requestCode == R.id.video_capture_code) {
+        } else if (requestCode == VIDEO_CAPTURE_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 // Video captured and saved to fileUri specified in the Intent
             	if(null!=data && null!=data.getData()) {

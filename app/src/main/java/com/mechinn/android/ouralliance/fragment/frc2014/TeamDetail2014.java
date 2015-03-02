@@ -523,11 +523,11 @@ public class TeamDetail2014 extends TeamDetailFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                try {
-                    List<TeamScouting2014> orientations = new Select().from(TeamScouting2014.class).groupBy(TeamScouting2014.ORIENTATION).execute();
+                List<TeamScouting2014> orientations = new Select().from(TeamScouting2014.class).where(TeamScouting2014.ORIENTATION+" IS NOT NULL").groupBy(TeamScouting2014.ORIENTATION).execute();
+                if(null!=orientations) {
                     EventBus.getDefault().post(new LoadOrientations(orientations));
-                } catch(NullPointerException e) {
-
+                } else {
+                    Log.d(TAG,"null orientations");
                 }
             }
         });
@@ -538,6 +538,7 @@ public class TeamDetail2014 extends TeamDetailFragment {
         loadDriveTrains();
     }
     public void onEventMainThread(LoadOrientations orientations) {
+        Log.d(TAG,"orientations: "+orientations.getOrientations().size());
         orientationsAdapter.swapList(orientations.getOrientations());
     }
     private class LoadOrientations {
@@ -554,16 +555,17 @@ public class TeamDetail2014 extends TeamDetailFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                try {
-                    List<TeamScouting2014> driveTrains = new Select().from(TeamScouting2014.class).groupBy(TeamScouting2014.DRIVE_TRAIN).execute();
+                List<TeamScouting2014> driveTrains = new Select().from(TeamScouting2014.class).where(TeamScouting2014.DRIVE_TRAIN+" IS NOT NULL").groupBy(TeamScouting2014.DRIVE_TRAIN).execute();
+                if(null!=driveTrains) {
                     EventBus.getDefault().post(new LoadDriveTrains(driveTrains));
-                } catch(NullPointerException e) {
-
+                } else {
+                    Log.d(TAG,"null drive trains");
                 }
             }
         });
     }
     public void onEventMainThread(LoadDriveTrains driveTrains) {
+        Log.d(TAG,"drive trains: "+driveTrains.getDriveTrains().size());
         driveTrainsAdapter.swapList(driveTrains.getDriveTrains());
     }
     private class LoadDriveTrains {
@@ -621,7 +623,7 @@ public class TeamDetail2014 extends TeamDetailFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<Wheel> wheelTypes = new Select().from(Wheel2014.class).groupBy(Wheel2014.WHEEL_TYPE).execute();
+                List<Wheel> wheelTypes = new Select().from(Wheel2014.class).where(Wheel2014.WHEEL_TYPE+" IS NOT NULL").groupBy(Wheel2014.WHEEL_TYPE).execute();
                 if (null != wheelTypes) {
                     EventBus.getDefault().post(new LoadWheelTypes(wheelTypes));
                 } else {

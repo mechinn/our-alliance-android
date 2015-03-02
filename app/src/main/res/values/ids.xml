@@ -6,8 +6,4 @@
     <item type="id" name="load_event" />
     <item type="id" name="load_team_detail_scouting" />
     <item type="id" name="load_team_detail_scouting_helpers" />
-    <item type="id" name="load_wheel_types" />
-    <item type="id" name="load_team_wheels" />
-    <item type="id" name="picture_capture_code" />
-    <item type="id" name="video_capture_code" />
 </resources>
