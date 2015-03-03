@@ -1,9 +1,9 @@
 package com.mechinn.android.ouralliance.activity;
 
-import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
@@ -23,7 +23,7 @@ import com.mechinn.android.ouralliance.fragment.frc2014.TeamDetail2014;
 
 import de.greenrobot.event.EventBus;
 
-public class TeamScoutingActivity extends OurAllianceActivity implements OnBackStackChangedListener {
+public class TeamScoutingActivity extends OurAllianceActivity implements FragmentManager.OnBackStackChangedListener {
     public static final String TAG = "TeamScoutingActivity";
 	public static final String TEAM_ARG = "team";
 	public static final String MATCH_ARG = "match";
@@ -40,10 +40,10 @@ public class TeamScoutingActivity extends OurAllianceActivity implements OnBackS
 	public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
-        setTitle(R.string.matches);
+        this.getSupportActionBar().setTitle(R.string.matches);
 		setContentView(R.layout.activity_team_scouting);
 
-		this.getFragmentManager().addOnBackStackChangedListener(this);
+		this.getSupportFragmentManager().addOnBackStackChangedListener(this);
         // Add the fragment to the 'fragment_container' FrameLayout
         if (this.findViewById(R.id.fragment_container) != null) {
         	listFrag = R.id.fragment_container;
@@ -108,8 +108,8 @@ public class TeamScoutingActivity extends OurAllianceActivity implements OnBackS
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	        case android.R.id.home:
-	        	if(this.getFragmentManager().getBackStackEntryCount()>0) {
-	        		this.getFragmentManager().popBackStack();
+	        	if(this.getSupportFragmentManager().getBackStackEntryCount()>0) {
+	        		this.getSupportFragmentManager().popBackStack();
 	        	} else {
 	        		this.finish();
 	        	}
@@ -156,16 +156,14 @@ public class TeamScoutingActivity extends OurAllianceActivity implements OnBackS
     }
 
 	public void onBackStackChanged() {
-		Log.i(TAG, "back stack changed ");
-        if (getFragmentManager().getBackStackEntryCount() < 1){
+		Log.i(TAG, "back stack changed "+getSupportFragmentManager().getBackStackEntryCount());
+        if (getSupportFragmentManager().getBackStackEntryCount() < 1){
         	if(null!=matchName) {
-            	this.setTitle(matchName);
+                this.getSupportActionBar().setTitle(matchName);
         	} else {
-            	this.setTitle(R.string.app_name);
+                this.getSupportActionBar().setTitle(R.string.app_name);
         		this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            		this.getSupportActionBar().setHomeButtonEnabled(false);
-                }
+                this.getSupportActionBar().setHomeButtonEnabled(false);
         	}
         }
 	}

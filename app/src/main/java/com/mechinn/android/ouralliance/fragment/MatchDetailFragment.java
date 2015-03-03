@@ -8,6 +8,7 @@ import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -148,7 +149,7 @@ public abstract class MatchDetailFragment extends Fragment {
 	}
 	
 	public void setView() {
-		this.getActivity().setTitle(match.toString());
+        ((ActionBarActivity)this.getActivity()).getSupportActionBar().setTitle(match.getTeamScouting().getTeam().toString());
         notes.setText(match.getNotes());
 	}
 	

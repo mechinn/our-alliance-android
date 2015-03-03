@@ -31,8 +31,8 @@ public class SettingsActivity extends ActionBarActivity {
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	        case android.R.id.home:
-	        	if(this.getFragmentManager().getBackStackEntryCount()>0) {
-	        		this.getFragmentManager().popBackStack();
+	        	if(this.getSupportFragmentManager().getBackStackEntryCount()>0) {
+	        		this.getSupportFragmentManager().popBackStack();
 	        	} else {
 	        		this.finish();
 	        	}

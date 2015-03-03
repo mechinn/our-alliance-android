@@ -252,7 +252,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
                                                 scouting.setPosition(team);
                                                 scouting.setAlliance(false);
                                             } else {
-                                                scouting.setPosition(team - teamCount / 2);
+                                                scouting.setPosition((team - teamCount) / 2);
                                                 scouting.setAlliance(true);
                                             }
                                             scouting.saveMod();
@@ -260,6 +260,13 @@ public class InsertMatchDialogFragment extends DialogFragment {
                                         break;
                                 }
                                 ActiveAndroid.setTransactionSuccessful();
+                                EventBus.getDefault().post(match);
+                                switch (prefs.getYear()) {
+                                    case 2014:
+                                        EventBus.getDefault().post(new MatchScouting2014());
+                                        break;
+                                }
+
                             } finally {
                                 ActiveAndroid.endTransaction();
                             }

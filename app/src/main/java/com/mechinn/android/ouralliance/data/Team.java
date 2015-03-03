@@ -58,6 +58,15 @@ public class Team extends com.mechinn.android.ouralliance.data.OurAllianceObject
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+    public String getDisplayName() {
+        if(null!=getNickname() && ""!=getNickname()) {
+            return getNickname();
+        } else if(null!=getName() && ""!=getName()) {
+            return getName();
+        } else {
+            return "";
+        }
+    }
     public String getWebsite() {
         return website;
     }
@@ -89,7 +98,7 @@ public class Team extends com.mechinn.android.ouralliance.data.OurAllianceObject
         this.rookieYear = rookieYear;
     }
     public String toString() {
-        return this.getTeamNumber()+": "+this.getNickname();
+        return this.getTeamNumber()+": "+this.getDisplayName();
     }
     public int compareTo(Team another) {
         return this.getTeamNumber() - another.getTeamNumber();

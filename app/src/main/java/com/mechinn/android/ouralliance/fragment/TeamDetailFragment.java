@@ -13,6 +13,7 @@ import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
 import com.mechinn.android.ouralliance.adapter.WheelAdapter;
 import com.mechinn.android.ouralliance.adapter.WheelTypesAdapter;
+import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.Wheel;
@@ -27,6 +28,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -324,7 +326,7 @@ public abstract class TeamDetailFragment extends Fragment {
 	}
 	
 	public void setView() {
-		this.getActivity().setTitle(Integer.toString(scouting.getTeam().getTeamNumber())+": "+scouting.getTeam().getNickname());
+        ((ActionBarActivity)this.getActivity()).getSupportActionBar().setTitle(scouting.getTeam().toString());
 		multimedia = new MultimediaAdapter(this.getActivity(),scouting);
 		Log.d(TAG,"thumbs: "+multimedia.getItemCount());
 		gallery.setAdapter(multimedia);

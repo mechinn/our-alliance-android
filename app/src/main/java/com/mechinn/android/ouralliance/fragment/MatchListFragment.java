@@ -11,6 +11,7 @@ import com.mechinn.android.ouralliance.adapter.MatchAdapter;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -100,17 +101,16 @@ public class MatchListFragment extends ListFragment {
         super.onResume();
         if(!prefs.isMatchesDownloaded()) {
             AsyncExecutor.create().execute(downloadMatches);
-        } else {
-            loadMatches();
-            loadEventTeams();
         }
-
+        loadMatches();
+        loadEventTeams();
     }
     
     private void selectItem(int position) {
         // Notify the parent activity of selected item
         EventBus.getDefault().post(new SelectMatchEvent(((Match)adapter.getItem(position)).getId()));
-        getActivity().setTitle(((Match)adapter.getItem(position)).toString());
+
+        ((ActionBarActivity)this.getActivity()).getSupportActionBar().setTitle(((Match)adapter.getItem(position)).toString());
         
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);
@@ -211,7 +211,8 @@ public class MatchListFragment extends ListFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                int count = new Select().from(EventTeam.class).where(Match.EVENT+"=?",prefs.getComp()).count();
+                int count = new Select().from(EventTeam.class).where(EventTeam.EVENT+"=?",prefs.getComp()).count();
+                Log.d(TAG,"event teams ="+count);
                 EventBus.getDefault().post(new LoadEventTeams(count));
             }
         });
@@ -221,6 +222,7 @@ public class MatchListFragment extends ListFragment {
     }
     public void onEventMainThread(LoadEventTeams teams) {
         enoughTeams = teams.enoughTeams();
+        Log.d(TAG,"enough teams ="+enoughTeams);
         getActivity().invalidateOptionsMenu();
     }
     private class LoadEventTeams {

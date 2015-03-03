@@ -28,13 +28,6 @@ public class OurAllianceActivity extends ActionBarActivity {
     }
 
     @Override
-    public void setTitle(int title) {
-        this.title = title;
-    }
-
-    private int title;
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_RECOVER_PLAY_SERVICES:

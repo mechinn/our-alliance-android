@@ -58,7 +58,10 @@ public abstract class MatchScouting extends OurAllianceObject implements Compara
     public int compareTo(MatchScouting another) {
         int compare = (this.isAlliance()?1:0) - (another.isAlliance()?1:0);
         if(0==compare) {
-            compare = this.getTeamScouting().getTeam().compareTo(another.getTeamScouting().getTeam());
+            compare = this.getPosition() - another.getPosition();
+            if(0==compare) {
+                compare = this.getTeamScouting().getTeam().compareTo(another.getTeamScouting().getTeam());
+            }
         }
         return compare;
     }
