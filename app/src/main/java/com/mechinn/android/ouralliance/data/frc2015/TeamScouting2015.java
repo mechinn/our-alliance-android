@@ -47,7 +47,7 @@ public class TeamScouting2015 extends TeamScouting {
     @Column(name=COOP)
     private Boolean coop;
     @Column(name=DRIVER_EXPERIENCE)
-    private Double driverExperience;
+    private Float driverExperience;
     @Column(name=PICKUP_MECHANISM)
     private String pickupMechanism;
     @Column(name=MAX_TOTE_STACK)
@@ -110,10 +110,10 @@ public class TeamScouting2015 extends TeamScouting {
     public void setCoop(Boolean coop) {
         this.coop = coop;
     }
-    public Double getDriverExperience() {
+    public Float getDriverExperience() {
         return driverExperience;
     }
-    public void setDriverExperience(Double driverExperience) {
+    public void setDriverExperience(Float driverExperience) {
         this.driverExperience = driverExperience;
     }
     public String getPickupMechanism() {

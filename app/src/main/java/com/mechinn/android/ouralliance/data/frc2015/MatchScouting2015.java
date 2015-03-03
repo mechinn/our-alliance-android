@@ -29,6 +29,18 @@ public class MatchScouting2015 extends MatchScouting {
     public final static String FOWLS = "fowls";
     @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {MatchScouting.TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private TeamScouting2015 teamScouting2015;
+    @Column(name=AUTO_STACKED)
+    private Boolean autoStacked;
+    @Column(name=AUTO_TOTES)
+    private Integer autoTotes;
+    @Column(name=AUTO_CONTAINERS)
+    private Integer autoContainers;
+    @Column(name=AUTO_LANDFILL)
+    private Integer autoLandfill;
+    @Column(name=LITTER)
+    private Float autoMove;
+    @Column(name=COOP)
+    private Boolean coop;
     @Column(name=TOTES)
     private Integer totes;
     @Column(name=CONTAINERS)
@@ -37,8 +49,6 @@ public class MatchScouting2015 extends MatchScouting {
     private Integer litter;
     @Column(name=FOWLS)
     private Integer fowls;
-    @Column(name=COOP)
-    private Boolean coop;
     public MatchScouting2015() {}
     public MatchScouting2015(Cursor cursor) {
         this.loadFromCursor(cursor);
@@ -54,6 +64,42 @@ public class MatchScouting2015 extends MatchScouting {
     }
     public void setTeamScouting(TeamScouting teamScouting) {
         setTeamScouting2015((TeamScouting2015) teamScouting);
+    }
+    public Boolean getAutoStacked() {
+        return autoStacked;
+    }
+    public void setAutoStacked(Boolean autoStacked) {
+        this.autoStacked = autoStacked;
+    }
+    public Integer getAutoTotes() {
+        return autoTotes;
+    }
+    public void setAutoTotes(Integer autoTotes) {
+        this.autoTotes = autoTotes;
+    }
+    public Integer getAutoContainers() {
+        return autoContainers;
+    }
+    public void setAutoContainers(Integer autoContainers) {
+        this.autoContainers = autoContainers;
+    }
+    public Integer getAutoLandfill() {
+        return autoLandfill;
+    }
+    public void setAutoLandfill(Integer autoLandfill) {
+        this.autoLandfill = autoLandfill;
+    }
+    public Float getAutoMove() {
+        return autoMove;
+    }
+    public void setAutoMove(Float autoMove) {
+        this.autoMove = autoMove;
+    }
+    public Boolean getCoop() {
+        return coop;
+    }
+    public void setCoop(Boolean coop) {
+        this.coop = coop;
     }
     public Integer getTotes() {
         return totes;
@@ -79,22 +125,21 @@ public class MatchScouting2015 extends MatchScouting {
     public void setFowls(Integer fowls) {
         this.fowls = fowls;
     }
-    public Boolean getCoop() {
-        return coop;
-    }
-    public void setCoop(Boolean coop) {
-        this.coop = coop;
-    }
     public boolean equals(Object data) {
         if (!(data instanceof MatchScouting2015)) {
             return false;
         }
         return super.equals(data) &&
+                getAutoStacked().equals(((MatchScouting2015)data).getAutoStacked()) &&
+                getAutoTotes().equals(((MatchScouting2015)data).getAutoTotes()) &&
+                getAutoContainers().equals(((MatchScouting2015)data).getAutoContainers()) &&
+                getAutoLandfill().equals(((MatchScouting2015)data).getAutoLandfill()) &&
+                getAutoMove().equals(((MatchScouting2015)data).getAutoMove()) &&
+                getCoop().equals(((MatchScouting2015)data).getCoop()) &&
                 getTotes().equals(((MatchScouting2015)data).getTotes()) &&
                 getContainers().equals(((MatchScouting2015)data).getContainers()) &&
                 getLitter().equals(((MatchScouting2015)data).getLitter()) &&
-                getFowls().equals(((MatchScouting2015)data).getFowls()) &&
-                getCoop().equals(((MatchScouting2015)data).getCoop());
+                getFowls().equals(((MatchScouting2015)data).getFowls());
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

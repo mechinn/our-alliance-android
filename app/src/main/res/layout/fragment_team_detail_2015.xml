@@ -93,7 +93,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
-            android:id="@+id/team2015heightShooter"
+            android:id="@+id/team2015height"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -101,7 +101,7 @@
             android:inputType="number|numberDecimal" />
 
         <TextView
-            android:id="@+id/team2015heightShooterUnit"
+            android:id="@+id/team2015heightUnit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -132,6 +132,24 @@
 
     </LinearLayout>
     <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <CheckBox
+                android:id="@+id/team2015coop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Co-op"
+                android:checked="false"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
@@ -152,7 +170,7 @@
             <NumberPicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/match2015maxToteStack"
+                android:id="@+id/team2015maxToteStack"
                 android:layout_gravity="center_horizontal"/>
 
         </LinearLayout>
@@ -173,7 +191,7 @@
             <NumberPicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/match2015maxTotesStackContainer"
+                android:id="@+id/team2015maxTotesStackContainer"
                 android:layout_gravity="center_horizontal"/>
         </LinearLayout>
 
@@ -193,7 +211,7 @@
             <NumberPicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/match2015maxTotesAndContainerLitter"
+                android:id="@+id/team2015maxTotesAndContainerLitter"
                 android:layout_gravity="center_horizontal"/>
         </LinearLayout>
     </LinearLayout>

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TeamScouting2015FilterAdapter extends FilterableAdapter {
     public static final String TAG = "TS2015Filter";
-    public enum Type {ORIENTATION,DRIVETRAIN}
+    public enum Type {ORIENTATION,DRIVETRAIN,MECHANISM}
     Type field;
 
 	public TeamScouting2015FilterAdapter(Context context, List<TeamScouting2015> teams, Type field) {
@@ -36,6 +36,10 @@ public class TeamScouting2015FilterAdapter extends FilterableAdapter {
                     case DRIVETRAIN:
                         Log.d(TAG,"drivetrain "+each);
                         addString(each.getDriveTrain());
+                        break;
+                    case MECHANISM:
+                        Log.d(TAG,"drivetrain "+each);
+                        addString(each.getPickupMechanism());
                         break;
                 }
             }

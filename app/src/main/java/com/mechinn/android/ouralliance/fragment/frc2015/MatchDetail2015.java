@@ -11,7 +11,7 @@ import android.widget.RatingBar;
 
 import com.activeandroid.Model;
 import com.mechinn.android.ouralliance.R;
-import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
+import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015;
 import com.mechinn.android.ouralliance.fragment.MatchDetailFragment;
 
 import de.greenrobot.event.EventBus;
@@ -20,50 +20,44 @@ import de.greenrobot.event.util.AsyncExecutor;
 public class MatchDetail2015 extends MatchDetailFragment {
     public static final String TAG = "MatchDetail2015";
 
-    private NumberPicker hotShots;
-    private NumberPicker shotsMade;
-    private NumberPicker shotsMissed;
-    private NumberPicker[] shots;
-    private RatingBar moveFwd;
-    private CheckBox shooter;
-    private CheckBox catcher;
-    private CheckBox passer;
-    private RatingBar driveTrain;
-    private RatingBar ballAccuracy;
-    private CheckBox ground;
-    private CheckBox overTruss;
-    private CheckBox low;
-    private CheckBox high;
-    public MatchScouting2014 getMatch() {
-        return (MatchScouting2014) super.getMatch();
+    private NumberPicker[] pickers;
+    private CheckBox autoStacked;
+    private NumberPicker autoTotes;
+    private NumberPicker autoContainers;
+    private NumberPicker autoLandfill;
+    private RatingBar autoMove;
+    private CheckBox coop;
+    private NumberPicker totes;
+    private NumberPicker containers;
+    private NumberPicker litter;
+    private NumberPicker fowls;
+    public MatchScouting2015 getMatch() {
+        return (MatchScouting2015) super.getMatch();
     }
-    public void setMatch(MatchScouting2014 match) {
+    public void setMatch(MatchScouting2015 match) {
         super.setMatch(match);
     }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        View seasonView = inflater.inflate(R.layout.fragment_match_detail_2014, getSeason(), false);
-        hotShots = (NumberPicker) seasonView.findViewById(R.id.match2014hotShots);
-        shotsMade = (NumberPicker) seasonView.findViewById(R.id.match2014shotsMade);
-        shotsMissed = (NumberPicker) seasonView.findViewById(R.id.match2014shotsMissed);
-        moveFwd = (RatingBar) seasonView.findViewById(R.id.match2014moveFwd);
-        shooter = (CheckBox) seasonView.findViewById(R.id.match2014shooter);
-        catcher = (CheckBox) seasonView.findViewById(R.id.match2014catcher);
-        passer = (CheckBox) seasonView.findViewById(R.id.match2014passer);
-        driveTrain = (RatingBar) seasonView.findViewById(R.id.match2014driveTrain);
-        ballAccuracy = (RatingBar) seasonView.findViewById(R.id.match2014ballAccuracy);
-        ground = (CheckBox) seasonView.findViewById(R.id.match2014ground);
-        overTruss = (CheckBox) seasonView.findViewById(R.id.match2014overTruss);
-        low = (CheckBox) seasonView.findViewById(R.id.match2014low);
-        high = (CheckBox) seasonView.findViewById(R.id.match2014high);
+        View seasonView = inflater.inflate(R.layout.fragment_match_detail_2015, getSeason(), false);
+        autoStacked = (CheckBox) seasonView.findViewById(R.id.match2015autoStacked);
+        autoTotes = (NumberPicker) seasonView.findViewById(R.id.match2015autoTotes);
+        autoContainers = (NumberPicker) seasonView.findViewById(R.id.match2015autoContainers);
+        autoLandfill = (NumberPicker) seasonView.findViewById(R.id.match2015autoLandfill);
+        autoMove = (RatingBar) seasonView.findViewById(R.id.match2015autoMove);
+        coop = (CheckBox) seasonView.findViewById(R.id.match2015coop);
+        totes = (NumberPicker) seasonView.findViewById(R.id.match2015totes);
+        containers = (NumberPicker) seasonView.findViewById(R.id.match2015containers);
+        litter = (NumberPicker) seasonView.findViewById(R.id.match2015litter);
+        fowls = (NumberPicker) seasonView.findViewById(R.id.match2015fowls);
         String[] nums = new String[100];
         for(int i=0; i<nums.length; i++) {
             nums[i] = Integer.toString(i);
         }
-        shots = new NumberPicker[] {hotShots, shotsMade, shotsMissed};
-        for(NumberPicker picker : shots) {
+        pickers = new NumberPicker[] {autoTotes, autoContainers, autoLandfill, totes, containers, litter, fowls};
+        for(NumberPicker picker : pickers) {
             picker.setMinValue(0);
             picker.setMaxValue(99);
             picker.setDisplayedValues(nums);
@@ -76,63 +70,51 @@ public class MatchDetail2015 extends MatchDetailFragment {
 	@Override
 	public void setView() {
 		super.setView();
-        if(null!=getMatch().getHotShots()) {
-            hotShots.setValue(getMatch().getHotShots());
+        if(null!=getMatch().getAutoStacked()) {
+            autoStacked.setChecked(getMatch().getAutoStacked());
         }
-        if(null!=getMatch().getShotsMade()) {
-            shotsMade.setValue(getMatch().getShotsMade());
+        if(null!=getMatch().getAutoTotes()) {
+            autoTotes.setValue(getMatch().getAutoTotes());
         }
-        if(null!=getMatch().getShotsMissed()) {
-            shotsMissed.setValue(getMatch().getShotsMissed());
+        if(null!=getMatch().getAutoContainers()) {
+            autoContainers.setValue(getMatch().getAutoContainers());
         }
-        if(null!=getMatch().getMoveForward()) {
-            moveFwd.setRating(getMatch().getMoveForward());
+        if(null!=getMatch().getAutoLandfill()) {
+            autoLandfill.setValue(getMatch().getAutoLandfill());
         }
-        if(null!=getMatch().getShooter()) {
-            shooter.setChecked(getMatch().getShooter());
+        if(null!=getMatch().getAutoMove()) {
+            autoMove.setRating(getMatch().getAutoMove());
         }
-        if(null!=getMatch().getCatcher()) {
-            catcher.setChecked(getMatch().getCatcher());
+        if(null!=getMatch().getCoop()) {
+            coop.setChecked(getMatch().getCoop());
         }
-        if(null!=getMatch().getPasser()) {
-            passer.setChecked(getMatch().getPasser());
+        if(null!=getMatch().getTotes()) {
+            totes.setValue(getMatch().getTotes());
         }
-        if(null!=getMatch().getDriveTrainRating()) {
-            driveTrain.setRating(getMatch().getDriveTrainRating());
+        if(null!=getMatch().getContainers()) {
+            containers.setValue(getMatch().getContainers());
         }
-        if(null!=getMatch().getBallAccuracyRating()) {
-            ballAccuracy.setRating(getMatch().getBallAccuracyRating());
+        if(null!=getMatch().getLitter()) {
+            litter.setValue(getMatch().getLitter());
         }
-        if(null!=getMatch().getGround()) {
-            ground.setChecked(getMatch().getGround());
-        }
-        if(null!=getMatch().getOverTruss()) {
-            overTruss.setChecked(getMatch().getOverTruss());
-        }
-        if(null!=getMatch().getLow()) {
-            low.setChecked(getMatch().getLow());
-        }
-        if(null!=getMatch().getHigh()) {
-            high.setChecked(getMatch().getHigh());
+        if(null!=getMatch().getFowls()) {
+            fowls.setValue(getMatch().getFowls());
         }
 	}
 	
 	@Override
 	public void updateMatch() {
 		super.updateMatch();
-        getMatch().setHotShots(hotShots.getValue());
-        getMatch().setShotsMade(shotsMade.getValue());
-        getMatch().setShotsMissed(shotsMissed.getValue());
-        getMatch().setMoveForward(moveFwd.getRating());
-        getMatch().setShooter(shooter.isChecked());
-        getMatch().setCatcher(catcher.isChecked());
-        getMatch().setPasser(passer.isChecked());
-        getMatch().setDriveTrainRating(driveTrain.getRating());
-        getMatch().setBallAccuracyRating(ballAccuracy.getRating());
-        getMatch().setGround(ground.isChecked());
-        getMatch().setOverTruss(overTruss.isChecked());
-        getMatch().setLow(low.isChecked());
-        getMatch().setHigh(high.isChecked());
+        getMatch().setAutoStacked(autoStacked.isChecked());
+        getMatch().setAutoTotes(autoTotes.getValue());
+        getMatch().setAutoContainers(autoContainers.getValue());
+        getMatch().setAutoLandfill(autoLandfill.getValue());
+        getMatch().setAutoMove(autoMove.getRating());
+        getMatch().setCoop(coop.isChecked());
+        getMatch().setTotes(totes.getValue());
+        getMatch().setContainers(containers.getValue());
+        getMatch().setLitter(litter.getValue());
+        getMatch().setFowls(fowls.getValue());
 	}
 
     public void loadMatchScouting() {
@@ -140,7 +122,7 @@ public class MatchDetail2015 extends MatchDetailFragment {
             @Override
             public void run() throws Exception {
                 if (getScoutingId() != 0) {
-                    MatchScouting2014 scouting = Model.load(MatchScouting2014.class, getScoutingId());
+                    MatchScouting2015 scouting = Model.load(MatchScouting2015.class, getScoutingId());
                     if(null!=scouting) {
                         EventBus.getDefault().post(new LoadMatchScouting(scouting));
                     } else {
@@ -152,11 +134,11 @@ public class MatchDetail2015 extends MatchDetailFragment {
             }
         });
     }
-    public void onEventMainThread(MatchScouting2014 scoutingChanged) {
+    public void onEventMainThread(MatchScouting2015 scoutingChanged) {
         loadMatchScouting();
     }
     public void onEventMainThread(LoadMatchScouting scouting) {
-        MatchScouting2014 result = scouting.getScouting();
+        MatchScouting2015 result = scouting.getScouting();
         Log.d(TAG, "result: " + result);
         setMatch(result);
         setView();
@@ -164,11 +146,11 @@ public class MatchDetail2015 extends MatchDetailFragment {
         getActivity().invalidateOptionsMenu();
     }
     protected class LoadMatchScouting {
-        MatchScouting2014 scouting;
-        public LoadMatchScouting(MatchScouting2014 scouting) {
+        MatchScouting2015 scouting;
+        public LoadMatchScouting(MatchScouting2015 scouting) {
             this.scouting = scouting;
         }
-        public MatchScouting2014 getScouting() {
+        public MatchScouting2015 getScouting() {
             return scouting;
         }
     }

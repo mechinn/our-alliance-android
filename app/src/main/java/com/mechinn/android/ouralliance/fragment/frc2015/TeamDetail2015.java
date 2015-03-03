@@ -13,7 +13,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,8 +27,6 @@ import com.mechinn.android.ouralliance.data.Wheel;
 import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 import com.mechinn.android.ouralliance.data.frc2015.Wheel2015;
 import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;
-import com.mechinn.android.ouralliance.widget.UncheckableRadioGroup;
-import com.mechinn.android.ouralliance.widget.UncheckableRadioGroupOnCheckedChangeListener;
 
 import java.util.List;
 
@@ -42,6 +39,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
     public static final int maxHeight = 78;
     public static final int maxDistance = 9999;
 
+    private NumberPicker[] pickers;
 	private AutoCompleteTextView orientation;
     private AutoCompleteTextView driveTrain;
     private EditText width;
@@ -49,7 +47,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
     private EditText height;
     private CheckBox coop;
     private RatingBar driverExperience;
-    private AutoCompleteTextView pickupMechanism;
+    private AutoCompleteTextView mechanism;
     private NumberPicker maxToteStack;
     private NumberPicker maxTotesStackContainer;
     private NumberPicker maxTotesAndContainerLitter;
@@ -63,6 +61,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
 
 	private TeamScouting2015FilterAdapter orientationsAdapter;
 	private TeamScouting2015FilterAdapter driveTrainsAdapter;
+    private TeamScouting2015FilterAdapter mechanismsAdapter;
 
     public TeamScouting2015 getScouting() {
         return (TeamScouting2015) super.getScouting();
@@ -124,145 +123,45 @@ public class TeamDetail2015 extends TeamDetailFragment {
                         event.getAction() == KeyEvent.ACTION_DOWN &&
                                 event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                     if (!event.isShiftPressed()) {
-                        checkShooterHeight();
+                        checkHeight();
                         return true; // consume.
                     }
                 }
                 return false; // pass on to other listeners.
             }
         });
-        heightShooter.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        height.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    checkShooterHeight();
+                    checkHeight();
                 }
             }
         });
-        heightMax = (EditText) seasonView.findViewById(R.id.team2014heightMax);
-        heightMax.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (null != event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                        actionId == EditorInfo.IME_ACTION_DONE ||
-                        event.getAction() == KeyEvent.ACTION_DOWN &&
-                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                    if (!event.isShiftPressed()) {
-                        checkMaxHeight();
-                        return true; // consume.
-                    }
-                }
-                return false; // pass on to other listeners.
-            }
-        });
-        heightMax.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    checkMaxHeight();
-                }
-            }
-        });
-        shooterTypes = (UncheckableRadioGroup) seasonView.findViewById(R.id.team2014shooterType);
-        shooterGroup = (LinearLayout) seasonView.findViewById(R.id.team2014shooterGroup);
-        lowGoal = (CheckBox) seasonView.findViewById(R.id.team2014lowGoal);
-        highGoal = (CheckBox) seasonView.findViewById(R.id.team2014highGoal);
-        shootingDistanceGroup = (LinearLayout) seasonView.findViewById(R.id.team2014shootingDistanceGroup);
-        shootingDistance = (EditText) seasonView.findViewById(R.id.team2014shootingDistance);
-        shootingDistance.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (null!=event && (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                        actionId == EditorInfo.IME_ACTION_DONE ||
-                        event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                    if (!event.isShiftPressed()) {
-                        checkShootingDistance();
-                        return true; // consume.
-                    }
-                }
-                return false; // pass on to other listeners.
-            }
-        });
-        shootingDistance.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    checkShootingDistance();
-                }
-            }
-        });
-        passGround = (CheckBox) seasonView.findViewById(R.id.team2014passGround);
-        passAir = (CheckBox) seasonView.findViewById(R.id.team2014passAir);
-        passTruss = (CheckBox) seasonView.findViewById(R.id.team2014passTruss);
-        pickupGround = (CheckBox) seasonView.findViewById(R.id.team2014pickupGround);
-        pickupCatch = (CheckBox) seasonView.findViewById(R.id.team2014pickupCatch);
-        pusher = (CheckBox) seasonView.findViewById(R.id.team2014pusher);
-        blocker = (CheckBox) seasonView.findViewById(R.id.team2014blocker);
-        humanPlayer = (RatingBar) seasonView.findViewById(R.id.team2014humanPlayer);
-        noAuto = (CheckBox) seasonView.findViewById(R.id.team2014noAuto);
-        driveAuto = (CheckBox) seasonView.findViewById(R.id.team2014driveAuto);
-        lowAuto = (CheckBox) seasonView.findViewById(R.id.team2014lowAuto);
-        highAuto = (CheckBox) seasonView.findViewById(R.id.team2014highAuto);
-        hotAuto = (CheckBox) seasonView.findViewById(R.id.team2014hotAuto);
-        shooterTypeNone();
-		shooterTypes.setOnCheckedChangeListener(new UncheckableRadioGroupOnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                super.onCheckedChanged(group, checkedId);
-                if (null != getScouting()) {
-                    switch (checkedId) {
-                        default:
-                        case R.id.none:
-                            shooterTypeNone();
-                            break;
-                        case R.id.dumper:
-                            shooterGroup.setVisibility(View.VISIBLE);
-                            if(null!=getScouting().getLowGoal()) {
-                                lowGoal.setChecked(getScouting().getLowGoal());
-                            }
-                            highGoal.setVisibility(View.GONE);
-                            highGoal.setChecked(false);
-                            shootingDistanceGroup.setVisibility(View.GONE);
-                            shootingDistance.setText("");
-                            lowAuto.setVisibility(View.VISIBLE);
-                            if(null!=getScouting().getLowAuto()) {
-                                lowAuto.setChecked(getScouting().getLowAuto());
-                            }
-                            highAuto.setVisibility(View.GONE);
-                            highAuto.setChecked(false);
-                            hotAuto.setVisibility(View.GONE);
-                            hotAuto.setChecked(false);
-                            break;
-                        case R.id.shooter:
-                            shooterGroup.setVisibility(View.VISIBLE);
-                            if(null!=getScouting().getLowGoal()) {
-                                lowGoal.setChecked(getScouting().getLowGoal());
-                            }
-                            highGoal.setVisibility(View.VISIBLE);
-                            if(null!=getScouting().getHighGoal()) {
-                                highGoal.setChecked(getScouting().getHighGoal());
-                            }
-                            shootingDistanceGroup.setVisibility(View.VISIBLE);
-                            if (null != getScouting().getShootingDistance() && 0 != getScouting().getShootingDistance()) {
-                                shootingDistance.setText(Double.toString(getScouting().getShootingDistance()));
-                            }
-                            if(null!=getScouting().getLowAuto()) {
-                                lowAuto.setChecked(getScouting().getLowAuto());
-                            }
-                            lowAuto.setVisibility(View.VISIBLE);
-                            if(null!=getScouting().getHighAuto()) {
-                                highAuto.setChecked(getScouting().getHighAuto());
-                            }
-                            highAuto.setVisibility(View.VISIBLE);
-                            if(null!=getScouting().getHotAuto()) {
-                                hotAuto.setChecked(getScouting().getHotAuto());
-                            }
-                            hotAuto.setVisibility(View.VISIBLE);
-                            break;
-                    }
-                }
-            }
-        });
+        coop = (CheckBox) seasonView.findViewById(R.id.team2015coop);
+        driverExperience = (RatingBar) seasonView.findViewById(R.id.team2015driverExperience);
+        mechanism = (AutoCompleteTextView) seasonView.findViewById(R.id.team2015mechanism);
+        maxToteStack = (NumberPicker) seasonView.findViewById(R.id.team2015maxToteStack);
+        maxTotesStackContainer = (NumberPicker) seasonView.findViewById(R.id.team2015maxTotesStackContainer);
+        maxTotesAndContainerLitter = (NumberPicker) seasonView.findViewById(R.id.team2015maxTotesAndContainerLitter);
+        humanPlayer = (RatingBar) seasonView.findViewById(R.id.team2015humanPlayer);
+        noAuto = (CheckBox) seasonView.findViewById(R.id.team2015noAuto);
+        driveAuto = (CheckBox) seasonView.findViewById(R.id.team2015driveAuto);
+        toteAuto = (CheckBox) seasonView.findViewById(R.id.team2015toteAuto);
+        containerAuto = (CheckBox) seasonView.findViewById(R.id.team2015containerAuto);
+        stackedAuto = (CheckBox) seasonView.findViewById(R.id.team2015stackedAuto);
+        landfillAuto = (NumberPicker) seasonView.findViewById(R.id.team2015landfillAuto);
+        String[] nums = new String[100];
+        for(int i=0; i<nums.length; i++) {
+            nums[i] = Integer.toString(i);
+        }
+        pickers = new NumberPicker[] {maxToteStack, maxTotesStackContainer, maxTotesAndContainerLitter, landfillAuto};
+        for(NumberPicker picker : pickers) {
+            picker.setMinValue(0);
+            picker.setMaxValue(99);
+            picker.setDisplayedValues(nums);
+            picker.setWrapSelectorWheel(false);
+        }
 		getSeason().addView(seasonView);
 		return rootView;
 	}
@@ -270,12 +169,15 @@ public class TeamDetail2015 extends TeamDetailFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        orientationsAdapter = new TeamScouting2014FilterAdapter(getActivity(), null, TeamScouting2014FilterAdapter.Type.ORIENTATION);
+        orientationsAdapter = new TeamScouting2015FilterAdapter(getActivity(), null, TeamScouting2015FilterAdapter.Type.ORIENTATION);
         orientation.setAdapter(orientationsAdapter);
         orientation.setThreshold(1);
-        driveTrainsAdapter = new TeamScouting2014FilterAdapter(getActivity(), null, TeamScouting2014FilterAdapter.Type.DRIVETRAIN);
+        driveTrainsAdapter = new TeamScouting2015FilterAdapter(getActivity(), null, TeamScouting2015FilterAdapter.Type.DRIVETRAIN);
         driveTrain.setAdapter(driveTrainsAdapter);
         driveTrain.setThreshold(1);
+        mechanismsAdapter = new TeamScouting2015FilterAdapter(getActivity(), null, TeamScouting2015FilterAdapter.Type.MECHANISM);
+        mechanism.setAdapter(mechanismsAdapter);
+        mechanism.setThreshold(1);
     }
 
     @Override
@@ -284,6 +186,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
         if (this.getPrefs().getYear() != 0 && getTeamId() != 0) {
             loadOrientations();
             loadDriveTrains();
+            loadMechanisms();
         }
     }
 	
@@ -312,57 +215,25 @@ public class TeamDetail2015 extends TeamDetailFragment {
 			num = Double.toString(getScouting().getLength());
 			length.setText(num);
 		}
-		if(null!=getScouting().getHeightShooter() && getScouting().getHeightShooter()>0) {
-			num = Double.toString(getScouting().getHeightShooter());
-			heightShooter.setText(num);
+		if(null!=getScouting().getHeight() && getScouting().getHeight()>0) {
+			num = Double.toString(getScouting().getHeight());
+			height.setText(num);
 		}
-		if(null!=getScouting().getHeightMax() && getScouting().getHeightMax()>0) {
-			num = Double.toString(getScouting().getHeightMax());
-			heightMax.setText(num);
-		}
-        if(null!=getScouting().getShooterType()) {
-            switch (getScouting().getShooterType()) {
-                case NONE:
-                    shooterTypes.programaticallyCheck(R.id.none);
-                    break;
-                case DUMPER:
-                    shooterTypes.programaticallyCheck(R.id.dumper);
-                    break;
-                case SHOOTER:
-                    shooterTypes.programaticallyCheck(R.id.shooter);
-                    break;
-            }
+        if(null!=getScouting().getCoop()) {
+            coop.setChecked(getScouting().getCoop());
         }
-        if(null!=getScouting().getLowGoal()) {
-            lowGoal.setChecked(getScouting().getLowGoal());
+        if(null!=getScouting().getDriverExperience()) {
+            driverExperience.setRating(getScouting().getDriverExperience());
         }
-        if(null!=getScouting().getHighGoal()) {
-            highGoal.setChecked(getScouting().getHighGoal());
+        mechanism.setText(getScouting().getDriveTrain());
+        if(null!=getScouting().getMaxToteStack()) {
+            maxToteStack.setValue(getScouting().getMaxToteStack());
         }
-        if(null!=getScouting().getShootingDistance() && getScouting().getShootingDistance()>0) {
-            num = Double.toString(getScouting().getShootingDistance());
-            shootingDistance.setText(num);
+        if(null!=getScouting().getMaxTotesStackContainer()) {
+            maxTotesStackContainer.setValue(getScouting().getMaxTotesStackContainer());
         }
-        if(null!=getScouting().getPassGround()) {
-            passGround.setChecked(getScouting().getPassGround());
-        }
-        if(null!=getScouting().getPassAir()) {
-            passAir.setChecked(getScouting().getPassAir());
-        }
-        if(null!=getScouting().getPassTruss()) {
-            passTruss.setChecked(getScouting().getPassTruss());
-        }
-        if(null!=getScouting().getPickupGround()) {
-            pickupGround.setChecked(getScouting().getPickupGround());
-        }
-        if(null!=getScouting().getPickupCatch()) {
-            pickupCatch.setChecked(getScouting().getPickupCatch());
-        }
-        if(null!=getScouting().getPusher()) {
-            pusher.setChecked(getScouting().getPusher());
-        }
-        if(null!=getScouting().getBlocker()) {
-            blocker.setChecked(getScouting().getBlocker());
+        if(null!=getScouting().getMaxTotesAndContainerLitter()) {
+            maxTotesAndContainerLitter.setValue(getScouting().getMaxTotesAndContainerLitter());
         }
         if(null!=getScouting().getHumanPlayer()) {
             humanPlayer.setRating(getScouting().getHumanPlayer());
@@ -373,21 +244,24 @@ public class TeamDetail2015 extends TeamDetailFragment {
         if(null!=getScouting().getDriveAuto()) {
             driveAuto.setChecked(getScouting().getDriveAuto());
         }
-        if(null!=getScouting().getLowAuto()) {
-            lowAuto.setChecked(getScouting().getLowAuto());
+        if(null!=getScouting().getToteAuto()) {
+            toteAuto.setChecked(getScouting().getToteAuto());
         }
-        if(null!=getScouting().getHighAuto()) {
-            highAuto.setChecked(getScouting().getHighAuto());
+        if(null!=getScouting().getContainerAuto()) {
+            containerAuto.setChecked(getScouting().getContainerAuto());
         }
-        if(null!=getScouting().getHotAuto()) {
-            hotAuto.setChecked(getScouting().getHotAuto());
+        if(null!=getScouting().getStackedAuto()) {
+            stackedAuto.setChecked(getScouting().getStackedAuto());
+        }
+        if(null!=getScouting().getLandfillAuto()) {
+            landfillAuto.setValue(getScouting().getLandfillAuto());
         }
 	}
 
     public void updateWheels() {
         for(int wheelNum=0;wheelNum<getWheels().getChildCount();wheelNum++) {
             LinearLayout wheelItem = (LinearLayout) getWheels().getChildAt(wheelNum);
-            Wheel2014 wheel = (Wheel2014) wheelItem.getTag();
+            Wheel2015 wheel = (Wheel2015) wheelItem.getTag();
             AutoCompleteTextView wheelType = (AutoCompleteTextView) wheelItem.findViewById(R.id.wheelType);
             EditText wheelSize = (EditText) wheelItem.findViewById(R.id.wheelSize);
             EditText wheelCount = (EditText) wheelItem.findViewById(R.id.wheelCount);
@@ -423,37 +297,20 @@ public class TeamDetail2015 extends TeamDetailFragment {
 		getScouting().setDriveTrain(driveTrain.getText().toString());
 		getScouting().setWidth(Utility.getDoubleFromText(width.getText()));
 		getScouting().setLength(Utility.getDoubleFromText(length.getText()));
-		getScouting().setHeightShooter(Utility.getDoubleFromText(heightShooter.getText()));
-		getScouting().setHeightMax(Utility.getDoubleFromText(heightMax.getText()));
-        switch(shooterTypes.getCheckedRadioButtonId()) {
-            case R.id.none:
-                getScouting().setShooterType(TeamScouting2014.ShooterType.NONE);
-                break;
-            case R.id.dumper:
-                getScouting().setShooterType(TeamScouting2014.ShooterType.DUMPER);
-                break;
-            case R.id.shooter:
-                getScouting().setShooterType(TeamScouting2014.ShooterType.SHOOTER);
-                break;
-            default:
-                getScouting().setShooterType(TeamScouting2014.ShooterType.UNKNOWN);
-        }
-		getScouting().setLowGoal(lowGoal.isChecked());
-        getScouting().setHighGoal(highGoal.isChecked());
-        getScouting().setShootingDistance(Utility.getDoubleFromText(shootingDistance.getText()));
-		getScouting().setPassGround(passGround.isChecked());
-		getScouting().setPassAir(passAir.isChecked());
-		getScouting().setPassTruss(passTruss.isChecked());
-		getScouting().setPickupGround(pickupGround.isChecked());
-		getScouting().setPickupCatch(pickupCatch.isChecked());
-		getScouting().setPusher(pusher.isChecked());
-		getScouting().setBlocker(blocker.isChecked());
+		getScouting().setHeight(Utility.getDoubleFromText(height.getText()));
+		getScouting().setCoop(coop.isChecked());
+        getScouting().setDriverExperience(driverExperience.getRating());
+        getScouting().setPickupMechanism(mechanism.getText().toString());
+		getScouting().setMaxToteStack(maxToteStack.getValue());
+		getScouting().setMaxTotesStackContainer(maxTotesStackContainer.getValue());
+		getScouting().setMaxTotesAndContainerLitter(maxTotesAndContainerLitter.getValue());
         getScouting().setHumanPlayer(humanPlayer.getRating());
         getScouting().setNoAuto(noAuto.isChecked());
         getScouting().setDriveAuto(driveAuto.isChecked());
-        getScouting().setLowAuto(lowAuto.isChecked());
-        getScouting().setHighAuto(highAuto.isChecked());
-        getScouting().setHotAuto(hotAuto.isChecked());
+        getScouting().setToteAuto(toteAuto.isChecked());
+        getScouting().setContainerAuto(containerAuto.isChecked());
+        getScouting().setStackedAuto(stackedAuto.isChecked());
+        getScouting().setLandfillAuto(landfillAuto.getValue());
 	}
 	
 	public void checkPerimeter() {
@@ -469,44 +326,22 @@ public class TeamDetail2015 extends TeamDetailFragment {
 		}
 	}
 	
-	public void checkShooterHeight() {
+	public void checkHeight() {
 		try {
-	        int shooterHeight = Integer.parseInt(heightShooter.getText().toString());
+	        int shooterHeight = Integer.parseInt(height.getText().toString());
 	        if(shooterHeight>maxHeight) {
-	     	   Toast.makeText(TeamDetail2015.this.getActivity(), "Shooter height exceeds "+maxHeight+" inches!", Toast.LENGTH_SHORT).show();
+	     	   Toast.makeText(TeamDetail2015.this.getActivity(), "Height exceeds "+maxHeight+" inches!", Toast.LENGTH_SHORT).show();
 	        }
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void checkMaxHeight() {
-		try {
-	        int maxHeight = Integer.parseInt(heightMax.getText().toString());
-	        if(maxHeight>maxHeight) {
-	     	   Toast.makeText(TeamDetail2015.this.getActivity(), "Max height exceeds "+maxHeight+" inches!", Toast.LENGTH_SHORT).show();
-	        }
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
-	}
-
-    public void checkShootingDistance() {
-        try {
-            int maxDistance = Integer.parseInt(shootingDistance.getText().toString());
-            if(maxDistance>maxDistance) {
-                Toast.makeText(TeamDetail2015.this.getActivity(), "Max distance exceeds "+maxDistance, Toast.LENGTH_SHORT).show();
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void loadOrientations() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<TeamScouting2014> orientations = new Select().from(TeamScouting2014.class).where(TeamScouting2014.ORIENTATION+" IS NOT NULL").groupBy(TeamScouting2014.ORIENTATION).execute();
+                List<TeamScouting2015> orientations = new Select().from(TeamScouting2015.class).where(TeamScouting2015.ORIENTATION+" IS NOT NULL").groupBy(TeamScouting2015.ORIENTATION).execute();
                 if(null!=orientations) {
                     EventBus.getDefault().post(new LoadOrientations(orientations));
                 } else {
@@ -515,7 +350,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
             }
         });
     }
-    public void onEventMainThread(TeamScouting2014 scoutingChanged) {
+    public void onEventMainThread(TeamScouting2015 scoutingChanged) {
         loadScouting();
         loadOrientations();
         loadDriveTrains();
@@ -525,11 +360,11 @@ public class TeamDetail2015 extends TeamDetailFragment {
         orientationsAdapter.swapList(orientations.getOrientations());
     }
     private class LoadOrientations {
-        List<TeamScouting2014> orientations;
-        public LoadOrientations(List<TeamScouting2014> orientations) {
+        List<TeamScouting2015> orientations;
+        public LoadOrientations(List<TeamScouting2015> orientations) {
             this.orientations = orientations;
         }
-        public List<TeamScouting2014> getOrientations() {
+        public List<TeamScouting2015> getOrientations() {
             return orientations;
         }
     }
@@ -538,7 +373,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<TeamScouting2014> driveTrains = new Select().from(TeamScouting2014.class).where(TeamScouting2014.DRIVE_TRAIN+" IS NOT NULL").groupBy(TeamScouting2014.DRIVE_TRAIN).execute();
+                List<TeamScouting2015> driveTrains = new Select().from(TeamScouting2015.class).where(TeamScouting2015.DRIVE_TRAIN+" IS NOT NULL").groupBy(TeamScouting2015.DRIVE_TRAIN).execute();
                 if(null!=driveTrains) {
                     EventBus.getDefault().post(new LoadDriveTrains(driveTrains));
                 } else {
@@ -552,31 +387,57 @@ public class TeamDetail2015 extends TeamDetailFragment {
         driveTrainsAdapter.swapList(driveTrains.getDriveTrains());
     }
     private class LoadDriveTrains {
-        List<TeamScouting2014> driveTrains;
-        public LoadDriveTrains(List<TeamScouting2014> driveTrains) {
+        List<TeamScouting2015> driveTrains;
+        public LoadDriveTrains(List<TeamScouting2015> driveTrains) {
             this.driveTrains = driveTrains;
         }
-        public List<TeamScouting2014> getDriveTrains() {
+        public List<TeamScouting2015> getDriveTrains() {
             return driveTrains;
+        }
+    }
+    public void loadMechanisms() {
+        AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
+            @Override
+            public void run() throws Exception {
+                List<TeamScouting2015> mechanisms = new Select().from(TeamScouting2015.class).where(TeamScouting2015.PICKUP_MECHANISM+" IS NOT NULL").groupBy(TeamScouting2015.PICKUP_MECHANISM).execute();
+                if(null!=mechanisms) {
+                    EventBus.getDefault().post(new LoadMechanisms(mechanisms));
+                } else {
+                    Log.d(TAG,"null mechanisms");
+                }
+            }
+        });
+    }
+    public void onEventMainThread(LoadMechanisms mechanisms) {
+        Log.d(TAG,"mechanisms: "+mechanisms.getMechanisms().size());
+        mechanismsAdapter.swapList(mechanisms.getMechanisms());
+    }
+    private class LoadMechanisms {
+        List<TeamScouting2015> mechanisms;
+        public LoadMechanisms(List<TeamScouting2015> mechanisms) {
+            this.mechanisms = mechanisms;
+        }
+        public List<TeamScouting2015> getMechanisms() {
+            return mechanisms;
         }
     }
     public void loadScouting() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                TeamScouting2014 scouting = null;
+                TeamScouting2015 scouting = null;
                 int year = getPrefs().getYear();
                 try {
                     switch (year) {
-                        case 2014:
-                            scouting = new Select().from(TeamScouting2014.class).where(TeamScouting2014.TEAM+"=?", getTeamId()).executeSingle();
+                        case 2015:
+                            scouting = new Select().from(TeamScouting2015.class).where(TeamScouting2015.TEAM+"=?", getTeamId()).executeSingle();
                             break;
                     }
                 } catch(NullPointerException e) {
                     switch (year) {
-                        case 2014:
+                        case 2015:
                             Team team = Model.load(Team.class, getTeamId());
-                            scouting = (TeamScouting2014) new TeamScouting2014();
+                            scouting = (TeamScouting2015) new TeamScouting2015();
                             scouting.setTeam(team);
                             break;
                     }
@@ -594,11 +455,11 @@ public class TeamDetail2015 extends TeamDetailFragment {
         loadWheels();
     }
     private class LoadScouting {
-        TeamScouting2014 scouting;
-        public LoadScouting(TeamScouting2014 scouting) {
+        TeamScouting2015 scouting;
+        public LoadScouting(TeamScouting2015 scouting) {
             this.scouting = scouting;
         }
-        public TeamScouting2014 getScouting() {
+        public TeamScouting2015 getScouting() {
             return scouting;
         }
     }
@@ -606,7 +467,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<Wheel> wheelTypes = new Select().from(Wheel2014.class).where(Wheel2014.WHEEL_TYPE+" IS NOT NULL").groupBy(Wheel2014.WHEEL_TYPE).execute();
+                List<Wheel> wheelTypes = new Select().from(Wheel2015.class).where(Wheel2015.WHEEL_TYPE+" IS NOT NULL").groupBy(Wheel2015.WHEEL_TYPE).execute();
                 if (null != wheelTypes) {
                     EventBus.getDefault().post(new LoadWheelTypes(wheelTypes));
                 } else {
@@ -615,7 +476,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
             }
         });
     }
-    public void onEventMainThread(Wheel2014 wheelsChanged) {
+    public void onEventMainThread(Wheel2015 wheelsChanged) {
         loadWheelTypes();
         loadWheels();
     }
@@ -636,7 +497,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<Wheel> wheels = new Select().from(Wheel2014.class).where(Wheel2014.TEAM_SCOUTING+"=?", getScouting().getId()).execute();
+                List<Wheel> wheels = new Select().from(Wheel2015.class).where(Wheel2015.TEAM_SCOUTING+"=?", getScouting().getId()).execute();
                 if (null != wheels) {
                     EventBus.getDefault().post(new LoadWheels(wheels));
                 } else {
