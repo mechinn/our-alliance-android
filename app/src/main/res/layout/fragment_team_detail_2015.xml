@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+                >
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Orientation: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<AutoCompleteTextView
+			    android:id="@+id/team2015orientation"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="text" />
+
+		</LinearLayout>
+		 
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Drive Train: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<AutoCompleteTextView
+			    android:id="@+id/team2015driveTrain"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="text" />
+
+		</LinearLayout>
+
+    <LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Width: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<EditText
+			    android:id="@+id/team2015width"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="number|numberDecimal" />
+
+			<TextView
+			    android:id="@+id/team2015widthUnit"
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:textAppearance="?android:attr/textAppearanceSmall" />
+			
+			<TextView
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:text="Length: "
+			     android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			<EditText
+			    android:id="@+id/team2015length"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:imeOptions="flagNoExtractUi"
+			    android:inputType="number|numberDecimal" />
+
+			<TextView
+			    android:id="@+id/team2015lengthUnit"
+			     android:layout_width="wrap_content"
+			     android:layout_height="wrap_content"
+			     android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Height : "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/team2015heightShooter"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="number|numberDecimal" />
+
+        <TextView
+            android:id="@+id/team2015heightShooterUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+		</LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:background="#000000"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mechanism: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <AutoCompleteTextView
+            android:id="@+id/team2015mechanism"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="text" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Max Tote Stack"
+                android:singleLine="false"
+                android:layout_gravity="center_horizontal"/>
+
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/match2015maxToteStack"
+                android:layout_gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Max Container Stack"
+                android:singleLine="false"
+                android:layout_gravity="center_horizontal"/>
+
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/match2015maxTotesStackContainer"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Max Tote Litter"
+                android:singleLine="false"
+                android:layout_gravity="center_horizontal"/>
+
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/match2015maxTotesAndContainerLitter"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Driver Experience"
+            android:layout_gravity="center_vertical" />
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/team2015driverExperience" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Human Player"
+            android:layout_gravity="center_vertical" />
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/team2015humanPlayer" />
+    </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="#000000"/>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Autonomous: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <CheckBox
+                android:id="@+id/team2015noAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No"
+                android:checked="false"/>
+
+            <CheckBox
+                android:id="@+id/team2015driveAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drive"
+                android:checked="false"/>
+
+            <CheckBox
+                android:id="@+id/team2015containerAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Container"
+                android:checked="false"/>
+
+            <CheckBox
+                android:id="@+id/team2015toteAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tote"
+                android:checked="false"/>
+
+            <CheckBox
+                android:id="@+id/team2015stackedAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stacked"
+                android:checked="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Landfill Totes: "
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/team2015landfillAuto"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

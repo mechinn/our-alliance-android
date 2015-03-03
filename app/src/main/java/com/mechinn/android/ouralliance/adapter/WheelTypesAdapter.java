@@ -4,74 +4,30 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Wheel;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class WheelTypesAdapter extends BaseAdapter implements Filterable {
+public class WheelTypesAdapter extends FilterableAdapter {
     public static final String TAG = "TeamScoutingWheelAdapter";
-	Context context;
-    List<? extends Wheel> wheels;
-    int field;
-	List<String> original;
-    List<String> filtered;
 
-	public WheelTypesAdapter(Context context, List<? extends Wheel> wheels, int field) {
-		this.context = context;
-        this.field = field;
+	public WheelTypesAdapter(Context context, List<? extends Wheel> wheels) {
+		super(context);
         swapList(wheels);
 	}
 	
 	public void swapList(List<? extends Wheel> wheels) {
-        this.wheels = wheels;
-        this.original = new ArrayList<>();
-        if(null!=this.wheels) {
-            Collections.sort(this.wheels);
-            for(Wheel each : this.wheels) {
-                switch(field) {
-                    case R.id.wheelType:
-                        original.add(each.getWheelType());
-                        break;
-                }
+        emptyStrings();
+        if(null!=wheels && wheels.size()>0) {
+            Collections.sort(wheels);
+            for(Wheel each : wheels) {
+                addString(each.getWheelType());
             }
         }
         this.notifyDataSetChanged();
-	}
-
-    @Override
-    public boolean isEmpty() {
-        return getCount()<1;
-    }
-
-    @Override
-    public int getCount() {
-        if(null!=this.filtered) {
-            return filtered.size();
-        } else {
-            return 0;
-        }
-    }
-
-	@Override
-	public CharSequence getItem(int position) {
-		if(isEmpty()) {
-			return null;
-		}
-		return filtered.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return position;
 	}
 
 	@Override
@@ -79,47 +35,10 @@ public class WheelTypesAdapter extends BaseAdapter implements Filterable {
 		TextView container = (TextView) convertView;
         if(!isEmpty()) {
             if(null==convertView) {
-                LayoutInflater inflater = LayoutInflater.from(context);
-                container = (TextView) inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+                container = (TextView) getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false);
             }
-            container.setText(filtered.get(position).toString());
+            container.setText(getItem(position));
         }
 		return container;
 	}
-
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-
-                FilterResults results = new FilterResults();
-                //If there's nothing to filter on, return the original data for your list
-                if(charSequence == null || charSequence.length() == 0) {
-                    results.values = original;
-                    results.count = original.size();
-                } else {
-                    String filteringString = charSequence.toString().toLowerCase();
-                    List<String> filterResultsData = new ArrayList<>();
-                    for(String data : original) {
-                        //In this loop, you'll filter through originalData and compare each item to charSequence.
-                        //If you find a match, add it to your new ArrayList
-                        //I'm not sure how you're going to do comparison, so you'll need to fill out this conditional
-                        if(null!=data && data.toLowerCase().contains(filteringString)) {
-                            filterResultsData.add(data);
-                        }
-                    }
-                    results.values = filterResultsData;
-                    results.count = filterResultsData.size();
-                }
-                return results;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                filtered = (ArrayList<String>)filterResults.values;
-                notifyDataSetChanged();
-            }
-        };
-    }
 }

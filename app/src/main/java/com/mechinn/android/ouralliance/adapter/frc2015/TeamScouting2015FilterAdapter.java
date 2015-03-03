@@ -1,36 +1,32 @@
-package com.mechinn.android.ouralliance.adapter.frc2014;
+package com.mechinn.android.ouralliance.adapter.frc2015;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.mechinn.android.ouralliance.adapter.FilterableAdapter;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class TeamScouting2014FilterAdapter extends FilterableAdapter {
-    public static final String TAG = "TS2014Filter";
+public class TeamScouting2015FilterAdapter extends FilterableAdapter {
+    public static final String TAG = "TS2015Filter";
     public enum Type {ORIENTATION,DRIVETRAIN}
     Type field;
 
-	public TeamScouting2014FilterAdapter(Context context, List<TeamScouting2014> teams, Type field) {
+	public TeamScouting2015FilterAdapter(Context context, List<TeamScouting2015> teams, Type field) {
 		super(context);
         this.field = field;
         swapList(teams);
 	}
-	
-	public void swapList(List<TeamScouting2014> teams) {
+
+	public void swapList(List<TeamScouting2015> teams) {
         emptyStrings();
-        if(!isEmpty()) {
-            for(TeamScouting2014 each : teams) {
+        if(null!=teams && teams.size()>0) {
+            for(TeamScouting2015 each : teams) {
                 Log.d(TAG,"scouting "+each);
                 switch(field) {
                     case ORIENTATION:
@@ -58,4 +54,6 @@ public class TeamScouting2014FilterAdapter extends FilterableAdapter {
 		}
 		return container;
 	}
+
+
 }

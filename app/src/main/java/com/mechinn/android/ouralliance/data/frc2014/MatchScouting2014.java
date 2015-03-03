@@ -172,12 +172,6 @@ public class MatchScouting2014 extends MatchScouting {
                 getLow()==((MatchScouting2014)data).getLow() &&
                 getHigh()==((MatchScouting2014)data).getHigh();
     }
-
-    public void saveMod() {
-        setModified(new Date());
-        Log.d(TAG, "saving object");
-        save();
-    }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override

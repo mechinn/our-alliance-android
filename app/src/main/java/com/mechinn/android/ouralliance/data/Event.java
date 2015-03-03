@@ -63,6 +63,15 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }
+    public String getDisplayName() {
+        if(null!=getShortName()) {
+            return getShortName();
+        } else if(null!=getName()) {
+            return getName();
+        } else {
+            return getEventCode();
+        }
+    }
     public String getEventCode() {
         return eventCode;
     }
@@ -128,7 +137,7 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     public int compareTo(Event another) {
         int compare = (this.isOfficial()?1:0)-(another.isOfficial()?1:0);
         if(0==compare) {
-            compare = this.getShortName().compareTo(another.getShortName());
+            compare = this.getDisplayName().compareTo(another.getDisplayName());
         }
         return compare;
     }

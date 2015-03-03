@@ -20,6 +20,7 @@ import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetEvents;
 import com.mechinn.android.ouralliance.widget.EventListPreference;
 
+import java.util.Collections;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -203,7 +204,7 @@ public class SettingsFragment extends PreferenceFragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                List<Event> events = new Select().from(Event.class).where(Event.YEAR+"=?",prefs.getYear()).execute();
+                List<Event> events = new Select().from(Event.class).where(Event.YEAR + "=?", prefs.getYear()).execute();
                 EventBus.getDefault().post(new LoadEvents(events));
             }
         });
@@ -215,6 +216,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     public void onEventMainThread(LoadEvents events) {
         List<Event> eventList = events.getEvents();
+        Collections.sort(eventList);
         event.swapAdapter(eventList, prefs.getComp());
         if(eventList.size()>0) {
             event.setEnabled(true);
