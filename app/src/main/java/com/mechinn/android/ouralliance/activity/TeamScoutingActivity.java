@@ -20,6 +20,8 @@ import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;
 import com.mechinn.android.ouralliance.fragment.TeamListFragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.MatchTeamList2014Fragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.TeamDetail2014;
+import com.mechinn.android.ouralliance.fragment.frc2015.MatchTeamList2015Fragment;
+import com.mechinn.android.ouralliance.fragment.frc2015.TeamDetail2015;
 
 import de.greenrobot.event.EventBus;
 
@@ -63,6 +65,9 @@ public class TeamScoutingActivity extends OurAllianceActivity implements Fragmen
                     switch(getPrefs().getYear()) {
                         case 2014:
                             matchTeamListFrag = new MatchTeamList2014Fragment();
+                            break;
+                        case 2015:
+                            matchTeamListFrag = new MatchTeamList2015Fragment();
                             break;
                         default:
                             Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();
@@ -140,6 +145,9 @@ public class TeamScoutingActivity extends OurAllianceActivity implements Fragmen
         switch(getPrefs().getYear()) {
             case 2014:
                 teamDetailFragment = new TeamDetail2014();
+                break;
+            case 2015:
+                teamDetailFragment = new TeamDetail2015();
                 break;
             default:
                 Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();

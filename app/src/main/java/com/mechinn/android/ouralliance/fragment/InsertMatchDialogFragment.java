@@ -33,6 +33,8 @@ import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015;
+import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
@@ -241,7 +243,6 @@ public class InsertMatchDialogFragment extends DialogFragment {
                                 match.saveMod();
                                 switch (prefs.getYear()) {
                                     case 2014:
-                                        List<MatchScouting2014> teams = new ArrayList<MatchScouting2014>(6);
                                         for (int team = 0; team < teamCount; team++) {
                                             MatchScouting2014 scouting = new MatchScouting2014();
                                             scouting.setMatch(match);
@@ -258,12 +259,32 @@ public class InsertMatchDialogFragment extends DialogFragment {
                                             scouting.saveMod();
                                         }
                                         break;
+                                    case 2015:
+                                        for (int team = 0; team < teamCount; team++) {
+                                            MatchScouting2015 scouting = new MatchScouting2015();
+                                            scouting.setMatch(match);
+                                            EventTeam eventTeam = (EventTeam) ((MatchTeamSelectAdapter) spinners[team].getAdapter()).getItem(spinners[team].getSelectedItemPosition());
+                                            TeamScouting2015 scouting2015 = new Select().from(TeamScouting2015.class).where(TeamScouting2015.TEAM + "=?", eventTeam.getTeam().getId()).executeSingle();
+                                            scouting.setTeamScouting(scouting2015);
+                                            if (team < teamCount / 2) {
+                                                scouting.setPosition(team);
+                                                scouting.setAlliance(false);
+                                            } else {
+                                                scouting.setPosition((team - teamCount) / 2);
+                                                scouting.setAlliance(true);
+                                            }
+                                            scouting.saveMod();
+                                        }
+                                        break;
                                 }
                                 ActiveAndroid.setTransactionSuccessful();
                                 EventBus.getDefault().post(match);
                                 switch (prefs.getYear()) {
                                     case 2014:
                                         EventBus.getDefault().post(new MatchScouting2014());
+                                        break;
+                                    case 2015:
+                                        EventBus.getDefault().post(new MatchScouting2015());
                                         break;
                                 }
 

@@ -11,6 +11,7 @@ import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.OurAllianceObject;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 import com.mechinn.android.ouralliance.event.ToastEvent;
 import com.mechinn.android.ouralliance.event.Transaction;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
@@ -50,6 +51,12 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
                         TeamScouting2014 scouting2014 = new TeamScouting2014();
                         scouting2014.setTeam(team);
                         scouting2014.saveMod();
+                        break;
+                    case 2015:
+                        TeamScouting2015 scouting2015 = new TeamScouting2015();
+                        scouting2015.setTeam(team);
+                        scouting2015.saveMod();
+                        break;
                 }
             }
             Collections.sort(teams);

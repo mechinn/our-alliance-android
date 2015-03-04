@@ -135,7 +135,7 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
                 getEventCode().equals(data.getEventCode());
     }
     public int compareTo(Event another) {
-        int compare = (this.isOfficial()?1:0)-(another.isOfficial()?1:0);
+        int compare = (this.isOfficial()?0:1)-(another.isOfficial()?0:1);
         if(0==compare) {
             compare = this.getDisplayName().compareTo(another.getDisplayName());
         }

@@ -31,6 +31,8 @@ public class MatchDetail2015 extends MatchDetailFragment {
     private NumberPicker containers;
     private NumberPicker litter;
     private NumberPicker fowls;
+    private NumberPicker humanAttempt;
+    private NumberPicker humanSuccess;
     public MatchScouting2015 getMatch() {
         return (MatchScouting2015) super.getMatch();
     }
@@ -52,11 +54,13 @@ public class MatchDetail2015 extends MatchDetailFragment {
         containers = (NumberPicker) seasonView.findViewById(R.id.match2015containers);
         litter = (NumberPicker) seasonView.findViewById(R.id.match2015litter);
         fowls = (NumberPicker) seasonView.findViewById(R.id.match2015fowls);
+        humanAttempt = (NumberPicker) seasonView.findViewById(R.id.match2015humanAttempt);
+        humanSuccess = (NumberPicker) seasonView.findViewById(R.id.match2015humanSuccess);
         String[] nums = new String[100];
         for(int i=0; i<nums.length; i++) {
             nums[i] = Integer.toString(i);
         }
-        pickers = new NumberPicker[] {autoTotes, autoContainers, autoLandfill, totes, containers, litter, fowls};
+        pickers = new NumberPicker[] {autoTotes, autoContainers, autoLandfill, totes, containers, litter, fowls, humanAttempt, humanSuccess};
         for(NumberPicker picker : pickers) {
             picker.setMinValue(0);
             picker.setMaxValue(99);
@@ -100,6 +104,12 @@ public class MatchDetail2015 extends MatchDetailFragment {
         if(null!=getMatch().getFowls()) {
             fowls.setValue(getMatch().getFowls());
         }
+        if(null!=getMatch().getHumanAttempt()) {
+            humanAttempt.setValue(getMatch().getHumanAttempt());
+        }
+        if(null!=getMatch().getHumanSuccess()) {
+            humanSuccess.setValue(getMatch().getHumanSuccess());
+        }
 	}
 	
 	@Override
@@ -115,6 +125,8 @@ public class MatchDetail2015 extends MatchDetailFragment {
         getMatch().setContainers(containers.getValue());
         getMatch().setLitter(litter.getValue());
         getMatch().setFowls(fowls.getValue());
+        getMatch().setHumanAttempt(humanAttempt.getValue());
+        getMatch().setHumanSuccess(humanSuccess.getValue());
 	}
 
     public void loadMatchScouting() {

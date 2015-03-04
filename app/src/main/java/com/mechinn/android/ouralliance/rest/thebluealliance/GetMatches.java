@@ -15,6 +15,8 @@ import com.mechinn.android.ouralliance.data.OurAllianceObject;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015;
+import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 import com.mechinn.android.ouralliance.event.ToastEvent;
 import com.mechinn.android.ouralliance.event.Transaction;
 import com.mechinn.android.ouralliance.rest.GetHandlerThread;
@@ -59,47 +61,63 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
                 match.saveMod();
                 matchesChanged = true;
             }
-            switch(year) {
-                case 2014:
-                    for(Match match : matches) {
-                        List<String> teams = match.getAlliances().getRed().getTeams();
-                        teams.addAll(match.getAlliances().getBlue().getTeams());
-                        for(int position=0;position<teams.size();position++) {
-                            MatchScouting2014 matchScouting = new MatchScouting2014();
-                            matchScouting.setMatch(match);
-                            matchScouting.setPosition(position);
-                            int teamNum = Integer.parseInt(teams.get(position).substring(3));
-                            TeamScouting2014 teamScouting = new Select().from(TeamScouting2014.class).join(Team.class).on(TeamScouting2014.TAG+"."+TeamScouting2014.TEAM+"="+Team.TAG+"."+Team.ID).where(Team.TAG+"."+Team.TEAM_NUMBER+"=?", teamNum).executeSingle();
-                            if(null== teamScouting) {
-                                teamScouting = new TeamScouting2014();
-                                Team teamObject = new Select().from(Team.class).where(Team.TEAM_NUMBER+"=?", teamNum).executeSingle();
-                                if(null==teamObject) {
-                                    teamObject = new Team();
-                                    teamObject.setTeamNumber(teamNum);
-                                    teamObject.saveMod();
-                                    teamsChanged = true;
-                                }
-                                teamScouting.setTeam(teamObject);
-                                teamScouting.saveMod();
-                                teamScoutingChanged = true;
-                                EventTeam eventTeam = new Select().from(EventTeam.class).where(EventTeam.TEAM+"=?", teamObject.getId()).and(EventTeam.EVENT+"=?",event.getId()).executeSingle();
-                                if(null==eventTeam) {
-                                    List<EventTeam> ranks = new Select().from(EventTeam.class).where(EventTeam.EVENT+"=?",event.getId()).orderBy(EventTeam.RANK+" DESC").execute();
-                                    eventTeam = new EventTeam();
-                                    eventTeam.setEvent(event);
-                                    eventTeam.setTeam(teamObject);
-                                    eventTeam.setRank(ranks.get(0).getRank()+1);
-                                    eventTeam.saveMod();
-                                    eventTeamsChanged = true;
-                                }
-                            }
-                            matchScouting.setTeamScouting2014(teamScouting);
-                            matchScouting.setAlliance(position>2);
-                            matchScouting.saveMod();
-                            matchScoutingChanged = true;
-                        }
+            for(Match match : matches) {
+                List<String> teams = match.getAlliances().getRed().getTeams();
+                teams.addAll(match.getAlliances().getBlue().getTeams());
+                for(int position=0;position<teams.size();position++) {
+                    int teamNum = Integer.parseInt(teams.get(position).substring(3));
+                    Team teamObject = new Select().from(Team.class).where(Team.TEAM_NUMBER + "=?", teamNum).executeSingle();
+                    if (null == teamObject) {
+                        teamObject = new Team();
+                        teamObject.setTeamNumber(teamNum);
+                        teamObject.saveMod();
+                        teamsChanged = true;
                     }
-                    break;
+                    EventTeam eventTeam = new Select().from(EventTeam.class).where(EventTeam.TEAM + "=?", teamObject.getId()).and(EventTeam.EVENT + "=?", event.getId()).executeSingle();
+                    if (null == eventTeam) {
+                        List<EventTeam> ranks = new Select().from(EventTeam.class).where(EventTeam.EVENT + "=?", event.getId()).orderBy(EventTeam.RANK + " DESC").execute();
+                        eventTeam = new EventTeam();
+                        eventTeam.setEvent(event);
+                        eventTeam.setTeam(teamObject);
+                        eventTeam.setRank(ranks.get(0).getRank() + 1);
+                        eventTeam.saveMod();
+                        eventTeamsChanged = true;
+                    }
+                    switch (year) {
+                        case 2014:
+                            MatchScouting2014 matchScouting2014 = new MatchScouting2014();
+                            matchScouting2014.setMatch(match);
+                            matchScouting2014.setPosition(position);
+                            TeamScouting2014 teamScouting2014 = new Select().from(TeamScouting2014.class).join(Team.class).on(TeamScouting2014.TAG + "." + TeamScouting2014.TEAM + "=" + Team.TAG + "." + Team.ID).where(Team.TAG + "." + Team.TEAM_NUMBER + "=?", teamNum).executeSingle();
+                            if (null == teamScouting2014) {
+                                teamScouting2014 = new TeamScouting2014();
+                                teamScouting2014.setTeam(teamObject);
+                                teamScouting2014.saveMod();
+                                teamScoutingChanged = true;
+                            }
+                            matchScouting2014.setTeamScouting2014(teamScouting2014);
+                            matchScouting2014.setAlliance(position > 2);
+                            matchScouting2014.saveMod();
+                            matchScoutingChanged = true;
+                            break;
+                        case 2015:
+                            MatchScouting2015 matchScouting2015 = new MatchScouting2015();
+                            matchScouting2015.setMatch(match);
+                            matchScouting2015.setPosition(position);
+                            TeamScouting2015 teamScouting2015 = new Select().from(TeamScouting2015.class).join(Team.class).on(TeamScouting2015.TAG + "." + TeamScouting2015.TEAM + "=" + Team.TAG + "." + Team.ID).where(Team.TAG + "." + Team.TEAM_NUMBER + "=?", teamNum).executeSingle();
+                            if (null == teamScouting2015) {
+                                teamScouting2015 = new TeamScouting2015();
+                                teamScouting2015.setTeam(teamObject);
+                                teamScouting2015.saveMod();
+                                teamScoutingChanged = true;
+                            }
+                            matchScouting2015.setTeamScouting2015(teamScouting2015);
+                            matchScouting2015.setAlliance(position > 2);
+                            matchScouting2015.saveMod();
+                            matchScoutingChanged = true;
+                            break;
+                    }
+                }
             }
             ActiveAndroid.setTransactionSuccessful();
             if(matchesChanged) {
@@ -109,10 +127,24 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
                 EventBus.getDefault().post(new Team());
             }
             if(teamScoutingChanged) {
-                EventBus.getDefault().post(new TeamScouting2014());
+                switch (year) {
+                    case 2014:
+                        EventBus.getDefault().post(new TeamScouting2014());
+                        break;
+                    case 2015:
+                        EventBus.getDefault().post(new TeamScouting2015());
+                        break;
+                }
             }
             if(matchScoutingChanged) {
-                EventBus.getDefault().post(new MatchScouting2014());
+                switch (year) {
+                    case 2014:
+                        EventBus.getDefault().post(new MatchScouting2014());
+                        break;
+                    case 2015:
+                        EventBus.getDefault().post(new MatchScouting2015());
+                        break;
+                }
             }
             if(eventTeamsChanged) {
                 EventBus.getDefault().post(new EventTeam());

@@ -15,6 +15,8 @@ import com.mechinn.android.ouralliance.adapter.EventTeamDragSortListAdapter;
 import com.mechinn.android.ouralliance.data.frc2014.Sort2014;
 import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2015.Sort2015;
+import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.event.SelectTeamEvent;
@@ -41,6 +43,7 @@ public class TeamListFragment extends Fragment {
 	private Prefs prefs;
 	private EventTeamDragSortListAdapter adapter;
     private Sort2014 sort2014;
+    private Sort2015 sort2015;
     private Spinner sortTeams;
     private GetEventTeams downloadTeams;
 
@@ -49,6 +52,7 @@ public class TeamListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
         sort2014 = Sort2014.RANK;
+        sort2015 = Sort2015.RANK;
         downloadTeams = new GetEventTeams(this.getActivity());
     }
     
@@ -64,6 +68,9 @@ public class TeamListFragment extends Fragment {
                 switch(prefs.getYear()) {
                     case 2014:
                         sort2014 = Sort.sort2014List.get(position);
+                        break;
+                    case 2015:
+                        sort2015 = Sort.sort2015List.get(position);
                         break;
                 }
                 load();
@@ -140,6 +147,10 @@ public class TeamListFragment extends Fragment {
                 case 2014:
                     ArrayAdapter<Sort2014> sort2014Adapter = new ArrayAdapter<Sort2014>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2014List);
                     sortTeams.setAdapter(sort2014Adapter);
+                    break;
+                case 2015:
+                    ArrayAdapter<Sort2015> sort2015Adapter = new ArrayAdapter<Sort2015>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2015List);
+                    sortTeams.setAdapter(sort2015Adapter);
                     break;
             }
             sortTeams.setSelection(0);
@@ -319,6 +330,61 @@ public class TeamListFragment extends Fragment {
                                 break;
                         }
                         break;
+                    case 2015:
+                        query = query.join(TeamScouting2015.class).on(Team.TAG+"."+Team.ID+"="+ TeamScouting2015.TAG+"."+TeamScouting2015.TEAM);
+                        Log.d(TAG,"sort: "+sort2015);
+                        switch(sort2015) {
+                            case NUMBER:
+                                orderBy = Team.TAG+"."+Team.TEAM_NUMBER+" ASC";
+                                break;
+                            case ORIENTATION:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.ORIENTATION+" ASC";
+                                break;
+                            case DRIVE_TRAIN:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.DRIVE_TRAIN+" ASC";
+                                break;
+                            case WIDTH:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.WIDTH+" DESC";
+                                break;
+                            case LENGTH:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.LENGTH+" DESC";
+                                break;
+                            case HEIGHT:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.HEIGHT+" DESC";
+                                break;
+                            case COOP:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.COOP+" DESC";
+                                break;
+                            case DRIVER_EXPERIENCE:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.DRIVER_EXPERIENCE+" DESC";
+                                break;
+                            case PICKUP_MECHANISM:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.PICKUP_MECHANISM+" ASC";
+                                break;
+                            case MAX_TOTE_STACK:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.MAX_TOTE_STACK+" DESC";
+                                break;
+                            case MAX_CONTAINER_STACK:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.MAX_CONTAINER_STACK+" DESC";
+                                break;
+                            case MAX_TOTES_AND_CONTAINER_LITTER:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.MAX_TOTES_AND_CONTAINER_LITTER+" DESC";
+                                break;
+                            case HUMAN_PLAYER:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.HUMAN_PLAYER+" DESC";
+                                break;
+                            case LANDFILL_AUTO:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.LANDFILL_AUTO+" DESC";
+                                break;
+                            case AUTONOMOUS:
+                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.STACKED_AUTO+" DESC, "+
+                                        TeamScouting2015.TAG+"."+TeamScouting2015.CONTAINER_AUTO+" DESC, "+
+                                        TeamScouting2015.TAG+"."+TeamScouting2015.TOTE_AUTO+" DESC, "+
+                                        TeamScouting2015.TAG+"."+TeamScouting2015.DRIVE_AUTO+" DESC, "+
+                                        TeamScouting2015.TAG+"."+TeamScouting2015.NO_AUTO+" DESC";
+                                break;
+                        }
+                        break;
                 }
 
                 List<EventTeam> teams = query.where(EventTeam.TAG+"."+EventTeam.EVENT+"=?",prefs.getComp()).orderBy(orderBy).execute();
@@ -343,6 +409,9 @@ public class TeamListFragment extends Fragment {
         switch (prefs.getYear()) {
             case 2014:
                 adapter.showDrag(sort2014.equals(Sort2014.RANK));
+                break;
+            case 2015:
+                adapter.showDrag(sort2015.equals(Sort2015.RANK));
                 break;
         }
         adapter.swapList(teams.getTeams());

@@ -23,6 +23,7 @@ import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,10 @@ public class InsertTeamDialogFragment extends DialogFragment {
                                 switch (prefs.getYear()) {
                                     case 2014:
                                         scouting = new TeamScouting2014();
+                                        break;
+                                    case 2015:
+                                        scouting = new TeamScouting2015();
+                                        break;
                                 }
                                 scouting.setTeam(team);
                                 scouting.saveMod();
@@ -92,6 +97,10 @@ public class InsertTeamDialogFragment extends DialogFragment {
                                 switch (prefs.getYear()) {
                                     case 2014:
                                         EventBus.getDefault().post(new TeamScouting2014());
+                                        break;
+                                    case 2015:
+                                        EventBus.getDefault().post(new TeamScouting2015());
+                                        break;
                                 }
                             } finally {
                                 ActiveAndroid.endTransaction();

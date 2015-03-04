@@ -11,7 +11,6 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
-import com.mechinn.android.ouralliance.adapter.WheelAdapter;
 import com.mechinn.android.ouralliance.adapter.WheelTypesAdapter;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.TeamScouting;
@@ -234,7 +233,7 @@ public abstract class TeamDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        wheelTypesAdapter = new WheelTypesAdapter(this.getActivity(), null, R.id.wheelType);
+        wheelTypesAdapter = new WheelTypesAdapter(this.getActivity(), null);
     }
     
     @Override

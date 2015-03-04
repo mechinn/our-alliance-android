@@ -16,6 +16,9 @@ import com.mechinn.android.ouralliance.fragment.TeamDetailFragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.MatchDetail2014;
 import com.mechinn.android.ouralliance.fragment.frc2014.MatchTeamList2014Fragment;
 import com.mechinn.android.ouralliance.fragment.frc2014.TeamDetail2014;
+import com.mechinn.android.ouralliance.fragment.frc2015.MatchDetail2015;
+import com.mechinn.android.ouralliance.fragment.frc2015.MatchTeamList2015Fragment;
+import com.mechinn.android.ouralliance.fragment.frc2015.TeamDetail2015;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -117,6 +120,9 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
             case 2014:
                 matchTeamListFrag = new MatchTeamList2014Fragment();
                 break;
+            case 2015:
+                matchTeamListFrag = new MatchTeamList2015Fragment();
+                break;
             default:
                 Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();
                 transaction.commit();
@@ -139,6 +145,9 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
         switch(getPrefs().getYear()) {
             case 2014:
                 matchDetailFragment = new MatchDetail2014();
+                break;
+            case 2015:
+                matchDetailFragment = new MatchDetail2015();
                 break;
             default:
                 Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();
@@ -163,6 +172,9 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
         switch(getPrefs().getYear()) {
             case 2014:
                 teamDetailFragment = new TeamDetail2014();
+                break;
+            case 2015:
+                teamDetailFragment = new TeamDetail2015();
                 break;
             default:
                 Toast.makeText(this, "Error could not find year", Toast.LENGTH_LONG).show();

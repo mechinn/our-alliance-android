@@ -27,6 +27,8 @@ public class MatchScouting2015 extends MatchScouting {
     public final static String CONTAINERS = "containers";
     public final static String LITTER = "litter";
     public final static String FOWLS = "fowls";
+    public final static String HUMAN_ATTEMPT = "humanAttempt";
+    public final static String HUMAN_SUCCESS = "humanSuccess";
     @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {MatchScouting.TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
     private TeamScouting2015 teamScouting2015;
     @Column(name=AUTO_STACKED)
@@ -37,7 +39,7 @@ public class MatchScouting2015 extends MatchScouting {
     private Integer autoContainers;
     @Column(name=AUTO_LANDFILL)
     private Integer autoLandfill;
-    @Column(name=LITTER)
+    @Column(name=AUTO_MOVE)
     private Float autoMove;
     @Column(name=COOP)
     private Boolean coop;
@@ -49,6 +51,10 @@ public class MatchScouting2015 extends MatchScouting {
     private Integer litter;
     @Column(name=FOWLS)
     private Integer fowls;
+    @Column(name=HUMAN_ATTEMPT)
+    private Integer humanAttempt;
+    @Column(name=HUMAN_SUCCESS)
+    private Integer humanSuccess;
     public MatchScouting2015() {}
     public MatchScouting2015(Cursor cursor) {
         this.loadFromCursor(cursor);
@@ -125,6 +131,18 @@ public class MatchScouting2015 extends MatchScouting {
     public void setFowls(Integer fowls) {
         this.fowls = fowls;
     }
+    public Integer getHumanAttempt() {
+        return humanAttempt;
+    }
+    public void setHumanAttempt(Integer humanAttempt) {
+        this.humanAttempt = humanAttempt;
+    }
+    public Integer getHumanSuccess() {
+        return humanSuccess;
+    }
+    public void setHumanSuccess(Integer humanSuccess) {
+        this.humanSuccess = humanSuccess;
+    }
     public boolean equals(Object data) {
         if (!(data instanceof MatchScouting2015)) {
             return false;
@@ -139,7 +157,9 @@ public class MatchScouting2015 extends MatchScouting {
                 getTotes().equals(((MatchScouting2015)data).getTotes()) &&
                 getContainers().equals(((MatchScouting2015)data).getContainers()) &&
                 getLitter().equals(((MatchScouting2015)data).getLitter()) &&
-                getFowls().equals(((MatchScouting2015)data).getFowls());
+                getFowls().equals(((MatchScouting2015)data).getFowls()) &&
+                getHumanAttempt().equals(((MatchScouting2015)data).getHumanAttempt()) &&
+                getHumanSuccess().equals(((MatchScouting2015)data).getHumanSuccess());
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

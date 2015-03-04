@@ -69,7 +69,10 @@
             com.mechinn.android.ouralliance.data.Match,
             com.mechinn.android.ouralliance.data.frc2014.Wheel2014,
             com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014,
-            com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014
+            com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014,
+            com.mechinn.android.ouralliance.data.frc2015.Wheel2015,
+            com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015,
+            com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015
             " />
         <!--<receiver-->
         <!--android:name="com.mechinn.android.ouralliance.rest.thebluealliance.AlarmTheBlueAlliance"-->

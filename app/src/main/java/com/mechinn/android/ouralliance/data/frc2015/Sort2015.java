@@ -20,6 +20,7 @@ public enum Sort2015 {
     ,MAX_CONTAINER_STACK
     ,MAX_TOTES_AND_CONTAINER_LITTER
     ,HUMAN_PLAYER
+    ,LANDFILL_AUTO
     ,AUTONOMOUS;
 
     public String toString() {
@@ -50,6 +51,8 @@ public enum Sort2015 {
                 return "Max Totes and Container to Place Litter In";
             case HUMAN_PLAYER:
                 return "Human Player";
+            case LANDFILL_AUTO:
+                return "Landfill totes moved in Autonomous";
             case AUTONOMOUS:
                 return "Autonomous";
             default:

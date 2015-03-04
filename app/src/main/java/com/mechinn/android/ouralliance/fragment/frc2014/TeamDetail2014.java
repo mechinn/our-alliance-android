@@ -591,19 +591,11 @@ public class TeamDetail2014 extends TeamDetailFragment {
                 TeamScouting2014 scouting = null;
                 int year = getPrefs().getYear();
                 try {
-                    switch (year) {
-                        case 2014:
-                            scouting = new Select().from(TeamScouting2014.class).where(TeamScouting2014.TEAM+"=?", getTeamId()).executeSingle();
-                            break;
-                    }
+                    scouting = new Select().from(TeamScouting2014.class).where(TeamScouting2014.TEAM+"=?", getTeamId()).executeSingle();
                 } catch(NullPointerException e) {
-                    switch (year) {
-                        case 2014:
-                            Team team = Model.load(Team.class, getTeamId());
-                            scouting = (TeamScouting2014) new TeamScouting2014();
-                            scouting.setTeam(team);
-                            break;
-                    }
+                    Team team = Model.load(Team.class, getTeamId());
+                    scouting = (TeamScouting2014) new TeamScouting2014();
+                    scouting.setTeam(team);
                 }
                 if(null!=scouting) {
                     EventBus.getDefault().post(new LoadScouting(scouting));
