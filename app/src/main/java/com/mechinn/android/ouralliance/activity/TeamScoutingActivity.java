@@ -24,6 +24,7 @@ import com.mechinn.android.ouralliance.fragment.frc2015.MatchTeamList2015Fragmen
 import com.mechinn.android.ouralliance.fragment.frc2015.TeamDetail2015;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public class TeamScoutingActivity extends OurAllianceActivity implements FragmentManager.OnBackStackChangedListener {
     public static final String TAG = "TeamScoutingActivity";
@@ -58,7 +59,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements Fragmen
             matchName = this.getIntent().getStringExtra(MATCHNAME_ARG);
             loadTeam = this.getIntent().getLongExtra(TEAM_ARG, 0);
             if(0!=loadTeam) {
-            	Log.d(TAG, "listfrag: "+listFrag+" detailfrag: "+detailFrag);
+            	Timber.d( "listfrag: "+listFrag+" detailfrag: "+detailFrag);
             	if(listFrag==detailFrag) {
                     selectTeam(loadTeam);
             	} else {
@@ -137,7 +138,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements Fragmen
 	}
 
     public void selectTeam(long team) {
-        Log.d(TAG, "team: "+team);
+        Timber.d( "team: "+team);
         Bundle args = new Bundle();
         args.putLong(TeamDetailFragment.TEAM_ARG, team);
 
@@ -164,7 +165,7 @@ public class TeamScoutingActivity extends OurAllianceActivity implements Fragmen
     }
 
 	public void onBackStackChanged() {
-		Log.i(TAG, "back stack changed "+getSupportFragmentManager().getBackStackEntryCount());
+		Timber.i("back stack changed " + getSupportFragmentManager().getBackStackEntryCount());
         if (getSupportFragmentManager().getBackStackEntryCount() < 1){
         	if(null!=matchName) {
                 this.getSupportActionBar().setTitle(matchName);

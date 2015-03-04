@@ -16,6 +16,7 @@ import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 public class MatchDetail2014 extends MatchDetailFragment {
     public static final String TAG = "MatchDetail2014";
@@ -144,10 +145,10 @@ public class MatchDetail2014 extends MatchDetailFragment {
                     if(null!=scouting) {
                         EventBus.getDefault().post(new LoadMatchScouting(scouting));
                     } else {
-                        Log.d(TAG,"match scouting null "+getScoutingId());
+                        Timber.d("match scouting null " + getScoutingId());
                     }
                 } else {
-                    Log.d(TAG,"match scouting id 0 == "+getScoutingId());
+                    Timber.d("match scouting id 0 == "+getScoutingId());
                 }
             }
         });
@@ -157,7 +158,7 @@ public class MatchDetail2014 extends MatchDetailFragment {
     }
     public void onEventMainThread(LoadMatchScouting scouting) {
         MatchScouting2014 result = scouting.getScouting();
-        Log.d(TAG, "result: " + result);
+        Timber.d( "result: " + result);
         setMatch(result);
         setView();
         getRootView().setVisibility(View.VISIBLE);

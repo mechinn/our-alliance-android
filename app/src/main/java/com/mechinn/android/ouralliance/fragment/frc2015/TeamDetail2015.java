@@ -32,6 +32,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 public class TeamDetail2015 extends TeamDetailFragment {
     public static final String TAG = "TeamDetail2015";
@@ -198,7 +199,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
             @Override
             public void onClick(View v) {
                 updateWheels();
-                Log.d(TAG, "add wheel");
+                Timber.d( "add wheel");
                 Wheel newWheel = new Wheel2015();
                 newWheel.setTeamScouting(getScouting());
                 newWheel.asyncSave();
@@ -272,12 +273,12 @@ public class TeamDetail2015 extends TeamDetailFragment {
                 try {
                     wheelSizeDouble = Double.parseDouble(wheelSize.getText().toString());
                 } catch (NumberFormatException e) {
-                    Log.e(TAG,"Invalid wheel size",e);
+                    Timber.e("Invalid wheel size",e);
                 }
                 try {
                     wheelCountInteger = Integer.parseInt(wheelCount.getText().toString());
                 } catch (NumberFormatException e) {
-                    Log.e(TAG,"Invalid wheel count",e);
+                    Timber.e("Invalid wheel count",e);
                 }
                 if(!wheelTypeString.equals("") && null!=wheelSizeDouble && wheelSizeDouble>0 && null!=wheelCountInteger && wheelCountInteger>0) {
                     wheel.setWheelType(wheelTypeString);
@@ -345,7 +346,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
                 if(null!=orientations) {
                     EventBus.getDefault().post(new LoadOrientations(orientations));
                 } else {
-                    Log.d(TAG,"null orientations");
+                    Timber.d("null orientations");
                 }
             }
         });
@@ -356,7 +357,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
         loadDriveTrains();
     }
     public void onEventMainThread(LoadOrientations orientations) {
-        Log.d(TAG,"orientations: "+orientations.getOrientations().size());
+        Timber.d("orientations: "+orientations.getOrientations().size());
         orientationsAdapter.swapList(orientations.getOrientations());
     }
     private class LoadOrientations {
@@ -377,13 +378,13 @@ public class TeamDetail2015 extends TeamDetailFragment {
                 if(null!=driveTrains) {
                     EventBus.getDefault().post(new LoadDriveTrains(driveTrains));
                 } else {
-                    Log.d(TAG,"null drive trains");
+                    Timber.d("null drive trains");
                 }
             }
         });
     }
     public void onEventMainThread(LoadDriveTrains driveTrains) {
-        Log.d(TAG,"drive trains: "+driveTrains.getDriveTrains().size());
+        Timber.d("drive trains: "+driveTrains.getDriveTrains().size());
         driveTrainsAdapter.swapList(driveTrains.getDriveTrains());
     }
     private class LoadDriveTrains {
@@ -403,13 +404,13 @@ public class TeamDetail2015 extends TeamDetailFragment {
                 if(null!=mechanisms) {
                     EventBus.getDefault().post(new LoadMechanisms(mechanisms));
                 } else {
-                    Log.d(TAG,"null mechanisms");
+                    Timber.d("null mechanisms");
                 }
             }
         });
     }
     public void onEventMainThread(LoadMechanisms mechanisms) {
-        Log.d(TAG,"mechanisms: "+mechanisms.getMechanisms().size());
+        Timber.d("mechanisms: "+mechanisms.getMechanisms().size());
         mechanismsAdapter.swapList(mechanisms.getMechanisms());
     }
     private class LoadMechanisms {
@@ -471,7 +472,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
                 if (null != wheelTypes) {
                     EventBus.getDefault().post(new LoadWheelTypes(wheelTypes));
                 } else {
-                    Log.d(TAG, "No wheels found ");
+                    Timber.d( "No wheels found ");
                 }
             }
         });
@@ -481,7 +482,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
         loadWheels();
     }
     public void onEventMainThread(LoadWheelTypes event) {
-        Log.d(TAG, "Wheels " + event.getWheels().size());
+        Timber.d( "Wheels " + event.getWheels().size());
         getWheelTypesAdapter().swapList(event.getWheels());
     }
     private class LoadWheelTypes {
@@ -501,13 +502,13 @@ public class TeamDetail2015 extends TeamDetailFragment {
                 if (null != wheels) {
                     EventBus.getDefault().post(new LoadWheels(wheels));
                 } else {
-                    Log.d(TAG,"No wheels found for team "+getTeamId());
+                    Timber.d("No wheels found for team "+getTeamId());
                 }
             }
         });
     }
     public void onEventMainThread(LoadWheels event) {
-        Log.d(TAG, "Wheels for team " + event.getWheels().size());
+        Timber.d( "Wheels for team " + event.getWheels().size());
         getWheels().removeAllViews();
         for(Wheel wheel : event.getWheels()) {
             createWheel(wheel);

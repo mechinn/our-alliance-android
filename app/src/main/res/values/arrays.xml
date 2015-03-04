@@ -36,11 +36,11 @@
         <item >Centimeters (cm)</item>
     </string-array>
     <string-array name="list_year">
-        <item >2014</item>
         <item >2015</item>
+        <item >2014</item>
     </string-array>
     <string-array name="list_year_display">
-        <item >2014: Arial Assist</item>
         <item >2015: Recycle Rush</item>
+        <item >2014: Arial Assist</item>
     </string-array>
 </resources>

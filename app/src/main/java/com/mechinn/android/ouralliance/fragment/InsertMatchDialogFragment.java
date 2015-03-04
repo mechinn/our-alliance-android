@@ -38,6 +38,7 @@ import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 public class InsertMatchDialogFragment extends DialogFragment {
     public static final String TAG = "InsertMatchDialogFrag";
@@ -174,7 +175,7 @@ public class InsertMatchDialogFragment extends DialogFragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				int map = ((MatchTeamSelectAdapter)parent.getAdapter()).getTeam();
                 for(MatchTeamSelectAdapter adapter : adapters) {
-                    Log.d(TAG, "disable "+position+" on "+adapter.getTeam());
+                    Timber.d("disable " + position + " on " + adapter.getTeam());
                     adapter.disablePosition(map, position);
                 }
 			}
@@ -194,11 +195,11 @@ public class InsertMatchDialogFragment extends DialogFragment {
 			match = (Match) this.getArguments().getSerializable(MATCH_ARG);
 			number.setText(Integer.toString(match.getMatchNumber()));
     		yes = R.string.update;
-    		Log.d(TAG, "update");
+    		Timber.d( "update");
 		} catch(NullPointerException e) {
 			match = new Match();
 			yes = R.string.create;
-    		Log.d(TAG, "insert");
+    		Timber.d( "insert");
 		}
         eventId = prefs.getComp();
 		builder.setView(dialog)

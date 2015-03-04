@@ -10,6 +10,7 @@ import java.util.Date;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 public abstract class OurAllianceObject extends Model {
     public final static String TAG = "OurAllianceObject";
@@ -25,7 +26,7 @@ public abstract class OurAllianceObject extends Model {
     }
     public void saveMod() {
         setModified(new Date());
-        Log.d(TAG, "saving object");
+        Timber.d("saving object");
         save();
     }
     public abstract void asyncSave();

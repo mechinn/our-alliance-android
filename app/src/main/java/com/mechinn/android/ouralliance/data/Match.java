@@ -71,6 +71,21 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
             return "Qualifier";
         }
     }
+    public int getCompLevelValue() {
+        if(getCompLevel().equals(EIGHTH_FINALS)) {
+            return 40;
+        } else if(getCompLevel().equals(QUARTER_FINALS)) {
+            return 60;
+        } else if(getCompLevel().equals(SEMI_FINALS)) {
+            return 80;
+        } else if(getCompLevel().equals(FINALS)) {
+            return 100;
+        } else if(getCompLevel().equals(PRACTICE)) {
+            return 0;
+        } else {
+            return 20;
+        }
+    }
     public void setCompLevel(String compLevel) {
         this.compLevel = compLevel;
     }
@@ -130,7 +145,11 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
                 getMatchNumber()==((Match)data).getMatchNumber();
     }
     public int compareTo(Match another) {
-        return this.getMatchNumber() - another.getMatchNumber();
+        int compare = this.getCompLevelValue() - another.getCompLevelValue();
+        if(0==compare) {
+            compare = this.getMatchNumber() - another.getMatchNumber();
+        }
+        return compare;
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

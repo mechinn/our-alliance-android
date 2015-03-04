@@ -14,6 +14,8 @@ import com.mechinn.android.ouralliance.OurAlliance;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Event;
 
+import timber.log.Timber;
+
 public class InsertCompDialogFragment extends DialogFragment {
     public static final String TAG = "InsertCompDialog";
 	public static final String SEASON_ARG = "season";
@@ -39,11 +41,11 @@ public class InsertCompDialogFragment extends DialogFragment {
 			compName.setText(event.getShortName());
 			compCode.setText(event.getEventCode());
     		yes = R.string.update;
-    		Log.d(TAG, "update");
+    		Timber.d("update");
 		} catch(NullPointerException e) {
 			event = new Event();
 			yes = R.string.create;
-    		Log.d(TAG, "insert");
+    		Timber.d( "insert");
 		}
 		int season = this.getArguments().getInt(SEASON_ARG);
 		event.setYear(season);

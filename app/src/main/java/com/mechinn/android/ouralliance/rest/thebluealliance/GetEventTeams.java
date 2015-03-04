@@ -19,6 +19,7 @@ import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 import retrofit.RetrofitError;
+import timber.log.Timber;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,8 +39,8 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
     public void run() throws Exception {
         ToastEvent.toast("Downloading event teams...",true);
         Event event = Model.load(Event.class,prefs.getComp());
-        Log.d(TAG, "year: " + prefs.getYear());
-        Log.d(TAG, "Setting up teams");
+        Timber.d("year: " + prefs.getYear());
+        Timber.d( "Setting up teams");
         ActiveAndroid.beginTransaction();
         try {
             int year = prefs.getYear();
@@ -75,7 +76,7 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
             ToastEvent.toast("Finished downloading teams",false);
             prefs.setEventTeamsDownloaded(true);
         } catch (RetrofitError e) {
-            Log.e(TAG,"Error downloading event teams",e);
+            Timber.e("Error downloading event teams",e);
             if (e.getKind() == RetrofitError.Kind.NETWORK) {
                 ToastEvent.toast("Unable to connect");
             } else if (e.getResponse().getStatus() != 200) {

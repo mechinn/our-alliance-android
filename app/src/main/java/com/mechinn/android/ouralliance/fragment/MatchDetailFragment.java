@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public abstract class MatchDetailFragment extends Fragment {
     public static final String TAG = "MatchDetailFragment";
@@ -72,7 +73,7 @@ public abstract class MatchDetailFragment extends Fragment {
         // This is primarily necessary when in the two-pane layout.
         if (savedInstanceState != null) {
             scoutingId = savedInstanceState.getLong(EventTeam.TAG, 0);
-            Log.d(TAG, "team: "+ scoutingId);
+            Timber.d( "team: "+ scoutingId);
         }
     	
 //    	OnClickListener teamButton = new OnClickListener() {
@@ -104,7 +105,7 @@ public abstract class MatchDetailFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             scoutingId = getArguments().getLong(SCOUTING_ARG, 0);
-            Log.d(TAG, "team: " + scoutingId);
+            Timber.d( "team: " + scoutingId);
         }
         EventBus.getDefault().register(this);
     }
@@ -112,15 +113,15 @@ public abstract class MatchDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "team: " + getScoutingId());
+        Timber.d( "team: " + getScoutingId());
         loadMatchScouting();
     }
 
     @Override
     public void onPause() {
-        Log.d(TAG, "pausing");
+        Timber.d("pausing");
         if(null!=getMatch()) {
-            Log.d(TAG,"saving "+getMatch());
+            Timber.d("saving "+getMatch());
             updateMatch();
             this.getMatch().asyncSave();
         }

@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
 
+import timber.log.Timber;
+
 public class HtmlDialogFragment extends DialogFragment {
     public static final String TAG = "HtmlDialogFragment";
 	public static final String HTMLFILE = "htmlFile";
@@ -27,7 +29,7 @@ public class HtmlDialogFragment extends DialogFragment {
 		dialog = inflater.inflate(R.layout.html, null);
 		html = (WebView) dialog.findViewById(R.id.content);
 		String htmlFile = this.getArguments().getString(HTMLFILE);
-		Log.d(TAG, htmlFile);
+		Timber.d(htmlFile);
 		if(null!=htmlFile) {
 			html.loadUrl(htmlFile);
 		}

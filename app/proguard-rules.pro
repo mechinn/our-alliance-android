@@ -21,12 +21,6 @@
     public void *(android.view.MenuItem);
 }
 
-# release
-    -assumenosideeffects class android.util.Log {
-        public static *** d(...);
-        public static *** v(...);
-    }
-
 # Google Play Services
     -keep class * extends java.util.ListResourceBundle {
         protected Object[][] getContents();

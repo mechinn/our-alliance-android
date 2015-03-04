@@ -25,6 +25,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -75,7 +76,7 @@ public class SettingsFragment extends PreferenceFragment {
         resetDB = getPreferenceScreen().findPreference(resetDBPrefString);
         resetDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
-					Log.d(TAG, "resetDB");
+					Timber.d("resetDB");
                     new ResetDialogFragment().show(SettingsFragment.this.getFragmentManager(), "Reset Data? This is not reversable!");
 					return true;
 				}
@@ -88,7 +89,7 @@ public class SettingsFragment extends PreferenceFragment {
 		            htmlArgs.putString(HtmlDialogFragment.HTMLFILE, "file:///android_asset/changelog.html");
 		            dialog.setArguments(htmlArgs);
 		            dialog.show(SettingsFragment.this.getFragmentManager(), "Change Log");
-		            Log.d(TAG, "count: "+SettingsFragment.this.getFragmentManager().getBackStackEntryCount());
+		            Timber.d( "count: "+SettingsFragment.this.getFragmentManager().getBackStackEntryCount());
 					return true;
 				}
 			});
@@ -183,9 +184,9 @@ public class SettingsFragment extends PreferenceFragment {
 
 	public void onEventMainThread(Prefs changedPrefs) {
         String key = changedPrefs.getKeyChanged();
-		Log.d(TAG, key);
+		Timber.d( key);
 		if(key.equals(yearPrefString)) {
-            Log.d(TAG,"selected season");
+            Timber.d("selected season");
             year.setSummary(yearArray.get(prefs.getYear()));
 			event.setValue("0");
             getActivity().invalidateOptionsMenu();
@@ -193,10 +194,10 @@ public class SettingsFragment extends PreferenceFragment {
                 getCompetitions();
             }
 		} else if(key.equals(eventPrefString)) {
-            Log.d(TAG,"selected competition");
+            Timber.d("selected competition");
             selectedEvent = event.get();
 		} else if(key.equals(measurePrefString)) {
-            Log.d(TAG,"selected measure");
+            Timber.d("selected measure");
 		}
 	}
 

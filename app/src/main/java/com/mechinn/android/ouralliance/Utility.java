@@ -9,20 +9,22 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.util.Log;
 
+import timber.log.Timber;
+
 public class Utility {
     public static final String TAG = "Utility";
 	//utility functions for specific uses throughout the app
 	public static void deleteRecursive(File fileOrDirectory) {
 	    if (fileOrDirectory.isDirectory()) {
-	    	Log.d(TAG, "found dir: "+fileOrDirectory.getName());
+	    	Timber.d("found dir: " + fileOrDirectory.getName());
 	        for (File child : fileOrDirectory.listFiles()) {
-	        	Log.d(TAG, "each file: "+fileOrDirectory.getName());
+	        	Timber.d("each file: "+fileOrDirectory.getName());
 	            deleteRecursive(child);
 	        }
 	    }
-    	Log.d(TAG, "delete file/dir: "+fileOrDirectory.getName());
+    	Timber.d("delete file/dir: "+fileOrDirectory.getName());
 	    if(fileOrDirectory.delete()) {
-	    	Log.d(TAG, "deleted: "+fileOrDirectory.getName());
+	    	Timber.d("deleted: "+fileOrDirectory.getName());
 	    }
 	}
 	public static boolean isIntentAvailable(Context context, String action) {

@@ -12,6 +12,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 /**
  * Created by mechinn on 3/10/14.
@@ -39,7 +40,7 @@ public class MatchTeamList2014Fragment extends MatchTeamListFragment {
 
     public void onEventMainThread(LoadMatchScouting scouting) {
         List<MatchScouting2014> result = scouting.getScouting();
-        Log.d(TAG, "Count: " + result.size());
+        Timber.d("Count: " + result.size());
         getAdapter().swapMatch(result);
     }
 

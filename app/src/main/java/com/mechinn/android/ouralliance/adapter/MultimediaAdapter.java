@@ -24,6 +24,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import timber.log.Timber;
+
 public class MultimediaAdapter extends RecyclerView.Adapter<MultimediaAdapter.SimpleViewHolder> implements Callback {
     public static final String TAG = "MultimediaAdapter";
     private File[] multimedia;
@@ -53,14 +55,14 @@ public class MultimediaAdapter extends RecyclerView.Adapter<MultimediaAdapter.Si
     public MultimediaAdapter(Activity activity, TeamScouting team) {
         this.activity = activity;
         prefs = new Prefs(activity);
-        Log.d(TAG, team.toString());
-        Log.d(TAG,"find images");
+        Timber.d(team.toString());
+        Timber.d("find images");
         buildImageSet(team);
     }
     public void buildImageSet(TeamScouting team) {
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             teamFileDirectory = new File(activity.getExternalFilesDir(null).getAbsoluteFile() + File.separator + prefs.getYear() + File.separator + team.getTeam().getTeamNumber());
-            Log.d(TAG, teamFileDirectory.getAbsolutePath());
+            Timber.d( teamFileDirectory.getAbsolutePath());
             if(!teamFileDirectory.mkdirs()) {
                 multimedia = teamFileDirectory.listFiles();
             }
@@ -99,7 +101,7 @@ public class MultimediaAdapter extends RecyclerView.Adapter<MultimediaAdapter.Si
         // Get the image URL for the current position.
         File file = getItem(position);
 
-        Log.d(TAG, "get image");
+        Timber.d( "get image");
         // Trigger the download of the URL asynchronously into the image view.
         final float scale = activity.getResources().getDisplayMetrics().density;
         Picasso.with(activity) //
@@ -112,19 +114,19 @@ public class MultimediaAdapter extends RecyclerView.Adapter<MultimediaAdapter.Si
 
     @Override
     public void onSuccess() {
-        Log.d(TAG,"get image: success");
+        Timber.d("get image: success");
     }
 
     @Override
     public void onError() {
-        Log.d(TAG,"get image: error");
+        Timber.d("get image: error");
         Toast.makeText(activity, "error loading image", Toast.LENGTH_SHORT).show();
     }
     public static void openMedia(View v) {
         File filename = (File) v.getTag(R.string.file);
-        Log.d(TAG, filename.toString());
+        Timber.d( filename.toString());
         String type = URLConnection.guessContentTypeFromName("file://"+filename.getAbsolutePath());
-        Log.d(TAG, type);
+        Timber.d( type);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.parse("file://"+filename.getAbsolutePath()), type);

@@ -45,6 +45,7 @@ import org.lucasr.twowayview.ItemClickSupport;
 import org.lucasr.twowayview.widget.TwoWayView;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public abstract class TeamDetailFragment extends Fragment {
     public static final String TAG = "TeamDetailFragment";
@@ -136,7 +137,7 @@ public abstract class TeamDetailFragment extends Fragment {
         // This is primarily necessary when in the two-pane layout.
         if (savedInstanceState != null) {
     		teamId = savedInstanceState.getLong(Team.TAG, 0);
-    		Log.d(TAG, "team: "+teamId);
+    		Timber.d("team: " + teamId);
         }
         rootView = inflater.inflate(R.layout.fragment_team_detail, container, false);
 		rootView.setVisibility(View.GONE);
@@ -148,7 +149,7 @@ public abstract class TeamDetailFragment extends Fragment {
                 if(null!=multimedia && null!=multimedia.getTeamFileDirectory()) {
                     String timeStamp = dateFormat.format(new Date());
                     File mediaFile = new File(multimedia.getTeamFileDirectory().getPath().replaceFirst("file://", "") + File.separator + "IMG_"+ timeStamp + ".jpg");
-                    Log.d(TAG,mediaFile.getAbsolutePath());
+                    Timber.d(mediaFile.getAbsolutePath());
                     // create Intent to take a picture and return control to the calling application
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -167,7 +168,7 @@ public abstract class TeamDetailFragment extends Fragment {
                 if(null!=multimedia && null!=multimedia.getTeamFileDirectory()) {
                     String timeStamp = dateFormat.format(new Date());
                     File mediaFile = new File(multimedia.getTeamFileDirectory().getPath().replaceFirst("file://", "") + File.separator + "VID_"+ timeStamp + ".mp4");
-                    Log.d(TAG,mediaFile.getAbsolutePath());
+                    Timber.d(mediaFile.getAbsolutePath());
                     // create Intent to take a picture and return control to the calling application
                     Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
@@ -198,9 +199,9 @@ public abstract class TeamDetailFragment extends Fragment {
             @Override
             public void onItemClick(RecyclerView recyclerView, View view, int i, long l) {
                 File filename = (File) view.getTag(R.string.file);
-                Log.d(TAG, filename.toString());
+                Timber.d( filename.toString());
                 String type = URLConnection.guessContentTypeFromName("file://" + filename.getAbsolutePath());
-                Log.d(TAG, type);
+                Timber.d( type);
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse("file://" + filename.getAbsolutePath()), type);
@@ -280,7 +281,7 @@ public abstract class TeamDetailFragment extends Fragment {
         if (args != null) {
             // Set article based on argument passed in
     		teamId = getArguments().getLong(TEAM_ARG, 0);
-    		Log.d(TAG, "team: "+teamId);
+    		Timber.d( "team: "+teamId);
         }
         EventBus.getDefault().register(this);
     }
@@ -327,9 +328,9 @@ public abstract class TeamDetailFragment extends Fragment {
 	public void setView() {
         ((ActionBarActivity)this.getActivity()).getSupportActionBar().setTitle(scouting.getTeam().toString());
 		multimedia = new MultimediaAdapter(this.getActivity(),scouting);
-		Log.d(TAG,"thumbs: "+multimedia.getItemCount());
+		Timber.d("thumbs: "+multimedia.getItemCount());
 		gallery.setAdapter(multimedia);
-		Log.d(TAG,"imageviews: "+gallery.getChildCount());
+		Timber.d("imageviews: "+gallery.getChildCount());
 		notes.setText(scouting.getNotes());
 	}
 	

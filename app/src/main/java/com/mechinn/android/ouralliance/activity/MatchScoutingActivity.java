@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public class MatchScoutingActivity extends OurAllianceActivity implements FragmentManager.OnBackStackChangedListener {
     public static final String TAG = "MatchScoutingActivity";
@@ -111,7 +112,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
 
 	public void onEventMainThread(SelectMatchEvent match) {
         long matchId = match.getId();
-		Log.d(TAG, "match: "+matchId);
+		Timber.d( "match: "+matchId);
 
         Bundle bundle = new Bundle();
         bundle.putLong(MatchTeamListFragment.MATCH_ARG, matchId);
@@ -138,7 +139,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
 
     public void onEventMainThread(SelectMatchTeamEvent scouting) {
         long scoutingId = scouting.getId();
-        Log.d(TAG, "team: "+scoutingId);
+        Timber.d( "team: "+scoutingId);
         Bundle args = new Bundle();
         args.putLong(MatchDetailFragment.SCOUTING_ARG, scoutingId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -164,7 +165,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
 
     public void onEventMainThread(SelectTeamEvent team) {
         long teamId = team.getId();
-        Log.d(TAG, "team: "+teamId);
+        Timber.d( "team: "+teamId);
         Bundle args = new Bundle();
         args.putLong(TeamDetailFragment.TEAM_ARG, teamId);
 
@@ -190,7 +191,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
     }
 
 	public void onBackStackChanged() {
-		Log.i(TAG, "back stack changed "+getSupportFragmentManager().getBackStackEntryCount());
+		Timber.i("back stack changed " + getSupportFragmentManager().getBackStackEntryCount());
         if (getSupportFragmentManager().getBackStackEntryCount() < 1){
             this.getSupportActionBar().setTitle(R.string.matches);
         }
@@ -198,7 +199,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
 	
 	public void onEventMainThread(Prefs prefsChanged) {
         String key = prefsChanged.getKeyChanged();
-		Log.d(TAG, key);
+		Timber.d( key);
 		if(key.equals(this.getString(R.string.pref_practice))) {
 			this.recreate();
 		}

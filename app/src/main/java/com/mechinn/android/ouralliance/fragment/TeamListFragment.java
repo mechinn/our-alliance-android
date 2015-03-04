@@ -34,6 +34,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 public class TeamListFragment extends Fragment {
     public static final String TAG = "TeamListFragment";
@@ -112,7 +113,7 @@ public class TeamListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG, "start");
+        Timber.d( "start");
         EventBus.getDefault().register(this);
 //		this.getActivity().registerForContextMenu(this.getListView());
         // When in two-pane layout, set the listview to highlight the selected list item
@@ -137,8 +138,8 @@ public class TeamListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "resume");
-        Log.d(TAG,"CompID: "+prefs.getComp());
+        Timber.d( "resume");
+        Timber.d("CompID: "+prefs.getComp());
         if(prefs.getComp()>0) {
             if(prefs.getComp()>0 && !prefs.isEventTeamsDownloaded()) {
                 AsyncExecutor.create().execute(downloadTeams);
@@ -180,7 +181,7 @@ public class TeamListFragment extends Fragment {
                 outState.putInt(STATE_ACTIVATED_POSITION, selectedPosition);
             }
         } catch (IllegalStateException e) {
-            Log.d(TAG,"",e);
+            Timber.d("",e);
         }
 	}
 	
@@ -272,7 +273,7 @@ public class TeamListFragment extends Fragment {
                 switch(prefs.getYear()) {
                     case 2014:
                         query = query.join(TeamScouting2014.class).on(Team.TAG+"."+Team.ID+"="+TeamScouting2014.TAG+"."+TeamScouting2014.TEAM);
-                        Log.d(TAG,"sort: "+sort2014);
+                        Timber.d("sort: " + sort2014);
                         switch(sort2014) {
                             case NUMBER:
                                 orderBy = Team.TAG+"."+Team.TEAM_NUMBER+" ASC";
@@ -332,7 +333,7 @@ public class TeamListFragment extends Fragment {
                         break;
                     case 2015:
                         query = query.join(TeamScouting2015.class).on(Team.TAG+"."+Team.ID+"="+ TeamScouting2015.TAG+"."+TeamScouting2015.TEAM);
-                        Log.d(TAG,"sort: "+sort2015);
+                        Timber.d("sort: "+sort2015);
                         switch(sort2015) {
                             case NUMBER:
                                 orderBy = Team.TAG+"."+Team.TEAM_NUMBER+" ASC";

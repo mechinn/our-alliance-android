@@ -16,6 +16,8 @@ import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class TeamScouting2014FilterAdapter extends FilterableAdapter {
     public static final String TAG = "TS2014Filter";
     public enum Type {ORIENTATION,DRIVETRAIN}
@@ -31,14 +33,14 @@ public class TeamScouting2014FilterAdapter extends FilterableAdapter {
         emptyStrings();
         if(!isEmpty()) {
             for(TeamScouting2014 each : teams) {
-                Log.d(TAG,"scouting "+each);
+                Timber.d("scouting " + each);
                 switch(field) {
                     case ORIENTATION:
-                        Log.d(TAG,"orientation "+each);
+                        Timber.d("orientation "+each);
                         addString(each.getOrientation());
                         break;
                     case DRIVETRAIN:
-                        Log.d(TAG,"drivetrain "+each);
+                        Timber.d("drivetrain "+each);
                         addString(each.getDriveTrain());
                         break;
                 }

@@ -19,6 +19,8 @@ import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 public class EventTeamDragSortListAdapter extends BaseAdapter implements ListAdapter, DragSortListView.DropListener {
     public static final String TAG = "EventTeamDSLAdapter";
     private int dragable;
@@ -87,24 +89,24 @@ public class EventTeamDragSortListAdapter extends BaseAdapter implements ListAda
     @Override
     public void drop(int from, int to) {
 //        for(EventTeam team : this.getTeams()) {
-//            Log.d(TAG,"team: "+team);
+//            Timber.d("team: "+team);
 //        }
         if (from > to) {
             for (int i = to; i < from; ++i) {
-                Log.d(TAG, "team: " + getTeam(i) + " new rank: " + (i + 1));
+                Timber.d("team: " + getTeam(i) + " new rank: " + (i + 1));
                 getTeam(i).setRank(i + 1);
-                Log.d(TAG, "team: " + getTeam(i));
+                Timber.d( "team: " + getTeam(i));
             }
         } else {
             for (int i = from + 1; i <= to; ++i) {
-                Log.d(TAG, "team: " + getTeam(i) + " new rank: " + (i - 1));
+                Timber.d( "team: " + getTeam(i) + " new rank: " + (i - 1));
                 getTeam(i).setRank(i - 1);
-                Log.d(TAG, "team: " + getTeam(i));
+                Timber.d( "team: " + getTeam(i));
             }
         }
-        Log.d(TAG, "team: " + getTeam(from) + " new rank: " + to);
+        Timber.d( "team: " + getTeam(from) + " new rank: " + to);
         getTeam(from).setRank(to);
-        Log.d(TAG, "team: " + getTeam(from));
+        Timber.d( "team: " + getTeam(from));
         Transaction.asyncSave(EventTeam.class, this.getTeams());
     }
 

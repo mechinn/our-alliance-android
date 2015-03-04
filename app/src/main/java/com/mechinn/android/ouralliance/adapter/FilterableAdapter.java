@@ -10,6 +10,8 @@ import android.widget.Filterable;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Created by mechinn on 3/2/15.
  */
@@ -82,13 +84,13 @@ public abstract class FilterableAdapter extends BaseAdapter implements Filterabl
                 results.count = original.size();
             } else {
                 String filteringString = charSequence.toString().toLowerCase();
-                Log.d(TAG, "filtering on " + filteringString);
+                Timber.d("filtering on " + filteringString);
                 List<String> filterResultsData = new ArrayList<>();
                 for(String data : original) {
                     //In this loop, you'll filter through originalData and compare each item to charSequence.
                     //If you find a match, add it to your new ArrayList
                     //I'm not sure how you're going to do comparison, so you'll need to fill out this conditional
-                    Log.d(TAG, "compare "+data);
+                    Timber.d( "compare "+data);
                     if(null!=data && data.toLowerCase().contains(filteringString)) {
                         filterResultsData.add(data);
                     }

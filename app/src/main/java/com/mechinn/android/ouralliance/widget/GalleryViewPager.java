@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import timber.log.Timber;
+
 public abstract class GalleryViewPager extends ViewPager {
     public static final String TAG = "GalleryViewPager";
 
@@ -19,12 +21,12 @@ public abstract class GalleryViewPager extends ViewPager {
 	
 	public boolean galleryTouchEvent(int width, MotionEvent ev) {
 		int total = this.getAdapter().getCount();
-		Log.d(TAG,"total: "+total);
+		Timber.d("total: " + total);
 		int current = this.getCurrentItem();
-		Log.d(TAG,"current: "+current);
+		Timber.d("current: "+current);
 		int visible  = width/(getWidth()+getPageMargin());
-		Log.d(TAG,"width: "+this.getWidth());
-		Log.d(TAG,"visible: "+visible);
+		Timber.d("width: "+this.getWidth());
+		Timber.d("visible: "+visible);
         return current + visible < total && dispatchTouchEvent(ev);
     }
 }

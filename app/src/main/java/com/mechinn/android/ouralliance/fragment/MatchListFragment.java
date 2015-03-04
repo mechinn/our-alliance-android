@@ -30,10 +30,12 @@ import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.event.SelectMatchEvent;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetMatches;
 
+import java.util.Collections;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 public class MatchListFragment extends ListFragment {
     public static final String TAG = "MatchListFragment";
@@ -125,7 +127,7 @@ public class MatchListFragment extends ListFragment {
                 outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
             }
         } catch (IllegalStateException e) {
-            Log.d(TAG,"",e);
+            Timber.d("",e);
         }
 	}
 	
@@ -212,7 +214,7 @@ public class MatchListFragment extends ListFragment {
             @Override
             public void run() throws Exception {
                 int count = new Select().from(EventTeam.class).where(EventTeam.EVENT+"=?",prefs.getComp()).count();
-                Log.d(TAG,"event teams ="+count);
+                Timber.d("event teams =" + count);
                 EventBus.getDefault().post(new LoadEventTeams(count));
             }
         });
@@ -222,7 +224,7 @@ public class MatchListFragment extends ListFragment {
     }
     public void onEventMainThread(LoadEventTeams teams) {
         enoughTeams = teams.enoughTeams();
-        Log.d(TAG,"enough teams ="+enoughTeams);
+        Timber.d("enough teams ="+enoughTeams);
         getActivity().invalidateOptionsMenu();
     }
     private class LoadEventTeams {
@@ -255,7 +257,8 @@ public class MatchListFragment extends ListFragment {
     }
     public void onEventMainThread(LoadMatches matches) {
         List<Match> result = matches.getMatches();
-        Log.d(TAG, "Count: " + result.size());
+        Timber.d( "Count: " + result.size());
+        Collections.sort(result);
         adapter.swapList(result);
         getActivity().invalidateOptionsMenu();
     }

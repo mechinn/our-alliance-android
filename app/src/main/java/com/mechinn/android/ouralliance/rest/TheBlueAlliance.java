@@ -20,6 +20,7 @@ import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import retrofit.http.GET;
 import retrofit.http.Path;
+import timber.log.Timber;
 
 import java.io.IOException;
 import java.util.Date;
@@ -64,7 +65,7 @@ public class TheBlueAlliance {
         public Response execute(Request request) throws IOException {
             Response response = super.execute(request);
             for (Header header : response.getHeaders()) {
-                Log.d(TAG, header.toString());
+                Timber.d(header.toString());
             }
             return response;
         }

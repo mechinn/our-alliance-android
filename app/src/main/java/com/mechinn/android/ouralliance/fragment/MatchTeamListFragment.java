@@ -19,6 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public abstract class MatchTeamListFragment extends ListFragment {
     public static final String TAG = "MatchTeamListFragment";
@@ -44,7 +45,7 @@ public abstract class MatchTeamListFragment extends ListFragment {
         ((ActionBarActivity)this.getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		prefs = new Prefs(this.getActivity());
 		matchId = this.getArguments().getLong(MATCH_ARG);
-        Log.d(TAG, "match: "+matchId);
+        Timber.d("match: " + matchId);
     }
     
     @Override
@@ -128,7 +129,7 @@ public abstract class MatchTeamListFragment extends ListFragment {
                 outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
             }
         } catch (IllegalStateException e) {
-            Log.d(TAG,"",e);
+            Timber.d("",e);
         }
 	}
 }
