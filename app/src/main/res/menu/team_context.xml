@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
     <item
         android:id="@+id/open"
         android:icon="@drawable/ic_action_forward"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:title="Open">
     </item>
     <!--
     <item
         android:id="@+id/edit"
         android:icon="@drawable/ic_action_edit"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:title="Edit">
     </item>
     -->
     <item
         android:id="@+id/delete"
         android:icon="@drawable/ic_action_discard"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:title="Remove">
     </item>
 

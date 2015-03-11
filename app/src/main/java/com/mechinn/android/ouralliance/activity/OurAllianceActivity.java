@@ -47,7 +47,6 @@ public class OurAllianceActivity extends ActionBarActivity {
         prefs = new Prefs(this);
         adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("E945BD086D90D129A51D07134B9D836B") //nexus 5
                 .build();
         adListener = new AdListener() {
             @Override

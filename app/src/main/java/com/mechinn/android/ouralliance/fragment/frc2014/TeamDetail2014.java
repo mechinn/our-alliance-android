@@ -606,9 +606,7 @@ public class TeamDetail2014 extends TeamDetailFragment {
     }
     public void onEventMainThread(LoadScouting scouting) {
         setScouting(scouting.getScouting());
-        setView();
-        getRootView().setVisibility(View.VISIBLE);
-        loadWheels();
+        scoutingLoaded();
     }
     private class LoadScouting {
         TeamScouting2014 scouting;

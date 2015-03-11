@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/insert"
         android:icon="@drawable/ic_action_new"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:title="Add Match"
         android:menuCategory="system"
         android:orderInCategory="1" />
@@ -13,21 +15,21 @@
         android:orderInCategory="2"
         android:menuCategory="system"
         android:title="Bluetooth Transfer Match Scouting"
-        android:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/exportMatchScouting"
         android:icon="@drawable/ic_action_upload"
         android:orderInCategory="3"
         android:menuCategory="system"
         android:title="Export Match Scouting"
-        android:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/importMatchScouting"
         android:icon="@drawable/ic_action_download"
         android:orderInCategory="4"
         android:menuCategory="system"
         android:title="Import Match Scouting"
-        android:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/practice"
         android:orderInCategory="5"
@@ -35,12 +37,12 @@
         android:checkable="true"
         android:checked="false"
         android:title="Practice Matches"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/refreshMatches"
         android:icon="@drawable/ic_action_refresh"
         android:orderInCategory="6"
         android:menuCategory="system"
         android:title="Refresh Matches"
-        android:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"/>
 </menu>
