@@ -4,19 +4,24 @@ import java.io.File;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.Utility;
 import com.mechinn.android.ouralliance.adapter.MultimediaAdapter;
 import com.mechinn.android.ouralliance.adapter.WheelTypesAdapter;
-import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.Wheel;
+import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.event.MultimediaDeletedEvent;
+import com.mechinn.android.ouralliance.gson.OurAllianceGson;
+import com.mechinn.android.ouralliance.gson.TeamAdapter;
+import com.mechinn.android.ouralliance.rest.JsonDateAdapter;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -29,15 +34,15 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -234,6 +239,8 @@ public abstract class TeamDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+        setRetainInstance(true);
         wheelTypesAdapter = new WheelTypesAdapter(this.getActivity(), null);
     }
     
@@ -315,11 +322,34 @@ public abstract class TeamDetailFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putLong(TEAM_ARG, teamId);
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.team_detail, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        BluetoothEvent bluetooth = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
+        menu.findItem(R.id.matchList).setVisible(prefs.getComp() > 0 && null != scouting);
+        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
+        menu.findItem(R.id.exportTeamScouting).setVisible(null != scouting);
+        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != scouting  && bluetooth.isEnabled());
+        if(bluetooth.isOn()) {
+            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
+        } else {
+            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
+        }
+    }
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
+            case R.id.exportTeamScouting:
+                String json = OurAllianceGson.BUILDER.toJson(scouting);
+
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -402,6 +432,12 @@ public abstract class TeamDetailFragment extends Fragment {
         return view;
     }
     public abstract void loadScouting();
+    public void scoutingLoaded() {
+        getActivity().invalidateOptionsMenu();
+        setView();
+        getRootView().setVisibility(View.VISIBLE);
+        loadWheels();
+    }
     public abstract void loadWheelTypes();
     public abstract void loadWheels();
     public abstract void updateWheels();
