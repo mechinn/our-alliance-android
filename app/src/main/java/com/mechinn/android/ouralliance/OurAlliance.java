@@ -162,7 +162,7 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
 
     public void onEventMainThread(ThrowableFailureEvent event) {
         Toast.makeText(this,event.getThrowable().getMessage(),Toast.LENGTH_LONG);
-        Timber.e(event.getThrowable().getMessage(),event.getThrowable());
+        Timber.e(event.getThrowable(),event.getThrowable().getMessage());
     }
 
     public void onEventMainThread(ResetEvent event) {

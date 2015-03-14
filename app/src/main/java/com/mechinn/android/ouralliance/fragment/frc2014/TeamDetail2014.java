@@ -423,12 +423,12 @@ public class TeamDetail2014 extends TeamDetailFragment {
                 try {
                     wheelSizeDouble = Double.parseDouble(wheelSize.getText().toString());
                 } catch (NumberFormatException e) {
-                    Timber.e("Invalid wheel size",e);
+                    Timber.e(e,"Invalid wheel size");
                 }
                 try {
                     wheelCountInteger = Integer.parseInt(wheelCount.getText().toString());
                 } catch (NumberFormatException e) {
-                    Timber.e("Invalid wheel count",e);
+                    Timber.e(e,"Invalid wheel count");
                 }
                 if(!wheelTypeString.equals("") && null!=wheelSizeDouble && wheelSizeDouble>0 && null!=wheelCountInteger && wheelCountInteger>0) {
                     wheel.setWheelType(wheelTypeString);

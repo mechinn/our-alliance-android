@@ -17,19 +17,26 @@
         android:title="Bluetooth Transfer Match Scouting"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/exportMatchScouting"
-        android:icon="@drawable/ic_action_upload"
-        android:orderInCategory="3"
-        android:menuCategory="system"
-        android:title="Export Match Scouting"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/importMatchScouting"
-        android:icon="@drawable/ic_action_download"
+        android:id="@+id/sendMatchScoutingCsv"
+        android:icon="@drawable/ic_action_share"
         android:orderInCategory="4"
         android:menuCategory="system"
-        android:title="Import Match Scouting"
+        android:title="Send Match Scouting CSV"
         app:showAsAction="ifRoom"/>
+    <!--<item-->
+        <!--android:id="@+id/exportMatchScouting"-->
+        <!--android:icon="@drawable/ic_action_upload"-->
+        <!--android:orderInCategory="3"-->
+        <!--android:menuCategory="system"-->
+        <!--android:title="Export Match Scouting"-->
+        <!--app:showAsAction="ifRoom" />-->
+    <!--<item-->
+        <!--android:id="@+id/importMatchScouting"-->
+        <!--android:icon="@drawable/ic_action_download"-->
+        <!--android:orderInCategory="4"-->
+        <!--android:menuCategory="system"-->
+        <!--android:title="Import Match Scouting"-->
+        <!--app:showAsAction="ifRoom"/>-->
     <item
         android:id="@+id/practice"
         android:orderInCategory="5"

@@ -59,8 +59,8 @@ android {
         applicationId "com.mechinn.android.ouralliance"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 47
-        versionName "2015.0.1"
+        versionCode 48
+        versionName "2015.1.0"
     }
     signingConfigs {
         if(hasProperty('STOREFILE') && hasProperty('STOREPASS') && hasProperty('KEYALIAS') && hasProperty('KEYPASS')) {

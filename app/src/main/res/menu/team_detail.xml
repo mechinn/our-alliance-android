@@ -9,25 +9,25 @@
         android:menuCategory="system"
         app:showAsAction="ifRoom"
         android:title="Match List"/>
-    <item
-        android:id="@+id/bluetoothTeamScouting"
-        android:icon="@drawable/ic_action_bluetooth"
-        android:orderInCategory="3"
-        android:menuCategory="system"
-        android:title="Bluetooth Transfer Team Scouting"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/exportTeamScouting"
-        android:icon="@drawable/ic_action_upload"
-        android:orderInCategory="4"
-        android:menuCategory="system"
-        android:title="Export Team Scouting"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/importTeamScouting"
-        android:icon="@drawable/ic_action_download"
-        android:orderInCategory="5"
-        android:menuCategory="system"
-        android:title="Import Team Scouting"
-        app:showAsAction="ifRoom"/>
+    <!--<item-->
+        <!--android:id="@+id/bluetoothTeamScouting"-->
+        <!--android:icon="@drawable/ic_action_bluetooth"-->
+        <!--android:orderInCategory="3"-->
+        <!--android:menuCategory="system"-->
+        <!--android:title="Bluetooth Transfer Team Scouting"-->
+        <!--app:showAsAction="ifRoom"/>-->
+    <!--<item-->
+        <!--android:id="@+id/exportTeamScouting"-->
+        <!--android:icon="@drawable/ic_action_upload"-->
+        <!--android:orderInCategory="4"-->
+        <!--android:menuCategory="system"-->
+        <!--android:title="Export Team Scouting"-->
+        <!--app:showAsAction="ifRoom"/>-->
+    <!--<item-->
+        <!--android:id="@+id/importTeamScouting"-->
+        <!--android:icon="@drawable/ic_action_download"-->
+        <!--android:orderInCategory="5"-->
+        <!--android:menuCategory="system"-->
+        <!--android:title="Import Team Scouting"-->
+        <!--app:showAsAction="ifRoom"/>-->
 </menu>

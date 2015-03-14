@@ -24,19 +24,26 @@
         android:title="Bluetooth Transfer Team Scouting"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/exportTeamScouting"
-        android:icon="@drawable/ic_action_upload"
+        android:id="@+id/sendTeamScoutingCsv"
+        android:icon="@drawable/ic_action_share"
         android:orderInCategory="4"
         android:menuCategory="system"
-        android:title="Export Team Scouting"
+        android:title="Send Team Scouting CSV"
         app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/importTeamScouting"
-        android:icon="@drawable/ic_action_download"
-        android:orderInCategory="5"
-        android:menuCategory="system"
-        android:title="Import Team Scouting"
-        app:showAsAction="ifRoom"/>
+    <!--<item-->
+        <!--android:id="@+id/backupTeamScouting"-->
+        <!--android:icon="@drawable/ic_action_upload"-->
+        <!--android:orderInCategory="4"-->
+        <!--android:menuCategory="system"-->
+        <!--android:title="Backup Team Scouting"-->
+        <!--app:showAsAction="ifRoom"/>-->
+    <!--<item-->
+        <!--android:id="@+id/restoreTeamScouting"-->
+        <!--android:icon="@drawable/ic_action_download"-->
+        <!--android:orderInCategory="5"-->
+        <!--android:menuCategory="system"-->
+        <!--android:title="Restore Team Scouting"-->
+        <!--app:showAsAction="ifRoom"/>-->
     <item
         android:id="@+id/refreshCompetitionTeams"
         android:icon="@drawable/ic_action_refresh"

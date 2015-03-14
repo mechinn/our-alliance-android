@@ -129,7 +129,7 @@ public abstract class MatchTeamListFragment extends ListFragment {
                 outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
             }
         } catch (IllegalStateException e) {
-            Timber.d("",e);
+            Timber.d(e,e.getMessage());
         }
 	}
 }

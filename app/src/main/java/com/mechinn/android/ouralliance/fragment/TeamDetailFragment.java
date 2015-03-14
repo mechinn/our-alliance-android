@@ -333,8 +333,8 @@ public abstract class TeamDetailFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         BluetoothEvent bluetooth = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
         menu.findItem(R.id.matchList).setVisible(prefs.getComp() > 0 && null != scouting);
-        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
-        menu.findItem(R.id.exportTeamScouting).setVisible(null != scouting);
+//        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
+//        menu.findItem(R.id.exportTeamScouting).setVisible(null != scouting);
         menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != scouting  && bluetooth.isEnabled());
         if(bluetooth.isOn()) {
             menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
@@ -347,9 +347,8 @@ public abstract class TeamDetailFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
-            case R.id.exportTeamScouting:
-                String json = OurAllianceGson.BUILDER.toJson(scouting);
-
+//            case R.id.exportTeamScouting:
+//                String json = OurAllianceGson.BUILDER.toJson(scouting);
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

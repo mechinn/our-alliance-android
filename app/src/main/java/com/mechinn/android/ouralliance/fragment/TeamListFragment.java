@@ -8,6 +8,7 @@ import android.widget.*;
 
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
+import com.mechinn.android.ouralliance.csv.frc2015.ExportCsvTeamScouting2015;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
@@ -181,7 +182,7 @@ public class TeamListFragment extends Fragment {
                 outState.putInt(STATE_ACTIVATED_POSITION, selectedPosition);
             }
         } catch (IllegalStateException e) {
-            Timber.d("",e);
+            Timber.d(e,e.getMessage());
         }
 	}
 	
@@ -196,8 +197,8 @@ public class TeamListFragment extends Fragment {
         BluetoothEvent bluetooth = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
         menu.findItem(R.id.matchList).setVisible(prefs.getComp()>0 && null!=adapter && adapter.getCount() > 5);
         menu.findItem(R.id.insertTeamScouting).setVisible(prefs.getComp()>0);
-        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
-        menu.findItem(R.id.exportTeamScouting).setVisible(null != adapter && adapter.getCount() > 0);
+//        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
+//        menu.findItem(R.id.exportTeamScouting).setVisible(null != adapter && adapter.getCount() > 0);
         menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != adapter && adapter.getCount() > 0 && bluetooth.isEnabled());
         if(bluetooth.isOn()) {
             menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
@@ -205,6 +206,7 @@ public class TeamListFragment extends Fragment {
             menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
         }
         menu.findItem(R.id.refreshCompetitionTeams).setVisible(prefs.getComp() > 0);
+        menu.findItem(R.id.sendTeamScoutingCsv).setVisible(prefs.getComp() > 0);
     }
 	
 	@Override
@@ -225,6 +227,12 @@ public class TeamListFragment extends Fragment {
             case R.id.refreshCompetitionTeams:
                 AsyncExecutor.create().execute(downloadTeams);
                 return true;
+            case R.id.sendTeamScoutingCsv:
+                switch(prefs.getYear()) {
+                    case 2015:
+                        AsyncExecutor.create().execute(new ExportCsvTeamScouting2015(this.getActivity()));
+                        break;
+                }
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

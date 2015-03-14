@@ -153,7 +153,7 @@ public class GetMatches implements AsyncExecutor.RunnableEx {
             ToastEvent.toast("Finished downloading matches", false);
             prefs.setMatchesDownloaded(true);
         } catch (RetrofitError e) {
-            Timber.e("Error downloading matches",e);
+            Timber.e(e,"Error downloading matches");
             if (e.getKind() == RetrofitError.Kind.NETWORK) {
                 ToastEvent.toast("Unable to connect",false);
             } else if (e.getResponse().getStatus() != 200) {

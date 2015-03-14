@@ -261,7 +261,7 @@ public class TeamScouting2014 extends TeamScouting {
         return getMany(MatchScouting2014.class, super.TAG);
     }
     public List<? extends Wheel> getWheels() {
-        return getMany(Wheel2014.class, super.TAG);
+        return getMany(Wheel2014.class, TAG);
     }
     public String toString() {
         return	super.toString()+

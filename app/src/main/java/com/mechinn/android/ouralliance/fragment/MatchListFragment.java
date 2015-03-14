@@ -24,6 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
+import com.mechinn.android.ouralliance.csv.frc2015.ExportCsvMatchScouting2015;
 import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.data.Match;
@@ -127,7 +128,7 @@ public class MatchListFragment extends ListFragment {
                 outState.putInt(STATE_ACTIVATED_POSITION, this.getSelectedItemPosition());
             }
         } catch (IllegalStateException e) {
-            Timber.d("",e);
+            Timber.d(e,e.getMessage());
         }
 	}
 	
@@ -143,13 +144,14 @@ public class MatchListFragment extends ListFragment {
 	    menu.findItem(R.id.practice).setChecked(prefs.isPractice());
         menu.findItem(R.id.insert).setVisible(prefs.getComp()>0 && enoughTeams);
         menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && !bluetoothState.isDisabled());
-        menu.findItem(R.id.importMatchScouting).setVisible(prefs.getComp()>0);
-        menu.findItem(R.id.exportMatchScouting).setVisible(null!=adapter && adapter.getCount()>0);
+//        menu.findItem(R.id.importMatchScouting).setVisible(prefs.getComp()>0);
+//        menu.findItem(R.id.exportMatchScouting).setVisible(null!=adapter && adapter.getCount()>0);
         if(bluetoothState.isOn()) {
             menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
         } else {
             menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth);
         }
+        menu.findItem(R.id.sendMatchScoutingCsv).setVisible(prefs.getComp()>0);
 	}
 	
 	@Override
@@ -170,6 +172,12 @@ public class MatchListFragment extends ListFragment {
             case R.id.refreshMatches:
                 AsyncExecutor.create().execute(downloadMatches);
                 return true;
+            case R.id.sendMatchScoutingCsv:
+                switch(prefs.getYear()) {
+                    case 2015:
+                        AsyncExecutor.create().execute(new ExportCsvMatchScouting2015(this.getActivity()));
+                        break;
+                }
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

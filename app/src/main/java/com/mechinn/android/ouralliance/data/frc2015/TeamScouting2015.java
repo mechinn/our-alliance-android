@@ -4,9 +4,17 @@ import android.database.Cursor;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
+import com.mechinn.android.ouralliance.csv.FmtTeam;
+import com.mechinn.android.ouralliance.data.Event;
+import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Wheel;
+
+import org.supercsv.cellprocessor.FmtBool;
+import org.supercsv.cellprocessor.FmtDate;
+import org.supercsv.cellprocessor.ift.CellProcessor;
 
 import java.util.List;
 
@@ -185,8 +193,14 @@ public class TeamScouting2015 extends TeamScouting {
     public List<? extends MatchScouting> getMatches() {
         return getMany(MatchScouting2015.class, super.TAG);
     }
+    public EventTeam getEventTeam(Event event) {
+        return getEventTeam(event.getId());
+    }
+    public EventTeam getEventTeam(long eventId) {
+        return new Select().from(EventTeam.class).where(EventTeam.EVENT+"=?",eventId).and(EventTeam.TEAM+"=?",getTeam().getId()).executeSingle();
+    }
     public List<? extends Wheel> getWheels() {
-        return getMany(Wheel2015.class, super.TAG);
+        return getMany(Wheel2015.class, TAG);
     }
     public String toString() {
         return	super.toString()+

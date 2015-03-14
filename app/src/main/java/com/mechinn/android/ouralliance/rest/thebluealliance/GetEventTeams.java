@@ -76,7 +76,7 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
             ToastEvent.toast("Finished downloading teams",false);
             prefs.setEventTeamsDownloaded(true);
         } catch (RetrofitError e) {
-            Timber.e("Error downloading event teams",e);
+            Timber.e(e,"Error downloading event teams");
             if (e.getKind() == RetrofitError.Kind.NETWORK) {
                 ToastEvent.toast("Unable to connect");
             } else if (e.getResponse().getStatus() != 200) {
