@@ -88,10 +88,10 @@
     <orderEntry type="library" exported="" name="crashlytics-1.1.13" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="drag-sort-listview-1.0" level="project" />
-    <orderEntry type="library" exported="" name="MPAndroidChart-v2.0.7" level="project" />
+    <orderEntry type="library" exported="" name="MPAndroidChart-v2.0.8" level="project" />
     <orderEntry type="library" exported="" name="preferencefragment-0.1.2" level="project" />
-    <orderEntry type="library" exported="" name="picasso-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="activeandroid-3.1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="picasso-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="support-v13-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-6.5.87" level="project" />

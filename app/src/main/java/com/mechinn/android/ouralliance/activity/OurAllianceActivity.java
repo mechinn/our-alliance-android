@@ -3,6 +3,8 @@ package com.mechinn.android.ouralliance.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.ads.AdListener;
@@ -42,7 +44,7 @@ public class OurAllianceActivity extends ActionBarActivity {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefs = new Prefs(this);
         adRequest = new AdRequest.Builder()
@@ -77,19 +79,19 @@ public class OurAllianceActivity extends ActionBarActivity {
             }
         };
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.ic_launcher);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         adView = (AdView) this.findViewById(R.id.adView);
         adView.setAdListener(adListener);
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         showAd();
     }
@@ -112,5 +114,36 @@ public class OurAllianceActivity extends ActionBarActivity {
             adView.loadAd(adRequest);
         }
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        this.getMenuInflater().inflate(R.menu.ouralliance, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if(this.getSupportFragmentManager().getBackStackEntryCount()>0) {
+                    this.getSupportFragmentManager().popBackStack();
+                } else {
+                    this.finish();
+                }
+                return true;
+            case R.id.settings:
+                openPreferences();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    protected void openPreferences() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 }

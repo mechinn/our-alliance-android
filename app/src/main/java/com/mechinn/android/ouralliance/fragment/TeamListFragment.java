@@ -8,6 +8,7 @@ import android.widget.*;
 
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
+import com.mechinn.android.ouralliance.activity.TeamAnalysisActivity;
 import com.mechinn.android.ouralliance.csv.frc2015.ExportCsvTeamScouting2015;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
@@ -199,12 +200,12 @@ public class TeamListFragment extends Fragment {
         menu.findItem(R.id.insertTeamScouting).setVisible(prefs.getComp()>0);
 //        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
 //        menu.findItem(R.id.exportTeamScouting).setVisible(null != adapter && adapter.getCount() > 0);
-        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != adapter && adapter.getCount() > 0 && bluetooth.isEnabled());
-        if(bluetooth.isOn()) {
-            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
-        } else {
-            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
-        }
+//        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != adapter && adapter.getCount() > 0 && null != bluetooth && bluetooth.isEnabled());
+//        if(bluetooth.isOn()) {
+//            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
+//        } else {
+//            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
+//        }
         menu.findItem(R.id.refreshCompetitionTeams).setVisible(prefs.getComp() > 0);
         menu.findItem(R.id.sendTeamScoutingCsv).setVisible(prefs.getComp() > 0);
     }
@@ -213,10 +214,14 @@ public class TeamListFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
-	        case R.id.matchList:
-                Intent intent = new Intent(this.getActivity(), MatchScoutingActivity.class);
-                startActivity(intent);
+	        case R.id.analysis:
+                Intent analysisIntent = new Intent(this.getActivity(), TeamAnalysisActivity.class);
+                startActivity(analysisIntent);
 	            return true;
+            case R.id.matchList:
+                Intent matchIntent = new Intent(this.getActivity(), MatchScoutingActivity.class);
+                startActivity(matchIntent);
+                return true;
 	        case R.id.insertTeamScouting:
                 DialogFragment newFragment = new InsertTeamDialogFragment();
                 Bundle updateArgs = new Bundle();

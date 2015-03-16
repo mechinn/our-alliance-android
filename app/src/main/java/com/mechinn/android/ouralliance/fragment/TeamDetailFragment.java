@@ -335,12 +335,12 @@ public abstract class TeamDetailFragment extends Fragment {
         menu.findItem(R.id.matchList).setVisible(prefs.getComp() > 0 && null != scouting);
 //        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
 //        menu.findItem(R.id.exportTeamScouting).setVisible(null != scouting);
-        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != scouting  && bluetooth.isEnabled());
-        if(bluetooth.isOn()) {
-            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
-        } else {
-            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
-        }
+//        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != scouting  && null != bluetooth && bluetooth.isEnabled());
+//        if(bluetooth.isOn()) {
+//            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
+//        } else {
+//            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
+//        }
     }
 	
 	@Override

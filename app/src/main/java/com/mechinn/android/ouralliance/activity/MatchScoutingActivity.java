@@ -40,7 +40,7 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
     private int teamFrag;
 	private int detailFrag;
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_match_scouting);
@@ -61,53 +61,25 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
             getSupportFragmentManager().beginTransaction().replace(matchFrag, matchListFrag).commitAllowingStateLoss();
         }
 	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		this.getMenuInflater().inflate(R.menu.ouralliance, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
     }
 
     @Override
-    public void onStop() {
+    protected void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 	
 	@Override
-	public void onResume() {
+    protected void onResume() {
 	    super.onResume();
         if(getPrefs().getComp()<1) {
             this.finish();
         }
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-		Intent intent;
-	    switch (item.getItemId()) {
-	        case android.R.id.home:
-	        	if(this.getSupportFragmentManager().getBackStackEntryCount()>0) {
-	        		this.getSupportFragmentManager().popBackStack();
-	        	} else {
-	        		this.finish();
-	        	}
-	        	return true;
-	        case R.id.settings:
-	        	intent = new Intent(this, SettingsActivity.class);
-	            startActivity(intent);
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
 	}
 
 	public void onEventMainThread(SelectMatchEvent match) {

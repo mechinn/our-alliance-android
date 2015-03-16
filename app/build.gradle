@@ -48,7 +48,7 @@ dependencies {
     compile 'com.github.machinarius:preferencefragment:0.1.2'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.path:android-priority-jobqueue:1.1.2'
-    compile 'com.github.PhilJay:MPAndroidChart:v2.0.7'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.0.8'
     compile 'com.jakewharton.timber:timber:2.7.1'
 }
 
@@ -59,26 +59,22 @@ android {
         applicationId "com.mechinn.android.ouralliance"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 48
-        versionName "2015.1.0"
+        versionCode 49
+        versionName "2015.2.0"
     }
     signingConfigs {
-        if(hasProperty('STOREFILE') && hasProperty('STOREPASS') && hasProperty('KEYALIAS') && hasProperty('KEYPASS')) {
-            release {
-                storeFile file(STOREFILE)
-                storePassword STOREPASS
-                keyAlias KEYALIAS
-                keyPassword KEYPASS
-            }
+        release {
+            storeFile file(STOREFILE)
+            storePassword STOREPASS
+            keyAlias KEYALIAS
+            keyPassword KEYPASS
         }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if(hasProperty('signingConfigs.release')) {
-                signingConfig signingConfigs.release
-            }
+            signingConfig signingConfigs.release
         }
     }
     sourceSets {
