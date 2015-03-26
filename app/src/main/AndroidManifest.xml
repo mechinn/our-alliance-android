@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.mechinn.android.ouralliance.activity.TeamAnalysisActivity"
+            android:name="com.mechinn.android.ouralliance.activity.AnalysisActivity"
             android:label="@string/analysis" >
         </activity>
         <activity

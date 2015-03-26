@@ -1,6 +1,5 @@
 package com.mechinn.android.ouralliance.fragment;
 
-import android.bluetooth.BluetoothAdapter;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.*;
@@ -8,7 +7,7 @@ import android.widget.*;
 
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
-import com.mechinn.android.ouralliance.activity.TeamAnalysisActivity;
+import com.mechinn.android.ouralliance.activity.AnalysisActivity;
 import com.mechinn.android.ouralliance.csv.frc2015.ExportCsvTeamScouting2015;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
@@ -27,7 +26,6 @@ import com.mobeta.android.dslv.DragSortListView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -215,7 +213,7 @@ public class TeamListFragment extends Fragment {
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	        case R.id.analysis:
-                Intent analysisIntent = new Intent(this.getActivity(), TeamAnalysisActivity.class);
+                Intent analysisIntent = new Intent(this.getActivity(), AnalysisActivity.class);
                 startActivity(analysisIntent);
 	            return true;
             case R.id.matchList:

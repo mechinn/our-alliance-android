@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="left|top"
@@ -21,19 +22,22 @@
             android:id="@+id/list_fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            tools:layout="@layout/list_view" />
 
         <FrameLayout
             android:id="@+id/team_fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            tools:layout="@layout/fragment_team_list" />
 
         <FrameLayout
             android:id="@+id/detail_fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3" />
+            android:layout_weight="3"
+            tools:layout="@layout/fragment_match_detail" />
     </LinearLayout>
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
