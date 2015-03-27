@@ -43,4 +43,7 @@
     <string name="pref_analysis_drawer_learned">analysisDrawerLearned</string>
     <string name="pref_analysis_drawer_learned_title">Analysis Drawer Learned</string>
     <string name="pref_analysis_drawer_learned_default">false</string>
+    <string name="pref_google_play_services_prompted">googlePlayServicesPrompted</string>
+    <string name="pref_google_play_services_prompted_title">Google Play Services Prompted For Already</string>
+    <string name="pref_google_play_services_prompted_default">false</string>
 </resources>

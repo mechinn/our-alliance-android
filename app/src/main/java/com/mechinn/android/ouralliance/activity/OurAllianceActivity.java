@@ -104,8 +104,9 @@ public class OurAllianceActivity extends ActionBarActivity {
         // Look up the AdView as a resource and load a request.
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (status != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(status)) {
+            if (!prefs.isGooglePlayServicesPrompted() && GooglePlayServicesUtil.isUserRecoverableError(status)) {
                 GooglePlayServicesUtil.getErrorDialog(status, this, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
+                prefs.setGooglePlayServicesPrompted(true);
             } else {
                 adView.setVisibility(View.GONE);
             }
