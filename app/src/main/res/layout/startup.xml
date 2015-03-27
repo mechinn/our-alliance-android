@@ -9,7 +9,7 @@
 	    android:contentDescription="@string/app_name"
 	    android:padding="50dip"
 	    android:scaleType="fitCenter"
-	    android:src="@drawable/ic_launcher" >
+	    android:src="@mipmap/ic_launcher" >
 	
 	</ImageView>
 </RelativeLayout>

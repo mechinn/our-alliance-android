@@ -143,14 +143,14 @@ public class MatchListFragment extends ListFragment {
         BluetoothEvent bluetoothState = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
 	    menu.findItem(R.id.practice).setChecked(prefs.isPractice());
         menu.findItem(R.id.insert).setVisible(prefs.getComp()>0 && enoughTeams);
-        menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && !bluetoothState.isDisabled());
+//        menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && !bluetoothState.isDisabled());
 //        menu.findItem(R.id.importMatchScouting).setVisible(prefs.getComp()>0);
 //        menu.findItem(R.id.exportMatchScouting).setVisible(null!=adapter && adapter.getCount()>0);
-        if(bluetoothState.isOn()) {
-            menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
-        } else {
-            menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth);
-        }
+//        if(bluetoothState.isOn()) {
+//            menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
+//        } else {
+//            menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth);
+//        }
         menu.findItem(R.id.sendMatchScoutingCsv).setVisible(prefs.getComp()>0);
 	}
 	

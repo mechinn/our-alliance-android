@@ -33,6 +33,8 @@ public class Prefs {
     private String adsDefault;
 	private String yearPref;
 	private String yearDefault;
+    private String analysisDrawerLearned;
+    private String analysisDrawerLearnedDefault;
     private Editor editor;
     private String changedKey;
 	
@@ -40,6 +42,8 @@ public class Prefs {
 		this(context,null);
 	}
     public Prefs(Context context, String changedKey) {
+        this.analysisDrawerLearned = context.getString(R.string.pref_analysis_drawer_learned);
+        this.analysisDrawerLearnedDefault = context.getString(R.string.pref_analysis_drawer_learned_default);
         this.dbSetupPref = context.getString(R.string.pref_resetDB);
         this.dbSetupDefault = context.getString(R.string.pref_resetDB_default);
         this.compPref = context.getString(R.string.pref_comp);
@@ -52,6 +56,8 @@ public class Prefs {
         this.practiceDefault = context.getString(R.string.pref_practice_default);
         this.adsPref = context.getString(R.string.pref_ads);
         this.adsDefault = context.getString(R.string.pref_ads_default);
+        this.yearPref = context.getString(R.string.pref_year);
+        this.yearDefault = context.getString(R.string.pref_year_default);
         this.yearPref = context.getString(R.string.pref_year);
         this.yearDefault = context.getString(R.string.pref_year_default);
         try {
@@ -83,6 +89,13 @@ public class Prefs {
 	public boolean getDbSetup() {
 		return Boolean.parseBoolean(prefs.getString(dbSetupPref, dbSetupDefault));
 	}
+    public void setAnalysisDrawerLearned(Boolean learned) {
+        editor.putString(analysisDrawerLearned, learned?"true":"false");
+        editor.apply();
+    }
+    public boolean isAnalysisDrawerLearned() {
+        return Boolean.parseBoolean(prefs.getString(analysisDrawerLearned, analysisDrawerLearnedDefault));
+    }
     public void setEventsDownloaded(Boolean downloaded) {
         editor.putString(Event.TAG+"_"+getYear(), downloaded?"true":"false");
         editor.apply();

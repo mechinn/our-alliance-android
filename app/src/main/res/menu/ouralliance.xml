@@ -2,12 +2,18 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <item
+        android:id="@+id/analysis"
+        android:icon="@drawable/ic_action_picture"
+        android:orderInCategory="1"
+        android:menuCategory="system"
+        app:showAsAction="ifRoom"
+        android:title="Analysis"/>
 	<item
         android:id="@+id/settings"
         android:icon="@drawable/ic_action_settings"
         app:showAsAction="ifRoom"
         android:title="Settings"
         android:menuCategory="system"
-        android:orderInCategory="999">
-    </item>
+        android:orderInCategory="999"/>
 </menu>
