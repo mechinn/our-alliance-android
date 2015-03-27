@@ -25,11 +25,46 @@
             ads:adSize="SMART_BANNER"
             android:visibility="gone"/>
     </LinearLayout>
-    <fragment
+    <TabHost
         android:id="@+id/navigation_drawer"
-        android:layout_width="@dimen/navigation_drawer_width"
+        android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:name="com.mechinn.android.ouralliance.fragment.AnalysisNavigationFragment"
-        tools:layout="@layout/fragment_analysis_navigation_drawer" />
+        android:layout_gravity="start">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/background_light"></TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+                    android:id="@+id/graph_data"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:choiceMode="multipleChoice"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="0dp"
+                    android:background="@android:color/background_dark" />
+
+                <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+                    android:id="@+id/graph_teams"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:choiceMode="multipleChoice"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="0dp"
+                    android:background="@android:color/background_dark" />
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
 </android.support.v4.widget.DrawerLayout>

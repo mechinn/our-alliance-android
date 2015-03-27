@@ -134,16 +134,19 @@ public class OurAllianceActivity extends ActionBarActivity {
                     this.finish();
                 }
                 return true;
+            case R.id.analysis:
+                openActivity(AnalysisActivity.class);
+                return true;
             case R.id.settings:
-                openPreferences();
+                openActivity(SettingsActivity.class);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    protected void openPreferences() {
-        Intent intent = new Intent(this, SettingsActivity.class);
+    protected void openActivity(Class activityClass) {
+        Intent intent = new Intent(this, activityClass);
         startActivity(intent);
     }
 }

@@ -212,10 +212,6 @@ public class TeamListFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
-	        case R.id.analysis:
-                Intent analysisIntent = new Intent(this.getActivity(), AnalysisActivity.class);
-                startActivity(analysisIntent);
-	            return true;
             case R.id.matchList:
                 Intent matchIntent = new Intent(this.getActivity(), MatchScoutingActivity.class);
                 startActivity(matchIntent);

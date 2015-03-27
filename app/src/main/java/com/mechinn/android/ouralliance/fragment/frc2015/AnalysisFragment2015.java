@@ -3,28 +3,21 @@ package com.mechinn.android.ouralliance.fragment.frc2015;
 import android.os.Bundle;
 
 import com.activeandroid.query.Select;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.mechinn.android.ouralliance.Prefs;
+import com.github.mikephil.charting.data.Entry;
 import com.mechinn.android.ouralliance.data.EventTeam;
-import com.mechinn.android.ouralliance.data.Graph;
-import com.mechinn.android.ouralliance.data.OurAllianceObject;
-import com.mechinn.android.ouralliance.data.TeamScouting;
+import com.mechinn.android.ouralliance.data.GraphDataSet;
 import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015;
 import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
-import com.mechinn.android.ouralliance.data.frc2015.Wheel2015;
 import com.mechinn.android.ouralliance.fragment.AnalysisFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import de.greenrobot.event.EventBus;
-import de.greenrobot.event.util.AsyncExecutor;
 import timber.log.Timber;
 
 /**
@@ -33,110 +26,169 @@ import timber.log.Timber;
 public class AnalysisFragment2015 extends AnalysisFragment {
     public static final String TAG = "TeamAnalysisFragment2015";
 
-    public void addTeamGraph(String column, Graph.Getter<TeamScouting2015> getter) {
-        super.addTeamGraph(new Graph<TeamScouting2015>(column, getter));
-    }
-    public void addMatchGraph(String column, Graph.Getter<MatchScouting2015> getter) {
-        super.addMatchGraph(new Graph<MatchScouting2015>(column, getter));
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addTeamGraph(TeamScouting2015.WIDTH, new Graph.Getter<TeamScouting2015>() {
+        addTeamGraph(TeamScouting2015.WIDTH, android.R.color.holo_blue_dark, new GraphGetter<TeamScouting2015>() {
             @Override
             public Object getter(TeamScouting2015 scouting) {
                 return scouting.getWidth();
             }
         });
-//        addTeamGraph(TeamScouting2015.LENGTH, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getLength();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.HEIGHT, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getHeight();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.COOP, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getCoop();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.DRIVER_EXPERIENCE, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getDriverExperience();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.MAX_TOTE_STACK, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getMaxToteStack();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.MAX_CONTAINER_STACK, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getMaxTotesStackContainer();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.MAX_TOTES_AND_CONTAINER_LITTER, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getMaxTotesAndContainerLitter();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.HUMAN_PLAYER, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getHumanPlayer();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.NO_AUTO, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getNoAuto();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.DRIVE_AUTO, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getDriveAuto();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.TOTE_AUTO, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getToteAuto();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.CONTAINER_AUTO, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getContainerAuto();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.STACKED_AUTO, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getStackedAuto();
-//            }
-//        });
-//        addTeamGraph(TeamScouting2015.LANDFILL_AUTO, new Graph.Getter<TeamScouting2015>() {
-//            @Override
-//            public Object getter(TeamScouting2015 scouting) {
-//                return scouting.getLandfillAuto();
-//            }
-//        });
-        addMatchGraph(MatchScouting2015.AUTO_STACKED, new Graph.Getter<MatchScouting2015>() {
+        addTeamGraph(TeamScouting2015.LENGTH, android.R.color.holo_green_dark, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getLength();
+            }
+        });
+        addTeamGraph(TeamScouting2015.HEIGHT, android.R.color.holo_orange_dark, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getHeight();
+            }
+        });
+        addTeamGraph(TeamScouting2015.COOP, android.R.color.holo_purple, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getCoop();
+            }
+        });
+        addTeamGraph(TeamScouting2015.DRIVER_EXPERIENCE, android.R.color.holo_red_dark, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getDriverExperience();
+            }
+        });
+        addTeamGraph(TeamScouting2015.MAX_TOTE_STACK, android.R.color.holo_blue_bright, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getMaxToteStack();
+            }
+        });
+        addTeamGraph(TeamScouting2015.MAX_CONTAINER_STACK, android.R.color.holo_green_light, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getMaxTotesStackContainer();
+            }
+        });
+        addTeamGraph(TeamScouting2015.MAX_TOTES_AND_CONTAINER_LITTER, android.R.color.holo_orange_light, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getMaxTotesAndContainerLitter();
+            }
+        });
+        addTeamGraph(TeamScouting2015.HUMAN_PLAYER, android.R.color.holo_red_light, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getHumanPlayer();
+            }
+        });
+        addTeamGraph(TeamScouting2015.NO_AUTO, android.R.color.holo_blue_light, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getNoAuto();
+            }
+        });
+        addTeamGraph(TeamScouting2015.DRIVE_AUTO, android.R.color.black, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getDriveAuto();
+            }
+        });
+        addTeamGraph(TeamScouting2015.TOTE_AUTO, android.R.color.holo_blue_dark, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getToteAuto();
+            }
+        });
+        addTeamGraph(TeamScouting2015.CONTAINER_AUTO, android.R.color.holo_green_dark, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getContainerAuto();
+            }
+        });
+        addTeamGraph(TeamScouting2015.STACKED_AUTO, android.R.color.holo_orange_dark, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getStackedAuto();
+            }
+        });
+        addTeamGraph(TeamScouting2015.LANDFILL_AUTO, android.R.color.holo_purple, new GraphGetter<TeamScouting2015>() {
+            @Override
+            public Object getter(TeamScouting2015 scouting) {
+                return scouting.getLandfillAuto();
+            }
+        });
+        addMatchGraph(MatchScouting2015.AUTO_STACKED, android.R.color.holo_red_dark, new GraphGetter<MatchScouting2015>() {
             @Override
             public Object getter(MatchScouting2015 scouting) {
                 return scouting.getAutoStacked();
+            }
+        });
+        addMatchGraph(MatchScouting2015.AUTO_TOTES, android.R.color.holo_blue_bright, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getAutoTotes();
+            }
+        });
+        addMatchGraph(MatchScouting2015.AUTO_CONTAINERS, android.R.color.holo_green_light, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getAutoContainers();
+            }
+        });
+        addMatchGraph(MatchScouting2015.AUTO_LANDFILL, android.R.color.holo_orange_light, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getAutoLandfill();
+            }
+        });
+        addMatchGraph(MatchScouting2015.AUTO_MOVE, android.R.color.holo_red_light, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getAutoMove();
+            }
+        });
+        addMatchGraph(MatchScouting2015.COOP, android.R.color.holo_blue_light, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getCoop();
+            }
+        });
+        addMatchGraph(MatchScouting2015.TOTES, android.R.color.black, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getTotes();
+            }
+        });
+        addMatchGraph(MatchScouting2015.CONTAINERS, android.R.color.holo_blue_dark, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getContainers();
+            }
+        });
+        addMatchGraph(MatchScouting2015.LITTER, android.R.color.holo_green_dark, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getLitter();
+            }
+        });
+        addMatchGraph(MatchScouting2015.FOWLS, android.R.color.holo_orange_dark, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getFowls();
+            }
+        });
+        addMatchGraph(MatchScouting2015.HUMAN_ATTEMPT, android.R.color.holo_purple, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getHumanAttempt();
+            }
+        });
+        addMatchGraph(MatchScouting2015.HUMAN_SUCCESS, android.R.color.holo_red_dark, new GraphGetter<MatchScouting2015>() {
+            @Override
+            public Object getter(MatchScouting2015 scouting) {
+                return scouting.getHumanSuccess();
             }
         });
     }
@@ -155,17 +207,17 @@ public class AnalysisFragment2015 extends AnalysisFragment {
     public void setTeamData(LoadTeams loadTeams) {
         List<TeamScouting2015> scoutingList = (List<TeamScouting2015>) loadTeams.getScouting();
         Collections.sort(scoutingList);
-        for(Graph graph : getTeamGraphs()) {
-            if(graph.isEnabled()) {
-                ArrayList<BarEntry> entries = new ArrayList<>();
-                for (int count = 0; count < scoutingList.size(); count++) {
-                    TeamScouting2015 team = scoutingList.get(count);
-                    entries.add(graph.barEntry(team, count));
-                }
-                addDataSet(new BarDataSet(entries, graph.getName()));
+        for (Graph teamGraph : getTeamGraphs()) {
+            ArrayList<Entry> entries = new ArrayList<>();
+            for (int count = 0; count < scoutingList.size(); count++) {
+                TeamScouting2015 team = scoutingList.get(count);
+                entries.add(teamGraph.getGetter().barEntry(team, count));
             }
+            GraphDataSet graphDataSet = new GraphDataSet(entries,teamGraph.getLabel(), GraphDataSet.Type.TEAM);
+            graphDataSet.setColor(teamGraph.getColor());
+            addTeamDataSet(graphDataSet);
         }
-        setChartData();
+        loadedChartData();
     }
     public void onEventMainThread(LoadMatches loadMatches) {
         setMatchData(loadMatches);
@@ -173,32 +225,31 @@ public class AnalysisFragment2015 extends AnalysisFragment {
     public void setMatchData(LoadMatches loadMatches) {
         List<MatchScouting2015> scoutingList = (List<MatchScouting2015>) loadMatches.getScouting();
         Collections.sort(scoutingList);
-
         TreeMap<Integer,Float> teams = new TreeMap<>();
-        for(Graph graph : getMatchGraphs()) {
-            if(graph.isEnabled()) {
-                ArrayList<BarEntry> entries = new ArrayList<>();
-                for (int count = 0; count < scoutingList.size(); count++) {
-                    MatchScouting2015 scouting = scoutingList.get(count);
-                    int teamNumber = scouting.getTeamScouting().getTeam().getTeamNumber();
-                    Float average = teams.get(teamNumber);
-                    float scoutingValue = graph.getValue(scouting);
-                    if(null==average) {
-                        teams.put(teamNumber, scoutingValue);
-                    } else {
-                        teams.put(teamNumber, (average+scoutingValue)/2);
-                    }
+        for (Graph matchGraph : getMatchGraphs()) {
+            ArrayList<Entry> entries = new ArrayList<>();
+            for (int count = 0; count < scoutingList.size(); count++) {
+                MatchScouting2015 scouting = scoutingList.get(count);
+                int teamNumber = scouting.getTeamScouting().getTeam().getTeamNumber();
+                Float average = teams.get(teamNumber);
+                float scoutingValue = matchGraph.getGetter().getValue(scouting);
+                if(null==average) {
+                    teams.put(teamNumber, scoutingValue);
+                } else {
+                    teams.put(teamNumber, (average+scoutingValue)/2);
                 }
-                int count=0;
-                for (Map.Entry<Integer, Float> entry : teams.entrySet()) {
-                    Integer key = entry.getKey();
-                    Timber.d("key:" + key);
-                    Float value = entry.getValue();
-                    entries.add(new BarEntry(value, count++));
-                }
-                addDataSet(new BarDataSet(entries, graph.getName()));
             }
+            int count=0;
+            for (Map.Entry<Integer, Float> team : teams.entrySet()) {
+                Integer key = team.getKey();
+                Timber.d("key:" + key);
+                Float value = team.getValue();
+                entries.add(new BarEntry(value, count++));
+            }
+            GraphDataSet graphDataSet = new GraphDataSet(entries,matchGraph.getLabel(), GraphDataSet.Type.MATCH);
+            graphDataSet.setColor(matchGraph.getColor());
+            addMatchDataSet(graphDataSet);
         }
-        setChartData();
+        loadedChartData();
     }
 }

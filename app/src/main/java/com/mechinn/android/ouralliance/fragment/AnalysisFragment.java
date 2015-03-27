@@ -2,36 +2,29 @@ package com.mechinn.android.ouralliance.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.activeandroid.query.Select;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.activity.AnalysisActivity;
 import com.mechinn.android.ouralliance.data.EventTeam;
-import com.mechinn.android.ouralliance.data.Graph;
+import com.mechinn.android.ouralliance.data.GraphDataSet;
 import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.OurAllianceObject;
 import com.mechinn.android.ouralliance.data.TeamScouting;
-import com.mechinn.android.ouralliance.data.Wheel;
-import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015;
-import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
-import com.mechinn.android.ouralliance.data.frc2015.Wheel2015;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
@@ -42,14 +35,59 @@ import timber.log.Timber;
  */
 public abstract class AnalysisFragment extends Fragment {
     public static final String TAG = "TeamAnalysisFragment";
-    public static final String ARG_TEAM = "team";
-    public static final String ARG_MATCH = "match";
-    private BarChart chart;
+    private LineChart chart;
     private Prefs prefs;
     private ArrayList<Graph> teamGraphs;
     private ArrayList<Graph> matchGraphs;
     private ArrayList<String> teams;
-    private ArrayList<BarDataSet> dataSets;
+    private ArrayList<GraphDataSet> dataSets;
+
+    public class Graph {
+        private String label;
+        private GraphGetter getter;
+        private int color;
+        public Graph(String label, int color, GraphGetter getter) {
+            this.label = label;
+            this.color = getResources().getColor(color);
+            this.getter = getter;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public GraphGetter getGetter() {
+            return getter;
+        }
+
+        public int getColor() {
+            return color;
+        }
+    }
+    public abstract class GraphGetter<O extends OurAllianceObject> {
+        public abstract Object getter(O scouting);
+        public BarEntry barEntry(O scouting, int count) {
+            return new BarEntry(getValue(scouting),count);
+        }
+        public float getValue(O scouting) {
+            return getFloat(this.getter(scouting));
+        }
+        private float getFloat(Object obj) {
+            float value = 0;
+            if(null!=obj) {
+                if(obj instanceof Boolean) {
+                    value = ((Boolean)obj)?1:0;
+                } else if(obj instanceof Integer) {
+                    value = ((Integer)obj).floatValue();
+                } else if(obj instanceof Float) {
+                    value = ((Float)obj).floatValue();
+                } else if(obj instanceof Double) {
+                    value = ((Double)obj).floatValue();
+                }
+            }
+            return value;
+        }
+    }
 
     public Prefs getPrefs() {
         return prefs;
@@ -59,16 +97,16 @@ public abstract class AnalysisFragment extends Fragment {
         return teamGraphs;
     }
 
-    public void addTeamGraph(Graph column) {
-        this.teamGraphs.add(column);
+    public void addTeamGraph(String label, int color, GraphGetter getter) {
+        this.teamGraphs.add(new Graph(label,color,getter));
     }
 
     public ArrayList<Graph> getMatchGraphs() {
         return matchGraphs;
     }
 
-    public void addMatchGraph(Graph column) {
-        this.matchGraphs.add(column);
+    public void addMatchGraph(String label, int color, GraphGetter getter) {
+        this.matchGraphs.add(new Graph(label, color, getter));
     }
 
     public void addTeam(String team) {
@@ -79,8 +117,11 @@ public abstract class AnalysisFragment extends Fragment {
         return teams;
     }
 
-    public void addDataSet(BarDataSet data) {
-        dataSets.add(data);
+    public void addTeamDataSet(GraphDataSet graphDataSet) {
+        dataSets.add(graphDataSet);
+    }
+    public void addMatchDataSet(GraphDataSet graphDataSet) {
+        dataSets.add(graphDataSet);
     }
 
     @Override
@@ -88,24 +129,15 @@ public abstract class AnalysisFragment extends Fragment {
         super.onCreate(savedInstanceState);
         prefs = new Prefs(this.getActivity());
         teams = new ArrayList<>();
-        dataSets = new ArrayList<>();
-        if (savedInstanceState != null && savedInstanceState.containsKey(ARG_TEAM)) {
-            teamGraphs = (ArrayList<Graph>) savedInstanceState.getSerializable(ARG_TEAM);
-        } else {
-            teamGraphs = new ArrayList<>();
-        }
-        if (savedInstanceState != null && savedInstanceState.containsKey(ARG_MATCH)) {
-            matchGraphs = (ArrayList<Graph>) savedInstanceState.getSerializable(ARG_MATCH);
-        } else {
-            matchGraphs = new ArrayList<>();
-        }
+        teamGraphs = new ArrayList<>();
+        matchGraphs = new ArrayList<>();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_analysis, container, false);
-        chart = (BarChart) rootView.findViewById(R.id.chart);
+        chart = (LineChart) rootView.findViewById(R.id.chart);
         chart.setDragEnabled(true);
         chart.setScaleXEnabled(true);
         chart.setScaleYEnabled(false);
@@ -113,17 +145,6 @@ public abstract class AnalysisFragment extends Fragment {
         chart.setHighlightEnabled(true);
         chart.setHighlightIndicatorEnabled(true);
         chart.animateXY(3000, 3000);
-        ArrayList<String> xAxis = new ArrayList<>();
-        for(int i=1;i<=4;i++) {
-            xAxis.add("Q"+i);
-        }
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(100,0));
-        entries.add(new BarEntry(50,1));
-        BarDataSet dataSet = new BarDataSet(entries,"entries");
-        BarData barChart = new BarData(xAxis,dataSet);
-        chart.setData(barChart);
-        chart.invalidate();
         return rootView;
     }
 
@@ -139,6 +160,7 @@ public abstract class AnalysisFragment extends Fragment {
         super.onStart();
         Timber.d("start");
         EventBus.getDefault().register(this);
+        dataSets = new ArrayList<>();
         loadTeamList();
     }
 
@@ -148,12 +170,6 @@ public abstract class AnalysisFragment extends Fragment {
         super.onStop();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(ARG_TEAM, teamGraphs);
-        outState.putSerializable(ARG_MATCH, matchGraphs);
-        super.onSaveInstanceState(outState);
-    }
     public void loadData() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
@@ -163,9 +179,11 @@ public abstract class AnalysisFragment extends Fragment {
             }
         });
     }
-    public void onEventMainThread(AnalysisNavigationFragment.AnalysisNavigationSelected navigationSelected) {
-        setTeamData(EventBus.getDefault().getStickyEvent(LoadTeams.class));
-        setMatchData(EventBus.getDefault().getStickyEvent(LoadMatches.class));
+    public void onEventMainThread(AnalysisActivity.AnalysisGraphSelected navigationSelected) {
+        setChartData();
+    }
+    public void onEventMainThread(AnalysisActivity.AnalysisTeamSelected navigationSelected) {
+//        setChartData();
     }
     public void loadTeamList() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
@@ -197,14 +215,27 @@ public abstract class AnalysisFragment extends Fragment {
     }
     public abstract void loadTeam();
     public abstract void loadMatch();
-    public abstract void setTeamData(LoadTeams teams);
-    public abstract void setMatchData(LoadMatches matches);
+    public class DataSetLoaded {
+        private ArrayList<GraphDataSet> dataSet;
+        public DataSetLoaded(ArrayList<GraphDataSet> dataSet) {this.dataSet = dataSet;}
+        public ArrayList<GraphDataSet> getDataSet() {return dataSet;}
+    }
+    protected void loadedChartData() {
+        EventBus.getDefault().post(new DataSetLoaded(dataSets));
+        setChartData();
+    }
     public void setChartData() {
         Timber.d("teams "+teams.size());
-        for(BarDataSet set : dataSets) {
-            Timber.d(set.getLabel()+" "+set.getEntryCount());
+        ArrayList<LineDataSet> enabledSets = new ArrayList<>();
+        for(GraphDataSet set : dataSets) {
+            Timber.d(set.getLabel()+" "+set.getEntryCount()+" "+(set.isEnabled()?"Enabled":"Disabled"));
+            if(set.isEnabled()) {
+                enabledSets.add(set);
+            }
         }
-        chart.setData(new BarData(teams,dataSets));
+        chart.setData(new LineData(teams,enabledSets));
+        Legend l = chart.getLegend();
+        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);
         chart.invalidate();
     }
     protected class LoadTeams {
