@@ -35,6 +35,8 @@ public class Prefs {
 	private String yearDefault;
     private String analysisDrawerLearned;
     private String analysisDrawerLearnedDefault;
+    private String googlePlayServicesPrompted;
+    private String googlePlayServicesPromptedDefault;
     private Editor editor;
     private String changedKey;
 	
@@ -44,6 +46,8 @@ public class Prefs {
     public Prefs(Context context, String changedKey) {
         this.analysisDrawerLearned = context.getString(R.string.pref_analysis_drawer_learned);
         this.analysisDrawerLearnedDefault = context.getString(R.string.pref_analysis_drawer_learned_default);
+        this.googlePlayServicesPrompted = context.getString(R.string.pref_google_play_services_prompted);
+        this.googlePlayServicesPromptedDefault = context.getString(R.string.pref_google_play_services_prompted_default);
         this.dbSetupPref = context.getString(R.string.pref_resetDB);
         this.dbSetupDefault = context.getString(R.string.pref_resetDB_default);
         this.compPref = context.getString(R.string.pref_comp);
@@ -95,6 +99,13 @@ public class Prefs {
     }
     public boolean isAnalysisDrawerLearned() {
         return Boolean.parseBoolean(prefs.getString(analysisDrawerLearned, analysisDrawerLearnedDefault));
+    }
+    public void setGooglePlayServicesPrompted(Boolean learned) {
+        editor.putString(googlePlayServicesPrompted, learned?"true":"false");
+        editor.apply();
+    }
+    public boolean isGooglePlayServicesPrompted() {
+        return Boolean.parseBoolean(prefs.getString(googlePlayServicesPrompted, googlePlayServicesPromptedDefault));
     }
     public void setEventsDownloaded(Boolean downloaded) {
         editor.putString(Event.TAG+"_"+getYear(), downloaded?"true":"false");
