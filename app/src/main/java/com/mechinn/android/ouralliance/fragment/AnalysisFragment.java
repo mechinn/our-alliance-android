@@ -20,6 +20,7 @@ import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.GraphDataSet;
 import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.OurAllianceObject;
+import com.mechinn.android.ouralliance.data.TeamGraph;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public abstract class AnalysisFragment extends Fragment {
     private Prefs prefs;
     private ArrayList<Graph> teamGraphs;
     private ArrayList<Graph> matchGraphs;
-    private ArrayList<String> teams;
+    private ArrayList<TeamGraph> teams;
     private ArrayList<GraphDataSet> dataSets;
 
     public class Graph {
@@ -110,10 +111,10 @@ public abstract class AnalysisFragment extends Fragment {
     }
 
     public void addTeam(String team) {
-        teams.add(team);
+        teams.add(new TeamGraph(team));
     }
 
-    public ArrayList<String> getTeams() {
+    public ArrayList<TeamGraph> getTeams() {
         return teams;
     }
 
@@ -179,11 +180,8 @@ public abstract class AnalysisFragment extends Fragment {
             }
         });
     }
-    public void onEventMainThread(AnalysisActivity.AnalysisGraphSelected navigationSelected) {
+    public void onEventMainThread(AnalysisActivity.AnalysisNavigationSelected navigationSelected) {
         setChartData();
-    }
-    public void onEventMainThread(AnalysisActivity.AnalysisTeamSelected navigationSelected) {
-//        setChartData();
     }
     public void loadTeamList() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
@@ -201,10 +199,11 @@ public abstract class AnalysisFragment extends Fragment {
             EventTeam team = teamList.get(count);
             addTeam(String.valueOf(team.getTeam().getTeamNumber()));
         }
+        EventBus.getDefault().post(new TeamsLoaded(getTeams()));
         loadData();
     }
 
-    private class LoadEventTeams {
+    public class LoadEventTeams {
         List<EventTeam> teams;
         public LoadEventTeams(List<EventTeam> teams) {
             this.teams = teams;
@@ -220,6 +219,11 @@ public abstract class AnalysisFragment extends Fragment {
         public DataSetLoaded(ArrayList<GraphDataSet> dataSet) {this.dataSet = dataSet;}
         public ArrayList<GraphDataSet> getDataSet() {return dataSet;}
     }
+    public class TeamsLoaded {
+        private ArrayList<TeamGraph> teams;
+        public TeamsLoaded(ArrayList<TeamGraph> teams) {this.teams = teams;}
+        public ArrayList<TeamGraph> getTeams() {return teams;}
+    }
     protected void loadedChartData() {
         EventBus.getDefault().post(new DataSetLoaded(dataSets));
         setChartData();
@@ -233,7 +237,24 @@ public abstract class AnalysisFragment extends Fragment {
                 enabledSets.add(set);
             }
         }
-        chart.setData(new LineData(teams,enabledSets));
+        for(int teamPosition=teams.size()-1;teamPosition>=0;teamPosition--) {
+            TeamGraph team = teams.get(teamPosition);
+            Timber.d(team.getLabel()+" "+(team.isEnabled()?"Enabled":"Disabled"));
+            if(!team.isEnabled()) {
+                for(LineDataSet set : enabledSets) {
+                    set.removeEntry(teamPosition);
+                }
+            }
+        }
+        ArrayList<String> enabledTeams = new ArrayList<>();
+        for(int teamPosition=0;teamPosition<teams.size();teamPosition++) {
+            TeamGraph team = teams.get(teamPosition);
+            Timber.d(team.getLabel()+" "+(team.isEnabled()?"Enabled":"Disabled"));
+            if(team.isEnabled()) {
+                enabledTeams.add(team.getLabel());
+            }
+        }
+        chart.setData(new LineData(enabledTeams,enabledSets));
         Legend l = chart.getLegend();
         l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);
         chart.invalidate();

@@ -17,11 +17,15 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.GraphDataSetAdapter;
 import com.mechinn.android.ouralliance.adapter.TeamGraphAdapter;
+import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.GraphDataSet;
+import com.mechinn.android.ouralliance.data.TeamGraph;
 import com.mechinn.android.ouralliance.fragment.AnalysisFragment;
 import com.mechinn.android.ouralliance.fragment.frc2015.AnalysisFragment2015;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -35,7 +39,7 @@ public class AnalysisActivity extends OurAllianceActivity implements FragmentMan
     private DrawerLayout mDrawerLayout;
     private TabHost listTabs;
     private StickyListHeadersListView graphList;
-    private StickyListHeadersListView teamList;
+    private ListView teamList;
     private GraphDataSetAdapter graphAdapter;
     private TeamGraphAdapter teamAdapter;
     private Prefs prefs;
@@ -54,15 +58,8 @@ public class AnalysisActivity extends OurAllianceActivity implements FragmentMan
         }
     }
 
-    public class AnalysisGraphSelected {
-        private int position;
-        public AnalysisGraphSelected(int position) {this.position = position;}
-        public int getPosition() { return position;}
-    }
-    public class AnalysisTeamSelected {
-        private int position;
-        public AnalysisTeamSelected(int position) {this.position = position;}
-        public int getPosition() { return position;}
+    public class AnalysisNavigationSelected {
+
     }
 
     @Override
@@ -77,7 +74,7 @@ public class AnalysisActivity extends OurAllianceActivity implements FragmentMan
         listTabs.addTab(listTabs.newTabSpec(GRAPHS).setIndicator(GRAPHS).setContent(R.id.graph_data));
         listTabs.addTab(listTabs.newTabSpec(TEAMS).setIndicator(TEAMS).setContent(R.id.graph_teams));
         graphList = (StickyListHeadersListView) listTabs.getTabContentView().getChildAt(0);
-        teamList = (StickyListHeadersListView) listTabs.getTabContentView().getChildAt(1);
+        teamList = (ListView) listTabs.getTabContentView().getChildAt(1);
 
         graphList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -86,8 +83,7 @@ public class AnalysisActivity extends OurAllianceActivity implements FragmentMan
                 Timber.d(graph.getLabel()+" selected");
                 graphList.setItemChecked(position, !graph.isEnabled());
                 graph.switchEnabled();
-//                mDrawerLayout.closeDrawer(mFragmentContainerView);
-                EventBus.getDefault().post(new AnalysisGraphSelected(position));
+                EventBus.getDefault().post(new AnalysisNavigationSelected());
             }
         });
         graphAdapter = new GraphDataSetAdapter(this);
@@ -97,12 +93,11 @@ public class AnalysisActivity extends OurAllianceActivity implements FragmentMan
         teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                GraphDataSet graph = (GraphDataSet) teamAdapter.getItem(position);
-                Timber.d(graph.getLabel()+" selected");
-                teamList.setItemChecked(position, !graph.isEnabled());
-                graph.switchEnabled();
-//                mDrawerLayout.closeDrawer(mFragmentContainerView);
-                EventBus.getDefault().post(new AnalysisTeamSelected(position));
+                TeamGraph team = (TeamGraph) teamAdapter.getItem(position);
+                Timber.d(team.getLabel()+" selected");
+                teamList.setItemChecked(position, !team.isEnabled());
+                team.switchEnabled();
+                EventBus.getDefault().post(new AnalysisNavigationSelected());
             }
         });
         teamAdapter = new TeamGraphAdapter(this);
@@ -174,6 +169,14 @@ public class AnalysisActivity extends OurAllianceActivity implements FragmentMan
         Timber.d("stop");
         EventBus.getDefault().unregister(this);
         super.onStop();
+    }
+
+    public void onEventMainThread(AnalysisFragment.TeamsLoaded loadTeams) {
+        ArrayList<TeamGraph> teams = loadTeams.getTeams();
+        teamAdapter.changeList(teams);
+        for(int teamPosition=0;teamPosition<teams.size();teamPosition++) {
+            teamList.setItemChecked(teamPosition,teams.get(teamPosition).isEnabled());
+        }
     }
 
     public void onEventMainThread(AnalysisFragment.DataSetLoaded dataSet) {

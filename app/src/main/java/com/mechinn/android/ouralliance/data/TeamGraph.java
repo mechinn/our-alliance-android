@@ -11,6 +11,10 @@ public class TeamGraph {
         enabled = true;
     }
 
+    public void switchEnabled() {
+        enabled = !enabled;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
