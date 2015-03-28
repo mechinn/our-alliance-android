@@ -24,6 +24,13 @@ public abstract class OurAllianceObject extends Model {
     public void setModified(Date modified) {
         this.modified = modified;
     }
+    public boolean copy(OurAllianceObject data) {
+        if(this.equals(data)) {
+            this.setModified(data.getModified());
+            return true;
+        }
+        return false;
+    }
     public void saveMod() {
         setModified(new Date());
         Timber.d("saving object");

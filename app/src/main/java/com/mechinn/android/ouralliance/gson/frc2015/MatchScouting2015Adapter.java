@@ -27,20 +27,63 @@ public class MatchScouting2015Adapter implements JsonSerializer<MatchScouting201
         scouting.setMatch(OurAllianceGson.BUILDER.fromJson(object.get(MatchScouting2015.MATCH), Match.class));
         scouting.setAlliance(object.get(MatchScouting2015.ALLIANCE).getAsBoolean());
         scouting.setPosition(object.get(MatchScouting2015.POSITION).getAsInt());
-        scouting.setNotes(object.get(MatchScouting2015.NOTES).getAsString());
+        JsonElement element = object.get(MatchScouting2015.NOTES);
+        if(null!=element) {
+            scouting.setNotes(element.getAsString());
+        }
         scouting.setTeamScouting2015(OurAllianceGson.BUILDER.fromJson(object.get(MatchScouting2015.TEAM), TeamScouting2015.class));
-        scouting.setAutoStacked(object.get(MatchScouting2015.AUTO_STACKED).getAsBoolean());
-        scouting.setAutoTotes(object.get(MatchScouting2015.AUTO_TOTES).getAsInt());
-        scouting.setAutoContainers(object.get(MatchScouting2015.AUTO_CONTAINERS).getAsInt());
-        scouting.setAutoLandfill(object.get(MatchScouting2015.AUTO_LANDFILL).getAsInt());
-        scouting.setAutoMove(object.get(MatchScouting2015.AUTO_MOVE).getAsFloat());
-        scouting.setCoop(object.get(MatchScouting2015.COOP).getAsBoolean());
-        scouting.setTotes(object.get(MatchScouting2015.TOTES).getAsInt());
-        scouting.setContainers(object.get(MatchScouting2015.CONTAINERS).getAsInt());
-        scouting.setLitter(object.get(MatchScouting2015.LITTER).getAsInt());
-        scouting.setFowls(object.get(MatchScouting2015.FOWLS).getAsInt());
-        scouting.setHumanAttempt(object.get(MatchScouting2015.HUMAN_ATTEMPT).getAsInt());
-        scouting.setHumanSuccess(object.get(MatchScouting2015.HUMAN_SUCCESS).getAsInt());
+        element = object.get(MatchScouting2015.NOTES);
+        if(null!=element) {
+            scouting.setNotes(element.getAsString());
+        }
+        element = object.get(MatchScouting2015.AUTO_STACKED);
+        if(null!=element) {
+            scouting.setAutoStacked(element.getAsBoolean());
+        }
+        element = object.get(MatchScouting2015.AUTO_TOTES);
+        if(null!=element) {
+            scouting.setAutoTotes(element.getAsInt());
+        }
+        element = object.get(MatchScouting2015.AUTO_CONTAINERS);
+        if(null!=element) {
+            scouting.setAutoContainers(element.getAsInt());
+        }
+        element = object.get(MatchScouting2015.AUTO_LANDFILL);
+        if(null!=element) {
+            scouting.setAutoLandfill(element.getAsInt());
+        }
+        element = object.get(MatchScouting2015.AUTO_MOVE);
+        if(null!=element) {
+            scouting.setAutoMove(element.getAsFloat());
+        }
+        element = object.get(MatchScouting2015.COOP);
+        if(null!=element) {
+            scouting.setCoop(element.getAsBoolean());
+        }
+        element = object.get(MatchScouting2015.TOTES);
+        if(null!=element) {
+            scouting.setTotes(element.getAsInt());
+        }
+        element = object.get(MatchScouting2015.CONTAINERS);
+        if(null!=element) {
+            scouting.setContainers(element.getAsInt());
+        }
+        element = object.get(MatchScouting2015.LITTER);
+        if(null!=element) {
+            scouting.setLitter(element.getAsInt());
+        }
+        element = object.get(MatchScouting2015.FOWLS);
+        if(null!=element) {
+            scouting.setFowls(element.getAsInt());
+        }
+        element = object.get(MatchScouting2015.HUMAN_ATTEMPT);
+        if(null!=element) {
+            scouting.setHumanAttempt(element.getAsInt());
+        }
+        element = object.get(MatchScouting2015.HUMAN_SUCCESS);
+        if(null!=element) {
+            scouting.setHumanSuccess(element.getAsInt());
+        }
         return scouting;
     }
     @Override

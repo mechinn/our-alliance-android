@@ -90,18 +90,6 @@ public class TeamScoutingActivity extends OurAllianceActivity implements Fragmen
         }
 	}
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
-
 	public void onEventMainThread(SelectTeamEvent team) {
         selectTeam(team.getId());
 	}

@@ -32,6 +32,13 @@ public class Wheel2015 extends Wheel {
     public void setTeamScouting(TeamScouting teamScouting) {
         setTeamScouting2015((TeamScouting2015) teamScouting);
     }
+    public boolean equals(Object data) {
+        if(!(data instanceof Wheel2015)) {
+            return false;
+        }
+        return  super.equals(data) &&
+                this.getTeamScouting2015().equals(((Wheel2015) data).getTeamScouting2015());
+    }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override

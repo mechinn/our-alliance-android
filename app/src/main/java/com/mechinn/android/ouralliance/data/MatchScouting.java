@@ -65,14 +65,20 @@ public abstract class MatchScouting extends OurAllianceObject implements Compara
         }
         return compare;
     }
+    public boolean copy(MatchScouting data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setNotes(data.getNotes());
+            return true;
+        }
+        return false;
+    }
     public boolean equals(Object data) {
         if (!(data instanceof MatchScouting)) {
             return false;
         }
         return getMatch().equals(((MatchScouting) data).getMatch()) &&
-                getTeamScouting().equals(((MatchScouting) data).getTeamScouting()) &&
-                isAlliance() == ((MatchScouting) data).isAlliance() &&
-                getNotes().equals(((MatchScouting) data).getNotes());
+                getTeamScouting().equals(((MatchScouting) data).getTeamScouting());
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

@@ -22,10 +22,22 @@ public class MatchAdapter implements JsonSerializer<Match>, JsonDeserializer<Mat
         match.setEvent(OurAllianceGson.BUILDER.fromJson(object.get(Match.EVENT), Event.class));
         match.setCompLevel(object.get(Match.COMPETITION_LEVEL).getAsString());
         match.setMatchNumber(object.get(Match.MATCH_NUMBER).getAsInt());
-        match.setSetNumber(object.get(Match.SET_NUMBER).getAsInt());
-        match.setTime(new Date(object.get(Match.TIME).getAsLong()));
-        match.setRedScore(object.get(Match.RED_SCORE).getAsInt());
-        match.setBlueScore(object.get(Match.BLUE_SCORE).getAsInt());
+        JsonElement element = object.get(Match.SET_NUMBER);
+        if(null!=element) {
+            match.setSetNumber(element.getAsInt());
+        }
+        element = object.get(Match.TIME);
+        if(null!=element) {
+            match.setTime(new Date(element.getAsLong()));
+        }
+        element = object.get(Match.RED_SCORE);
+        if(null!=element) {
+            match.setRedScore(element.getAsInt());
+        }
+        element = object.get(Match.BLUE_SCORE);
+        if(null!=element) {
+            match.setBlueScore(element.getAsInt());
+        }
         return match;
     }
     @Override

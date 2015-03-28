@@ -37,12 +37,19 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
     public int compareTo(TeamScouting another) {
         return this.getTeam().compareTo(another.getTeam());
     }
+    public boolean copy(TeamScouting data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setNotes(data.getNotes());
+            return true;
+        }
+        return false;
+    }
     public boolean equals(Object data) {
         if (!(data instanceof TeamScouting)) {
             return false;
         }
-        return getTeam().equals(((TeamScouting) data).getTeam()) &&
-                getNotes().equals(((TeamScouting) data).getNotes());
+        return getTeam().equals(((TeamScouting) data).getTeam());
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

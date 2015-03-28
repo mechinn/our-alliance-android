@@ -1,6 +1,8 @@
 package com.mechinn.android.ouralliance.activity;
 
+import android.app.Instrumentation;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -14,6 +16,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
+import com.mechinn.android.ouralliance.event.ActivityResult;
+
+import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 /**
  * Created by mechinn on 4/3/14.
@@ -31,16 +37,16 @@ public class OurAllianceActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_RECOVER_PLAY_SERVICES:
-                if (resultCode == RESULT_OK) {
-                    adView.loadAd(adRequest);
-                } else {
-                    adView.setVisibility(View.GONE);
-                }
-                return;
+        Timber.d("request code: " + requestCode+" | result code: "+resultCode+" | data: "+data);
+        if(REQUEST_CODE_RECOVER_PLAY_SERVICES == requestCode) {
+            if (RESULT_OK == resultCode) {
+                adView.loadAd(adRequest);
+            } else {
+                adView.setVisibility(View.GONE);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -88,12 +94,19 @@ public class OurAllianceActivity extends ActionBarActivity {
         super.onStart();
         adView = (AdView) this.findViewById(R.id.adView);
         adView.setAdListener(adListener);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         showAd();
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     public boolean showAd() {

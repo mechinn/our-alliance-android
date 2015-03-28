@@ -21,7 +21,9 @@ import java.util.Date;
  * Created by mechinn on 3/10/15.
  */
 public class OurAllianceGson {
+    public static final String TYPE = "application/json";
     public static final Gson BUILDER = new GsonBuilder()
+            .setPrettyPrinting()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeAdapter(Date.class, new JsonDateAdapter())
             .registerTypeAdapter(Team.class, new TeamAdapter())

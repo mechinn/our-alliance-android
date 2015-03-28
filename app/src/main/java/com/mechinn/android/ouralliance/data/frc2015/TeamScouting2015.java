@@ -223,29 +223,36 @@ public class TeamScouting2015 extends TeamScouting {
                 " Stacked Tote Autonomous Mode: "+this.getStackedAuto()+
                 " Landfill totes moved in Autonomous Mode: "+this.getLandfillAuto();
     }
+    public boolean copy(TeamScouting2015 data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setOrientation(data.getOrientation());
+            this.setDriveTrain(data.getDriveTrain());
+            this.setWidth(data.getWidth());
+            this.setLength(data.getLength());
+            this.setHeight(data.getHeight());
+            this.setCoop(data.getCoop());
+            this.setDriverExperience(data.getDriverExperience());
+            this.setPickupMechanism(data.getPickupMechanism());
+            this.setMaxToteStack(data.getMaxToteStack());
+            this.setMaxTotesStackContainer(data.getMaxTotesStackContainer());
+            this.setMaxTotesAndContainerLitter(data.getMaxTotesAndContainerLitter());
+            this.setHumanPlayer(data.getHumanPlayer());
+            this.setNoAuto(data.getNoAuto());
+            this.setDriveAuto(data.getDriveAuto());
+            this.setToteAuto(data.getToteAuto());
+            this.setContainerAuto(data.getContainerAuto());
+            this.setStackedAuto(data.getStackedAuto());
+            this.setLandfillAuto(data.getLandfillAuto());
+            return true;
+        }
+        return false;
+    }
     public boolean equals(Object data) {
         if(!(data instanceof TeamScouting2015)) {
             return false;
         }
-        return  super.equals(data) &&
-                getOrientation().equals(((TeamScouting2015)data).getOrientation()) &&
-                getDriveTrain().equals(((TeamScouting2015)data).getDriveTrain()) &&
-                getWidth().equals(((TeamScouting2015)data).getWidth()) &&
-                getLength().equals(((TeamScouting2015)data).getLength()) &&
-                getHeight().equals(((TeamScouting2015)data).getHeight()) &&
-                getCoop().equals(((TeamScouting2015)data).getCoop()) &&
-                getDriverExperience().equals(((TeamScouting2015)data).getDriverExperience()) &&
-                getPickupMechanism().equals(((TeamScouting2015)data).getPickupMechanism()) &&
-                getMaxToteStack().equals(((TeamScouting2015)data).getMaxToteStack()) &&
-                getMaxTotesStackContainer().equals(((TeamScouting2015)data).getMaxTotesStackContainer()) &&
-                getMaxTotesAndContainerLitter().equals(((TeamScouting2015)data).getMaxTotesAndContainerLitter()) &&
-                getHumanPlayer().equals(((TeamScouting2015)data).getHumanPlayer()) &&
-                getNoAuto().equals(((TeamScouting2015)data).getNoAuto()) &&
-                getDriveAuto().equals(((TeamScouting2015)data).getDriveAuto()) &&
-                getToteAuto().equals(((TeamScouting2015)data).getToteAuto()) &&
-                getContainerAuto().equals(((TeamScouting2015)data).getContainerAuto()) &&
-                getStackedAuto().equals(((TeamScouting2015)data).getStackedAuto()) &&
-                getLandfillAuto().equals(((TeamScouting2015)data).getLandfillAuto());
+        return  super.equals(data);
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

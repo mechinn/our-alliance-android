@@ -132,16 +132,23 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         }
         return string+this.getMatchNumber();
     }
+    public boolean copy(Match data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setTime(data.getTime());
+            this.setRedScore(data.getRedScore());
+            this.setBlueScore(data.getBlueScore());
+            return true;
+        }
+        return false;
+    }
     public boolean equals(Object data) {
         if(!(data instanceof Match)) {
             return false;
         }
         return  getEvent().equals(((Match)data).getEvent()) &&
                 getCompLevel().equals(((Match)data).getCompLevel()) &&
-                getSetNumber()==((Match)data).getSetNumber() &&
-                getTime().equals(((Match)data).getTime()) &&
-                getRedScore()==((Match)data).getRedScore() &&
-                getBlueScore()==((Match)data).getBlueScore() &&
+                getSetNumber().equals(((Match)data).getSetNumber()) &&
                 getMatchNumber()==((Match)data).getMatchNumber();
     }
     public int compareTo(Match another) {

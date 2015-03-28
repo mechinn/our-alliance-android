@@ -111,12 +111,25 @@ public class Team extends com.mechinn.android.ouralliance.data.OurAllianceObject
     public int compareTo(Team another) {
         return this.getTeamNumber() - another.getTeamNumber();
     }
+    public boolean copy(Team data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setName(data.getName());
+            this.setNickname(data.getNickname());
+            this.setWebsite(data.getWebsite());
+            this.setLocality(data.getLocality());
+            this.setRegion(data.getRegion());
+            this.setCountry(data.getCountry());
+            this.setRookieYear(data.getRookieYear());
+            return true;
+        }
+        return false;
+    }
     public boolean equals(Object data) {
         if(!(data instanceof Team)) {
             return false;
         }
-        return  getTeamNumber()==((Team) data).getTeamNumber()
-                && getNickname().equals(((Team)data).getNickname());
+        return  getTeamNumber()==((Team) data).getTeamNumber();
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

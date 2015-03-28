@@ -34,25 +34,77 @@ public class TeamScouting2015Adapter implements JsonSerializer<TeamScouting2015>
         JsonObject object = json.getAsJsonObject();
         scouting.setModified(new Date(object.get(TeamScouting2015.MODIFIED).getAsLong()));
         scouting.setTeam(OurAllianceGson.BUILDER.fromJson(object.get(TeamScouting2015.TEAM), Team.class));
-        scouting.setNotes(object.get(TeamScouting2015.NOTES).getAsString());
-        scouting.setOrientation(object.get(TeamScouting2015.ORIENTATION).getAsString());
-        scouting.setDriveTrain(object.get(TeamScouting2015.DRIVE_TRAIN).getAsString());
-        scouting.setWidth(object.get(TeamScouting2015.WIDTH).getAsDouble());
-        scouting.setLength(object.get(TeamScouting2015.LENGTH).getAsDouble());
-        scouting.setHeight(object.get(TeamScouting2015.HEIGHT).getAsDouble());
-        scouting.setCoop(object.get(TeamScouting2015.COOP).getAsBoolean());
-        scouting.setDriverExperience(object.get(TeamScouting2015.DRIVER_EXPERIENCE).getAsFloat());
-        scouting.setPickupMechanism(object.get(TeamScouting2015.PICKUP_MECHANISM).getAsString());
-        scouting.setMaxToteStack(object.get(TeamScouting2015.MAX_TOTE_STACK).getAsInt());
-        scouting.setMaxTotesStackContainer(object.get(TeamScouting2015.MAX_CONTAINER_STACK).getAsInt());
-        scouting.setMaxTotesAndContainerLitter(object.get(TeamScouting2015.MAX_TOTES_AND_CONTAINER_LITTER).getAsInt());
-        scouting.setHumanPlayer(object.get(TeamScouting2015.HUMAN_PLAYER).getAsFloat());
-        scouting.setNoAuto(object.get(TeamScouting2015.NO_AUTO).getAsBoolean());
-        scouting.setDriveAuto(object.get(TeamScouting2015.DRIVE_AUTO).getAsBoolean());
-        scouting.setToteAuto(object.get(TeamScouting2015.TOTE_AUTO).getAsBoolean());
-        scouting.setContainerAuto(object.get(TeamScouting2015.CONTAINER_AUTO).getAsBoolean());
-        scouting.setStackedAuto(object.get(TeamScouting2015.STACKED_AUTO).getAsBoolean());
-        scouting.setLandfillAuto(object.get(TeamScouting2015.LANDFILL_AUTO).getAsInt());
+        JsonElement element = object.get(TeamScouting2015.NOTES);
+        if(null!=element) {
+            scouting.setNotes(element.getAsString());
+        }
+        element = object.get(TeamScouting2015.ORIENTATION);
+        if(null!=element) {
+            scouting.setOrientation(element.getAsString());
+        }
+        element = object.get(TeamScouting2015.DRIVE_TRAIN);
+        if(null!=element) {
+            scouting.setDriveTrain(element.getAsString());
+        }
+        element = object.get(TeamScouting2015.WIDTH);
+        if(null!=element) {
+            scouting.setWidth(element.getAsDouble());
+        }
+        element = object.get(TeamScouting2015.LENGTH);
+        if(null!=element) {
+            scouting.setLength(element.getAsDouble());
+        }
+        element = object.get(TeamScouting2015.HEIGHT);
+        if(null!=element) {
+            scouting.setHeight(element.getAsDouble());
+        }
+        element = object.get(TeamScouting2015.COOP);
+        if(null!=element) {
+            scouting.setCoop(element.getAsBoolean());
+        }element = object.get(TeamScouting2015.DRIVER_EXPERIENCE);
+        if(null!=element) {
+            scouting.setDriverExperience(element.getAsFloat());
+        }
+        element = object.get(TeamScouting2015.PICKUP_MECHANISM);
+        if(null!=element) {
+            scouting.setPickupMechanism(element.getAsString());
+        }
+        element = object.get(TeamScouting2015.MAX_TOTE_STACK);
+        if(null!=element) {
+            scouting.setMaxToteStack(element.getAsInt());
+        }
+        element = object.get(TeamScouting2015.MAX_CONTAINER_STACK);
+        if(null!=element) {
+            scouting.setMaxTotesStackContainer(element.getAsInt());
+        }
+        element = object.get(TeamScouting2015.MAX_TOTES_AND_CONTAINER_LITTER);
+        if(null!=element) {
+            scouting.setMaxTotesAndContainerLitter(element.getAsInt());
+        }
+        element = object.get(TeamScouting2015.HUMAN_PLAYER);
+        if(null!=element) {
+            scouting.setHumanPlayer(element.getAsFloat());
+        }
+        element = object.get(TeamScouting2015.NO_AUTO);
+        if(null!=element) {
+            scouting.setNoAuto(element.getAsBoolean());
+        }
+        element = object.get(TeamScouting2015.DRIVE_AUTO);
+        if(null!=element) {
+            scouting.setDriveAuto(element.getAsBoolean());
+        }
+        element = object.get(TeamScouting2015.TOTE_AUTO);
+        if(null!=element) {
+            scouting.setContainerAuto(element.getAsBoolean());
+        }
+        element = object.get(TeamScouting2015.STACKED_AUTO);
+        if(null!=element) {
+            scouting.setStackedAuto(element.getAsBoolean());
+        }
+        element = object.get(TeamScouting2015.LANDFILL_AUTO);
+        if(null!=element) {
+            scouting.setLandfillAuto(element.getAsInt());
+        }
         return scouting;
     }
     @Override

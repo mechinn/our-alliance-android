@@ -143,23 +143,31 @@ public class MatchScouting2015 extends MatchScouting {
     public void setHumanSuccess(Integer humanSuccess) {
         this.humanSuccess = humanSuccess;
     }
+    public boolean copy(MatchScouting2015 data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setAutoStacked(data.getAutoStacked());
+            this.setAutoTotes(data.getAutoTotes());
+            this.setAutoContainers(data.getAutoContainers());
+            this.setAutoLandfill(data.getAutoLandfill());
+            this.setAutoMove(data.getAutoMove());
+            this.setCoop(data.getCoop());
+            this.setTotes(data.getTotes());
+            this.setContainers(data.getContainers());
+            this.setLitter(data.getLitter());
+            this.setFowls(data.getFowls());
+            this.setHumanAttempt(data.getHumanAttempt());
+            this.setHumanSuccess(data.getHumanSuccess());
+            return true;
+        }
+        return false;
+    }
     public boolean equals(Object data) {
         if (!(data instanceof MatchScouting2015)) {
             return false;
         }
         return super.equals(data) &&
-                getAutoStacked().equals(((MatchScouting2015)data).getAutoStacked()) &&
-                getAutoTotes().equals(((MatchScouting2015)data).getAutoTotes()) &&
-                getAutoContainers().equals(((MatchScouting2015)data).getAutoContainers()) &&
-                getAutoLandfill().equals(((MatchScouting2015)data).getAutoLandfill()) &&
-                getAutoMove().equals(((MatchScouting2015)data).getAutoMove()) &&
-                getCoop().equals(((MatchScouting2015)data).getCoop()) &&
-                getTotes().equals(((MatchScouting2015)data).getTotes()) &&
-                getContainers().equals(((MatchScouting2015)data).getContainers()) &&
-                getLitter().equals(((MatchScouting2015)data).getLitter()) &&
-                getFowls().equals(((MatchScouting2015)data).getFowls()) &&
-                getHumanAttempt().equals(((MatchScouting2015)data).getHumanAttempt()) &&
-                getHumanSuccess().equals(((MatchScouting2015)data).getHumanSuccess());
+                this.getTeamScouting2015().equals(((MatchScouting2015) data).getTeamScouting2015());
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

@@ -55,14 +55,21 @@ public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceO
     public String toString() {
         return this.getEvent()+" # "+this.rank+" "+this.team;
     }
+    public boolean copy(EventTeam data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setRank(data.getRank());
+            this.setScouted(data.isScouted());
+            return true;
+        }
+        return false;
+    }
     public boolean equals(Object data) {
         if(!(data instanceof EventTeam)) {
             return false;
         }
         return  getEvent().equals(((EventTeam)data).getEvent()) &&
-                getTeam().equals(((EventTeam)data).getTeam()) &&
-                getRank() == ((EventTeam)data).getRank() &&
-                isScouted() == ((EventTeam)data).isScouted();
+                getTeam().equals(((EventTeam)data).getTeam());
     }
     public int compareTo(EventTeam another) {
         int compare = this.getRank() - another.getRank();

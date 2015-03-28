@@ -1,5 +1,7 @@
 package com.mechinn.android.ouralliance.fragment;
 
+import android.app.Activity;
+import android.net.Uri;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.*;
@@ -8,6 +10,7 @@ import android.widget.*;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.activity.AnalysisActivity;
+import com.mechinn.android.ouralliance.activity.OurAllianceActivity;
 import com.mechinn.android.ouralliance.csv.frc2015.ExportCsvTeamScouting2015;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
@@ -18,9 +21,14 @@ import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2015.Sort2015;
 import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
+import com.mechinn.android.ouralliance.event.ActivityResult;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.event.SelectTeamEvent;
+import com.mechinn.android.ouralliance.gson.ImportJson;
+import com.mechinn.android.ouralliance.gson.OurAllianceGson;
+import com.mechinn.android.ouralliance.gson.frc2015.ExportJsonEventTeamScouting2015;
+import com.mechinn.android.ouralliance.gson.frc2015.ImportJsonEventTeamScouting2015;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetEventTeams;
 import com.mobeta.android.dslv.DragSortListView;
 
@@ -39,6 +47,9 @@ import timber.log.Timber;
 public class TeamListFragment extends Fragment {
     public static final String TAG = "TeamListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    public static final int OPEN_DOCUMENT_REQUEST_CODE = 2002;
+    public static final int CREATE_DOCUMENT_CSV_REQUEST_CODE = 2003;
+    public static final int CREATE_DOCUMENT_JSON_REQUEST_CODE = 2004;
     protected DragSortListView dslv;
     private int selectedPosition;
 	private Prefs prefs;
@@ -196,16 +207,16 @@ public class TeamListFragment extends Fragment {
         BluetoothEvent bluetooth = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
         menu.findItem(R.id.matchList).setVisible(prefs.getComp()>0 && null!=adapter && adapter.getCount() > 5);
         menu.findItem(R.id.insertTeamScouting).setVisible(prefs.getComp()>0);
-//        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
-//        menu.findItem(R.id.exportTeamScouting).setVisible(null != adapter && adapter.getCount() > 0);
+        menu.findItem(R.id.restoreTeamListScouting).setVisible(prefs.getComp() > 0);
+        menu.findItem(R.id.backupTeamListScouting).setVisible(null != adapter && adapter.getCount() > 0);
+        menu.findItem(R.id.refreshCompetitionTeams).setVisible(prefs.getComp() > 0);
+        menu.findItem(R.id.sendTeamScoutingCsv).setVisible(prefs.getComp() > 0);
 //        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != adapter && adapter.getCount() > 0 && null != bluetooth && bluetooth.isEnabled());
 //        if(bluetooth.isOn()) {
 //            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
 //        } else {
 //            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
 //        }
-        menu.findItem(R.id.refreshCompetitionTeams).setVisible(prefs.getComp() > 0);
-        menu.findItem(R.id.sendTeamScoutingCsv).setVisible(prefs.getComp() > 0);
     }
 	
 	@Override
@@ -232,10 +243,51 @@ public class TeamListFragment extends Fragment {
                         AsyncExecutor.create().execute(new ExportCsvTeamScouting2015(this.getActivity()));
                         break;
                 }
+                return true;
+            case R.id.backupTeamListScouting:
+                switch(prefs.getYear()) {
+                    case 2015:
+                        final Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType(OurAllianceGson.TYPE);
+                        intent.putExtra(Intent.EXTRA_TITLE, "teamList.json");
+                        startActivityForResult(intent, CREATE_DOCUMENT_JSON_REQUEST_CODE);
+                        break;
+                }
+                return true;
+            case R.id.restoreTeamListScouting:
+                switch(prefs.getYear()) {
+                    case 2015:
+                        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType(OurAllianceGson.TYPE);
+                        startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE);
+//                        AsyncExecutor.create().execute(new ExportCsvTeamScouting2015(this.getActivity()));
+                        break;
+                }
+                return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(OPEN_DOCUMENT_REQUEST_CODE == requestCode &&
+                Activity.RESULT_OK == resultCode &&
+                null!=data) {
+            final Uri uri = data.getData();
+            Timber.d("Uri: " + uri.toString());
+            AsyncExecutor.create().execute(new ImportJsonEventTeamScouting2015(this.getActivity(), uri));
+        } else if(CREATE_DOCUMENT_JSON_REQUEST_CODE == requestCode &&
+                Activity.RESULT_OK == resultCode &&
+                null!=data) {
+            final Uri uri = data.getData();
+            Timber.d("Uri: " + uri.toString());
+            AsyncExecutor.create().execute(new ExportJsonEventTeamScouting2015(this.getActivity(), uri));
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {

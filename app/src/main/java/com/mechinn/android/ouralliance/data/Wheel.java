@@ -39,14 +39,21 @@ public abstract class Wheel extends com.mechinn.android.ouralliance.data.OurAlli
     public String toString() {
         return getTeamScouting()+": "+ getWheelType()+" | "+ getWheelSize()+" | "+ getWheelCount();
     }
+    public boolean copy(Wheel data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setWheelCount(data.getWheelCount());
+            return true;
+        }
+        return false;
+    }
     public boolean equals(Object data) {
         if(!(data instanceof Wheel)) {
             return false;
         }
         return  getTeamScouting().equals(((Wheel)data).getTeamScouting()) &&
                 getWheelType().equals(((Wheel)data).getWheelType()) &&
-                getWheelSize()==((Wheel)data).getWheelSize() &&
-                getWheelCount()==((Wheel)data).getWheelCount();
+                getWheelSize()==((Wheel)data).getWheelSize();
     }
     public int compareTo(Wheel another) {
         int compare = this.getWheelType().compareTo(another.getWheelType());

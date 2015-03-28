@@ -129,9 +129,24 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
     public String toString() {
         return (isOfficial()?"Official":"Unofficial")+" | "+this.getShortName();
     }
+    public boolean copy(Event data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setName(data.getName());
+            this.setShortName(data.getShortName());
+            this.setEventCode(data.getEventCode());
+            this.setEventDistrict(data.getEventDistrict());
+            this.setVenueAddress(data.getVenueAddress());
+            this.setWebsite(data.getWebsite());
+            this.setStartDate(data.getStartDate());
+            this.setEndDate(data.getEndDate());
+            this.setOfficial(data.isOfficial());
+            return true;
+        }
+        return false;
+    }
     public boolean equals(Event data) {
         return  getYear()==data.getYear() &&
-                getShortName().equals(data.getShortName()) &&
                 getEventCode().equals(data.getEventCode());
     }
     public int compareTo(Event another) {

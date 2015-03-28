@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.Wheel;
 import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
@@ -24,9 +25,18 @@ public class Wheel2015Adapter implements JsonSerializer<Wheel2015>, JsonDeserial
         JsonObject object = json.getAsJsonObject();
         wheel.setModified(new Date(object.get(Wheel2015.MODIFIED).getAsLong()));
         wheel.setTeamScouting2015(OurAllianceGson.BUILDER.fromJson(object.get(Wheel2015.TEAM_SCOUTING), TeamScouting2015.class));
-        wheel.setWheelType(object.get(Wheel2015.WHEEL_TYPE).getAsString());
-        wheel.setWheelSize(object.get(Wheel2015.WHEEL_SIZE).getAsDouble());
-        wheel.setWheelCount(object.get(Wheel2015.WHEEL_COUNT).getAsInt());
+        JsonElement element = object.get(Wheel2015.WHEEL_TYPE);
+        if(null!=element) {
+            wheel.setWheelType(element.getAsString());
+        }
+        element = object.get(Wheel2015.WHEEL_SIZE);
+        if(null!=element) {
+            wheel.setWheelSize(element.getAsDouble());
+        }
+        element = object.get(Wheel2015.WHEEL_COUNT);
+        if(null!=element) {
+            wheel.setWheelCount(element.getAsInt());
+        }
         return wheel;
     }
 

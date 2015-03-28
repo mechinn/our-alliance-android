@@ -140,12 +140,16 @@ public class AnalysisActivity extends OurAllianceActivity implements FragmentMan
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
-
-        fragment = new AnalysisFragment2015();
         mTitle = getTitle();
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        switch(prefs.getYear()) {
+            default:
+                this.getSupportFragmentManager().popBackStack();
+            case 2015:
+                fragment = new AnalysisFragment2015();
+        }
+        if(null!=fragment) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        }
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -157,18 +161,6 @@ public class AnalysisActivity extends OurAllianceActivity implements FragmentMan
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-    @Override
-    public void onStart() {
-        super.onStart();
-        Timber.d("start");
-        EventBus.getDefault().register(this);
-    }
-
-    public void onStop() {
-        Timber.d("stop");
-        EventBus.getDefault().unregister(this);
-        super.onStop();
     }
 
     public void onEventMainThread(AnalysisFragment.TeamsLoaded loadTeams) {

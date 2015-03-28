@@ -28,6 +28,7 @@
         android:name="android.hardware.bluetooth"
         android:required="false" />
 
+
     <application
         android:name="com.mechinn.android.ouralliance.OurAlliance"
         android:allowBackup="true"
