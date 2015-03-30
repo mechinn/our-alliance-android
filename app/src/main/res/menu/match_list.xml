@@ -9,13 +9,13 @@
         android:title="Add Match"
         android:menuCategory="system"
         android:orderInCategory="1" />
-    <!--<item-->
-        <!--android:id="@+id/bluetoothMatchScouting"-->
-        <!--android:icon="@drawable/ic_action_bluetooth"-->
-        <!--android:orderInCategory="2"-->
-        <!--android:menuCategory="system"-->
-        <!--android:title="Bluetooth Transfer Match Scouting"-->
-        <!--app:showAsAction="ifRoom"/>-->
+    <item
+        android:id="@+id/bluetoothMatchScoutingList"
+        android:icon="@drawable/ic_action_bluetooth"
+        android:orderInCategory="2"
+        android:menuCategory="system"
+        android:title="Bluetooth Transfer Match Scouting List"
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/sendMatchScoutingCsv"
         android:icon="@drawable/ic_action_share"

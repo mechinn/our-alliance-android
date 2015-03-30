@@ -8,8 +8,8 @@ import com.mechinn.android.ouralliance.event.ToastEvent;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import de.greenrobot.common.io.IoUtils;
-import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 import timber.log.Timber;
 
@@ -23,10 +23,17 @@ public abstract class ExportJson implements AsyncExecutor.RunnableEx {
     private Context context;
     private Uri uri;
     private String json;
+    private BluetoothSPP bluetooth;
     public ExportJson(Context context, Uri uri) {
         this.context = context;
         this.prefs = new Prefs(context);
         this.uri = uri;
+        json = "";
+    }
+    public ExportJson(Context context, BluetoothSPP bluetooth) {
+        this.context = context;
+        this.prefs = new Prefs(context);
+        this.bluetooth = bluetooth;
         json = "";
     }
     public Prefs getPrefs() {
@@ -35,9 +42,16 @@ public abstract class ExportJson implements AsyncExecutor.RunnableEx {
     public void addJson(String json) {
         this.json+=json;
     }
+    public void addJsonHeader(String json) {
+        this.json+=json;
+    }
     public void run() throws IOException {
         Timber.d("json: " + json);
-        IoUtils.writeAllCharsAndClose(new OutputStreamWriter(context.getContentResolver().openOutputStream(uri)),json);
+        if(null!=bluetooth) {
+            bluetooth.send(json, true);
+        } else {
+            IoUtils.writeAllCharsAndClose(new OutputStreamWriter(context.getContentResolver().openOutputStream(uri)), json);
+        }
         ToastEvent.toast("Backup complete");
     }
 }

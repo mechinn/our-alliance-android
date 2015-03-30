@@ -16,13 +16,13 @@
         android:title="Add Team"
         android:menuCategory="system"
         android:orderInCategory="3"/>
-    <!--<item-->
-        <!--android:id="@+id/bluetoothTeamScouting"-->
-        <!--android:icon="@drawable/ic_action_bluetooth"-->
-        <!--android:orderInCategory="4"-->
-        <!--android:menuCategory="system"-->
-        <!--android:title="Bluetooth Transfer Team Scouting"-->
-        <!--app:showAsAction="ifRoom"/>-->
+    <item
+        android:id="@+id/bluetoothTeamScoutingList"
+        android:icon="@drawable/ic_action_bluetooth"
+        android:orderInCategory="4"
+        android:menuCategory="system"
+        android:title="Bluetooth Transfer Team Scouting List"
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/sendTeamScoutingCsv"
         android:icon="@drawable/ic_action_share"

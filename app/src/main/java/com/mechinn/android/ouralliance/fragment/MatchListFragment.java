@@ -42,6 +42,9 @@ import com.mechinn.android.ouralliance.rest.thebluealliance.GetMatches;
 import java.util.Collections;
 import java.util.List;
 
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import app.akexorcist.bluetotohspp.library.BluetoothState;
+import app.akexorcist.bluetotohspp.library.DeviceList;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 import timber.log.Timber;
@@ -151,23 +154,23 @@ public class MatchListFragment extends ListFragment {
 	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-        BluetoothEvent bluetoothState = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
 	    menu.findItem(R.id.practice).setChecked(prefs.isPractice());
         menu.findItem(R.id.insert).setVisible(prefs.getComp() > 0 && enoughTeams);
         menu.findItem(R.id.sendMatchScoutingCsv).setVisible(prefs.getComp()>0);
         menu.findItem(R.id.restoreMatchListScouting).setVisible(prefs.getComp() > 0);
         menu.findItem(R.id.backupMatchListScouting).setVisible(null!=adapter && adapter.getCount()>0);
-//        menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && !bluetoothState.isDisabled());
-//        if(bluetoothState.isOn()) {
-//            menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
-//        } else {
-//            menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth);
-//        }
+        BluetoothEvent bluetoothState = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
+        menu.findItem(R.id.bluetoothMatchScoutingList).setVisible(null!=adapter && adapter.getCount()>0 && !bluetoothState.isDisabled());
+        if(bluetoothState.isOn()) {
+            menu.findItem(R.id.bluetoothMatchScoutingList).setIcon(R.drawable.ic_action_bluetooth_searching);
+        } else {
+            menu.findItem(R.id.bluetoothMatchScoutingList).setIcon(R.drawable.ic_action_bluetooth);
+        }
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
+        Intent intent;
 	    switch (item.getItemId()) {
 		    case R.id.practice:
 	            if (item.isChecked()) {
@@ -190,10 +193,14 @@ public class MatchListFragment extends ListFragment {
                         break;
                 }
                 return true;
+            case R.id.bluetoothMatchScoutingList:
+                intent = new Intent(this.getActivity().getApplicationContext(), DeviceList.class);
+                startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+                return true;
             case R.id.backupMatchListScouting:
                 switch(prefs.getYear()) {
                     case 2015:
-                        final Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
                         intent.addCategory(Intent.CATEGORY_OPENABLE);
                         intent.setType(OurAllianceGson.TYPE);
                         intent.putExtra(Intent.EXTRA_TITLE, "matchList.json");
@@ -204,7 +211,7 @@ public class MatchListFragment extends ListFragment {
             case R.id.restoreMatchListScouting:
                 switch(prefs.getYear()) {
                     case 2015:
-                        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                         intent.addCategory(Intent.CATEGORY_OPENABLE);
                         intent.setType(OurAllianceGson.TYPE);
                         startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE);
@@ -230,6 +237,13 @@ public class MatchListFragment extends ListFragment {
             final Uri uri = data.getData();
             Timber.d("Uri: " + uri.toString());
             AsyncExecutor.create().execute(new ExportJsonEventMatchScouting2015(this.getActivity(), uri));
+        } else if(requestCode == BluetoothState.REQUEST_CONNECT_DEVICE && resultCode == Activity.RESULT_OK) {
+            BluetoothSPP bt = EventBus.getDefault().getStickyEvent(BluetoothSPP.class);
+            bt.connect(data);
+            AsyncExecutor.create().execute(new ExportJsonEventMatchScouting2015(this.getActivity(), bt));
+        } else if(requestCode == BluetoothState.REQUEST_ENABLE_BT && resultCode == Activity.RESULT_OK) {
+            Intent intent = new Intent(this.getActivity().getApplicationContext(), DeviceList.class);
+            startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

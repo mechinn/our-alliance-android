@@ -2,13 +2,13 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" >
-	<item
-        android:id="@+id/matchList"
-        android:icon="@drawable/ic_action_view_as_list"
-        android:orderInCategory="1"
-        android:menuCategory="system"
-        app:showAsAction="ifRoom"
-        android:title="Match List"/>
+	<!--<item-->
+        <!--android:id="@+id/teamMatchList"-->
+        <!--android:icon="@drawable/ic_action_view_as_list"-->
+        <!--android:orderInCategory="1"-->
+        <!--android:menuCategory="system"-->
+        <!--app:showAsAction="ifRoom"-->
+        <!--android:title="Team Match List"/>-->
     <!--<item-->
         <!--android:id="@+id/bluetoothTeamScouting"-->
         <!--android:icon="@drawable/ic_action_bluetooth"-->
@@ -16,18 +16,18 @@
         <!--android:menuCategory="system"-->
         <!--android:title="Bluetooth Transfer Team Scouting"-->
         <!--app:showAsAction="ifRoom"/>-->
-    <item
-        android:id="@+id/backupTeamScouting"
-        android:icon="@drawable/ic_action_upload"
-        android:orderInCategory="6"
-        android:menuCategory="system"
-        android:title="Backup Team Scouting"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/restoreTeamScouting"
-        android:icon="@drawable/ic_action_download"
-        android:orderInCategory="7"
-        android:menuCategory="system"
-        android:title="Restore Team Scouting"
-        app:showAsAction="ifRoom"/>
+    <!--<item-->
+        <!--android:id="@+id/backupTeamScouting"-->
+        <!--android:icon="@drawable/ic_action_upload"-->
+        <!--android:orderInCategory="6"-->
+        <!--android:menuCategory="system"-->
+        <!--android:title="Backup Team Scouting"-->
+        <!--app:showAsAction="ifRoom"/>-->
+    <!--<item-->
+        <!--android:id="@+id/restoreTeamScouting"-->
+        <!--android:icon="@drawable/ic_action_download"-->
+        <!--android:orderInCategory="7"-->
+        <!--android:menuCategory="system"-->
+        <!--android:title="Restore Team Scouting"-->
+        <!--app:showAsAction="ifRoom"/>-->
 </menu>

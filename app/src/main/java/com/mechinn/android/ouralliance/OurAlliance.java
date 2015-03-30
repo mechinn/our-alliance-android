@@ -16,18 +16,26 @@ import com.activeandroid.query.Delete;
 import com.crashlytics.android.Crashlytics;
 import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.EventTeam;
+import com.mechinn.android.ouralliance.data.JsonWrapper;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.Wheel2014;
+import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015;
+import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.event.EventException;
 import com.mechinn.android.ouralliance.event.ResetEvent;
 import com.mechinn.android.ouralliance.event.ToastEvent;
+import com.mechinn.android.ouralliance.gson.OurAllianceGson;
+import com.mechinn.android.ouralliance.gson.frc2015.TeamScouting2015WrapperAdapter;
 
 import java.io.File;
+import java.util.List;
 
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import app.akexorcist.bluetotohspp.library.BluetoothState;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 import de.greenrobot.event.util.ThrowableFailureEvent;
@@ -41,6 +49,7 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
     private Prefs prefs;
     private String packageName;
     public static final int VERSION = 18;
+    private BluetoothSPP bt;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -48,8 +57,8 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
             final String action = intent.getAction();
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-//                EventBus.getDefault().postSticky(new BluetoothEvent(state));
-                EventBus.getDefault().postSticky(new BluetoothEvent(BluetoothAdapter.ERROR));
+                EventBus.getDefault().postSticky(new BluetoothEvent(state));
+//                EventBus.getDefault().postSticky(new BluetoothEvent(BluetoothAdapter.ERROR));
             }
         }
     };
@@ -71,15 +80,24 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
             setup();
         }
 
+        bt = new BluetoothSPP(this);
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         this.registerReceiver(broadcastReceiver, filter);
-//        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//        if(null==bluetoothAdapter) {
-//            EventBus.getDefault().postSticky(new BluetoothEvent(BluetoothAdapter.STATE_OFF));
-//        } else {
-//            EventBus.getDefault().postSticky(new BluetoothEvent(.getState()));
-//        }
-        EventBus.getDefault().postSticky(new BluetoothEvent(BluetoothAdapter.ERROR));
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(null==bluetoothAdapter) {
+            EventBus.getDefault().postSticky(new BluetoothEvent(BluetoothAdapter.STATE_OFF));
+        } else {
+            EventBus.getDefault().postSticky(new BluetoothEvent(bluetoothAdapter.getState()));
+        }
+        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
+            public void onDataReceived(byte[] data, String message) {
+                switch(prefs.getYear()) {
+                    case 2015:
+                        JsonWrapper<TeamScouting2015> jsonTeams = OurAllianceGson.BUILDER.fromJson(message, JsonWrapper.class);
+                }
+            }
+        });
+        EventBus.getDefault().postSticky(bt);
 //        new AlarmTheBlueAlliance(this.getApplicationContext()).setAlarm();
     }
 
@@ -87,12 +105,16 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
         switch (event.getState()) {
             case OFF:
             case TURNING_OFF:
+                bt.stopService();
                 break;
             case ON:
-            case TURNING_ON:
+                bt.setupService();
+                bt.startService(BluetoothState.DEVICE_ANDROID);
                 break;
         }
     }
+
+
 
     @Override
     public void onTerminate() {

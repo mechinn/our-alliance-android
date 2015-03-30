@@ -108,6 +108,7 @@
     <orderEntry type="library" exported="" name="layouts-1.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="core-1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="bluetoothspp-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="android-priority-jobqueue-1.1.2" level="project" />

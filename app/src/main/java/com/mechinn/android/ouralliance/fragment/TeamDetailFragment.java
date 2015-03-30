@@ -52,6 +52,9 @@ import android.widget.Toast;
 import org.lucasr.twowayview.ItemClickSupport;
 import org.lucasr.twowayview.widget.TwoWayView;
 
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import app.akexorcist.bluetotohspp.library.BluetoothState;
+import app.akexorcist.bluetotohspp.library.DeviceList;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 import timber.log.Timber;
@@ -291,6 +294,13 @@ public abstract class TeamDetailFragment extends Fragment {
             final Uri uri = data.getData();
             Timber.d("Uri: " + uri.toString());
             AsyncExecutor.create().execute(new ExportJsonEventTeamScouting2015(this.getActivity(), uri));
+        } else if(requestCode == BluetoothState.REQUEST_CONNECT_DEVICE && resultCode == Activity.RESULT_OK) {
+            BluetoothSPP bt = EventBus.getDefault().getStickyEvent(BluetoothSPP.class);
+            bt.connect(data);
+            AsyncExecutor.create().execute(new ExportJsonEventTeamScouting2015(this.getActivity(), bt));
+        } else if(requestCode == BluetoothState.REQUEST_ENABLE_BT && resultCode == Activity.RESULT_OK) {
+            Intent intent = new Intent(this.getActivity().getApplicationContext(), DeviceList.class);
+            startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -348,49 +358,53 @@ public abstract class TeamDetailFragment extends Fragment {
         inflater.inflate(R.menu.team_detail, menu);
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        BluetoothEvent bluetooth = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
-        menu.findItem(R.id.matchList).setVisible(prefs.getComp() > 0 && null != scouting);
-        menu.findItem(R.id.restoreTeamListScouting).setVisible(prefs.getComp() > 0);
-        menu.findItem(R.id.backupTeamListScouting).setVisible(null != scouting);
+//    @Override
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        menu.findItem(R.id.matchList).setVisible(prefs.getComp() > 0 && null != scouting);
+//        menu.findItem(R.id.restoreTeamScouting).setVisible(prefs.getComp() > 0);
+//        menu.findItem(R.id.backupTeamScouting).setVisible(null != scouting);
+//        BluetoothEvent bluetooth = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
 //        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != scouting  && null != bluetooth && bluetooth.isEnabled());
 //        if(bluetooth.isOn()) {
 //            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
 //        } else {
 //            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
 //        }
-    }
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-	    switch (item.getItemId()) {
-            case R.id.backupTeamScouting:
-                switch(prefs.getYear()) {
-                    case 2015:
-                        final Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType(OurAllianceGson.TYPE);
-                        intent.putExtra(Intent.EXTRA_TITLE, "team.json");
-                        startActivityForResult(intent, CREATE_DOCUMENT_JSON_REQUEST_CODE);
-                        break;
-                }
-                return true;
-            case R.id.restoreTeamScouting:
-                switch(prefs.getYear()) {
-                    case 2015:
-                        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType(OurAllianceGson.TYPE);
-                        startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE);
-                        break;
-                }
-                return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
-	}
+//    }
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//        Intent intent;
+//	    switch (item.getItemId()) {
+//            case R.id.bluetoothTeamScouting:
+//                intent = new Intent(this.getActivity().getApplicationContext(), DeviceList.class);
+//                startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+//                return true;
+//            case R.id.backupTeamScouting:
+//                switch(prefs.getYear()) {
+//                    case 2015:
+//                        intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+//                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//                        intent.setType(OurAllianceGson.TYPE);
+//                        intent.putExtra(Intent.EXTRA_TITLE, "team.json");
+//                        startActivityForResult(intent, CREATE_DOCUMENT_JSON_REQUEST_CODE);
+//                        break;
+//                }
+//                return true;
+//            case R.id.restoreTeamScouting:
+//                switch(prefs.getYear()) {
+//                    case 2015:
+//                        intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//                        intent.setType(OurAllianceGson.TYPE);
+//                        startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE);
+//                        break;
+//                }
+//                return true;
+//	        default:
+//	            return super.onOptionsItemSelected(item);
+//	    }
+//	}
 	
 	public void setView() {
         ((ActionBarActivity)this.getActivity()).getSupportActionBar().setTitle(scouting.getTeam().toString());
