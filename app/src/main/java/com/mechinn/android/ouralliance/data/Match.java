@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
 import java.util.Date;
 import java.util.List;
@@ -51,7 +52,10 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return event;
     }
     public void setEvent(Event event) {
-        this.event = event;
+        if(!event.equals(this.event)) {
+            this.event = event;
+            changedData();
+        }
     }
     public String getCompLevel() {
         return compLevel;
@@ -87,37 +91,55 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         }
     }
     public void setCompLevel(String compLevel) {
-        this.compLevel = compLevel;
+        if(!compLevel.equals(this.compLevel)) {
+            this.compLevel = compLevel;
+            changedData();
+        }
     }
     public int getMatchNumber() {
         return matchNumber;
     }
     public void setMatchNumber(int matchNumber) {
-        this.matchNumber = matchNumber;
+        if(matchNumber!=this.matchNumber) {
+            this.matchNumber = matchNumber;
+            changedData();
+        }
     }
     public Integer getSetNumber() {
         return setNumber;
     }
     public void setSetNumber(Integer setNumber) {
-        this.setNumber = setNumber;
+        if(!setNumber.equals(this.setNumber)) {
+            this.setNumber = setNumber;
+            changedData();
+        }
     }
     public Date getTime() {
         return new Date(time);
     }
     public void setTime(Date time) {
-        this.time = time.getTime();
+        if(this.time!=time.getTime()) {
+            this.time = time.getTime();
+            changedData();
+        }
     }
     public Integer getRedScore() {
         return redScore;
     }
     public void setRedScore(Integer redScore) {
-        this.redScore = redScore;
+        if(!redScore.equals(this.redScore)) {
+            this.redScore = redScore;
+            changedData();
+        }
     }
     public Integer getBlueScore() {
         return blueScore;
     }
     public void setBlueScore(Integer blueScore) {
-        this.blueScore = blueScore;
+        if(!blueScore.equals(this.blueScore)) {
+            this.blueScore = blueScore;
+            changedData();
+        }
     }
     public Alliances getAlliances() {
         return alliances;
@@ -131,6 +153,18 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
             string += getSetNumber()+" Match: ";
         }
         return string+this.getMatchNumber();
+    }
+    public static Match load(long eventId, String compLevel, int matchNumber, Integer setNumber) {
+        return new Select().from(Match.class).where(Match.EVENT+"=?",eventId).and(Match.COMPETITION_LEVEL+"=?",compLevel).and(Match.MATCH_NUMBER+"=?",matchNumber).and(Match.SET_NUMBER+"=?",setNumber).executeSingle();
+    }
+    public void saveMod() {
+        if (null == this.getId()) {
+            this.getEvent().saveMod();
+            if(-1==this.getEvent().getId()) {
+                this.setEvent(Event.load(this.getEvent().getEventCode(), this.getEvent().getYear()));
+            }
+        }
+        super.saveMod();
     }
     public boolean copy(Match data) {
         if(this.equals(data)) {
@@ -146,10 +180,14 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         if(!(data instanceof Match)) {
             return false;
         }
-        return  getEvent().equals(((Match)data).getEvent()) &&
-                getCompLevel().equals(((Match)data).getCompLevel()) &&
-                getSetNumber().equals(((Match)data).getSetNumber()) &&
-                getMatchNumber()==((Match)data).getMatchNumber();
+        try {
+            return getEvent().equals(((Match) data).getEvent()) &&
+                    getCompLevel().equals(((Match) data).getCompLevel()) &&
+                    getSetNumber().equals(((Match) data).getSetNumber()) &&
+                    getMatchNumber() == ((Match) data).getMatchNumber();
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
     public int compareTo(Match another) {
         int compare = this.getCompLevelValue() - another.getCompLevelValue();

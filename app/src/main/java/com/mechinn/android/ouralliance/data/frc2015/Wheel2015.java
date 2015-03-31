@@ -4,11 +4,15 @@ import android.database.Cursor;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Wheel;
 
+import java.util.Date;
+
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 @Table(name= Wheel2015.TAG, id = Wheel2015.ID)
 public class Wheel2015 extends Wheel {
@@ -24,7 +28,10 @@ public class Wheel2015 extends Wheel {
         return teamScouting2015;
     }
     public void setTeamScouting2015(TeamScouting2015 teamScouting2015) {
-        this.teamScouting2015 = teamScouting2015;
+        if(!teamScouting2015.equals(this.teamScouting2015)) {
+            this.teamScouting2015 = teamScouting2015;
+            changedData();
+        }
     }
     public TeamScouting getTeamScouting() {
         return getTeamScouting2015();
@@ -32,12 +39,25 @@ public class Wheel2015 extends Wheel {
     public void setTeamScouting(TeamScouting teamScouting) {
         setTeamScouting2015((TeamScouting2015) teamScouting);
     }
+
+    @Override
+    public TeamScouting loadTeamScouting(long teamId) {
+        return TeamScouting2015.load(teamId);
+    }
+
     public boolean equals(Object data) {
         if(!(data instanceof Wheel2015)) {
             return false;
         }
-        return  super.equals(data) &&
-                this.getTeamScouting2015().equals(((Wheel2015) data).getTeamScouting2015());
+        try {
+            return  super.equals(data) &&
+                    this.getTeamScouting2015().equals(((Wheel2015) data).getTeamScouting2015());
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+    public static Wheel2015 load(long teamScouting2015id) {
+        return new Select().from(Wheel2015.class).where(Wheel2015.TEAM_SCOUTING+"=?",teamScouting2015id).executeSingle();
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

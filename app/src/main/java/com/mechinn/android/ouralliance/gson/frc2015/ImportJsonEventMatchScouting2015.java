@@ -56,65 +56,11 @@ public class ImportJsonEventMatchScouting2015 extends ImportJson {
                 }
             }
             if(!found) {
-                TeamScouting2015 findTeam2015 = new Select().from(TeamScouting2015.class).join(Team.class).on(TeamScouting2015.TAG + "." + TeamScouting2015.TEAM + "=" + Team.TAG + "." + Team.ID)
-                        .where(Team.TAG + "." + Team.TEAM_NUMBER + "=?", jsonTeam.getTeamScouting2015().getTeam().getTeamNumber()).executeSingle();
-                if(null==findTeam2015) {
-                    Team findTeam = new Select().from(Team.class).where(Team.TEAM_NUMBER + "=?", jsonTeam.getTeamScouting2015().getTeam().getTeamNumber()).executeSingle();
-                    if(null==findTeam) {
-                        Timber.d("saving "+jsonTeam.getTeamScouting2015().getTeam());
-                        jsonTeam.getTeamScouting2015().getTeam().saveMod();
-                    } else {
-                        Timber.d("loaded "+findTeam);
-                        jsonTeam.getTeamScouting2015().setTeam(findTeam);
-                    }
-                    Timber.d("saving " + jsonTeam.getTeamScouting2015());
-                    jsonTeam.getTeamScouting2015().saveMod();
-                } else {
-                    Timber.d("loaded "+findTeam2015);
-                    jsonTeam.setTeamScouting2015(findTeam2015);
-                }
-                Match findMatch = new Select().from(Match.class).join(Event.class).on(Match.TAG + "." + Match.EVENT + "=" + Event.TAG + "." + Event.ID)
-                        .where(Event.TAG + "." + Event.EVENT_CODE + "=?", jsonTeam.getMatch().getEvent().getEventCode())
-                        .and(Event.TAG + "." + Event.YEAR + "=?", jsonTeam.getMatch().getEvent().getYear())
-                        .and(Match.TAG + "." + Match.COMPETITION_LEVEL + "=?", jsonTeam.getMatch().getCompLevel())
-                        .and(Match.TAG + "." + Match.SET_NUMBER + "=?", jsonTeam.getMatch().getSetNumber())
-                        .and(Match.TAG+"."+Match.MATCH_NUMBER + "=?", jsonTeam.getMatch().getMatchNumber())
-                        .executeSingle();
-                if(null==findMatch) {
-                    Event findEvent = new Select().from(Event.class)
-                            .where(Event.EVENT_CODE + "=?", jsonTeam.getMatch().getEvent().getEventCode())
-                            .and(Event.YEAR + "=?", jsonTeam.getMatch().getEvent().getYear())
-                            .executeSingle();
-                    if(null==findEvent) {
-                        Timber.d("saving "+jsonTeam.getTeamScouting2015().getTeam());
-                        jsonTeam.getMatch().getEvent().saveMod();
-                    } else {
-                        Timber.d("loaded "+findEvent);
-                        jsonTeam.getMatch().setEvent(findEvent);
-                    }
-                    Timber.d("saving "+jsonTeam.getTeamScouting2015());
-                    jsonTeam.getMatch().saveMod();
-                } else {
-                    Timber.d("loaded "+findMatch);
-                    jsonTeam.setMatch(findMatch);
-                }
-                Timber.d("saving "+jsonTeam);
                 jsonTeam.saveMod();
-                EventTeam findEventTeam = new Select().from(EventTeam.class)
-                        .join(Event.class).on(EventTeam.TAG + "." + EventTeam.EVENT + "=" + Event.TAG + "." + Event.ID)
-                        .join(Event.class).on(EventTeam.TAG + "." + EventTeam.TEAM + "=" + Team.TAG + "." + Team.ID)
-                        .where(Event.TAG + "." + Event.EVENT_CODE + "=?", jsonTeam.getMatch().getEvent().getEventCode())
-                        .and(Event.TAG + "." + Event.YEAR + "=?", jsonTeam.getMatch().getEvent().getYear())
-                        .and(Team.TAG + "." + Team.TEAM_NUMBER + "=?", jsonTeam.getTeamScouting2015().getTeam().getTeamNumber())
-                        .executeSingle();
-                if(null==findEventTeam) {
-                    findEventTeam = new EventTeam();
-                    findEventTeam.setEvent(jsonTeam.getMatch().getEvent());
-                    findEventTeam.setTeam(jsonTeam.getTeamScouting2015().getTeam());
-                    findEventTeam.saveMod();
-                } else {
-                    Timber.d("loaded " + findEventTeam);
-                }
+                EventTeam newEventTeam = new EventTeam();
+                newEventTeam.setEvent(jsonTeam.getMatch().getEvent());
+                newEventTeam.setTeam(jsonTeam.getTeamScouting2015().getTeam());
+                newEventTeam.saveMod();
             }
         }
         ToastEvent.toast("Restore complete");

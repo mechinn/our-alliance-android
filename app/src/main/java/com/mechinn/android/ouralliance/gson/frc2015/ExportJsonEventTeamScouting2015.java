@@ -31,7 +31,7 @@ public class ExportJsonEventTeamScouting2015 extends ExportJson {
     public void run() throws IOException {
         ToastEvent.toast("Starting backup", false);
         List<TeamScouting2015> teams = new Select().from(TeamScouting2015.class).join(EventTeam.class).on(TeamScouting2015.TAG+"."+TeamScouting2015.TEAM+"="+EventTeam.TAG+"."+EventTeam.TEAM).where(EventTeam.TAG+"."+EventTeam.EVENT+"=?",getPrefs().getComp()).execute();
-        TeamScouting2015Wrapper wrapper = new TeamScouting2015Wrapper(TeamScouting2015.TAG);
+        TeamScouting2015Wrapper wrapper = new TeamScouting2015Wrapper();
         wrapper.setData(teams);
         addJson(OurAllianceGson.BUILDER.toJson(wrapper));
         super.run();

@@ -5,9 +5,12 @@ import android.provider.BaseColumns;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
+import com.mechinn.android.ouralliance.Prefs;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 @Table(name = EventTeam.TAG, id = EventTeam.ID)
 public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<EventTeam>, java.io.Serializable {
@@ -32,25 +35,37 @@ public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceO
         return event;
     }
     public void setEvent(Event event) {
-        this.event = event;
+        if(!event.equals(this.event)) {
+            this.event = event;
+            changedData();
+        }
     }
     public Team getTeam() {
         return team;
     }
     public void setTeam(Team team) {
-        this.team = team;
+        if(!team.equals(this.team)) {
+            this.team = team;
+            changedData();
+        }
     }
     public Integer getRank() {
         return rank;
     }
     public void setRank(Integer rank) {
-        this.rank = rank;
+        if(!rank.equals(this.rank)) {
+            this.rank = rank;
+            changedData();
+        }
     }
     public boolean isScouted() {
         return scouted;
     }
     public void setScouted(boolean scouted) {
-        this.scouted = scouted;
+        if(scouted!=this.scouted) {
+            this.scouted = scouted;
+            changedData();
+        }
     }
     public String toString() {
         return this.getEvent()+" # "+this.rank+" "+this.team;
@@ -64,12 +79,38 @@ public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceO
         }
         return false;
     }
+    public static EventTeam load(long eventId, long teamId) {
+        return new Select().from(EventTeam.class).where(EventTeam.EVENT+"=?",eventId).and(EventTeam.TEAM+"=?",teamId).executeSingle();
+    }
+    public void saveMod() {
+        if (null == this.getId()) {
+            this.getEvent().saveMod();
+            if(-1==this.getEvent().getId()) {
+                this.setEvent(Event.load(this.getEvent().getEventCode(),this.getEvent().getYear()));
+            }
+            this.getTeam().saveMod();
+            Timber.d(this.getTeam() + " " + this.getTeam().getId());
+            if(-1==this.getTeam().getId()) {
+                this.setTeam(Team.load(this.getTeam().getTeamNumber()));
+            }
+        }
+        super.saveMod();
+    }
+    public void saveEvent() {
+        EventBus.getDefault().post(this.getEvent());
+        EventBus.getDefault().post(this.getTeam());
+        super.saveEvent();
+    }
     public boolean equals(Object data) {
         if(!(data instanceof EventTeam)) {
             return false;
         }
-        return  getEvent().equals(((EventTeam)data).getEvent()) &&
-                getTeam().equals(((EventTeam)data).getTeam());
+        try {
+            return  getEvent().equals(((EventTeam)data).getEvent()) &&
+                    getTeam().equals(((EventTeam)data).getTeam());
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
     public int compareTo(EventTeam another) {
         int compare = this.getRank() - another.getRank();

@@ -1,11 +1,12 @@
 package com.mechinn.android.ouralliance.data;
 
 import com.activeandroid.annotation.Column;
+import com.activeandroid.query.Select;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 
-public abstract class Wheel extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<Wheel>, java.io.Serializable {
+public abstract class Wheel extends OurAllianceObject implements Comparable<Wheel>, java.io.Serializable {
     public final static String TAG = "Wheel";
     public final static String WHEEL_TYPE = "wheelType";
     public final static String WHEEL_SIZE = "wheelSize";
@@ -20,22 +21,32 @@ public abstract class Wheel extends com.mechinn.android.ouralliance.data.OurAlli
         return wheelType;
     }
     public void setWheelType(String wheelType) {
-        this.wheelType = wheelType;
+        if(!wheelType.equals(this.wheelType)) {
+            this.wheelType = wheelType;
+            changedData();
+        }
     }
     public Double getWheelSize() {
         return wheelSize;
     }
     public void setWheelSize(Double wheelSize) {
-        this.wheelSize = wheelSize;
+        if(!wheelSize.equals(this.wheelSize)) {
+            this.wheelSize = wheelSize;
+            changedData();
+        }
     }
     public Integer getWheelCount() {
         return wheelCount;
     }
     public void setWheelCount(Integer wheelCount) {
-        this.wheelCount = wheelCount;
+        if(!wheelCount.equals(this.wheelCount)) {
+            this.wheelCount = wheelCount;
+            changedData();
+        }
     }
     public abstract TeamScouting getTeamScouting();
     public abstract void setTeamScouting(TeamScouting teamScouting);
+    public abstract TeamScouting loadTeamScouting(long teamId);
     public String toString() {
         return getTeamScouting()+": "+ getWheelType()+" | "+ getWheelSize()+" | "+ getWheelCount();
     }
@@ -47,13 +58,34 @@ public abstract class Wheel extends com.mechinn.android.ouralliance.data.OurAlli
         }
         return false;
     }
+    public void saveMod() {
+        if (null == this.getId()) {
+            this.getTeamScouting().getTeam().saveMod();
+            if(-1==this.getTeamScouting().getTeam().getId()) {
+                this.getTeamScouting().setTeam(Team.load(this.getTeamScouting().getTeam().getTeamNumber()));
+            }
+            this.getTeamScouting().saveMod();
+            if(-1==this.getTeamScouting().getId()) {
+                this.setTeamScouting(loadTeamScouting(this.getTeamScouting().getTeam().getId()));
+            }
+        }
+        super.saveMod();
+    }
+    public void saveEvent() {
+        EventBus.getDefault().post(this.getTeamScouting());
+        super.saveEvent();
+    }
     public boolean equals(Object data) {
         if(!(data instanceof Wheel)) {
             return false;
         }
-        return  getTeamScouting().equals(((Wheel)data).getTeamScouting()) &&
-                getWheelType().equals(((Wheel)data).getWheelType()) &&
-                getWheelSize()==((Wheel)data).getWheelSize();
+        try {
+            return  getTeamScouting().equals(((Wheel)data).getTeamScouting()) &&
+                    getWheelType().equals(((Wheel)data).getWheelType()) &&
+                    getWheelSize()==((Wheel)data).getWheelSize();
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
     public int compareTo(Wheel another) {
         int compare = this.getWheelType().compareTo(another.getWheelType());

@@ -2,8 +2,11 @@ package com.mechinn.android.ouralliance.data;
 
 import android.database.Cursor;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -11,14 +14,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.mechinn.android.ouralliance.Prefs;
+import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
+import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 @Table(name = Team.TAG, id = Team.ID)
-public class Team extends com.mechinn.android.ouralliance.data.OurAllianceObject  implements Comparable<Team>, java.io.Serializable {
+public class Team extends OurAllianceObject implements Comparable<Team>, java.io.Serializable {
     public final static String TAG = "Team";
     public final static String WEBSITE = "website";
     public final static String NAME = "name";
@@ -52,19 +60,28 @@ public class Team extends com.mechinn.android.ouralliance.data.OurAllianceObject
         return teamNumber;
     }
     public void setTeamNumber(int teamNumber) {
-        this.teamNumber = teamNumber;
+        if(teamNumber!=this.teamNumber) {
+            this.teamNumber = teamNumber;
+            changedData();
+        }
     }
     public String getName() {
         return name;
     }
     public void setName(String name) {
-        this.name = name;
+        if(!name.equals(this.name)) {
+            this.name = name;
+            changedData();
+        }
     }
     public String getNickname() {
         return nickname;
     }
     public void setNickname(String nickname) {
-        this.nickname = nickname;
+        if(!nickname.equals(this.nickname)) {
+            this.nickname = nickname;
+            changedData();
+        }
     }
     public String getDisplayName() {
         if(null!=getNickname() && ""!=getNickname()) {
@@ -79,31 +96,46 @@ public class Team extends com.mechinn.android.ouralliance.data.OurAllianceObject
         return website;
     }
     public void setWebsite(String website) {
-        this.website = website;
+        if(!website.equals(this.website)) {
+            this.website = website;
+            changedData();
+        }
     }
     public String getLocality() {
         return locality;
     }
     public void setLocality(String locality) {
-        this.locality = locality;
+        if(!locality.equals(this.locality)) {
+            this.locality = locality;
+            changedData();
+        }
     }
     public String getRegion() {
         return region;
     }
     public void setRegion(String region) {
-        this.region = region;
+        if(!region.equals(this.region)) {
+            this.region = region;
+            changedData();
+        }
     }
     public String getCountry() {
         return country;
     }
     public void setCountry(String country) {
-        this.country = country;
+        if(!country.equals(this.country)) {
+            this.country = country;
+            changedData();
+        }
     }
     public int getRookieYear() {
         return rookieYear;
     }
     public void setRookieYear(int rookieYear) {
-        this.rookieYear = rookieYear;
+        if(rookieYear!=this.rookieYear) {
+            this.rookieYear = rookieYear;
+            changedData();
+        }
     }
     public String toString() {
         return this.getTeamNumber()+": "+this.getDisplayName();
@@ -129,7 +161,14 @@ public class Team extends com.mechinn.android.ouralliance.data.OurAllianceObject
         if(!(data instanceof Team)) {
             return false;
         }
-        return  getTeamNumber()==((Team) data).getTeamNumber();
+        try {
+            return  getTeamNumber()==((Team) data).getTeamNumber();
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+    public static Team load(int teamNumber) {
+        return new Select().from(Team.class).where(Team.TEAM_NUMBER+"=?",teamNumber).executeSingle();
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

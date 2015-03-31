@@ -3,6 +3,7 @@ package com.mechinn.android.ouralliance.data;
 import android.database.Cursor;
 
 import com.activeandroid.annotation.Column;
+import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 
 import java.util.HashMap;
@@ -33,27 +34,40 @@ public abstract class MatchScouting extends OurAllianceObject implements Compara
         return match;
     }
     public void setMatch(Match match) {
-        this.match = match;
+        if(!match.equals(this.match)) {
+            this.match = match;
+            changedData();
+        }
     }
     public abstract TeamScouting getTeamScouting();
     public abstract void setTeamScouting(TeamScouting teamScouting);
+    public abstract TeamScouting loadTeamScouting(long teamId);
     public boolean isAlliance() {
         return alliance;
     }
     public void setAlliance(boolean alliance) {
-        this.alliance = alliance;
+        if(alliance!=this.alliance) {
+            this.alliance = alliance;
+            changedData();
+        }
     }
     public int getPosition() {
         return position;
     }
     public void setPosition(int position) {
-        this.position = position;
+        if(position!=this.position) {
+            this.position = position;
+            changedData();
+        }
     }
     public String getNotes() {
         return notes;
     }
     public void setNotes(String notes) {
-        this.notes = notes;
+        if(!notes.equals(this.notes)) {
+            this.notes = notes;
+            changedData();
+        }
     }
     public int compareTo(MatchScouting another) {
         int compare = (this.isAlliance()?1:0) - (another.isAlliance()?1:0);
@@ -73,12 +87,43 @@ public abstract class MatchScouting extends OurAllianceObject implements Compara
         }
         return false;
     }
+    public void saveMod() {
+        if (null == this.getId()) {
+            this.getMatch().getEvent().saveMod();
+            if(-1==this.getMatch().getEvent().getId()) {
+                this.getMatch().setEvent(Event.load(this.getMatch().getEvent().getEventCode(),this.getMatch().getEvent().getYear()));
+            }
+            this.getMatch().saveMod();
+            if(-1==this.getMatch().getId()) {
+                this.setMatch(Match.load(this.getMatch().getEvent().getId(),this.getMatch().getCompLevel(),this.getMatch().getMatchNumber(),this.getMatch().getSetNumber()));
+            }
+            this.getTeamScouting().getTeam().saveMod();
+            if(-1==this.getTeamScouting().getTeam().getId()) {
+                this.getTeamScouting().setTeam(Team.load(this.getTeamScouting().getTeam().getTeamNumber()));
+            }
+            this.getTeamScouting().saveMod();
+            if(-1==this.getTeamScouting().getId()) {
+                this.setTeamScouting(loadTeamScouting(this.getTeamScouting().getTeam().getId()));
+            }
+        }
+        super.saveMod();
+    }
+    public void saveEvent() {
+        EventBus.getDefault().post(this.getMatch().getEvent());
+        EventBus.getDefault().post(this.getMatch());
+        EventBus.getDefault().post(this.getTeamScouting());
+        super.saveEvent();
+    }
     public boolean equals(Object data) {
         if (!(data instanceof MatchScouting)) {
             return false;
         }
-        return getMatch().equals(((MatchScouting) data).getMatch()) &&
-                getTeamScouting().equals(((MatchScouting) data).getTeamScouting());
+        try {
+            return getMatch().equals(((MatchScouting) data).getMatch()) &&
+                    getTeamScouting().equals(((MatchScouting) data).getTeamScouting());
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

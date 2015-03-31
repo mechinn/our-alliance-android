@@ -1,6 +1,8 @@
 package com.mechinn.android.ouralliance.data;
 
 import com.activeandroid.annotation.Column;
+import com.activeandroid.query.Select;
+import com.mechinn.android.ouralliance.Prefs;
 
 import java.util.List;
 
@@ -19,13 +21,19 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
         return team;
     }
     public void setTeam(Team team) {
-        this.team = team;
+        if(!team.equals(this.team)) {
+            this.team = team;
+            changedData();
+        }
     }
     public String getNotes() {
         return notes;
     }
     public void setNotes(String notes) {
-        this.notes = notes;
+        if(!notes.equals(this.notes)) {
+            this.notes = notes;
+            changedData();
+        }
     }
     public abstract List<? extends Wheel> getWheels();
     public abstract List<? extends MatchScouting> getMatches();
@@ -45,11 +53,28 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
         }
         return false;
     }
+    public void saveMod() {
+        if (null == this.getId()) {
+            this.getTeam().saveMod();
+            if(-1==this.getTeam().getId()) {
+                this.setTeam(Team.load(this.getTeam().getTeamNumber()));
+            }
+        }
+        super.saveMod();
+    }
+    public void saveEvent() {
+        EventBus.getDefault().post(this.getTeam());
+        super.saveEvent();
+    }
     public boolean equals(Object data) {
         if (!(data instanceof TeamScouting)) {
             return false;
         }
-        return getTeam().equals(((TeamScouting) data).getTeam());
+        try {
+            return getTeam().equals(((TeamScouting) data).getTeam());
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

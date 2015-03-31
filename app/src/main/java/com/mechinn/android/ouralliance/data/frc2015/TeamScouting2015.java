@@ -86,109 +86,166 @@ public class TeamScouting2015 extends TeamScouting {
         return orientation;
     }
     public void setOrientation(String orientation) {
-        this.orientation = orientation;
+        if(!orientation.equals(this.orientation)) {
+            this.orientation = orientation;
+            changedData();
+        }
     }
     public String getDriveTrain() {
         return driveTrain;
     }
     public void setDriveTrain(String driveTrain) {
-        this.driveTrain = driveTrain;
+        if(!driveTrain.equals(this.driveTrain)) {
+            this.driveTrain = driveTrain;
+            changedData();
+        }
     }
     public Double getWidth() {
         return width;
     }
     public void setWidth(Double width) {
-        this.width = width;
+        if(!width.equals(this.width)) {
+            this.width = width;
+            changedData();
+        }
     }
     public Double getLength() {
         return length;
     }
     public void setLength(Double length) {
-        this.length = length;
+        if(!length.equals(this.length)) {
+            this.length = length;
+            changedData();
+        }
     }
     public Double getHeight() {
         return height;
     }
     public void setHeight(Double height) {
-        this.height = height;
+        if(!height.equals(this.height)) {
+            this.height = height;
+            changedData();
+        }
     }
     public Boolean getCoop() {
         return coop;
     }
     public void setCoop(Boolean coop) {
-        this.coop = coop;
+        if(!coop.equals(this.coop)) {
+            this.coop = coop;
+            changedData();
+        }
     }
     public Float getDriverExperience() {
         return driverExperience;
     }
     public void setDriverExperience(Float driverExperience) {
-        this.driverExperience = driverExperience;
+        if(!driverExperience.equals(this.driverExperience)) {
+            this.driverExperience = driverExperience;
+            changedData();
+        }
     }
     public String getPickupMechanism() {
         return pickupMechanism;
     }
     public void setPickupMechanism(String pickupMechanism) {
-        this.pickupMechanism = pickupMechanism;
+        if(!pickupMechanism.equals(this.pickupMechanism)) {
+            this.pickupMechanism = pickupMechanism;
+            changedData();
+        }
     }
     public Integer getMaxToteStack() {
         return maxToteStack;
     }
     public void setMaxToteStack(Integer maxToteStack) {
-        this.maxToteStack = maxToteStack;
+        if(!maxToteStack.equals(this.maxToteStack)) {
+            this.maxToteStack = maxToteStack;
+            changedData();
+        }
     }
     public Integer getMaxTotesStackContainer() {
         return maxTotesStackContainer;
     }
     public void setMaxTotesStackContainer(Integer maxTotesStackContainer) {
-        this.maxTotesStackContainer = maxTotesStackContainer;
+        if(!maxTotesStackContainer.equals(this.maxTotesStackContainer)) {
+            this.maxTotesStackContainer = maxTotesStackContainer;
+            changedData();
+        }
     }
     public Integer getMaxTotesAndContainerLitter() {
         return maxTotesAndContainerLitter;
     }
     public void setMaxTotesAndContainerLitter(Integer maxTotesAndContainerLitter) {
-        this.maxTotesAndContainerLitter = maxTotesAndContainerLitter;
+        if(!maxTotesAndContainerLitter.equals(this.maxTotesAndContainerLitter)) {
+            this.maxTotesAndContainerLitter = maxTotesAndContainerLitter;
+            changedData();
+        }
     }
     public Float getHumanPlayer() {
         return humanPlayer;
     }
     public void setHumanPlayer(Float humanPlayer) {
-        this.humanPlayer = humanPlayer;
+        if(!humanPlayer.equals(this.humanPlayer)) {
+            this.humanPlayer = humanPlayer;
+            changedData();
+        }
     }
     public Boolean getNoAuto() {
         return noAuto;
     }
     public void setNoAuto(Boolean noAuto) {
-        this.noAuto = noAuto;
+        if(!noAuto.equals(this.noAuto)) {
+            this.noAuto = noAuto;
+            changedData();
+        }
     }
     public Boolean getDriveAuto() {
         return driveAuto;
     }
     public void setDriveAuto(Boolean driveAuto) {
-        this.driveAuto = driveAuto;
+        if(!driveAuto.equals(this.driveAuto)) {
+            this.driveAuto = driveAuto;
+            changedData();
+        }
     }
     public Boolean getToteAuto() {
         return toteAuto;
     }
     public void setToteAuto(Boolean toteAuto) {
-        this.toteAuto = toteAuto;
+        if(!toteAuto.equals(this.toteAuto)) {
+            this.toteAuto = toteAuto;
+            changedData();
+        }
     }
     public Boolean getContainerAuto() {
         return containerAuto;
     }
     public void setContainerAuto(Boolean containerAuto) {
-        this.containerAuto = containerAuto;
+        if(!containerAuto.equals(this.containerAuto)) {
+            this.containerAuto = containerAuto;
+            changedData();
+        }
     }
     public Boolean getStackedAuto() {
         return stackedAuto;
     }
     public void setStackedAuto(Boolean stackedAuto) {
-        this.stackedAuto = stackedAuto;
+        if(!stackedAuto.equals(this.stackedAuto)) {
+            this.stackedAuto = stackedAuto;
+            changedData();
+        }
     }
     public Integer getLandfillAuto() {
         return landfillAuto;
     }
     public void setLandfillAuto(Integer landfillAuto) {
-        this.landfillAuto = landfillAuto;
+        if(!landfillAuto.equals(this.landfillAuto)) {
+            this.landfillAuto = landfillAuto;
+            changedData();
+        }
+    }
+    public static TeamScouting2015 load(long teamId) {
+        return new Select().from(TeamScouting2015.class).where(TeamScouting.TEAM+"=?",teamId).executeSingle();
     }
     public List<? extends MatchScouting> getMatches() {
         return getMany(MatchScouting2015.class, super.TAG);
@@ -252,7 +309,11 @@ public class TeamScouting2015 extends TeamScouting {
         if(!(data instanceof TeamScouting2015)) {
             return false;
         }
-        return  super.equals(data);
+        try {
+            return  super.equals(data);
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

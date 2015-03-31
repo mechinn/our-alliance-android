@@ -33,6 +33,12 @@ public class Wheel2014 extends Wheel {
     public void setTeamScouting(TeamScouting teamScouting) {
         setTeamScouting2014((TeamScouting2014) teamScouting);
     }
+
+    @Override
+    public TeamScouting loadTeamScouting(long teamId) {
+        return TeamScouting2014.load(teamId);
+    }
+
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override

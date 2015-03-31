@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.data.MatchScouting;
 import com.mechinn.android.ouralliance.data.TeamScouting;
 import com.mechinn.android.ouralliance.data.Wheel;
@@ -288,6 +289,9 @@ public class TeamScouting2014 extends TeamScouting {
                 " Low Autonomous Mode: "+this.getLowAuto()+
                 " High Autonomous Mode: "+this.getHighAuto()+
                 " Hot Autonomous Mode: "+this.getHotAuto();
+    }
+    public static TeamScouting2014 load(long teamId) {
+        return new Select().from(TeamScouting2014.class).where(TeamScouting.TEAM+"=?",teamId).executeSingle();
     }
     public boolean equals(Object data) {
         if(!(data instanceof TeamScouting2014)) {

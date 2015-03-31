@@ -53,15 +53,6 @@ public class ImportJsonEventTeamScouting2015 extends ImportJson {
                 }
             }
             if(!found) {
-                Team findTeam = new Select().from(Team.class).where(Team.TEAM_NUMBER+"=?",jsonTeam.getTeam().getTeamNumber()).executeSingle();
-                if(null==findTeam) {
-                    Timber.d("saving "+jsonTeam.getTeam());
-                    jsonTeam.getTeam().saveMod();
-                } else {
-                    Timber.d("loaded "+findTeam);
-                    jsonTeam.setTeam(findTeam);
-                }
-                Timber.d("saving "+jsonTeam);
                 jsonTeam.saveMod();
             }
         }
