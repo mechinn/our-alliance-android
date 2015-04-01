@@ -8,6 +8,7 @@ import com.activeandroid.query.Select;
 import com.google.gson.reflect.TypeToken;
 import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.EventTeam;
+import com.mechinn.android.ouralliance.data.JsonWrapper;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015;
@@ -32,9 +33,15 @@ public class ImportJsonEventMatchScouting2015 extends ImportJson {
     public ImportJsonEventMatchScouting2015(Context context, Uri uri) {
         super(context, uri);
     }
+    public ImportJsonEventMatchScouting2015(Context context, JsonWrapper jsonWrapper) {
+        super(context,jsonWrapper);
+    }
     public void run() throws IOException {
         super.run();
-        MatchScouting2015Wrapper jsonTeams = OurAllianceGson.BUILDER.fromJson(getJson(), MatchScouting2015Wrapper.class);
+        MatchScouting2015Wrapper jsonTeams = (MatchScouting2015Wrapper) getJsonWrapper();
+        if(null==getJsonWrapper()) {
+            jsonTeams = OurAllianceGson.BUILDER.fromJson(getJson(), MatchScouting2015Wrapper.class);
+        }
         List<MatchScouting2015> dbTeams = new Select().from(MatchScouting2015.class).execute();
         ActiveAndroid.beginTransaction();
         try {

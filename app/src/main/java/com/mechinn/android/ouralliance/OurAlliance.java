@@ -24,13 +24,17 @@ import com.mechinn.android.ouralliance.data.frc2014.MatchScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.Wheel2014;
 import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015;
+import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015Wrapper;
 import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
+import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015Wrapper;
 import com.mechinn.android.ouralliance.data.frc2015.Wheel2015;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.event.EventException;
 import com.mechinn.android.ouralliance.event.ResetEvent;
 import com.mechinn.android.ouralliance.event.ToastEvent;
+import com.mechinn.android.ouralliance.gson.BluetoothImportJson;
 import com.mechinn.android.ouralliance.gson.OurAllianceGson;
+import com.mechinn.android.ouralliance.gson.frc2015.ImportJsonEventTeamScouting2015;
 import com.mechinn.android.ouralliance.gson.frc2015.TeamScouting2015WrapperAdapter;
 
 import java.io.File;
@@ -93,10 +97,10 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
         }
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
             public void onDataReceived(byte[] data, String message) {
-                switch(prefs.getYear()) {
-                    case 2015:
-                        JsonWrapper<TeamScouting2015> jsonTeams = OurAllianceGson.BUILDER.fromJson(message, JsonWrapper.class);
-                }
+                ToastEvent.toast("Recieved data");
+                Timber.d("Recieved data");
+                Timber.d(message);
+                AsyncExecutor.create().execute(new BluetoothImportJson(OurAlliance.this,message));
             }
         });
         EventBus.getDefault().postSticky(bt);

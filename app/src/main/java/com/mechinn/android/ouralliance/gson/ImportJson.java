@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.mechinn.android.ouralliance.Prefs;
+import com.mechinn.android.ouralliance.data.JsonWrapper;
 import com.mechinn.android.ouralliance.event.ToastEvent;
 
 import java.io.BufferedReader;
@@ -26,16 +27,17 @@ public abstract class ImportJson implements AsyncExecutor.RunnableEx {
     private Context context;
     private Uri uri;
     private BluetoothSPP bluetooth;
+    private JsonWrapper jsonWrapper;
     private String json;
     public ImportJson(Context context, Uri uri) {
         this.context = context;
         this.prefs = new Prefs(context);
         this.uri = uri;
     }
-    public ImportJson(Context context, String json) {
+    public ImportJson(Context context, JsonWrapper jsonWrapper) {
         this.context = context;
         this.prefs = new Prefs(context);
-        this.json = json;
+        this.jsonWrapper = jsonWrapper;
     }
     public Prefs getPrefs() {
         return prefs;
@@ -45,9 +47,13 @@ public abstract class ImportJson implements AsyncExecutor.RunnableEx {
         return json;
     }
 
+    public JsonWrapper getJsonWrapper() {
+        return jsonWrapper;
+    }
+
     public void run() throws IOException {
         ToastEvent.toast("Starting restore",false);
-        if(null==json) {
+        if(null==jsonWrapper) {
             final InputStream inputStream = context.getContentResolver().openInputStream(uri);
             json = new String(IoUtils.readAllBytesAndClose(inputStream));
         }

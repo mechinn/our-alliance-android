@@ -26,6 +26,8 @@ public class JsonWrapper<Wrapped extends OurAllianceObject> {
         data.add(u);
     }
 
+    public int getSize() { return data.size(); }
+
     public List<Wrapped> getData() {
         return data;
     }

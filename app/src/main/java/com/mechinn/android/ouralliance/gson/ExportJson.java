@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import app.akexorcist.bluetotohspp.library.BluetoothState;
 import de.greenrobot.common.io.IoUtils;
 import de.greenrobot.event.util.AsyncExecutor;
 import timber.log.Timber;
@@ -45,10 +46,22 @@ public abstract class ExportJson implements AsyncExecutor.RunnableEx {
     public void addJsonHeader(String json) {
         this.json+=json;
     }
-    public void run() throws IOException {
+    public void run() throws IOException, InterruptedException {
         Timber.d("json: " + json);
         if(null!=bluetooth) {
-            bluetooth.send(json, true);
+            for(int i=0;i<100;i++) {
+                if(bluetooth.getServiceState()!=BluetoothState.STATE_CONNECTING) {
+                    break;
+                }
+                Timber.d("Still connecting...");
+                Thread.sleep(100);
+            }
+            if (bluetooth.getServiceState()==BluetoothState.STATE_CONNECTED) {
+                bluetooth.send(json, true);
+            } else {
+                Timber.d("did not make a connection");
+                ToastEvent.toast("did not make a connection");
+            }
         } else {
             IoUtils.writeAllCharsAndClose(new OutputStreamWriter(context.getContentResolver().openOutputStream(uri)), json);
         }

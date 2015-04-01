@@ -118,10 +118,13 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         }
     }
     public Date getTime() {
+        if(null==time) {
+            return null;
+        }
         return new Date(time);
     }
     public void setTime(Date time) {
-        if(this.time!=time.getTime()) {
+        if(null==time && null!=this.time || null!=time && !time.equals(this.getTime())) {
             this.time = time.getTime();
             changedData();
         }
