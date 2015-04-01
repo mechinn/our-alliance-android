@@ -35,8 +35,12 @@ public class Wheel2014 extends Wheel {
     }
 
     @Override
-    public TeamScouting loadTeamScouting(long teamId) {
-        return TeamScouting2014.load(teamId);
+    protected void saveTeamScouting() {
+        this.getTeamScouting2014().saveMod();
+        if(-1==this.getTeamScouting2014().getId()) {
+            TeamScouting2014 dbTeamScouting = TeamScouting2014.load(this.getTeamScouting2014().getTeam().getId());
+            this.setTeamScouting2014(dbTeamScouting);
+        }
     }
 
     public void asyncSave() {

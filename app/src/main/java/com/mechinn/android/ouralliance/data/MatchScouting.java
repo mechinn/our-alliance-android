@@ -39,9 +39,12 @@ public abstract class MatchScouting extends OurAllianceObject implements Compara
             changedData();
         }
     }
+    public void replaceMatch(Match match) {
+        this.match = match;
+    }
     public abstract TeamScouting getTeamScouting();
     public abstract void setTeamScouting(TeamScouting teamScouting);
-    public abstract TeamScouting loadTeamScouting(long teamId);
+    protected abstract void saveTeamScouting();
     public boolean isAlliance() {
         return alliance;
     }
@@ -89,22 +92,11 @@ public abstract class MatchScouting extends OurAllianceObject implements Compara
     }
     public void saveMod() {
         if (null == this.getId()) {
-            this.getMatch().getEvent().saveMod();
-            if(-1==this.getMatch().getEvent().getId()) {
-                this.getMatch().setEvent(Event.load(this.getMatch().getEvent().getEventCode(),this.getMatch().getEvent().getYear()));
-            }
             this.getMatch().saveMod();
             if(-1==this.getMatch().getId()) {
-                this.setMatch(Match.load(this.getMatch().getEvent().getId(),this.getMatch().getCompLevel(),this.getMatch().getMatchNumber(),this.getMatch().getSetNumber()));
+                this.replaceMatch(Match.load(this.getMatch().getEvent().getId(),this.getMatch().getCompLevel(),this.getMatch().getMatchNumber(),this.getMatch().getSetNumber()));
             }
-            this.getTeamScouting().getTeam().saveMod();
-            if(-1==this.getTeamScouting().getTeam().getId()) {
-                this.getTeamScouting().setTeam(Team.load(this.getTeamScouting().getTeam().getTeamNumber()));
-            }
-            this.getTeamScouting().saveMod();
-            if(-1==this.getTeamScouting().getId()) {
-                this.setTeamScouting(loadTeamScouting(this.getTeamScouting().getTeam().getId()));
-            }
+            saveTeamScouting();
         }
         super.saveMod();
     }

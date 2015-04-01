@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.app.Application;
 import com.activeandroid.query.Delete;
 import com.crashlytics.android.Crashlytics;
@@ -24,6 +25,7 @@ import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2014.Wheel2014;
 import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015;
 import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
+import com.mechinn.android.ouralliance.data.frc2015.Wheel2015;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.event.EventException;
 import com.mechinn.android.ouralliance.event.ResetEvent;
@@ -114,10 +116,9 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
         }
     }
 
-
-
     @Override
     public void onTerminate() {
+        bt.stopService();
         prefs.unsetChangeListener(this);
         EventBus.getDefault().unregister(this);
         super.onTerminate();
@@ -133,9 +134,25 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
                     case 0:
                         prefs.clear();
                         prefs.setVersion(0);
-                        Timber.i( "Resetting database");
-                        new Delete().from(Event.class).execute();
-                        new Delete().from(Team.class).execute();
+                        Timber.i("Resetting database");
+                        ActiveAndroid.beginTransaction();
+                        try {
+                            new Delete().from(MatchScouting2015.class).execute();
+                            new Delete().from(Wheel2015.class).execute();
+                            new Delete().from(TeamScouting2015.class).execute();
+
+                            new Delete().from(MatchScouting2014.class).execute();
+                            new Delete().from(Wheel2014.class).execute();
+                            new Delete().from(TeamScouting2014.class).execute();
+
+                            new Delete().from(Match.class).execute();
+                            new Delete().from(EventTeam.class).execute();
+                            new Delete().from(Event.class).execute();
+                            new Delete().from(Team.class).execute();
+                            ActiveAndroid.setTransactionSuccessful();
+                        } finally {
+                            ActiveAndroid.endTransaction();
+                        }
                     case 1:
                     case 2:
                     case 3:

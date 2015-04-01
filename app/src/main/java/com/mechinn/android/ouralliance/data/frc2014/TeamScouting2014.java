@@ -291,7 +291,7 @@ public class TeamScouting2014 extends TeamScouting {
                 " Hot Autonomous Mode: "+this.getHotAuto();
     }
     public static TeamScouting2014 load(long teamId) {
-        return new Select().from(TeamScouting2014.class).where(TeamScouting.TEAM+"=?",teamId).executeSingle();
+        return new Select().from(TeamScouting2014.class).where(TeamScouting2014.TEAM+"=?",teamId).executeSingle();
     }
     public boolean equals(Object data) {
         if(!(data instanceof TeamScouting2014)) {

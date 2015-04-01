@@ -1,6 +1,8 @@
 package com.mechinn.android.ouralliance.data;
 
+import com.google.gson.JsonElement;
 import com.mechinn.android.ouralliance.data.OurAllianceObject;
+import com.mechinn.android.ouralliance.gson.OurAllianceGson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,7 @@ public class JsonWrapper<Wrapped extends OurAllianceObject> {
 
     public JsonWrapper(String type) {
         this.type = type;
+        this.data = new ArrayList<>();
     }
 
     public void add(Wrapped u){

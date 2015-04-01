@@ -26,13 +26,23 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
             changedData();
         }
     }
+    public void replaceTeam(Team team) {
+        this.team = team;
+    }
     public String getNotes() {
         return notes;
     }
     public void setNotes(String notes) {
-        if(!notes.equals(this.notes)) {
-            this.notes = notes;
-            changedData();
+        try {
+            if (!notes.equals(this.notes)) {
+                this.notes = notes;
+                changedData();
+            }
+        } catch (NullPointerException e) {
+            if(null!=this.notes) {
+                this.notes = notes;
+                changedData();
+            }
         }
     }
     public abstract List<? extends Wheel> getWheels();
@@ -57,7 +67,7 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
         if (null == this.getId()) {
             this.getTeam().saveMod();
             if(-1==this.getTeam().getId()) {
-                this.setTeam(Team.load(this.getTeam().getTeamNumber()));
+                this.replaceTeam(Team.load(this.getTeam().getTeamNumber()));
             }
         }
         super.saveMod();

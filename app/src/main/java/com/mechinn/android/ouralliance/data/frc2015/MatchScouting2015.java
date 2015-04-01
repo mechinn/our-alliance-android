@@ -71,6 +71,9 @@ public class MatchScouting2015 extends MatchScouting {
             changedData();
         }
     }
+    public void replaceTeamScouting2015(TeamScouting2015 teamScouting2015) {
+        this.teamScouting2015 = teamScouting2015;
+    }
     public TeamScouting getTeamScouting() {
         return getTeamScouting2015();
     }
@@ -79,8 +82,11 @@ public class MatchScouting2015 extends MatchScouting {
     }
 
     @Override
-    public TeamScouting loadTeamScouting(long teamId) {
-        return TeamScouting2015.load(teamId);
+    protected void saveTeamScouting() {
+        this.getTeamScouting2015().saveMod();
+        if(-1==this.getTeamScouting2015().getId()) {
+            this.replaceTeamScouting2015(TeamScouting2015.load(this.getTeamScouting2015().getTeam().getId()));
+        }
     }
 
     public Boolean getAutoStacked() {
@@ -209,13 +215,6 @@ public class MatchScouting2015 extends MatchScouting {
             return true;
         }
         return false;
-    }
-    public void saveMod() {
-        if (null == this.getId()) {
-            this.getTeamScouting().saveMod();
-
-        }
-        super.saveMod();
     }
     public boolean equals(Object data) {
         if (!(data instanceof MatchScouting2015)) {

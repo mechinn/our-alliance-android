@@ -57,6 +57,9 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
             changedData();
         }
     }
+    public void replaceEvent(Event event) {
+        this.event = event;
+    }
     public String getCompLevel() {
         return compLevel;
     }
@@ -161,7 +164,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         if (null == this.getId()) {
             this.getEvent().saveMod();
             if(-1==this.getEvent().getId()) {
-                this.setEvent(Event.load(this.getEvent().getEventCode(), this.getEvent().getYear()));
+                replaceEvent(Event.load(this.getEvent().getEventCode(), this.getEvent().getYear()));
             }
         }
         super.saveMod();

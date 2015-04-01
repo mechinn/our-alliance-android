@@ -3,6 +3,7 @@ package com.mechinn.android.ouralliance.gson.frc2015;
 import android.content.Context;
 import android.net.Uri;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
 import com.google.gson.reflect.TypeToken;
 import com.mechinn.android.ouralliance.data.Event;
@@ -10,6 +11,7 @@ import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015;
+import com.mechinn.android.ouralliance.data.frc2015.MatchScouting2015Wrapper;
 import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 import com.mechinn.android.ouralliance.event.ToastEvent;
 import com.mechinn.android.ouralliance.gson.ImportJson;
@@ -32,37 +34,42 @@ public class ImportJsonEventMatchScouting2015 extends ImportJson {
     }
     public void run() throws IOException {
         super.run();
-        Type listType = new TypeToken<ArrayList<MatchScouting2015>>() {}.getType();
-        List<MatchScouting2015> jsonTeams = OurAllianceGson.BUILDER.fromJson(getJson(), listType);
+        MatchScouting2015Wrapper jsonTeams = OurAllianceGson.BUILDER.fromJson(getJson(), MatchScouting2015Wrapper.class);
         List<MatchScouting2015> dbTeams = new Select().from(MatchScouting2015.class).execute();
-        for(MatchScouting2015 jsonTeam : jsonTeams) {
-            boolean found = false;
-            if(null!=dbTeams) {
-                for (MatchScouting2015 dbTeam : dbTeams) {
-                    Timber.d("checking if "+jsonTeam+" equal to "+dbTeam);
-                    if (jsonTeam.getTeamScouting2015().equals(dbTeam.getTeamScouting2015()) && jsonTeam.getMatch().equals(dbTeam.getMatch())) {
-                        Timber.d(jsonTeam.getModified()+" after "+dbTeam.getModified());
-                        if (jsonTeam.getModified().after(dbTeam.getModified())) {
-                            dbTeam.copy(jsonTeam);
-                            Timber.d("saving "+dbTeam);
-                            dbTeam.saveMod();
-                        } else {
-                            Timber.d("ignore "+jsonTeam);
+        ActiveAndroid.beginTransaction();
+        try {
+            for(MatchScouting2015 jsonTeam : jsonTeams.getData()) {
+                boolean found = false;
+                if(null!=dbTeams) {
+                    for (MatchScouting2015 dbTeam : dbTeams) {
+//                        Timber.d("checking if "+jsonTeam+" equal to "+dbTeam);
+                        if (jsonTeam.getTeamScouting2015().equals(dbTeam.getTeamScouting2015()) && jsonTeam.getMatch().equals(dbTeam.getMatch())) {
+                            Timber.d(jsonTeam.getModified()+" after "+dbTeam.getModified());
+                            if (jsonTeam.getModified().after(dbTeam.getModified())) {
+                                dbTeam.copy(jsonTeam);
+                                Timber.d("saving "+dbTeam);
+                                dbTeam.saveMod();
+                            } else {
+//                                Timber.d("ignore "+jsonTeam);
+                            }
+                            dbTeams.remove(dbTeam);
+                            found = true;
+                            break;
                         }
-                        dbTeams.remove(dbTeam);
-                        found = true;
-                        break;
                     }
                 }
+                if(!found) {
+                    jsonTeam.saveMod();
+                    EventTeam newEventTeam = new EventTeam();
+                    newEventTeam.setEvent(jsonTeam.getMatch().getEvent());
+                    newEventTeam.setTeam(jsonTeam.getTeamScouting2015().getTeam());
+                    newEventTeam.saveMod();
+                }
             }
-            if(!found) {
-                jsonTeam.saveMod();
-                EventTeam newEventTeam = new EventTeam();
-                newEventTeam.setEvent(jsonTeam.getMatch().getEvent());
-                newEventTeam.setTeam(jsonTeam.getTeamScouting2015().getTeam());
-                newEventTeam.saveMod();
-            }
+            ActiveAndroid.setTransactionSuccessful();
+            ToastEvent.toast("Restore complete");
+        } finally {
+            ActiveAndroid.endTransaction();
         }
-        ToastEvent.toast("Restore complete");
     }
 }

@@ -18,6 +18,8 @@ import de.greenrobot.event.util.AsyncExecutor;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class GetEventTeams implements AsyncExecutor.RunnableEx {
@@ -43,6 +45,7 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
             if(!ranks.isEmpty()) {
                 nextRank = ranks.get(0).getRank()+1;
             }
+            Collections.sort(teams);
             for(int teamRank=0;teamRank<teams.size();teamRank++) {
                 EventTeam eventTeam = new EventTeam();
                 eventTeam.setEvent(event);

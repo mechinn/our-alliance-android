@@ -40,8 +40,12 @@ public abstract class OurAllianceObject extends Model {
         changed = true;
     }
     public void saveMod() {
-        if(changed) {
-            setModified(new Date());
+        if(changed || null==getModified()) {
+            if(null==this.getId()) {
+                setModified(new Date(0));
+            } else {
+                setModified(new Date());
+            }
         }
         Timber.d("saving object");
         save();

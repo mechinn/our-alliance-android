@@ -20,6 +20,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
+import timber.log.Timber;
 
 @Table(name = TeamScouting2015.TAG, id = TeamScouting2015.ID)
 public class TeamScouting2015 extends TeamScouting {
@@ -245,7 +246,8 @@ public class TeamScouting2015 extends TeamScouting {
         }
     }
     public static TeamScouting2015 load(long teamId) {
-        return new Select().from(TeamScouting2015.class).where(TeamScouting.TEAM+"=?",teamId).executeSingle();
+        Timber.d("TeamScouting2015"+teamId);
+        return new Select().from(TeamScouting2015.class).where(TeamScouting2015.TEAM+"=?",teamId).executeSingle();
     }
     public List<? extends MatchScouting> getMatches() {
         return getMany(MatchScouting2015.class, super.TAG);

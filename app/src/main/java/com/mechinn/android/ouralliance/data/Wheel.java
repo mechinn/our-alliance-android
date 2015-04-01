@@ -46,7 +46,7 @@ public abstract class Wheel extends OurAllianceObject implements Comparable<Whee
     }
     public abstract TeamScouting getTeamScouting();
     public abstract void setTeamScouting(TeamScouting teamScouting);
-    public abstract TeamScouting loadTeamScouting(long teamId);
+    protected abstract void saveTeamScouting();
     public String toString() {
         return getTeamScouting()+": "+ getWheelType()+" | "+ getWheelSize()+" | "+ getWheelCount();
     }
@@ -60,14 +60,7 @@ public abstract class Wheel extends OurAllianceObject implements Comparable<Whee
     }
     public void saveMod() {
         if (null == this.getId()) {
-            this.getTeamScouting().getTeam().saveMod();
-            if(-1==this.getTeamScouting().getTeam().getId()) {
-                this.getTeamScouting().setTeam(Team.load(this.getTeamScouting().getTeam().getTeamNumber()));
-            }
-            this.getTeamScouting().saveMod();
-            if(-1==this.getTeamScouting().getId()) {
-                this.setTeamScouting(loadTeamScouting(this.getTeamScouting().getTeam().getId()));
-            }
+            saveTeamScouting();
         }
         super.saveMod();
     }

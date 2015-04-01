@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.*;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.activity.AnalysisActivity;
@@ -338,6 +339,47 @@ public class TeamListFragment extends Fragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
+                ActiveAndroid.beginTransaction();
+                try {
+                    From newEventTeamQuery = new Select()
+                            .from(EventTeam.class);
+                    List<EventTeam> newEventTeams;
+                    switch (prefs.getYear()) {
+                        case 2014:
+    //                        Timber.d(newEventTeamQuery.leftJoin(TeamScouting2014.class).on(EventTeam.TAG+"."+EventTeam.TEAM+"="+TeamScouting2014.TAG+"."+TeamScouting2014.TEAM)
+    //                                .where(EventTeam.TAG+"."+EventTeam.EVENT+"=?",prefs.getComp())
+    //                                .and(TeamScouting2014.TAG+"."+TeamScouting2014.ID+" IS NULL")
+    //                                .orderBy(Team.TAG + "." + Team.TEAM_NUMBER).toSql());
+                            newEventTeams = newEventTeamQuery.leftJoin(TeamScouting2014.class).on(EventTeam.TAG + "." + EventTeam.TEAM + "=" + TeamScouting2014.TAG + "." + TeamScouting2014.TEAM)
+                                    .where(EventTeam.TAG + "." + EventTeam.EVENT + "=?", prefs.getComp())
+                                    .and(TeamScouting2014.TAG + "." + TeamScouting2014.ID + " IS NULL").execute();
+                            for(EventTeam team : newEventTeams) {
+                                Timber.d(team.toString());
+                                TeamScouting2014 teamScouting2014 = new TeamScouting2014();
+                                teamScouting2014.setTeam(team.getTeam());
+                                teamScouting2014.saveMod();
+                            }
+                            break;
+                        case 2015:
+    //                        Timber.d(newEventTeamQuery.leftJoin(TeamScouting2015.class).on(EventTeam.TAG+"."+EventTeam.TEAM+"="+TeamScouting2015.TAG+"."+TeamScouting2015.TEAM)
+    //                                .where(EventTeam.TAG+"."+EventTeam.EVENT+"=?",prefs.getComp())
+    //                                .and(TeamScouting2015.TAG+"."+TeamScouting2015.ID+" IS NULL")
+    //                                .orderBy(Team.TAG + "." + Team.TEAM_NUMBER).toSql());
+                            newEventTeams = newEventTeamQuery.leftJoin(TeamScouting2015.class).on(EventTeam.TAG + "." + EventTeam.TEAM + "=" + TeamScouting2015.TAG + "." + TeamScouting2015.TEAM)
+                                    .where(EventTeam.TAG + "." + EventTeam.EVENT + "=?", prefs.getComp())
+                                    .and(TeamScouting2015.TAG + "." + TeamScouting2015.ID + " IS NULL").execute();
+                            for(EventTeam team : newEventTeams) {
+                                Timber.d(team.toString());
+                                TeamScouting2015 teamScouting2015 = new TeamScouting2015();
+                                teamScouting2015.setTeam(team.getTeam());
+                                teamScouting2015.saveMod();
+                            }
+                            break;
+                    }
+                    ActiveAndroid.setTransactionSuccessful();
+                } finally {
+                    ActiveAndroid.endTransaction();
+                }
                 From query = new Select().from(EventTeam.class).join(Team.class).on(EventTeam.TAG + "." + EventTeam.TEAM + "=" + Team.TAG + "." + Team.ID);
                 String orderBy = EventTeam.TAG + "." + EventTeam.RANK + " ASC";
                 switch (prefs.getYear()) {

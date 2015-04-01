@@ -128,11 +128,11 @@ public class Team extends OurAllianceObject implements Comparable<Team>, java.io
             changedData();
         }
     }
-    public int getRookieYear() {
+    public Integer getRookieYear() {
         return rookieYear;
     }
-    public void setRookieYear(int rookieYear) {
-        if(rookieYear!=this.rookieYear) {
+    public void setRookieYear(Integer rookieYear) {
+        if(!rookieYear.equals(this.rookieYear)) {
             this.rookieYear = rookieYear;
             changedData();
         }

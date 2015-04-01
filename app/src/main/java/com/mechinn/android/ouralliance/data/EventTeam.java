@@ -40,6 +40,9 @@ public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceO
             changedData();
         }
     }
+    public void replaceEvent(Event event) {
+        this.event = event;
+    }
     public Team getTeam() {
         return team;
     }
@@ -48,6 +51,9 @@ public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceO
             this.team = team;
             changedData();
         }
+    }
+    public void replaceTeam(Team team) {
+        this.team = team;
     }
     public Integer getRank() {
         return rank;
@@ -86,13 +92,14 @@ public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceO
         if (null == this.getId()) {
             this.getEvent().saveMod();
             if(-1==this.getEvent().getId()) {
-                this.setEvent(Event.load(this.getEvent().getEventCode(),this.getEvent().getYear()));
+                this.replaceEvent(Event.load(this.getEvent().getEventCode(),this.getEvent().getYear()));
             }
             this.getTeam().saveMod();
             Timber.d(this.getTeam() + " " + this.getTeam().getId());
             if(-1==this.getTeam().getId()) {
-                this.setTeam(Team.load(this.getTeam().getTeamNumber()));
+                this.replaceTeam(Team.load(this.getTeam().getTeamNumber()));
             }
+            Timber.d(this.getTeam() + " " + this.getTeam().getId());
         }
         super.saveMod();
     }
