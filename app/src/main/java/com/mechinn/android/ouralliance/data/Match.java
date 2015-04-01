@@ -52,7 +52,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return event;
     }
     public void setEvent(Event event) {
-        if(!event.equals(this.event)) {
+        if(null==event && null!=this.event || null!=event && !event.equals(this.event)) {
             this.event = event;
             changedData();
         }
@@ -94,7 +94,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         }
     }
     public void setCompLevel(String compLevel) {
-        if(!compLevel.equals(this.compLevel)) {
+        if(null==compLevel && null!=this.compLevel || null!=compLevel && !compLevel.equals(this.compLevel)) {
             this.compLevel = compLevel;
             changedData();
         }
@@ -112,7 +112,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return setNumber;
     }
     public void setSetNumber(Integer setNumber) {
-        if(!setNumber.equals(this.setNumber)) {
+        if(null==setNumber && null!=this.setNumber || null!=setNumber && !setNumber.equals(this.setNumber)) {
             this.setNumber = setNumber;
             changedData();
         }
@@ -130,7 +130,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return redScore;
     }
     public void setRedScore(Integer redScore) {
-        if(!redScore.equals(this.redScore)) {
+        if(null==redScore && null!=this.redScore || null!=redScore && !redScore.equals(this.redScore)) {
             this.redScore = redScore;
             changedData();
         }
@@ -139,7 +139,7 @@ public class Match extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return blueScore;
     }
     public void setBlueScore(Integer blueScore) {
-        if(!blueScore.equals(this.blueScore)) {
+        if(null==blueScore && null!=this.blueScore || null!=blueScore && !blueScore.equals(this.blueScore)) {
             this.blueScore = blueScore;
             changedData();
         }

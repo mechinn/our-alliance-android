@@ -69,7 +69,7 @@ public class Team extends OurAllianceObject implements Comparable<Team>, java.io
         return name;
     }
     public void setName(String name) {
-        if(!name.equals(this.name)) {
+        if(null==name && null!=this.name || null!=name && !name.equals(this.name)) {
             this.name = name;
             changedData();
         }
@@ -78,7 +78,7 @@ public class Team extends OurAllianceObject implements Comparable<Team>, java.io
         return nickname;
     }
     public void setNickname(String nickname) {
-        if(!nickname.equals(this.nickname)) {
+        if(null==nickname && null!=this.nickname || null!=nickname && !nickname.equals(this.nickname)) {
             this.nickname = nickname;
             changedData();
         }
@@ -96,7 +96,7 @@ public class Team extends OurAllianceObject implements Comparable<Team>, java.io
         return website;
     }
     public void setWebsite(String website) {
-        if(!website.equals(this.website)) {
+        if(null==website && null!=this.website || null!=website && !website.equals(this.website)) {
             this.website = website;
             changedData();
         }
@@ -105,7 +105,7 @@ public class Team extends OurAllianceObject implements Comparable<Team>, java.io
         return locality;
     }
     public void setLocality(String locality) {
-        if(!locality.equals(this.locality)) {
+        if(null==locality && null!=this.locality || null!=locality && !locality.equals(this.locality)) {
             this.locality = locality;
             changedData();
         }
@@ -114,7 +114,7 @@ public class Team extends OurAllianceObject implements Comparable<Team>, java.io
         return region;
     }
     public void setRegion(String region) {
-        if(!region.equals(this.region)) {
+        if(null==region && null!=this.region || null!=region && !region.equals(this.region)) {
             this.region = region;
             changedData();
         }
@@ -123,7 +123,7 @@ public class Team extends OurAllianceObject implements Comparable<Team>, java.io
         return country;
     }
     public void setCountry(String country) {
-        if(!country.equals(this.country)) {
+        if(null==country && null!=this.country || null!=country && !country.equals(this.country)) {
             this.country = country;
             changedData();
         }
@@ -132,7 +132,7 @@ public class Team extends OurAllianceObject implements Comparable<Team>, java.io
         return rookieYear;
     }
     public void setRookieYear(Integer rookieYear) {
-        if(!rookieYear.equals(this.rookieYear)) {
+        if(null==rookieYear && null!=this.rookieYear || null!=rookieYear && !rookieYear.equals(this.rookieYear)) {
             this.rookieYear = rookieYear;
             changedData();
         }

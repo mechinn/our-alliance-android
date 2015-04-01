@@ -87,7 +87,7 @@ public class TeamScouting2015 extends TeamScouting {
         return orientation;
     }
     public void setOrientation(String orientation) {
-        if(!orientation.equals(this.orientation)) {
+        if(null==orientation && null!=this.orientation || null!=orientation && !orientation.equals(this.orientation)) {
             this.orientation = orientation;
             changedData();
         }
@@ -96,7 +96,7 @@ public class TeamScouting2015 extends TeamScouting {
         return driveTrain;
     }
     public void setDriveTrain(String driveTrain) {
-        if(!driveTrain.equals(this.driveTrain)) {
+        if(null==driveTrain && null!=this.driveTrain || null!=driveTrain && !driveTrain.equals(this.driveTrain)) {
             this.driveTrain = driveTrain;
             changedData();
         }
@@ -114,7 +114,7 @@ public class TeamScouting2015 extends TeamScouting {
         return length;
     }
     public void setLength(Double length) {
-        if(!length.equals(this.length)) {
+        if(null==length && null!=this.length || null!=length && !length.equals(this.length)) {
             this.length = length;
             changedData();
         }
@@ -123,7 +123,7 @@ public class TeamScouting2015 extends TeamScouting {
         return height;
     }
     public void setHeight(Double height) {
-        if(!height.equals(this.height)) {
+        if(null==height && null!=this.height || null!=height && !height.equals(this.height)) {
             this.height = height;
             changedData();
         }
@@ -132,7 +132,7 @@ public class TeamScouting2015 extends TeamScouting {
         return coop;
     }
     public void setCoop(Boolean coop) {
-        if(!coop.equals(this.coop)) {
+        if(null==coop && null!=this.coop || null!=coop && !coop.equals(this.coop)) {
             this.coop = coop;
             changedData();
         }
@@ -141,7 +141,7 @@ public class TeamScouting2015 extends TeamScouting {
         return driverExperience;
     }
     public void setDriverExperience(Float driverExperience) {
-        if(!driverExperience.equals(this.driverExperience)) {
+        if(null==driverExperience && null!=this.driverExperience || null!=driverExperience && !driverExperience.equals(this.driverExperience)) {
             this.driverExperience = driverExperience;
             changedData();
         }
@@ -150,7 +150,7 @@ public class TeamScouting2015 extends TeamScouting {
         return pickupMechanism;
     }
     public void setPickupMechanism(String pickupMechanism) {
-        if(!pickupMechanism.equals(this.pickupMechanism)) {
+        if(null==pickupMechanism && null!=this.pickupMechanism || null!=pickupMechanism && !pickupMechanism.equals(this.pickupMechanism)) {
             this.pickupMechanism = pickupMechanism;
             changedData();
         }
@@ -159,7 +159,7 @@ public class TeamScouting2015 extends TeamScouting {
         return maxToteStack;
     }
     public void setMaxToteStack(Integer maxToteStack) {
-        if(!maxToteStack.equals(this.maxToteStack)) {
+        if(null==maxToteStack && null!=this.maxToteStack || null!=maxToteStack && !maxToteStack.equals(this.maxToteStack)) {
             this.maxToteStack = maxToteStack;
             changedData();
         }
@@ -168,7 +168,7 @@ public class TeamScouting2015 extends TeamScouting {
         return maxTotesStackContainer;
     }
     public void setMaxTotesStackContainer(Integer maxTotesStackContainer) {
-        if(!maxTotesStackContainer.equals(this.maxTotesStackContainer)) {
+        if(null==maxTotesStackContainer && null!=this.maxTotesStackContainer || null!=maxTotesStackContainer && !maxTotesStackContainer.equals(this.maxTotesStackContainer)) {
             this.maxTotesStackContainer = maxTotesStackContainer;
             changedData();
         }
@@ -177,7 +177,7 @@ public class TeamScouting2015 extends TeamScouting {
         return maxTotesAndContainerLitter;
     }
     public void setMaxTotesAndContainerLitter(Integer maxTotesAndContainerLitter) {
-        if(!maxTotesAndContainerLitter.equals(this.maxTotesAndContainerLitter)) {
+        if(null==maxTotesAndContainerLitter && null!=this.maxTotesAndContainerLitter || null!=maxTotesAndContainerLitter && !maxTotesAndContainerLitter.equals(this.maxTotesAndContainerLitter)) {
             this.maxTotesAndContainerLitter = maxTotesAndContainerLitter;
             changedData();
         }
@@ -186,7 +186,7 @@ public class TeamScouting2015 extends TeamScouting {
         return humanPlayer;
     }
     public void setHumanPlayer(Float humanPlayer) {
-        if(!humanPlayer.equals(this.humanPlayer)) {
+        if(null==humanPlayer && null!=this.humanPlayer || null!=humanPlayer && !humanPlayer.equals(this.humanPlayer)) {
             this.humanPlayer = humanPlayer;
             changedData();
         }
@@ -195,7 +195,7 @@ public class TeamScouting2015 extends TeamScouting {
         return noAuto;
     }
     public void setNoAuto(Boolean noAuto) {
-        if(!noAuto.equals(this.noAuto)) {
+        if(null==noAuto && null!=this.noAuto || null!=noAuto && !noAuto.equals(this.noAuto)) {
             this.noAuto = noAuto;
             changedData();
         }
@@ -204,7 +204,7 @@ public class TeamScouting2015 extends TeamScouting {
         return driveAuto;
     }
     public void setDriveAuto(Boolean driveAuto) {
-        if(!driveAuto.equals(this.driveAuto)) {
+        if(null==driveAuto && null!=this.driveAuto || null!=driveAuto && !driveAuto.equals(this.driveAuto)) {
             this.driveAuto = driveAuto;
             changedData();
         }
@@ -213,7 +213,7 @@ public class TeamScouting2015 extends TeamScouting {
         return toteAuto;
     }
     public void setToteAuto(Boolean toteAuto) {
-        if(!toteAuto.equals(this.toteAuto)) {
+        if(null==toteAuto && null!=this.toteAuto || null!=toteAuto && !toteAuto.equals(this.toteAuto)) {
             this.toteAuto = toteAuto;
             changedData();
         }
@@ -222,7 +222,7 @@ public class TeamScouting2015 extends TeamScouting {
         return containerAuto;
     }
     public void setContainerAuto(Boolean containerAuto) {
-        if(!containerAuto.equals(this.containerAuto)) {
+        if(null==containerAuto && null!=this.containerAuto || null!=containerAuto && !containerAuto.equals(this.containerAuto)) {
             this.containerAuto = containerAuto;
             changedData();
         }
@@ -231,7 +231,7 @@ public class TeamScouting2015 extends TeamScouting {
         return stackedAuto;
     }
     public void setStackedAuto(Boolean stackedAuto) {
-        if(!stackedAuto.equals(this.stackedAuto)) {
+        if(null==stackedAuto && null!=this.stackedAuto || null!=stackedAuto && !stackedAuto.equals(this.stackedAuto)) {
             this.stackedAuto = stackedAuto;
             changedData();
         }
@@ -240,7 +240,7 @@ public class TeamScouting2015 extends TeamScouting {
         return landfillAuto;
     }
     public void setLandfillAuto(Integer landfillAuto) {
-        if(!landfillAuto.equals(this.landfillAuto)) {
+        if(null==landfillAuto && null!=this.landfillAuto || null!=landfillAuto && !landfillAuto.equals(this.landfillAuto)) {
             this.landfillAuto = landfillAuto;
             changedData();
         }

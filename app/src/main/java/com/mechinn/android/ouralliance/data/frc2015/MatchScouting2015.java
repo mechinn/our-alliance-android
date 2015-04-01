@@ -66,7 +66,7 @@ public class MatchScouting2015 extends MatchScouting {
         return teamScouting2015;
     }
     public void setTeamScouting2015(TeamScouting2015 teamScouting2015) {
-        if(!teamScouting2015.equals(this.teamScouting2015)) {
+        if(null==teamScouting2015 && null!=this.teamScouting2015 || null!=teamScouting2015 && !teamScouting2015.equals(this.teamScouting2015)) {
             this.teamScouting2015 = teamScouting2015;
             changedData();
         }
@@ -93,7 +93,7 @@ public class MatchScouting2015 extends MatchScouting {
         return autoStacked;
     }
     public void setAutoStacked(Boolean autoStacked) {
-        if(!autoStacked.equals(this.autoStacked)) {
+        if(null==autoStacked && null!=this.autoStacked || null!=autoStacked && !autoStacked.equals(this.autoStacked)) {
             this.autoStacked = autoStacked;
             changedData();
         }
@@ -102,7 +102,7 @@ public class MatchScouting2015 extends MatchScouting {
         return autoTotes;
     }
     public void setAutoTotes(Integer autoTotes) {
-        if(!autoTotes.equals(this.autoTotes)) {
+        if(null==autoTotes && null!=this.autoTotes || null!=autoTotes && !autoTotes.equals(this.autoTotes)) {
             this.autoTotes = autoTotes;
             changedData();
         }
@@ -111,7 +111,7 @@ public class MatchScouting2015 extends MatchScouting {
         return autoContainers;
     }
     public void setAutoContainers(Integer autoContainers) {
-        if(!autoContainers.equals(this.autoContainers)) {
+        if(null==autoContainers && null!=this.autoContainers || null!=autoContainers && !autoContainers.equals(this.autoContainers)) {
             this.autoContainers = autoContainers;
             changedData();
         }
@@ -120,7 +120,7 @@ public class MatchScouting2015 extends MatchScouting {
         return autoLandfill;
     }
     public void setAutoLandfill(Integer autoLandfill) {
-        if(!autoLandfill.equals(this.autoLandfill)) {
+        if(null==autoLandfill && null!=this.autoLandfill || null!=autoLandfill && !autoLandfill.equals(this.autoLandfill)) {
             this.autoLandfill = autoLandfill;
             changedData();
         }
@@ -129,7 +129,7 @@ public class MatchScouting2015 extends MatchScouting {
         return autoMove;
     }
     public void setAutoMove(Float autoMove) {
-        if(!autoMove.equals(this.autoMove)) {
+        if(null==autoMove && null!=this.autoMove || null!=autoMove && !autoMove.equals(this.autoMove)) {
             this.autoMove = autoMove;
             changedData();
         }
@@ -138,7 +138,7 @@ public class MatchScouting2015 extends MatchScouting {
         return coop;
     }
     public void setCoop(Boolean coop) {
-        if(!coop.equals(this.coop)) {
+        if(null==coop && null!=this.coop || null!=coop && !coop.equals(this.coop)) {
             this.coop = coop;
             changedData();
         }
@@ -147,7 +147,7 @@ public class MatchScouting2015 extends MatchScouting {
         return totes;
     }
     public void setTotes(Integer totes) {
-        if(!totes.equals(this.totes)) {
+        if(null==totes && null!=this.totes || null!=totes && !totes.equals(this.totes)) {
             this.totes = totes;
             changedData();
         }
@@ -156,7 +156,7 @@ public class MatchScouting2015 extends MatchScouting {
         return containers;
     }
     public void setContainers(Integer containers) {
-        if(!containers.equals(this.containers)) {
+        if(null==containers && null!=this.containers || null!=containers && !containers.equals(this.containers)) {
             this.containers = containers;
             changedData();
         }
@@ -165,7 +165,7 @@ public class MatchScouting2015 extends MatchScouting {
         return litter;
     }
     public void setLitter(Integer litter) {
-        if(!litter.equals(this.litter)) {
+        if(null==litter && null!=this.litter || null!=litter && !litter.equals(this.litter)) {
             this.litter = litter;
             changedData();
         }
@@ -174,7 +174,7 @@ public class MatchScouting2015 extends MatchScouting {
         return fowls;
     }
     public void setFowls(Integer fowls) {
-        if(!fowls.equals(this.fowls)) {
+        if(null==fowls && null!=this.fowls || null!=fowls && !fowls.equals(this.fowls)) {
             this.fowls = fowls;
             changedData();
         }
@@ -183,7 +183,7 @@ public class MatchScouting2015 extends MatchScouting {
         return humanAttempt;
     }
     public void setHumanAttempt(Integer humanAttempt) {
-        if(!humanAttempt.equals(this.humanAttempt)) {
+        if(null==humanAttempt && null!=this.humanAttempt || null!=humanAttempt && !humanAttempt.equals(this.humanAttempt)) {
             this.humanAttempt = humanAttempt;
             changedData();
         }
@@ -192,7 +192,7 @@ public class MatchScouting2015 extends MatchScouting {
         return humanSuccess;
     }
     public void setHumanSuccess(Integer humanSuccess) {
-        if(!humanSuccess.equals(this.humanSuccess)) {
+        if(null==humanSuccess && null!=this.humanSuccess || null!=humanSuccess && !humanSuccess.equals(this.humanSuccess)) {
             this.humanSuccess = humanSuccess;
             changedData();
         }

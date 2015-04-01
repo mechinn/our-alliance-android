@@ -35,7 +35,7 @@ public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceO
         return event;
     }
     public void setEvent(Event event) {
-        if(!event.equals(this.event)) {
+        if(null==event && null!=this.event || null!=event && !event.equals(this.event)) {
             this.event = event;
             changedData();
         }
@@ -47,7 +47,7 @@ public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceO
         return team;
     }
     public void setTeam(Team team) {
-        if(!team.equals(this.team)) {
+        if(null==team && null!=this.team || null!=team && !team.equals(this.team)) {
             this.team = team;
             changedData();
         }
@@ -59,7 +59,7 @@ public class EventTeam extends com.mechinn.android.ouralliance.data.OurAllianceO
         return rank;
     }
     public void setRank(Integer rank) {
-        if(!rank.equals(this.rank)) {
+        if(null==rank && null!=this.rank || null!=rank && !rank.equals(this.rank)) {
             this.rank = rank;
             changedData();
         }

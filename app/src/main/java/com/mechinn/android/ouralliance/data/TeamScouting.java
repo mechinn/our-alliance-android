@@ -21,7 +21,7 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
         return team;
     }
     public void setTeam(Team team) {
-        if(!team.equals(this.team)) {
+        if (null==team && null!=this.team || null!=team && !team.equals(this.team)) {
             this.team = team;
             changedData();
         }
@@ -33,16 +33,9 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
         return notes;
     }
     public void setNotes(String notes) {
-        try {
-            if (!notes.equals(this.notes)) {
-                this.notes = notes;
-                changedData();
-            }
-        } catch (NullPointerException e) {
-            if(null!=this.notes) {
-                this.notes = notes;
-                changedData();
-            }
+        if (null==notes && null!=this.notes || null!=notes && !notes.equals(this.notes)) {
+            this.notes = notes;
+            changedData();
         }
     }
     public abstract List<? extends Wheel> getWheels();

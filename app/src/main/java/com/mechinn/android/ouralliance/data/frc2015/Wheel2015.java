@@ -28,7 +28,7 @@ public class Wheel2015 extends Wheel {
         return teamScouting2015;
     }
     public void setTeamScouting2015(TeamScouting2015 teamScouting2015) {
-        if(!teamScouting2015.equals(this.teamScouting2015)) {
+        if(null==teamScouting2015 && null!=this.teamScouting2015 || null!=teamScouting2015 && !teamScouting2015.equals(this.teamScouting2015)) {
             this.teamScouting2015 = teamScouting2015;
             changedData();
         }

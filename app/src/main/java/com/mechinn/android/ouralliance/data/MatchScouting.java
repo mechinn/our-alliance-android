@@ -34,7 +34,7 @@ public abstract class MatchScouting extends OurAllianceObject implements Compara
         return match;
     }
     public void setMatch(Match match) {
-        if(!match.equals(this.match)) {
+        if(null==match && null!=this.match || null!=match && !match.equals(this.match)) {
             this.match = match;
             changedData();
         }

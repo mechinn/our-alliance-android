@@ -21,7 +21,7 @@ public abstract class Wheel extends OurAllianceObject implements Comparable<Whee
         return wheelType;
     }
     public void setWheelType(String wheelType) {
-        if(!wheelType.equals(this.wheelType)) {
+        if(null==wheelType && null!=this.wheelType || null!=wheelType && !wheelType.equals(this.wheelType)) {
             this.wheelType = wheelType;
             changedData();
         }
@@ -30,7 +30,7 @@ public abstract class Wheel extends OurAllianceObject implements Comparable<Whee
         return wheelSize;
     }
     public void setWheelSize(Double wheelSize) {
-        if(!wheelSize.equals(this.wheelSize)) {
+        if(null==wheelSize && null!=this.wheelSize || null!=wheelSize && !wheelSize.equals(this.wheelSize)) {
             this.wheelSize = wheelSize;
             changedData();
         }
@@ -39,7 +39,7 @@ public abstract class Wheel extends OurAllianceObject implements Comparable<Whee
         return wheelCount;
     }
     public void setWheelCount(Integer wheelCount) {
-        if(!wheelCount.equals(this.wheelCount)) {
+        if(null==wheelCount && null!=this.wheelCount || null!=wheelCount && !wheelCount.equals(this.wheelCount)) {
             this.wheelCount = wheelCount;
             changedData();
         }

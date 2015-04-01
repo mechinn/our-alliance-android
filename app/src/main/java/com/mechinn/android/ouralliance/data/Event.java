@@ -56,7 +56,7 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return name;
     }
     public void setName(String name) {
-        if(!name.equals(this.name)) {
+        if(null==name && null!=this.name || null!=name && !name.equals(this.name)) {
             this.name = name;
             changedData();
         }
@@ -65,7 +65,7 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return shortName;
     }
     public void setShortName(String shortName) {
-        if(!shortName.equals(this.shortName)) {
+        if(null==shortName && null!=this.shortName || null!=shortName && !shortName.equals(this.shortName)) {
             this.shortName = shortName;
             changedData();
         }
@@ -83,7 +83,7 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return eventCode;
     }
     public void setEventCode(String eventCode) {
-        if(!eventCode.equals(this.eventCode)) {
+        if(null==eventCode && null!=this.eventCode || null!=eventCode && !eventCode.equals(this.eventCode)) {
             this.eventCode = eventCode;
             changedData();
         }
@@ -119,7 +119,7 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return venueAddress;
     }
     public void setVenueAddress(String venueAddress) {
-        if(!venueAddress.equals(this.venueAddress)) {
+        if(null==venueAddress && null!=this.venueAddress || null!=venueAddress && !venueAddress.equals(this.venueAddress)) {
             this.venueAddress = venueAddress;
             changedData();
         }
@@ -128,7 +128,7 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return website;
     }
     public void setWebsite(String website) {
-        if(!website.equals(this.website)) {
+        if(null==website && null!=this.website || null!=website && !website.equals(this.website)) {
             this.website = website;
             changedData();
         }
@@ -137,7 +137,7 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return startDate;
     }
     public void setStartDate(Date startDate) {
-        if(!startDate.equals(this.startDate)) {
+        if(null==startDate && null!=this.startDate || null!=startDate && !startDate.equals(this.startDate)) {
             this.startDate = startDate;
             changedData();
         }
@@ -146,7 +146,7 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return endDate;
     }
     public void setEndDate(Date endDate) {
-        if(!endDate.equals(this.endDate)) {
+        if(null==endDate && null!=this.endDate || null!=endDate && !endDate.equals(this.endDate)) {
             this.endDate = endDate;
             changedData();
         }
