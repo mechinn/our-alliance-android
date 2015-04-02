@@ -70,7 +70,7 @@ public class ExportCsvMatchScouting2015 extends ExportCsvMatchScouting {
             line.add(fmtInteger(team.getTotes()));
             line.add(fmtInteger(team.getContainers()));
             line.add(fmtInteger(team.getLitter()));
-            line.add(fmtInteger(team.getFowls()));
+            line.add(fmtInteger(team.getFouls()));
             line.add(fmtInteger(team.getHumanAttempt()));
             line.add(fmtInteger(team.getHumanSuccess()));
             addToList(line);

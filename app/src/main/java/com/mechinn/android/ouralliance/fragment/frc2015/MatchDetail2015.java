@@ -1,7 +1,6 @@
 package com.mechinn.android.ouralliance.fragment.frc2015;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,8 +101,8 @@ public class MatchDetail2015 extends MatchDetailFragment {
         if(null!=getMatch().getLitter()) {
             litter.setValue(getMatch().getLitter());
         }
-        if(null!=getMatch().getFowls()) {
-            fowls.setValue(getMatch().getFowls());
+        if(null!=getMatch().getFouls()) {
+            fowls.setValue(getMatch().getFouls());
         }
         if(null!=getMatch().getHumanAttempt()) {
             humanAttempt.setValue(getMatch().getHumanAttempt());
@@ -125,7 +124,7 @@ public class MatchDetail2015 extends MatchDetailFragment {
         getMatch().setTotes(totes.getValue());
         getMatch().setContainers(containers.getValue());
         getMatch().setLitter(litter.getValue());
-        getMatch().setFowls(fowls.getValue());
+        getMatch().setFouls(fowls.getValue());
         getMatch().setHumanAttempt(humanAttempt.getValue());
         getMatch().setHumanSuccess(humanSuccess.getValue());
 	}

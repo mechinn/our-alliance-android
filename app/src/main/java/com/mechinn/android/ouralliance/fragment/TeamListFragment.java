@@ -58,8 +58,6 @@ public class TeamListFragment extends Fragment {
     private int selectedPosition;
 	private Prefs prefs;
 	private EventTeamDragSortListAdapter adapter;
-    private Sort2014 sort2014;
-    private Sort2015 sort2015;
     private Spinner sortTeams;
     private GetEventTeams downloadTeams;
 
@@ -67,8 +65,6 @@ public class TeamListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
-        sort2014 = Sort2014.RANK;
-        sort2015 = Sort2015.RANK;
         downloadTeams = new GetEventTeams(this.getActivity());
     }
     
@@ -83,10 +79,10 @@ public class TeamListFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch(prefs.getYear()) {
                     case 2014:
-                        sort2014 = Sort.sort2014List.get(position);
+                        prefs.setTeamListSort(2014,position);
                         break;
                     case 2015:
-                        sort2015 = Sort.sort2015List.get(position);
+                        prefs.setTeamListSort(2015,position);
                         break;
                 }
                 load();
@@ -163,13 +159,14 @@ public class TeamListFragment extends Fragment {
                 case 2014:
                     ArrayAdapter<Sort2014> sort2014Adapter = new ArrayAdapter<Sort2014>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2014List);
                     sortTeams.setAdapter(sort2014Adapter);
+                    sortTeams.setSelection(prefs.getTeamListSort(2014));
                     break;
                 case 2015:
                     ArrayAdapter<Sort2015> sort2015Adapter = new ArrayAdapter<Sort2015>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2015List);
                     sortTeams.setAdapter(sort2015Adapter);
+                    sortTeams.setSelection(prefs.getTeamListSort(2015));
                     break;
             }
-            sortTeams.setSelection(0);
         } else {
             emptyTeams();
         }
@@ -385,6 +382,7 @@ public class TeamListFragment extends Fragment {
                 switch (prefs.getYear()) {
                     case 2014:
                         query = query.join(TeamScouting2014.class).on(Team.TAG + "." + Team.ID + "=" + TeamScouting2014.TAG + "." + TeamScouting2014.TEAM);
+                        Sort2014 sort2014 = Sort.sort2014List.get(prefs.getTeamListSort(2014));
                         Timber.d("sort: " + sort2014);
                         switch (sort2014) {
                             case NUMBER:
@@ -445,6 +443,7 @@ public class TeamListFragment extends Fragment {
                         break;
                     case 2015:
                         query = query.join(TeamScouting2015.class).on(Team.TAG + "." + Team.ID + "=" + TeamScouting2015.TAG + "." + TeamScouting2015.TEAM);
+                        Sort2015 sort2015 = Sort.sort2015List.get(prefs.getTeamListSort(2015));
                         Timber.d("sort: " + sort2015);
                         switch (sort2015) {
                             case NUMBER:
@@ -521,10 +520,10 @@ public class TeamListFragment extends Fragment {
     public void onEventMainThread(LoadTeams teams) {
         switch (prefs.getYear()) {
             case 2014:
-                adapter.showDrag(sort2014.equals(Sort2014.RANK));
+                adapter.showDrag(Sort.sort2014List.get(prefs.getTeamListSort(2014)).equals(Sort2014.RANK));
                 break;
             case 2015:
-                adapter.showDrag(sort2015.equals(Sort2015.RANK));
+                adapter.showDrag(Sort.sort2015List.get(prefs.getTeamListSort(2015)).equals(Sort2015.RANK));
                 break;
         }
         adapter.swapList(teams.getTeams());

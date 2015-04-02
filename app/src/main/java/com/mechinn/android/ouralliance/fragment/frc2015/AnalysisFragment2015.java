@@ -173,10 +173,10 @@ public class AnalysisFragment2015 extends AnalysisFragment {
                 return scouting.getLitter();
             }
         });
-        addMatchGraph(MatchScouting2015.FOWLS, android.R.color.holo_orange_dark, new GraphGetter<MatchScouting2015>() {
+        addMatchGraph(MatchScouting2015.FOULS, android.R.color.holo_orange_dark, new GraphGetter<MatchScouting2015>() {
             @Override
             public Object getter(MatchScouting2015 scouting) {
-                return scouting.getFowls();
+                return scouting.getFouls();
             }
         });
         addMatchGraph(MatchScouting2015.HUMAN_ATTEMPT, android.R.color.holo_purple, new GraphGetter<MatchScouting2015>() {

@@ -1,17 +1,11 @@
 package com.mechinn.android.ouralliance.data.frc2015;
 
 import android.database.Cursor;
-import android.util.Log;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.activeandroid.query.Select;
-import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.MatchScouting;
-import com.mechinn.android.ouralliance.data.Team;
 import com.mechinn.android.ouralliance.data.TeamScouting;
-
-import java.util.Date;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
@@ -29,7 +23,7 @@ public class MatchScouting2015 extends MatchScouting {
     public final static String TOTES = "totes";
     public final static String CONTAINERS = "containers";
     public final static String LITTER = "litter";
-    public final static String FOWLS = "fowls";
+    public final static String FOULS = "fouls";
     public final static String HUMAN_ATTEMPT = "humanAttempt";
     public final static String HUMAN_SUCCESS = "humanSuccess";
     @Column(name=TEAM, onDelete = Column.ForeignKeyAction.CASCADE, notNull = true, onNullConflict = Column.ConflictAction.FAIL, uniqueGroups = {MatchScouting.TAG}, onUniqueConflicts = {Column.ConflictAction.FAIL})
@@ -52,8 +46,8 @@ public class MatchScouting2015 extends MatchScouting {
     private Integer containers;
     @Column(name=LITTER)
     private Integer litter;
-    @Column(name=FOWLS)
-    private Integer fowls;
+    @Column(name= FOULS)
+    private Integer fouls;
     @Column(name=HUMAN_ATTEMPT)
     private Integer humanAttempt;
     @Column(name=HUMAN_SUCCESS)
@@ -170,12 +164,12 @@ public class MatchScouting2015 extends MatchScouting {
             changedData();
         }
     }
-    public Integer getFowls() {
-        return fowls;
+    public Integer getFouls() {
+        return fouls;
     }
-    public void setFowls(Integer fowls) {
-        if(null==fowls && null!=this.fowls || null!=fowls && !fowls.equals(this.fowls)) {
-            this.fowls = fowls;
+    public void setFouls(Integer fouls) {
+        if(null== fouls && null!=this.fouls || null!= fouls && !fouls.equals(this.fouls)) {
+            this.fouls = fouls;
             changedData();
         }
     }
@@ -209,7 +203,7 @@ public class MatchScouting2015 extends MatchScouting {
             this.setTotes(data.getTotes());
             this.setContainers(data.getContainers());
             this.setLitter(data.getLitter());
-            this.setFowls(data.getFowls());
+            this.setFouls(data.getFouls());
             this.setHumanAttempt(data.getHumanAttempt());
             this.setHumanSuccess(data.getHumanSuccess());
             return true;

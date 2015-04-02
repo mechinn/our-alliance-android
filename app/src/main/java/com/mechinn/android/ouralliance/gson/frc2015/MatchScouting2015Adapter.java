@@ -72,9 +72,9 @@ public class MatchScouting2015Adapter implements JsonSerializer<MatchScouting201
         if(null!=element) {
             scouting.setLitter(element.getAsInt());
         }
-        element = object.get(MatchScouting2015.FOWLS);
+        element = object.get(MatchScouting2015.FOULS);
         if(null!=element) {
-            scouting.setFowls(element.getAsInt());
+            scouting.setFouls(element.getAsInt());
         }
         element = object.get(MatchScouting2015.HUMAN_ATTEMPT);
         if(null!=element) {
@@ -104,7 +104,7 @@ public class MatchScouting2015Adapter implements JsonSerializer<MatchScouting201
         object.addProperty(MatchScouting2015.TOTES, src.getTotes());
         object.addProperty(MatchScouting2015.CONTAINERS, src.getContainers());
         object.addProperty(MatchScouting2015.LITTER, src.getLitter());
-        object.addProperty(MatchScouting2015.FOWLS, src.getFowls());
+        object.addProperty(MatchScouting2015.FOULS, src.getFouls());
         object.addProperty(MatchScouting2015.HUMAN_ATTEMPT, src.getHumanAttempt());
         object.addProperty(MatchScouting2015.HUMAN_SUCCESS, src.getHumanSuccess());
         return object;
