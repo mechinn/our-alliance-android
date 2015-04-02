@@ -101,7 +101,7 @@ public class GraphDataSetAdapter extends BaseAdapter implements StickyListHeader
                 container = (CheckedTextView) inflater.inflate(android.R.layout.simple_list_item_multiple_choice, parent, false);
             }
             GraphDataSet graph = (GraphDataSet) getItem(position);
-            container.setText(graph.getLabel());
+            container.setText(graph.getDataSet().getLabel());
             container.setTextColor(context.getResources().getColor(android.R.color.white));
             container.setChecked(graph.isEnabled());
         }

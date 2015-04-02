@@ -80,7 +80,7 @@ public class AnalysisActivity extends OurAllianceActivity implements FragmentMan
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GraphDataSet graph = (GraphDataSet) graphAdapter.getItem(position);
-                Timber.d(graph.getLabel()+" selected");
+                Timber.d("selected: "+graph);
                 graphList.setItemChecked(position, !graph.isEnabled());
                 graph.switchEnabled();
                 EventBus.getDefault().post(new AnalysisNavigationSelected());
