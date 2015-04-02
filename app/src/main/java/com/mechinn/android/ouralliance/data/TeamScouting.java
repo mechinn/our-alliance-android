@@ -1,6 +1,8 @@
 package com.mechinn.android.ouralliance.data;
 
 import com.activeandroid.annotation.Column;
+import com.activeandroid.query.Select;
+import com.mechinn.android.ouralliance.Prefs;
 
 import java.util.List;
 
@@ -19,13 +21,22 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
         return team;
     }
     public void setTeam(Team team) {
+        if (null==team && null!=this.team || null!=team && !team.equals(this.team)) {
+            this.team = team;
+            changedData();
+        }
+    }
+    public void replaceTeam(Team team) {
         this.team = team;
     }
     public String getNotes() {
         return notes;
     }
     public void setNotes(String notes) {
-        this.notes = notes;
+        if (null==notes && null!=this.notes || null!=notes && !notes.equals(this.notes)) {
+            this.notes = notes;
+            changedData();
+        }
     }
     public abstract List<? extends Wheel> getWheels();
     public abstract List<? extends MatchScouting> getMatches();
@@ -37,12 +48,36 @@ public abstract class TeamScouting extends OurAllianceObject implements Comparab
     public int compareTo(TeamScouting another) {
         return this.getTeam().compareTo(another.getTeam());
     }
+    public boolean copy(TeamScouting data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setNotes(data.getNotes());
+            return true;
+        }
+        return false;
+    }
+    public void saveMod() {
+        if (null == this.getId()) {
+            this.getTeam().saveMod();
+            if(-1==this.getTeam().getId()) {
+                this.replaceTeam(Team.load(this.getTeam().getTeamNumber()));
+            }
+        }
+        super.saveMod();
+    }
+    public void saveEvent() {
+        EventBus.getDefault().post(this.getTeam());
+        super.saveEvent();
+    }
     public boolean equals(Object data) {
         if (!(data instanceof TeamScouting)) {
             return false;
         }
-        return getTeam().equals(((TeamScouting) data).getTeam()) &&
-                getNotes().equals(((TeamScouting) data).getNotes());
+        try {
+            return getTeam().equals(((TeamScouting) data).getTeam());
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
     public void asyncSave() {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {

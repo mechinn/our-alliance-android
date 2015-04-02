@@ -75,6 +75,16 @@ public class MatchScouting2014 extends MatchScouting {
     public void setTeamScouting(TeamScouting teamScouting) {
         setTeamScouting2014((TeamScouting2014) teamScouting);
     }
+
+    @Override
+    protected void saveTeamScouting() {
+        this.getTeamScouting2014().saveMod();
+        if(-1==this.getTeamScouting2014().getId()) {
+            TeamScouting2014 dbTeamScouting = TeamScouting2014.load(this.getTeamScouting2014().getTeam().getId());
+            this.setTeamScouting2014(dbTeamScouting);
+        }
+    }
+
     public Integer getHotShots() {
         return hotShots;
     }

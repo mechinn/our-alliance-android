@@ -111,7 +111,7 @@ public abstract class AnalysisFragment extends Fragment {
     }
 
     public void addTeam(String team) {
-        teams.add(new TeamGraph(team));
+        teams.add(new TeamGraph(getPrefs().getYear(),team,true));
     }
 
     public ArrayList<TeamGraph> getTeams() {
@@ -232,9 +232,9 @@ public abstract class AnalysisFragment extends Fragment {
         Timber.d("teams "+teams.size());
         ArrayList<LineDataSet> enabledSets = new ArrayList<>();
         for(GraphDataSet set : dataSets) {
-            Timber.d(set.getLabel()+" "+set.getEntryCount()+" "+(set.isEnabled()?"Enabled":"Disabled"));
+            Timber.d(set.getDataSet().getLabel()+" "+set.getDataSet().getEntryCount()+" "+(set.isEnabled()?"Enabled":"Disabled"));
             if(set.isEnabled()) {
-                enabledSets.add(set);
+                enabledSets.add(set.getDataSet());
             }
         }
         for(int teamPosition=teams.size()-1;teamPosition>=0;teamPosition--) {

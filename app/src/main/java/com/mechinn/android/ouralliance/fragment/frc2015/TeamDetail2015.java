@@ -226,7 +226,7 @@ public class TeamDetail2015 extends TeamDetailFragment {
         if(null!=getScouting().getDriverExperience()) {
             driverExperience.setRating(getScouting().getDriverExperience());
         }
-        mechanism.setText(getScouting().getDriveTrain());
+        mechanism.setText(getScouting().getPickupMechanism());
         if(null!=getScouting().getMaxToteStack()) {
             maxToteStack.setValue(getScouting().getMaxToteStack());
         }

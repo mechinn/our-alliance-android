@@ -29,8 +29,11 @@ public class EventTeamAdapter implements JsonSerializer<EventTeam>, JsonDeserial
         eventTeam.setModified(new Date(object.get(EventTeam.MODIFIED).getAsLong()));
         eventTeam.setEvent(OurAllianceGson.BUILDER.fromJson(object.get(EventTeam.EVENT), Event.class));
         eventTeam.setTeam(OurAllianceGson.BUILDER.fromJson(object.get(EventTeam.TEAM), Team.class));
-        eventTeam.setRank(object.get(EventTeam.RANK).getAsInt());
         eventTeam.setScouted(object.get(EventTeam.SCOUTED).getAsBoolean());
+        JsonElement element = object.get(EventTeam.RANK);
+        if(null!=element) {
+            eventTeam.setRank(element.getAsInt());
+        }
         return eventTeam;
     }
     @Override

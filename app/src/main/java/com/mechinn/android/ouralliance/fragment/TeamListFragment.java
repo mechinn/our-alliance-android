@@ -1,13 +1,17 @@
 package com.mechinn.android.ouralliance.fragment;
 
+import android.app.Activity;
+import android.net.Uri;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.*;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.activity.AnalysisActivity;
+import com.mechinn.android.ouralliance.activity.OurAllianceActivity;
 import com.mechinn.android.ouralliance.csv.frc2015.ExportCsvTeamScouting2015;
 import com.mechinn.android.ouralliance.data.*;
 import com.mechinn.android.ouralliance.Prefs;
@@ -18,9 +22,14 @@ import com.mechinn.android.ouralliance.activity.MatchScoutingActivity;
 import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
 import com.mechinn.android.ouralliance.data.frc2015.Sort2015;
 import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
+import com.mechinn.android.ouralliance.event.ActivityResult;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.event.SelectTeamEvent;
+import com.mechinn.android.ouralliance.gson.ImportJson;
+import com.mechinn.android.ouralliance.gson.OurAllianceGson;
+import com.mechinn.android.ouralliance.gson.frc2015.ExportJsonEventTeamScouting2015;
+import com.mechinn.android.ouralliance.gson.frc2015.ImportJsonEventTeamScouting2015;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetEventTeams;
 import com.mobeta.android.dslv.DragSortListView;
 
@@ -32,6 +41,9 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import java.util.List;
 
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import app.akexorcist.bluetotohspp.library.BluetoothState;
+import app.akexorcist.bluetotohspp.library.DeviceList;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 import timber.log.Timber;
@@ -39,12 +51,13 @@ import timber.log.Timber;
 public class TeamListFragment extends Fragment {
     public static final String TAG = "TeamListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    public static final int OPEN_DOCUMENT_REQUEST_CODE = 2002;
+    public static final int CREATE_DOCUMENT_CSV_REQUEST_CODE = 2003;
+    public static final int CREATE_DOCUMENT_JSON_REQUEST_CODE = 2004;
     protected DragSortListView dslv;
     private int selectedPosition;
 	private Prefs prefs;
 	private EventTeamDragSortListAdapter adapter;
-    private Sort2014 sort2014;
-    private Sort2015 sort2015;
     private Spinner sortTeams;
     private GetEventTeams downloadTeams;
 
@@ -52,8 +65,6 @@ public class TeamListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		prefs = new Prefs(this.getActivity());
-        sort2014 = Sort2014.RANK;
-        sort2015 = Sort2015.RANK;
         downloadTeams = new GetEventTeams(this.getActivity());
     }
     
@@ -68,10 +79,10 @@ public class TeamListFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch(prefs.getYear()) {
                     case 2014:
-                        sort2014 = Sort.sort2014List.get(position);
+                        prefs.setTeamListSort(2014,position);
                         break;
                     case 2015:
-                        sort2015 = Sort.sort2015List.get(position);
+                        prefs.setTeamListSort(2015,position);
                         break;
                 }
                 load();
@@ -148,13 +159,14 @@ public class TeamListFragment extends Fragment {
                 case 2014:
                     ArrayAdapter<Sort2014> sort2014Adapter = new ArrayAdapter<Sort2014>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2014List);
                     sortTeams.setAdapter(sort2014Adapter);
+                    sortTeams.setSelection(prefs.getTeamListSort(2014));
                     break;
                 case 2015:
                     ArrayAdapter<Sort2015> sort2015Adapter = new ArrayAdapter<Sort2015>(getActivity(),android.R.layout.simple_list_item_1, Sort.sort2015List);
                     sortTeams.setAdapter(sort2015Adapter);
+                    sortTeams.setSelection(prefs.getTeamListSort(2015));
                     break;
             }
-            sortTeams.setSelection(0);
         } else {
             emptyTeams();
         }
@@ -165,10 +177,7 @@ public class TeamListFragment extends Fragment {
     }
     
     private void selectItem(int position) {
-        // Notify the parent activity of selected item
         EventBus.getDefault().post(new SelectTeamEvent(adapter.getTeam(position).getTeam().getId()));
-        
-        // Set the item as checked to be highlighted when in two-pane layout
         dslv.setItemChecked(position, true);
     }
 
@@ -177,7 +186,6 @@ public class TeamListFragment extends Fragment {
 		super.onSaveInstanceState(outState);
         try {
             if (selectedPosition != ListView.INVALID_POSITION) {
-                // Serialize and persist the activated item position.
                 outState.putInt(STATE_ACTIVATED_POSITION, selectedPosition);
             }
         } catch (IllegalStateException e) {
@@ -193,24 +201,25 @@ public class TeamListFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        BluetoothEvent bluetooth = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
         menu.findItem(R.id.matchList).setVisible(prefs.getComp()>0 && null!=adapter && adapter.getCount() > 5);
         menu.findItem(R.id.insertTeamScouting).setVisible(prefs.getComp()>0);
-//        menu.findItem(R.id.importTeamScouting).setVisible(prefs.getComp() > 0);
-//        menu.findItem(R.id.exportTeamScouting).setVisible(null != adapter && adapter.getCount() > 0);
-//        menu.findItem(R.id.bluetoothTeamScouting).setVisible(null != adapter && adapter.getCount() > 0 && null != bluetooth && bluetooth.isEnabled());
-//        if(bluetooth.isOn()) {
-//            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
-//        } else {
-//            menu.findItem(R.id.bluetoothTeamScouting).setIcon(R.drawable.ic_action_bluetooth);
-//        }
+        menu.findItem(R.id.restoreTeamListScouting).setVisible(prefs.getComp() > 0);
+        menu.findItem(R.id.backupTeamListScouting).setVisible(null != adapter && adapter.getCount() > 0);
         menu.findItem(R.id.refreshCompetitionTeams).setVisible(prefs.getComp() > 0);
         menu.findItem(R.id.sendTeamScoutingCsv).setVisible(prefs.getComp() > 0);
+        BluetoothEvent bluetooth = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
+        menu.findItem(R.id.bluetoothTeamScoutingList).setVisible(null != adapter && adapter.getCount() > 0 && null != bluetooth && bluetooth.isEnabled());
+        if(bluetooth.isOn()) {
+            menu.findItem(R.id.bluetoothTeamScoutingList).setIcon(R.drawable.ic_action_bluetooth_searching);
+        } else {
+            menu.findItem(R.id.bluetoothTeamScoutingList).setIcon(R.drawable.ic_action_bluetooth);
+        }
     }
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
+        Intent intent;
 	    switch (item.getItemId()) {
             case R.id.matchList:
                 Intent matchIntent = new Intent(this.getActivity(), MatchScoutingActivity.class);
@@ -232,10 +241,62 @@ public class TeamListFragment extends Fragment {
                         AsyncExecutor.create().execute(new ExportCsvTeamScouting2015(this.getActivity()));
                         break;
                 }
+                return true;
+            case R.id.bluetoothTeamScoutingList:
+                intent = new Intent(this.getActivity().getApplicationContext(), DeviceList.class);
+                startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+                return true;
+            case R.id.backupTeamListScouting:
+                switch(prefs.getYear()) {
+                    case 2015:
+                        intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType(OurAllianceGson.TYPE);
+                        intent.putExtra(Intent.EXTRA_TITLE, "teamList.json");
+                        startActivityForResult(intent, CREATE_DOCUMENT_JSON_REQUEST_CODE);
+                        break;
+                }
+                return true;
+            case R.id.restoreTeamListScouting:
+                switch(prefs.getYear()) {
+                    case 2015:
+                        intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType(OurAllianceGson.TYPE);
+                        startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE);
+//                        AsyncExecutor.create().execute(new ExportCsvTeamScouting2015(this.getActivity()));
+                        break;
+                }
+                return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(OPEN_DOCUMENT_REQUEST_CODE == requestCode &&
+                Activity.RESULT_OK == resultCode &&
+                null!=data) {
+            final Uri uri = data.getData();
+            Timber.d("Uri: " + uri.toString());
+            AsyncExecutor.create().execute(new ImportJsonEventTeamScouting2015(this.getActivity(), uri));
+        } else if(CREATE_DOCUMENT_JSON_REQUEST_CODE == requestCode &&
+                Activity.RESULT_OK == resultCode &&
+                null!=data) {
+            final Uri uri = data.getData();
+            Timber.d("Uri: " + uri.toString());
+            AsyncExecutor.create().execute(new ExportJsonEventTeamScouting2015(this.getActivity(), uri));
+        } else if(requestCode == BluetoothState.REQUEST_CONNECT_DEVICE && resultCode == Activity.RESULT_OK) {
+            BluetoothSPP bt = EventBus.getDefault().getStickyEvent(BluetoothSPP.class);
+            bt.connect(data);
+            AsyncExecutor.create().execute(new ExportJsonEventTeamScouting2015(this.getActivity(), bt));
+        } else if(requestCode == BluetoothState.REQUEST_ENABLE_BT && resultCode == Activity.RESULT_OK) {
+            Intent intent = new Intent(this.getActivity().getApplicationContext(), DeviceList.class);
+            startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -275,127 +336,170 @@ public class TeamListFragment extends Fragment {
         AsyncExecutor.create().execute(new AsyncExecutor.RunnableEx() {
             @Override
             public void run() throws Exception {
-                From query = new Select().from(EventTeam.class).join(Team.class).on(EventTeam.TAG+"."+EventTeam.TEAM+"="+Team.TAG+"."+Team.ID);
-                String orderBy = EventTeam.TAG+"."+EventTeam.RANK+" ASC";
-                switch(prefs.getYear()) {
+                ActiveAndroid.beginTransaction();
+                try {
+                    From newEventTeamQuery = new Select()
+                            .from(EventTeam.class);
+                    List<EventTeam> newEventTeams;
+                    switch (prefs.getYear()) {
+                        case 2014:
+    //                        Timber.d(newEventTeamQuery.leftJoin(TeamScouting2014.class).on(EventTeam.TAG+"."+EventTeam.TEAM+"="+TeamScouting2014.TAG+"."+TeamScouting2014.TEAM)
+    //                                .where(EventTeam.TAG+"."+EventTeam.EVENT+"=?",prefs.getComp())
+    //                                .and(TeamScouting2014.TAG+"."+TeamScouting2014.ID+" IS NULL")
+    //                                .orderBy(Team.TAG + "." + Team.TEAM_NUMBER).toSql());
+                            newEventTeams = newEventTeamQuery.leftJoin(TeamScouting2014.class).on(EventTeam.TAG + "." + EventTeam.TEAM + "=" + TeamScouting2014.TAG + "." + TeamScouting2014.TEAM)
+                                    .where(EventTeam.TAG + "." + EventTeam.EVENT + "=?", prefs.getComp())
+                                    .and(TeamScouting2014.TAG + "." + TeamScouting2014.ID + " IS NULL").execute();
+                            for(EventTeam team : newEventTeams) {
+                                Timber.d(team.toString());
+                                TeamScouting2014 teamScouting2014 = new TeamScouting2014();
+                                teamScouting2014.setTeam(team.getTeam());
+                                teamScouting2014.saveMod();
+                            }
+                            break;
+                        case 2015:
+    //                        Timber.d(newEventTeamQuery.leftJoin(TeamScouting2015.class).on(EventTeam.TAG+"."+EventTeam.TEAM+"="+TeamScouting2015.TAG+"."+TeamScouting2015.TEAM)
+    //                                .where(EventTeam.TAG+"."+EventTeam.EVENT+"=?",prefs.getComp())
+    //                                .and(TeamScouting2015.TAG+"."+TeamScouting2015.ID+" IS NULL")
+    //                                .orderBy(Team.TAG + "." + Team.TEAM_NUMBER).toSql());
+                            newEventTeams = newEventTeamQuery.leftJoin(TeamScouting2015.class).on(EventTeam.TAG + "." + EventTeam.TEAM + "=" + TeamScouting2015.TAG + "." + TeamScouting2015.TEAM)
+                                    .where(EventTeam.TAG + "." + EventTeam.EVENT + "=?", prefs.getComp())
+                                    .and(TeamScouting2015.TAG + "." + TeamScouting2015.ID + " IS NULL").execute();
+                            for(EventTeam team : newEventTeams) {
+                                Timber.d(team.toString());
+                                TeamScouting2015 teamScouting2015 = new TeamScouting2015();
+                                teamScouting2015.setTeam(team.getTeam());
+                                teamScouting2015.saveMod();
+                            }
+                            break;
+                    }
+                    ActiveAndroid.setTransactionSuccessful();
+                } finally {
+                    ActiveAndroid.endTransaction();
+                }
+                From query = new Select().from(EventTeam.class).join(Team.class).on(EventTeam.TAG + "." + EventTeam.TEAM + "=" + Team.TAG + "." + Team.ID);
+                String orderBy = EventTeam.TAG + "." + EventTeam.RANK + " ASC";
+                switch (prefs.getYear()) {
                     case 2014:
-                        query = query.join(TeamScouting2014.class).on(Team.TAG+"."+Team.ID+"="+TeamScouting2014.TAG+"."+TeamScouting2014.TEAM);
+                        query = query.join(TeamScouting2014.class).on(Team.TAG + "." + Team.ID + "=" + TeamScouting2014.TAG + "." + TeamScouting2014.TEAM);
+                        Sort2014 sort2014 = Sort.sort2014List.get(prefs.getTeamListSort(2014));
                         Timber.d("sort: " + sort2014);
-                        switch(sort2014) {
+                        switch (sort2014) {
                             case NUMBER:
-                                orderBy = Team.TAG+"."+Team.TEAM_NUMBER+" ASC";
+                                orderBy = Team.TAG + "." + Team.TEAM_NUMBER + " ASC";
                                 break;
                             case ORIENTATION:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.ORIENTATION+" ASC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.ORIENTATION + " ASC";
                                 break;
                             case DRIVETRAIN:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.DRIVE_TRAIN+" ASC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.DRIVE_TRAIN + " ASC";
                                 break;
                             case WIDTH:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.WIDTH+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.WIDTH + " DESC";
                                 break;
                             case LENGTH:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.LENGTH+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.LENGTH + " DESC";
                                 break;
                             case HEIGHTSHOOTER:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HEIGHT_SHOOTER+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.HEIGHT_SHOOTER + " DESC";
                                 break;
                             case HEIGHTMAX:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HEIGHT_MAX+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.HEIGHT_MAX + " DESC";
                                 break;
                             case SHOOTERTYPE:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.SHOOTER_TYPE+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.SHOOTER_TYPE + " DESC";
                                 break;
                             case SHOOTGOAL:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HIGH_GOAL+" DESC, "+TeamScouting2014.TAG+"."+TeamScouting2014.LOW_GOAL+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.HIGH_GOAL + " DESC, " + TeamScouting2014.TAG + "." + TeamScouting2014.LOW_GOAL + " DESC";
                                 break;
                             case SHOOTINGDISTANCE:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.SHOOTING_DISTANCE+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.SHOOTING_DISTANCE + " DESC";
                                 break;
                             case PASS:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.PASS_TRUSS+" DESC, "+
-                                        TeamScouting2014.TAG+"."+TeamScouting2014.PASS_AIR+" DESC, "+
-                                        TeamScouting2014.TAG+"."+TeamScouting2014.PASS_GROUND+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.PASS_TRUSS + " DESC, " +
+                                        TeamScouting2014.TAG + "." + TeamScouting2014.PASS_AIR + " DESC, " +
+                                        TeamScouting2014.TAG + "." + TeamScouting2014.PASS_GROUND + " DESC";
                                 break;
                             case PICKUP:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.PICKUP_CATCH+" DESC, "+TeamScouting2014.TAG+"."+TeamScouting2014.PICKUP_GROUND+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.PICKUP_CATCH + " DESC, " + TeamScouting2014.TAG + "." + TeamScouting2014.PICKUP_GROUND + " DESC";
                                 break;
                             case PUSHER:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.PUSHER+" ASC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.PUSHER + " ASC";
                                 break;
                             case BLOCKER:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.BLOCKER+" ASC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.BLOCKER + " ASC";
                                 break;
                             case HUMANPLAYER:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HUMAN_PLAYER+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.HUMAN_PLAYER + " DESC";
                                 break;
                             case AUTONOMOUS:
-                                orderBy = TeamScouting2014.TAG+"."+TeamScouting2014.HOT_AUTO+" DESC, "+
-                                        TeamScouting2014.TAG+"."+TeamScouting2014.HIGH_AUTO+" DESC, "+
-                                        TeamScouting2014.TAG+"."+TeamScouting2014.LOW_AUTO+" DESC, "+
-                                        TeamScouting2014.TAG+"."+TeamScouting2014.DRIVE_AUTO+" DESC, "+
-                                        TeamScouting2014.TAG+"."+TeamScouting2014.NO_AUTO+" DESC";
+                                orderBy = TeamScouting2014.TAG + "." + TeamScouting2014.HOT_AUTO + " DESC, " +
+                                        TeamScouting2014.TAG + "." + TeamScouting2014.HIGH_AUTO + " DESC, " +
+                                        TeamScouting2014.TAG + "." + TeamScouting2014.LOW_AUTO + " DESC, " +
+                                        TeamScouting2014.TAG + "." + TeamScouting2014.DRIVE_AUTO + " DESC, " +
+                                        TeamScouting2014.TAG + "." + TeamScouting2014.NO_AUTO + " DESC";
                                 break;
                         }
                         break;
                     case 2015:
-                        query = query.join(TeamScouting2015.class).on(Team.TAG+"."+Team.ID+"="+ TeamScouting2015.TAG+"."+TeamScouting2015.TEAM);
-                        Timber.d("sort: "+sort2015);
-                        switch(sort2015) {
+                        query = query.join(TeamScouting2015.class).on(Team.TAG + "." + Team.ID + "=" + TeamScouting2015.TAG + "." + TeamScouting2015.TEAM);
+                        Sort2015 sort2015 = Sort.sort2015List.get(prefs.getTeamListSort(2015));
+                        Timber.d("sort: " + sort2015);
+                        switch (sort2015) {
                             case NUMBER:
-                                orderBy = Team.TAG+"."+Team.TEAM_NUMBER+" ASC";
+                                orderBy = Team.TAG + "." + Team.TEAM_NUMBER + " ASC";
                                 break;
                             case ORIENTATION:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.ORIENTATION+" ASC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.ORIENTATION + " ASC";
                                 break;
                             case DRIVE_TRAIN:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.DRIVE_TRAIN+" ASC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.DRIVE_TRAIN + " ASC";
                                 break;
                             case WIDTH:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.WIDTH+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.WIDTH + " DESC";
                                 break;
                             case LENGTH:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.LENGTH+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.LENGTH + " DESC";
                                 break;
                             case HEIGHT:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.HEIGHT+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.HEIGHT + " DESC";
                                 break;
                             case COOP:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.COOP+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.COOP + " DESC";
                                 break;
                             case DRIVER_EXPERIENCE:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.DRIVER_EXPERIENCE+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.DRIVER_EXPERIENCE + " DESC";
                                 break;
                             case PICKUP_MECHANISM:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.PICKUP_MECHANISM+" ASC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.PICKUP_MECHANISM + " ASC";
                                 break;
                             case MAX_TOTE_STACK:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.MAX_TOTE_STACK+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.MAX_TOTE_STACK + " DESC";
                                 break;
                             case MAX_CONTAINER_STACK:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.MAX_CONTAINER_STACK+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.MAX_CONTAINER_STACK + " DESC";
                                 break;
                             case MAX_TOTES_AND_CONTAINER_LITTER:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.MAX_TOTES_AND_CONTAINER_LITTER+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.MAX_TOTES_AND_CONTAINER_LITTER + " DESC";
                                 break;
                             case HUMAN_PLAYER:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.HUMAN_PLAYER+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.HUMAN_PLAYER + " DESC";
                                 break;
                             case LANDFILL_AUTO:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.LANDFILL_AUTO+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.LANDFILL_AUTO + " DESC";
                                 break;
                             case AUTONOMOUS:
-                                orderBy = TeamScouting2015.TAG+"."+TeamScouting2015.STACKED_AUTO+" DESC, "+
-                                        TeamScouting2015.TAG+"."+TeamScouting2015.CONTAINER_AUTO+" DESC, "+
-                                        TeamScouting2015.TAG+"."+TeamScouting2015.TOTE_AUTO+" DESC, "+
-                                        TeamScouting2015.TAG+"."+TeamScouting2015.DRIVE_AUTO+" DESC, "+
-                                        TeamScouting2015.TAG+"."+TeamScouting2015.NO_AUTO+" DESC";
+                                orderBy = TeamScouting2015.TAG + "." + TeamScouting2015.STACKED_AUTO + " DESC, " +
+                                        TeamScouting2015.TAG + "." + TeamScouting2015.CONTAINER_AUTO + " DESC, " +
+                                        TeamScouting2015.TAG + "." + TeamScouting2015.TOTE_AUTO + " DESC, " +
+                                        TeamScouting2015.TAG + "." + TeamScouting2015.DRIVE_AUTO + " DESC, " +
+                                        TeamScouting2015.TAG + "." + TeamScouting2015.NO_AUTO + " DESC";
                                 break;
                         }
                         break;
                 }
 
-                List<EventTeam> teams = query.where(EventTeam.TAG+"."+EventTeam.EVENT+"=?",prefs.getComp()).orderBy(orderBy).execute();
+                List<EventTeam> teams = query.where(EventTeam.TAG + "." + EventTeam.EVENT + "=?", prefs.getComp()).orderBy(orderBy).execute();
 
                 EventBus.getDefault().post(new LoadTeams(teams));
             }
@@ -416,10 +520,10 @@ public class TeamListFragment extends Fragment {
     public void onEventMainThread(LoadTeams teams) {
         switch (prefs.getYear()) {
             case 2014:
-                adapter.showDrag(sort2014.equals(Sort2014.RANK));
+                adapter.showDrag(Sort.sort2014List.get(prefs.getTeamListSort(2014)).equals(Sort2014.RANK));
                 break;
             case 2015:
-                adapter.showDrag(sort2015.equals(Sort2015.RANK));
+                adapter.showDrag(Sort.sort2015List.get(prefs.getTeamListSort(2015)).equals(Sort2015.RANK));
                 break;
         }
         adapter.swapList(teams.getTeams());

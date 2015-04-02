@@ -90,8 +90,8 @@
     <orderEntry type="library" exported="" name="drag-sort-listview-1.0" level="project" />
     <orderEntry type="library" exported="" name="MPAndroidChart-v2.0.8" level="project" />
     <orderEntry type="library" exported="" name="preferencefragment-0.1.2" level="project" />
-    <orderEntry type="library" exported="" name="activeandroid-3.1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="activeandroid-3.1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="support-v13-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-6.5.87" level="project" />
@@ -108,9 +108,9 @@
     <orderEntry type="library" exported="" name="layouts-1.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="core-1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="bluetoothspp-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
-    <orderEntry type="library" exported="" name="android-priority-jobqueue-1.1.2" level="project" />
     <orderEntry type="library" exported="" name="commons-lang3-3.3.2" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.10" level="project" />
   </component>

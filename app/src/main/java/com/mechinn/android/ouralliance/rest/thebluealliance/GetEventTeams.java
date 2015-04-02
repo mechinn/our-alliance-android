@@ -1,37 +1,32 @@
 package com.mechinn.android.ouralliance.rest.thebluealliance;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
+import com.activeandroid.query.Select;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.EventTeam;
-import com.mechinn.android.ouralliance.data.OurAllianceObject;
 import com.mechinn.android.ouralliance.data.Team;
-import com.mechinn.android.ouralliance.data.frc2014.TeamScouting2014;
-import com.mechinn.android.ouralliance.data.frc2015.TeamScouting2015;
 import com.mechinn.android.ouralliance.event.ToastEvent;
-import com.mechinn.android.ouralliance.event.Transaction;
 import com.mechinn.android.ouralliance.rest.TheBlueAlliance;
+
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public class GetEventTeams implements AsyncExecutor.RunnableEx {
     public static final String TAG = "GetEventTeams";
-    private Context context;
     private Prefs prefs;
 
     public GetEventTeams(Context context) {
-        this.context = context;
         this.prefs = new Prefs(context);
     }
 
@@ -45,34 +40,27 @@ public class GetEventTeams implements AsyncExecutor.RunnableEx {
         try {
             int year = prefs.getYear();
             List<Team> teams = TheBlueAlliance.getService().getEventTeams(year + event.getEventCode());
-            for(Team team : teams) {
-                team.saveMod();
-                switch(year) {
-                    case 2014:
-                        TeamScouting2014 scouting2014 = new TeamScouting2014();
-                        scouting2014.setTeam(team);
-                        scouting2014.saveMod();
-                        break;
-                    case 2015:
-                        TeamScouting2015 scouting2015 = new TeamScouting2015();
-                        scouting2015.setTeam(team);
-                        scouting2015.saveMod();
-                        break;
-                }
+            List<EventTeam> ranks = new Select().from(EventTeam.class).where(EventTeam.EVENT + "=?", event.getId()).orderBy(EventTeam.RANK + " DESC").execute();
+            int nextRank = 0;
+            if(!ranks.isEmpty()) {
+                nextRank = ranks.get(0).getRank()+1;
             }
             Collections.sort(teams);
-            List<EventTeam> eventTeams = new ArrayList<>();
             for(int teamRank=0;teamRank<teams.size();teamRank++) {
                 EventTeam eventTeam = new EventTeam();
                 eventTeam.setEvent(event);
                 eventTeam.setTeam(teams.get(teamRank));
-                eventTeam.setRank(teamRank);
-                eventTeams.add(eventTeam);
+                eventTeam.setRank(nextRank);
                 eventTeam.saveMod();
+                if(-1!=eventTeam.getId()) {
+                    nextRank++;
+                }
             }
             ActiveAndroid.setTransactionSuccessful();
-            EventBus.getDefault().post(teams.get(0));
-            EventBus.getDefault().post(eventTeams.get(0));
+            if(!teams.isEmpty()) {
+                EventBus.getDefault().post(new Team());
+                EventBus.getDefault().post(new EventTeam());
+            }
             ToastEvent.toast("Finished downloading teams",false);
             prefs.setEventTeamsDownloaded(true);
         } catch (RetrofitError e) {

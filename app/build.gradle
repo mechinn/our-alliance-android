@@ -47,10 +47,11 @@ dependencies {
     compile 'com.jenzz:materialpreference:1.2'
     compile 'com.github.machinarius:preferencefragment:0.1.2'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
-    compile 'com.path:android-priority-jobqueue:1.1.2'
+//    compile 'com.path:android-priority-jobqueue:1.1.2'
     compile 'com.github.PhilJay:MPAndroidChart:v2.0.8'
     compile 'com.jakewharton.timber:timber:2.7.1'
     compile 'se.emilsjolander:stickylistheaders:+'
+    compile 'com.akexorcist:bluetoothspp:1.0.0'
 }
 
 android {
@@ -60,8 +61,8 @@ android {
         applicationId "com.mechinn.android.ouralliance"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 50
-        versionName "2015.2.1"
+        versionCode 52
+        versionName "2015.3.1"
     }
     signingConfigs {
         release {

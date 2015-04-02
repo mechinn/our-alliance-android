@@ -1,6 +1,9 @@
 package com.mechinn.android.ouralliance.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -14,12 +17,17 @@ import android.view.MenuItem;
 
 import com.activeandroid.query.Select;
 import com.github.machinarius.preferencefragment.PreferenceFragment;
+import com.mechinn.android.ouralliance.BuildConfig;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetEvents;
 import com.mechinn.android.ouralliance.widget.EventListPreference;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.Collections;
 import java.util.List;
 
@@ -96,11 +104,37 @@ public class SettingsFragment extends PreferenceFragment {
         about = getPreferenceScreen().findPreference(this.getString(R.string.pref_about));
         about.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
-					DialogFragment dialog = new HtmlDialogFragment();
-		            Bundle htmlArgs = new Bundle();
-		            htmlArgs.putString(HtmlDialogFragment.HTMLFILE, "file:///android_asset/about.html");
-		            dialog.setArguments(htmlArgs);
-		            dialog.show(SettingsFragment.this.getFragmentManager(), "Change Log");
+                    if(BuildConfig.DEBUG) {
+                        try {
+                            File sd = Environment.getExternalStorageDirectory();
+                            File data = Environment.getDataDirectory();
+
+                            if (sd.canWrite()) {
+                                String currentDBPath = "//data//com.mechinn.android.ouralliance//databases//activeAndroid.db";
+                                String backupDBPath = "ourAlliance.db";
+                                File currentDB = new File(data, currentDBPath);
+                                File backupDB = new File(sd, backupDBPath);
+
+                                if (currentDB.exists()) {
+                                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                                    dst.transferFrom(src, 0, src.size());
+                                    src.close();
+                                    dst.close();
+                                    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                                    Uri uri = Uri.fromFile(backupDB);
+                                    mediaScanIntent.setData(uri);
+                                    SettingsFragment.this.getActivity().sendBroadcast(mediaScanIntent);
+                                }
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                    DialogFragment dialog = new HtmlDialogFragment();
+                    Bundle htmlArgs = new Bundle();
+                    htmlArgs.putString(HtmlDialogFragment.HTMLFILE, "file:///android_asset/about.html");
+                    dialog.setArguments(htmlArgs);
+                    dialog.show(SettingsFragment.this.getFragmentManager(), "Change Log");
 					return true;
 				}
 			});

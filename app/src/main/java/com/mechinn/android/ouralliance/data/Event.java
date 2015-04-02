@@ -5,6 +5,7 @@ import android.provider.BaseColumns;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
 import java.util.Date;
 
@@ -55,13 +56,19 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return name;
     }
     public void setName(String name) {
-        this.name = name;
+        if(null==name && null!=this.name || null!=name && !name.equals(this.name)) {
+            this.name = name;
+            changedData();
+        }
     }
     public String getShortName() {
         return shortName;
     }
     public void setShortName(String shortName) {
-        this.shortName = shortName;
+        if(null==shortName && null!=this.shortName || null!=shortName && !shortName.equals(this.shortName)) {
+            this.shortName = shortName;
+            changedData();
+        }
     }
     public String getDisplayName() {
         if(null!=getShortName()) {
@@ -76,63 +83,112 @@ public class Event extends com.mechinn.android.ouralliance.data.OurAllianceObjec
         return eventCode;
     }
     public void setEventCode(String eventCode) {
-        this.eventCode = eventCode;
+        if(null==eventCode && null!=this.eventCode || null!=eventCode && !eventCode.equals(this.eventCode)) {
+            this.eventCode = eventCode;
+            changedData();
+        }
     }
     public int getEventType() {
         return eventType;
     }
     public void setEventType(int eventType) {
-        this.eventType = eventType;
+        if(eventType!=this.eventType) {
+            this.eventType = eventType;
+            changedData();
+        }
     }
     public int getEventDistrict() {
         return eventDistrict;
     }
     public void setEventDistrict(int eventDistrict) {
-        this.eventDistrict = eventDistrict;
+        if(eventDistrict!=this.eventDistrict) {
+            this.eventDistrict = eventDistrict;
+            changedData();
+        }
     }
     public int getYear() {
         return year;
     }
     public void setYear(int year) {
-        this.year = year;
+        if(year!=this.year) {
+            this.year = year;
+            changedData();
+        }
     }
     public String getVenueAddress() {
         return venueAddress;
     }
     public void setVenueAddress(String venueAddress) {
-        this.venueAddress = venueAddress;
+        if(null==venueAddress && null!=this.venueAddress || null!=venueAddress && !venueAddress.equals(this.venueAddress)) {
+            this.venueAddress = venueAddress;
+            changedData();
+        }
     }
     public String getWebsite() {
         return website;
     }
     public void setWebsite(String website) {
-        this.website = website;
+        if(null==website && null!=this.website || null!=website && !website.equals(this.website)) {
+            this.website = website;
+            changedData();
+        }
     }
     public Date getStartDate() {
         return startDate;
     }
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        if(null==startDate && null!=this.startDate || null!=startDate && !startDate.equals(this.startDate)) {
+            this.startDate = startDate;
+            changedData();
+        }
     }
     public Date getEndDate() {
         return endDate;
     }
     public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        if(null==endDate && null!=this.endDate || null!=endDate && !endDate.equals(this.endDate)) {
+            this.endDate = endDate;
+            changedData();
+        }
     }
     public boolean isOfficial() {
         return official;
     }
     public void setOfficial(boolean official) {
-        this.official = official;
+        if(official!=this.official) {
+            this.official = official;
+            changedData();
+        }
     }
     public String toString() {
         return (isOfficial()?"Official":"Unofficial")+" | "+this.getShortName();
     }
+    public static Event load(String eventCode, int year) {
+        return new Select().from(Event.class).where(Event.EVENT_CODE+"=?",eventCode).and(Event.YEAR+"=?",year).executeSingle();
+    }
+    public boolean copy(Event data) {
+        if(this.equals(data)) {
+            super.copy(data);
+            this.setName(data.getName());
+            this.setShortName(data.getShortName());
+            this.setEventCode(data.getEventCode());
+            this.setEventDistrict(data.getEventDistrict());
+            this.setVenueAddress(data.getVenueAddress());
+            this.setWebsite(data.getWebsite());
+            this.setStartDate(data.getStartDate());
+            this.setEndDate(data.getEndDate());
+            this.setOfficial(data.isOfficial());
+            return true;
+        }
+        return false;
+    }
     public boolean equals(Event data) {
-        return  getYear()==data.getYear() &&
-                getShortName().equals(data.getShortName()) &&
-                getEventCode().equals(data.getEventCode());
+        try {
+            return getYear() == data.getYear() &&
+                    getEventCode().equals(data.getEventCode());
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
     public int compareTo(Event another) {
         int compare = (this.isOfficial()?0:1)-(another.isOfficial()?0:1);

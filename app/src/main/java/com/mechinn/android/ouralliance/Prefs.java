@@ -139,6 +139,22 @@ public class Prefs {
         }
         editor.apply();
     }
+    public void setTeamListSort(int year, Integer position) {
+        editor.putString("Sort_"+year, String.valueOf(position));
+        editor.apply();
+    }
+    public int getTeamListSort(int year) {
+        return Integer.parseInt(prefs.getString("Sort_"+year, "0"));
+    }
+    public void clearTeamListSort() {
+        final Map<String, ?> all = prefs.getAll();
+        for(Map.Entry<String,?> entry : all.entrySet()) {
+            if(entry.getKey().startsWith("Sort_")) {
+                editor.remove(entry.getKey());
+            }
+        }
+        editor.apply();
+    }
     public void setMatchesDownloaded(Boolean downloaded) {
         editor.putString(Match.TAG+"_"+getYear()+"_"+getComp(), downloaded?"true":"false");
         editor.apply();

@@ -61,18 +61,6 @@ public class MatchScoutingActivity extends OurAllianceActivity implements Fragme
             getSupportFragmentManager().beginTransaction().replace(matchFrag, matchListFrag).commitAllowingStateLoss();
         }
 	}
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
 	
 	@Override
     protected void onResume() {

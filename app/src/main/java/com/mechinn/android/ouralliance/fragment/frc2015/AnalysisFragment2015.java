@@ -173,10 +173,10 @@ public class AnalysisFragment2015 extends AnalysisFragment {
                 return scouting.getLitter();
             }
         });
-        addMatchGraph(MatchScouting2015.FOWLS, android.R.color.holo_orange_dark, new GraphGetter<MatchScouting2015>() {
+        addMatchGraph(MatchScouting2015.FOULS, android.R.color.holo_orange_dark, new GraphGetter<MatchScouting2015>() {
             @Override
             public Object getter(MatchScouting2015 scouting) {
-                return scouting.getFowls();
+                return scouting.getFouls();
             }
         });
         addMatchGraph(MatchScouting2015.HUMAN_ATTEMPT, android.R.color.holo_purple, new GraphGetter<MatchScouting2015>() {
@@ -213,8 +213,8 @@ public class AnalysisFragment2015 extends AnalysisFragment {
                 TeamScouting2015 team = scoutingList.get(count);
                 entries.add(teamGraph.getGetter().barEntry(team, count));
             }
-            GraphDataSet graphDataSet = new GraphDataSet(entries,teamGraph.getLabel(), GraphDataSet.Type.TEAM);
-            graphDataSet.setColor(teamGraph.getColor());
+            GraphDataSet graphDataSet = new GraphDataSet(entries, teamGraph.getLabel(), getPrefs().getYear(), GraphDataSet.Type.TEAM, true);
+            graphDataSet.getDataSet().setColor(teamGraph.getColor());
             addTeamDataSet(graphDataSet);
         }
         loadedChartData();
@@ -246,8 +246,8 @@ public class AnalysisFragment2015 extends AnalysisFragment {
                 Float value = team.getValue();
                 entries.add(new BarEntry(value, count++));
             }
-            GraphDataSet graphDataSet = new GraphDataSet(entries,matchGraph.getLabel(), GraphDataSet.Type.MATCH);
-            graphDataSet.setColor(matchGraph.getColor());
+            GraphDataSet graphDataSet = new GraphDataSet(entries, matchGraph.getLabel(), getPrefs().getYear(), GraphDataSet.Type.MATCH, true);
+            graphDataSet.getDataSet().setColor(matchGraph.getColor());
             addMatchDataSet(graphDataSet);
         }
         loadedChartData();

@@ -25,17 +25,35 @@ public class EventAdapter implements JsonSerializer<Event>, JsonDeserializer<Eve
         Event event = new Event();
         JsonObject object = json.getAsJsonObject();
         event.setModified(new Date(object.get(Event.MODIFIED).getAsLong()));
-        event.setName(object.get(Event.NAME).getAsString());
-        event.setShortName(object.get(Event.SHORT_NAME).getAsString());
         event.setEventCode(object.get(Event.EVENT_CODE).getAsString());
         event.setEventType(object.get(Event.EVENT_TYPE).getAsInt());
         event.setEventDistrict(object.get(Event.EVENT_DISTRICT).getAsInt());
         event.setYear(object.get(Event.YEAR).getAsInt());
-        event.setVenueAddress(object.get(Event.VENUE_ADDRESS).getAsString());
-        event.setWebsite(object.get(Event.WEBSITE).getAsString());
-        event.setStartDate(new Date(object.get(Event.START_DATE).getAsLong()));
-        event.setEndDate(new Date(object.get(Event.END_DATE).getAsLong()));
         event.setOfficial(object.get(Event.OFFICIAL).getAsBoolean());
+        JsonElement element = object.get(Event.NAME);
+        if(null!=element) {
+            event.setName(element.getAsString());
+        }
+        element = object.get(Event.SHORT_NAME);
+        if(null!=element) {
+            event.setShortName(element.getAsString());
+        }
+        element = object.get(Event.VENUE_ADDRESS);
+        if(null!=element) {
+            event.setVenueAddress(element.getAsString());
+        }
+        element = object.get(Event.WEBSITE);
+        if(null!=element) {
+            event.setWebsite(element.getAsString());
+        }
+        element = object.get(Event.START_DATE);
+        if(null!=element) {
+            event.setStartDate(new Date(element.getAsLong()));
+        }
+        element = object.get(Event.END_DATE);
+        if(null!=element) {
+            event.setEndDate(new Date(element.getAsLong()));
+        }
         return event;
     }
     @Override

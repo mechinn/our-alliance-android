@@ -20,15 +20,36 @@ public class TeamAdapter implements JsonSerializer<Team>, JsonDeserializer<Team>
     public Team deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         Team team = new Team();
         JsonObject object = json.getAsJsonObject();
-        team.setModified(new Date(object.get(Team.MODIFIED).getAsLong()));
-        team.setWebsite(object.get(Team.WEBSITE).getAsString());
-        team.setName(object.get(Team.NAME).getAsString());
-        team.setLocality(object.get(Team.LOCALITY).getAsString());
-        team.setRegion(object.get(Team.REGION).getAsString());
-        team.setCountry(object.get(Team.COUNTRY).getAsString());
         team.setTeamNumber(object.get(Team.TEAM_NUMBER).getAsInt());
-        team.setNickname(object.get(Team.NICKNAME).getAsString());
-        team.setRookieYear(object.get(Team.ROOKIE_YEAR).getAsInt());
+        team.setModified(new Date(object.get(Team.MODIFIED).getAsLong()));
+        JsonElement element = object.get(Team.WEBSITE);
+        if(null!=element) {
+            team.setWebsite(element.getAsString());
+        }
+        element = object.get(Team.NAME);
+        if(null!=element) {
+            team.setName(element.getAsString());
+        }
+        element = object.get(Team.LOCALITY);
+        if(null!=element) {
+            team.setLocality(element.getAsString());
+        }
+        element = object.get(Team.REGION);
+        if(null!=element) {
+            team.setRegion(element.getAsString());
+        }
+        element = object.get(Team.COUNTRY);
+        if(null!=element) {
+            team.setCountry(element.getAsString());
+        }
+        element = object.get(Team.NICKNAME);
+        if(null!=element) {
+            team.setNickname(element.getAsString());
+        }
+        element = object.get(Team.ROOKIE_YEAR);
+        if(null!=element) {
+            team.setRookieYear(element.getAsInt());
+        }
         return team;
     }
 

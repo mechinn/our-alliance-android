@@ -18,16 +18,40 @@ public abstract class OurAllianceObject extends Model {
     public final static String MODIFIED = "modified";
     @Column(name = MODIFIED, notNull = true)
     private Date modified;
+    private boolean changed;
+    public OurAllianceObject() {
+        super();
+        changed = false;
+    }
     public Date getModified() {
         return modified;
     }
     public void setModified(Date modified) {
         this.modified = modified;
     }
+    public boolean copy(OurAllianceObject data) {
+        if(this.equals(data)) {
+            this.setModified(data.getModified());
+            return true;
+        }
+        return false;
+    }
+    protected void changedData() {
+        changed = true;
+    }
     public void saveMod() {
-        setModified(new Date());
+        if(changed || null==getModified()) {
+            if(null==this.getId()) {
+                setModified(new Date(0));
+            } else {
+                setModified(new Date());
+            }
+        }
         Timber.d("saving object");
         save();
+    }
+    public void saveEvent() {
+        EventBus.getDefault().post(this);
     }
     public abstract void asyncSave();
     public abstract void asyncDelete();

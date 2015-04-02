@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <external-path name="TeamScouting2014Csv"   path="Android/data/com.mechinn.android.ouralliance/files/2014/csv/TeamScouting/"    />
-    <external-path name="MatchScouting2014Csv"  path="Android/data/com.mechinn.android.ouralliance/files/2014/csv/MatchScouting/"   />
     <external-path name="TeamScouting2015Csv"   path="Android/data/com.mechinn.android.ouralliance/files/2015/csv/TeamScouting/"    />
     <external-path name="MatchScouting2015Csv"  path="Android/data/com.mechinn.android.ouralliance/files/2015/csv/MatchScouting/"   />
+
+    <external-path name="TeamScouting2015Backup"   path="Android/data/com.mechinn.android.ouralliance/files/2015/backup/TeamScouting/"    />
+    <external-path name="MatchScouting2015Backup"  path="Android/data/com.mechinn.android.ouralliance/files/2015/backup/MatchScouting/"   />
 </paths>

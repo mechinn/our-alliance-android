@@ -1,5 +1,6 @@
 package com.mechinn.android.ouralliance.fragment;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 
 import com.activeandroid.query.From;
@@ -8,6 +9,8 @@ import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.adapter.MatchAdapter;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
@@ -29,11 +32,19 @@ import com.mechinn.android.ouralliance.data.EventTeam;
 import com.mechinn.android.ouralliance.event.BluetoothEvent;
 import com.mechinn.android.ouralliance.data.Match;
 import com.mechinn.android.ouralliance.event.SelectMatchEvent;
+import com.mechinn.android.ouralliance.gson.OurAllianceGson;
+import com.mechinn.android.ouralliance.gson.frc2015.ExportJsonEventMatchScouting2015;
+import com.mechinn.android.ouralliance.gson.frc2015.ExportJsonEventTeamScouting2015;
+import com.mechinn.android.ouralliance.gson.frc2015.ImportJsonEventMatchScouting2015;
+import com.mechinn.android.ouralliance.gson.frc2015.ImportJsonEventTeamScouting2015;
 import com.mechinn.android.ouralliance.rest.thebluealliance.GetMatches;
 
 import java.util.Collections;
 import java.util.List;
 
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+import app.akexorcist.bluetotohspp.library.BluetoothState;
+import app.akexorcist.bluetotohspp.library.DeviceList;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.util.AsyncExecutor;
 import timber.log.Timber;
@@ -41,6 +52,9 @@ import timber.log.Timber;
 public class MatchListFragment extends ListFragment {
     public static final String TAG = "MatchListFragment";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    public static final int OPEN_DOCUMENT_REQUEST_CODE = 4002;
+    public static final int CREATE_DOCUMENT_CSV_REQUEST_CODE = 4003;
+    public static final int CREATE_DOCUMENT_JSON_REQUEST_CODE = 4004;
 	private Prefs prefs;
 	private MatchAdapter adapter;
     private GetMatches downloadMatches;
@@ -140,23 +154,23 @@ public class MatchListFragment extends ListFragment {
 	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-        BluetoothEvent bluetoothState = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
 	    menu.findItem(R.id.practice).setChecked(prefs.isPractice());
-        menu.findItem(R.id.insert).setVisible(prefs.getComp()>0 && enoughTeams);
-//        menu.findItem(R.id.bluetoothMatchScouting).setVisible(null!=adapter && adapter.getCount()>0 && !bluetoothState.isDisabled());
-//        menu.findItem(R.id.importMatchScouting).setVisible(prefs.getComp()>0);
-//        menu.findItem(R.id.exportMatchScouting).setVisible(null!=adapter && adapter.getCount()>0);
-//        if(bluetoothState.isOn()) {
-//            menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth_searching);
-//        } else {
-//            menu.findItem(R.id.bluetoothMatchScouting).setIcon(R.drawable.ic_action_bluetooth);
-//        }
+        menu.findItem(R.id.insert).setVisible(prefs.getComp() > 0 && enoughTeams);
         menu.findItem(R.id.sendMatchScoutingCsv).setVisible(prefs.getComp()>0);
+        menu.findItem(R.id.restoreMatchListScouting).setVisible(prefs.getComp() > 0);
+        menu.findItem(R.id.backupMatchListScouting).setVisible(null!=adapter && adapter.getCount()>0);
+        BluetoothEvent bluetoothState = EventBus.getDefault().getStickyEvent(BluetoothEvent.class);
+        menu.findItem(R.id.bluetoothMatchScoutingList).setVisible(null!=adapter && adapter.getCount()>0 && !bluetoothState.isDisabled());
+        if(bluetoothState.isOn()) {
+            menu.findItem(R.id.bluetoothMatchScoutingList).setIcon(R.drawable.ic_action_bluetooth_searching);
+        } else {
+            menu.findItem(R.id.bluetoothMatchScoutingList).setIcon(R.drawable.ic_action_bluetooth);
+        }
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
+        Intent intent;
 	    switch (item.getItemId()) {
 		    case R.id.practice:
 	            if (item.isChecked()) {
@@ -178,10 +192,61 @@ public class MatchListFragment extends ListFragment {
                         AsyncExecutor.create().execute(new ExportCsvMatchScouting2015(this.getActivity()));
                         break;
                 }
+                return true;
+            case R.id.bluetoothMatchScoutingList:
+                intent = new Intent(this.getActivity().getApplicationContext(), DeviceList.class);
+                startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+                return true;
+            case R.id.backupMatchListScouting:
+                switch(prefs.getYear()) {
+                    case 2015:
+                        intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType(OurAllianceGson.TYPE);
+                        intent.putExtra(Intent.EXTRA_TITLE, "matchList.json");
+                        startActivityForResult(intent, CREATE_DOCUMENT_JSON_REQUEST_CODE);
+                        break;
+                }
+                return true;
+            case R.id.restoreMatchListScouting:
+                switch(prefs.getYear()) {
+                    case 2015:
+                        intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType(OurAllianceGson.TYPE);
+                        startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE);
+                        break;
+                }
+                return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(OPEN_DOCUMENT_REQUEST_CODE == requestCode &&
+                Activity.RESULT_OK == resultCode &&
+                null!=data) {
+            final Uri uri = data.getData();
+            Timber.d("Uri: " + uri.toString());
+            AsyncExecutor.create().execute(new ImportJsonEventMatchScouting2015(this.getActivity(), uri));
+        } else if(CREATE_DOCUMENT_JSON_REQUEST_CODE == requestCode &&
+                Activity.RESULT_OK == resultCode &&
+                null!=data) {
+            final Uri uri = data.getData();
+            Timber.d("Uri: " + uri.toString());
+            AsyncExecutor.create().execute(new ExportJsonEventMatchScouting2015(this.getActivity(), uri));
+        } else if(requestCode == BluetoothState.REQUEST_CONNECT_DEVICE && resultCode == Activity.RESULT_OK) {
+            BluetoothSPP bt = EventBus.getDefault().getStickyEvent(BluetoothSPP.class);
+            bt.connect(data);
+            AsyncExecutor.create().execute(new ExportJsonEventMatchScouting2015(this.getActivity(), bt));
+        } else if(requestCode == BluetoothState.REQUEST_ENABLE_BT && resultCode == Activity.RESULT_OK) {
+            Intent intent = new Intent(this.getActivity().getApplicationContext(), DeviceList.class);
+            startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {

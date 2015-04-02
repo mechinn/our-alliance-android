@@ -70,28 +70,17 @@ public class InsertTeamDialogFragment extends DialogFragment {
                         public void run() throws Exception {
                             ActiveAndroid.beginTransaction();
                             try {
-                                team.saveMod();
-                                Timber.d( "saving team id: " + team.getId());
-                                Timber.d( "saving: " + team);
-                                Timber.d( "competition id: " + prefs.getComp());
                                 EventTeam eventTeam = new EventTeam();
-                                Event event = Model.load(Event.class, prefs.getComp());
-                                eventTeam.setEvent(event);
+                                eventTeam.setEvent(Model.load(Event.class, prefs.getComp()));
                                 eventTeam.setTeam(team);
                                 eventTeam.setRank(rank);
                                 eventTeam.saveMod();
-                                Timber.d( "saving event team id: " + eventTeam.getId());
-                                TeamScouting scouting = null;
                                 switch (prefs.getYear()) {
-                                    case 2014:
-                                        scouting = new TeamScouting2014();
-                                        break;
                                     case 2015:
-                                        scouting = new TeamScouting2015();
-                                        break;
+                                        TeamScouting2015 teamScouting2015 = new TeamScouting2015();
+                                        teamScouting2015.setTeam(team);
+                                        teamScouting2015.saveMod();
                                 }
-                                scouting.setTeam(team);
-                                scouting.saveMod();
                                 ActiveAndroid.setTransactionSuccessful();
                                 EventBus.getDefault().post(team);
                                 EventBus.getDefault().post(eventTeam);
