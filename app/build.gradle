@@ -79,6 +79,18 @@ android {
     }
     signingConfigs {
         release {
+            if (!hasProperty('STOREFILE')) {
+                STOREFILE = 'README.md'
+            }
+            if (!hasProperty('STOREPASS')) {
+                STOREPASS = ''
+            }
+            if (!hasProperty('KEYALIAS')) {
+                KEYALIAS = ''
+            }
+            if (!hasProperty('KEYPASS')) {
+                KEYPASS = ''
+            }
             storeFile file(STOREFILE)
             storePassword STOREPASS
             keyAlias KEYALIAS
