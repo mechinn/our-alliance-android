@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.app.Application;
 import com.activeandroid.query.Delete;
+import io.fabric.sdk.android.Fabric;
+
 import com.crashlytics.android.Crashlytics;
 import com.mechinn.android.ouralliance.data.Event;
 import com.mechinn.android.ouralliance.data.EventTeam;
@@ -74,7 +76,7 @@ public class OurAlliance extends Application implements SharedPreferences.OnShar
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
-        Crashlytics.start(this);
+        Fabric.with(this, new Crashlytics());
         EventBus.getDefault().register(this);
         prefs = new Prefs(this);
         prefs.setChangeListener(this);

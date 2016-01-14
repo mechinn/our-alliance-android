@@ -13,7 +13,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.mechinn.android.ouralliance.Prefs;
 import com.mechinn.android.ouralliance.R;
 import com.mechinn.android.ouralliance.event.ActivityResult;
@@ -115,10 +115,10 @@ public class OurAllianceActivity extends ActionBarActivity {
             return false;
         }
         // Look up the AdView as a resource and load a request.
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
         if (status != ConnectionResult.SUCCESS) {
-            if (!prefs.isGooglePlayServicesPrompted() && GooglePlayServicesUtil.isUserRecoverableError(status)) {
-                GooglePlayServicesUtil.getErrorDialog(status, this, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
+            if (!prefs.isGooglePlayServicesPrompted() && GoogleApiAvailability.getInstance().isUserResolvableError(status)) {
+                GoogleApiAvailability.getInstance().getErrorDialog(this, status, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
                 prefs.setGooglePlayServicesPrompted(true);
             } else {
                 adView.setVisibility(View.GONE);
