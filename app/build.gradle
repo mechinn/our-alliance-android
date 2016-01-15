@@ -79,22 +79,18 @@ android {
     }
     signingConfigs {
         release {
-            if (!hasProperty('STOREFILE')) {
-                STOREFILE = 'README.md'
+            if (project.hasProperty('STOREFILE')) {
+                storeFile file(STOREFILE)
             }
-            if (!hasProperty('STOREPASS')) {
-                STOREPASS = ''
+            if (project.hasProperty('STOREPASS')) {
+                storePassword file(STOREPASS)
             }
-            if (!hasProperty('KEYALIAS')) {
-                KEYALIAS = ''
+            if (project.hasProperty('KEYALIAS')) {
+                keyAlias file(KEYALIAS)
             }
-            if (!hasProperty('KEYPASS')) {
-                KEYPASS = ''
+            if (project.hasProperty('KEYPASS')) {
+                keyPassword file(KEYPASS)
             }
-            storeFile file(STOREFILE)
-            storePassword STOREPASS
-            keyAlias KEYALIAS
-            keyPassword KEYPASS
         }
     }
     buildTypes {
