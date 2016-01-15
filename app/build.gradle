@@ -81,15 +81,23 @@ android {
         release {
             if (project.hasProperty('STOREFILE')) {
                 storeFile file(STOREFILE)
+            } else {
+                storeFile file('testRelease.jks')
             }
             if (project.hasProperty('STOREPASS')) {
-                storePassword file(STOREPASS)
+                storePassword STOREPASS
+            } else {
+                storePassword 'testing'
             }
             if (project.hasProperty('KEYALIAS')) {
-                keyAlias file(KEYALIAS)
+                keyAlias KEYALIAS
+            } else {
+                keyAlias 'test'
             }
             if (project.hasProperty('KEYPASS')) {
-                keyPassword file(KEYPASS)
+                keyPassword KEYPASS
+            } else {
+                keyPassword 'testing'
             }
         }
     }

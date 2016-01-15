@@ -68,7 +68,11 @@ public class EventTeamDragSortListAdapter extends BaseAdapter implements ListAda
             TextView summary = (TextView)container.findViewById(R.id.text);
             ImageView dragHandle = (ImageView)container.findViewById(R.id.drag_handle);
             CheckBox scouted = (CheckBox)container.findViewById(R.id.scouted);
-            dragHandle.setVisibility(dragable);
+            if(dragable == ImageView.VISIBLE) {
+                dragHandle.setVisibility(ImageView.VISIBLE);
+            } else {
+                dragHandle.setVisibility(ImageView.GONE);
+            }
             EventTeam team = this.getTeam(position);
             summary.setText(team.getTeam().toString());
             scouted.setTag(team);
